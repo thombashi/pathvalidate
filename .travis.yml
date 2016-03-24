@@ -1,0 +1,21 @@
+language: python
+
+env:
+  - TOXENV=py26
+  - TOXENV=py27
+  - TOXENV=py33
+  - TOXENV=py34
+
+os:
+  - linux
+
+install:
+  - pip install tox
+  - pip install coveralls
+
+script: 
+  - tox
+  - python setup.py test --addopts "-v --cov pathvalidate --cov-report term-missing"
+
+after_success:
+  - coveralls
