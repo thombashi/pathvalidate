@@ -16,7 +16,7 @@ def validate_filename(filename):
     """
     :param str filename: Filename to validate.
     :raises ValueError:
-        If ``filename`` is empty or include invalid char
+        If the ``filename`` is empty or includes invalid char(s):
         (``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``).
     """
 
@@ -32,6 +32,16 @@ def validate_filename(filename):
 
 
 def sanitize_filename(filename, replacement_text=""):
+    """
+    Replace invalid chars within the ``filename`` with
+    the ``replacement_text``.
+
+    :param str filename: Filename to validate.
+    :param str replacement_text: Replacement text.
+    :return: A replacement string.
+    :rtype: str
+    """
+
     filename = filename.strip()
     re_replace = re.compile("[%s]" % re.escape(__INVALID_PATH_CHARS))
 
