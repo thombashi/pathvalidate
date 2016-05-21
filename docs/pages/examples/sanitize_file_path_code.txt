@@ -1,0 +1,13 @@
+.. code-block:: python
+    :caption: Sample code
+    
+    import pathvalidate
+
+    filename = "a*b:c<d>e%f(g)h+i_0.txt"
+    print(pathvalidate.sanitize_filename(filename))
+
+.. code-block:: none
+    :caption: Output
+    
+    abcde%f(g)h+i_0.txt
+
