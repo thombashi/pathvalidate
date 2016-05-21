@@ -1,1 +1,0 @@
-pathvalidate is a python library to validate filename.
