@@ -10,6 +10,7 @@ import dataproperty
 
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
+__INVALID_VAR_CHARS = __INVALID_PATH_CHARS + "!#$&'=~^@`[]+-;{},.()%"
 
 
 def validate_filename(filename):
@@ -47,6 +48,28 @@ def sanitize_filename(filename, replacement_text=""):
     re_replace = re.compile("[%s]" % re.escape(__INVALID_PATH_CHARS))
 
     return re_replace.sub(replacement_text, filename)
+
+
+def sanitize_python_var_name(var_name, replacement_text=""):
+    """
+    Replace invalid characters for a python variable name within
+    the ``var_name`` with the ``replacement_text``.
+    Invalid characters are as follows:
+    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``.
+    ``"``, ``!``, ``#``, ``$``, ``&``, ``'``, ``=``, ``~``, ``^``, ``@``,
+    `````, ``[``, ``]``, ``+``, ``-``, ``;``, ``{``, ``}``, ``,``,
+    ``.``, ``(``, ``)``, ``%``.
+
+    :param str filename: Filename to validate.
+    :param str replacement_text: Replacement text.
+    :return: A replacement string.
+    :rtype: str
+    """
+
+    var_name = var_name.strip()
+    re_replace = re.compile("[%s]" % re.escape(__INVALID_VAR_CHARS))
+
+    return re_replace.sub(replacement_text, var_name)
 
 
 def replace_symbol(filename, replacement_text=""):

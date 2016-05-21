@@ -88,6 +88,43 @@ class Test_sanitize_filename:
             sanitize_filename(value)
 
 
+class Test_sanitize_python_var_name:
+    SANITIZE_CHAR_LIST = (
+        Test_validate_filename.INVALID_CHAR_LIST +
+        [
+            "!", "#", "$", '&', "'",
+            "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
+            ",", ".", "(", ")", "%",
+        ]
+    )
+    NOT_SANITIZE_CHAR_LIST = ["_"]
+    REPLACE_TEXT_LIST = ["", "_"]
+
+    @pytest.mark.parametrize(
+        ["value", "replace_text", "expected"],
+        [
+            ["A" + c + "B", rep, "A" + rep + "B"]
+            for c, rep in itertools.product(
+                SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ] + [
+            ["A" + c + "B", rep, "A" + c + "B"]
+            for c, rep in itertools.product(
+                NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ]
+    )
+    def test_normal(self, value, replace_text, expected):
+        assert sanitize_python_var_name(value, replace_text) == expected
+
+    @pytest.mark.parametrize(["value", "expected"], [
+        [None, AttributeError],
+        [1, AttributeError],
+        [True, AttributeError],
+    ])
+    def test_exception(self, value, expected):
+        with pytest.raises(expected):
+            sanitize_python_var_name(value)
+
+
 class Test_replace_symbol:
     TARGET_CHAR_LIST = [
         "\\", ":", "*", "?", '"', "<", ">", "|",
