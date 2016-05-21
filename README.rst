@@ -1,4 +1,5 @@
-**pathvalidate**
+pathvalidate
+=============
 
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
@@ -7,13 +8,51 @@
 .. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
 
-.. contents:: Table of contents
-   :backlinks: top
-   :local:
-
 Summary
-=======
-pathvalidate is a python library to validate filename.
+-------
+
+pathvalidate is a python library to validate/sanitize a string such as filename/variable-name.
+
+Examples
+========
+
+Filename validation
+----------------------------
+
+.. code:: python
+
+    import pathvalidate
+
+    filename = "a*b:c<d>e%f(g)h+i_0.txt"
+    try:
+        pathvalidate.validate_filename(filename)
+    except ValueError:
+        print("invalid filename!")
+
+.. code::
+
+    invalid filename!
+
+Sanitize a file path
+----------------------------
+
+.. code:: python
+
+    import pathvalidate
+
+    filename = "a*b:c<d>e%f(g)h+i_0.txt"
+    print(pathvalidate.sanitize_filename(filename))
+
+.. code::
+
+    abcde%f(g)h+i_0.txt
+
+
+For more information
+--------------------
+More examples are available at 
+http://pathvalidate.readthedocs.org/en/latest/pages/examples/index.html
+
 
 Installation
 ============
@@ -22,64 +61,24 @@ Installation
 
     pip install pathvalidate
 
-Usage
-=====
-
-Filename validation
--------------------
-
-.. code:: python
-
-    import pathvalidate
-
-    filename = "a*b:c<d>e%f(g)h.txt"
-    try:
-        pathvalidate.validate_filename(filename)
-    except ValueError:
-        print("invalid filename!")
-
-.. code:: console
-
-    invalid filename!
-
-Replace invalid chars
----------------------
-
-.. code:: pythn
-
-    import pathvalidate
-
-    filename = "a*b:c<d>e%f(g)h.txt"
-    print(pathvalidate.sanitize_filename(filename))
-
-.. code:: console
-
-    abcde%f(g)h+i.txt
-
-Replace symbols
----------------
-
-.. code:: pythn
-
-    import pathvalidate
-
-    filename = "a*b:c<d>e%f(g)h.txt"
-    print(pathvalidate.replace_symbol(filename))
-
-.. code:: console
-
-    abcdefgh+itxt
 
 Dependencies
 ============
 
 Python 2.6+ or 3.3+
 
--  `DataPropery <https://github.com/thombashi/DataProperty>`__
+- `DataPropery <https://github.com/thombashi/DataProperty>`__
+
 
 Test dependencies
 -----------------
 
--  `pytest <https://pypi.python.org/pypi/pytest>`__
--  `pytest-runner <https://pypi.python.org/pypi/pytest-runner>`__
--  `tox <https://pypi.python.org/pypi/tox>`__
+- `pytest <http://pytest.org/latest/>`__
+- `pytest-runner <https://pypi.python.org/pypi/pytest-runner>`__
+- `tox <https://testrun.org/tox/latest/>`__
+
+Documentation
+=============
+
+http://pathvalidate.readthedocs.org/en/latest/
+
