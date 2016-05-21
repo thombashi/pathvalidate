@@ -26,30 +26,24 @@ def make_random_str(length):
 class Test_validate_filename:
     VALID_CHAR_LIST = [
         "!", "#", "$", '&', "'", "_",
-        "=", "~", "^", "@", "`", "[", "]", "+", ";", "{", "}",
+        "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
         ",", ".", "(", ")", "%",
     ]
     INVALID_CHAR_LIST = [
         "\\", ":", "*", "?", '"', "<", ">", "|",
     ]
 
-    @pytest.mark.parametrize(
-        ["value"],
-        [
-            [make_random_str(64) + invalid_char + make_random_str(64)]
-            for invalid_char in VALID_CHAR_LIST
-        ]
-    )
+    @pytest.mark.parametrize(["value"], [
+        [make_random_str(64) + invalid_char + make_random_str(64)]
+        for invalid_char in VALID_CHAR_LIST
+    ])
     def test_normal(self, value):
         validate_filename(value)
 
-    @pytest.mark.parametrize(
-        ["value"],
-        [
-            [make_random_str(64) + invalid_char + make_random_str(64)]
-            for invalid_char in INVALID_CHAR_LIST
-        ]
-    )
+    @pytest.mark.parametrize(["value"], [
+        [make_random_str(64) + invalid_char + make_random_str(64)]
+        for invalid_char in INVALID_CHAR_LIST
+    ])
     def test_exception_0(self, value):
         with pytest.raises(ValueError):
             validate_filename(value)
@@ -65,14 +59,8 @@ class Test_validate_filename:
 
 
 class Test_sanitize_filename:
-    SANITIZE_CHAR_LIST = [
-        "\\", ":", "*", "?", '"', "<", ">", "|",
-    ]
-    NOT_SANITIZE_CHAR_LIST = [
-        "!", "#", "$", '&', "'", "_",
-        "=", "~", "^", "@", "`", "[", "]", "+", ";", "{", "}",
-        ",", ".", "(", ")", "%",
-    ]
+    SANITIZE_CHAR_LIST = Test_validate_filename.INVALID_CHAR_LIST
+    NOT_SANITIZE_CHAR_LIST = Test_validate_filename.VALID_CHAR_LIST
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
@@ -107,7 +95,7 @@ class Test_replace_symbol:
     ]
     NOT_TARGET_CHAR_LIST = [
         "!", "#", "$", '&', "'", "_",
-        "=", "~", "^", "@", "`", "[", "]", "+", ";", "{", "}",
+        "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
     ]
     REPLACE_TEXT_LIST = ["", "_"]
 
