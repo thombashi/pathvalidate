@@ -33,7 +33,7 @@ def validate_filename(filename):
 
 def sanitize_filename(filename, replacement_text=""):
     """
-    Replace invalid chars within the ``filename`` with
+    Replace invalid chars for a file path within the ``filename`` with
     the ``replacement_text``.
 
     :param str filename: Filename to validate.
