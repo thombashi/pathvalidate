@@ -281,3 +281,14 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+rst_prolog = u"""
+.. |invalid_path_chars| replace::
+    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
+    
+.. |invalid_var_name_chars| replace::
+    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``.
+    ``"``, ``!``, ``#``, ``$``, ``&``, ``'``, ``=``, ``~``, ``^``, ``@``,
+    `````, ``[``, ``]``, ``+``, ``-``, ``;``, ``{``, ``}``, ``,``,
+    ``.``, ``(``, ``)``, ``%``
+"""

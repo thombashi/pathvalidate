@@ -18,11 +18,11 @@ def validate_filename(filename):
     :param str filename: Filename to validate.
     :raises ValueError:
         If the ``filename`` is empty or includes invalid char(s):
-        (``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``).
+        |invalid_path_chars|.
     """
 
     if dataproperty.is_empty_string(filename):
-        raise ValueError("null path")
+        raise ValueError("null name")
 
     match = re.search("[%s]" % (
         re.escape(__INVALID_PATH_CHARS)), filename)
@@ -36,7 +36,7 @@ def sanitize_filename(filename, replacement_text=""):
     """
     Replace invalid characters for a file path within the ``filename``
     with the ``replacement_text``. Invalid characters are as follows:
-    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``.
+    |invalid_path_chars|.
 
     :param str filename: Filename to validate.
     :param str replacement_text: Replacement text.
@@ -54,11 +54,7 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     """
     Replace invalid characters for a python variable name within
     the ``var_name`` with the ``replacement_text``.
-    Invalid characters are as follows:
-    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``.
-    ``"``, ``!``, ``#``, ``$``, ``&``, ``'``, ``=``, ``~``, ``^``, ``@``,
-    `````, ``[``, ``]``, ``+``, ``-``, ``;``, ``{``, ``}``, ``,``,
-    ``.``, ``(``, ``)``, ``%``.
+    Invalid characters are as follows: |invalid_var_name_chars|.
 
     :param str filename: Filename to validate.
     :param str replacement_text: Replacement text.
