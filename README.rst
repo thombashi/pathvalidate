@@ -5,6 +5,8 @@ pathvalidate
     :target: https://pypi.python.org/pypi/pathvalidate
 .. image:: https://travis-ci.org/thombashi/pathvalidate.svg?branch=master
     :target: https://travis-ci.org/thombashi/pathvalidate
+.. image:: https://ci.appveyor.com/api/projects/status/oygpr3q8bqitrl3y/branch/master?svg=true
+    :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
 .. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
 
