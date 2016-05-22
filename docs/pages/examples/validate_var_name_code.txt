@@ -1,0 +1,14 @@
+.. code-block:: python
+    :caption: Sample code
+    
+    import pathvalidate
+
+    try:
+        pathvalidate.validate_filename("a*b:c<d>e%f(g)h+i_0.txt")
+    except ValueError:
+        print("invalid variable name!")
+
+.. code-block:: none
+    :caption: Output
+    
+    invalid variable name!

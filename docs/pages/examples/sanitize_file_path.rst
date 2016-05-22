@@ -1,4 +1,4 @@
-Sanitize a file path
+Sanitize a file name
 ----------------------------
 
 The :py:func:`.sanitize_filename()` function replace invalid character(s) 
