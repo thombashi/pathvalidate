@@ -10,7 +10,8 @@ import dataproperty
 
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
-__INVALID_VAR_CHARS = __INVALID_PATH_CHARS + "!#$&'=~^@`[]+-;{},.()%"
+__INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
+__INVALID_VAR_CHARS = __INVALID_FILENAME_CHARS + "!#$&'=~^@`[]+-;{},.()%"
 __RESERVED_KEYWORDS = [
     "and", "del", "from", "not", "while",
     "as", "elif", "global", "or", "with",
@@ -34,7 +35,7 @@ def validate_filename(filename):
         raise ValueError("null name")
 
     match = re.search("[%s]" % (
-        re.escape(__INVALID_PATH_CHARS)), filename)
+        re.escape(__INVALID_FILENAME_CHARS)), filename)
     if match is not None:
         raise ValueError(
             "invalid char found in the file path: '%s'" % (
@@ -89,7 +90,7 @@ def sanitize_filename(filename, replacement_text=""):
     """
 
     filename = filename.strip()
-    re_replace = re.compile("[%s]" % re.escape(__INVALID_PATH_CHARS))
+    re_replace = re.compile("[%s]" % re.escape(__INVALID_FILENAME_CHARS))
 
     return re_replace.sub(replacement_text, filename)
 

@@ -15,12 +15,13 @@ from pathvalidate import *
 
 random.seed(0)
 
-char_list = [x for x in string.digits + string.ascii_letters + "/"]
+char_list = [x for x in string.digits + string.ascii_letters]
 
 INVALID_PATH_CHARS = [
     "\\", ":", "*", "?", '"', "<", ">", "|",
 ]
-INVALID_VAR_CHARS = INVALID_PATH_CHARS + [
+INVALID_FILENAME_CHARS = INVALID_PATH_CHARS + ["/"]
+INVALID_VAR_CHARS = INVALID_FILENAME_CHARS + [
     "!", "#", "$", '&', "'",
     "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
     ",", ".", "(", ")", "%",
@@ -38,7 +39,7 @@ def make_random_str(length):
 
 class Test_validate_filename:
     VALID_CHAR_LIST = VALID_PATH_CHARS
-    INVALID_CHAR_LIST = INVALID_PATH_CHARS
+    INVALID_CHAR_LIST = INVALID_FILENAME_CHARS
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
@@ -69,7 +70,7 @@ class Test_validate_python_var_name:
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
-    INVALID_CHAR_LIST = INVALID_PATH_CHARS
+    INVALID_CHAR_LIST = INVALID_FILENAME_CHARS
 
     @pytest.mark.parametrize(["value"], [
         ["abc" + valid_char + "hoge123"]
@@ -105,7 +106,7 @@ class Test_validate_python_var_name:
 
 
 class Test_sanitize_filename:
-    SANITIZE_CHAR_LIST = INVALID_PATH_CHARS
+    SANITIZE_CHAR_LIST = INVALID_FILENAME_CHARS
     NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
