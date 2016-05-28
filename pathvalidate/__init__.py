@@ -54,7 +54,7 @@ def validate_file_path(file_path):
     :param str filename: File path to validate.
     :raises ValueError:
         If the ``file_path`` is empty or includes invalid char(s):
-        |invalid_path_chars|.
+        |invalid_file_path_chars|.
     """
 
     if dataproperty.is_empty_string(file_path):
@@ -69,7 +69,7 @@ def validate_file_path(file_path):
 
 def validate_python_var_name(var_name):
     """
-    :param str var_name: Variable name to validate.
+    :param str var_name: Name to validate.
     :raises ValueError: If the ``var_name`` is
         **a)** empty.
         **b)** invalid as
@@ -105,7 +105,7 @@ def sanitize_filename(filename, replacement_text=""):
     with the ``replacement_text``. Invalid characters are as follows:
     |invalid_filename_chars|.
 
-    :param str filename: Filename to validate.
+    :param str filename: Filename to sanitize.
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
@@ -119,11 +119,11 @@ def sanitize_filename(filename, replacement_text=""):
 
 def sanitize_file_path(file_path, replacement_text=""):
     """
-    Replace invalid characters for a file path within the ``filename``
+    Replace invalid characters for a file path within the ``file_path``
     with the ``replacement_text``. Invalid characters are as follows:
-    |invalid_filename_chars|.
+    |invalid_file_path_chars|.
 
-    :param str filename: Filename to validate.
+    :param str file_path: File path to sanitize.
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
@@ -138,7 +138,7 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     the ``var_name`` with the ``replacement_text``.
     Invalid chars of the beginning of the variable name will be deleted.
 
-    :param str filename: Filename to validate.
+    :param str filename: Name to sanitize.
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
