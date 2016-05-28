@@ -57,8 +57,6 @@ docs/_build/
 target/
 /.idea
 desktop.ini
-README.md
-readme_converter.py
-README_HEADER.rst
 upgrade.sh
 ipynb/.ipynb_checkpoints/
+sandbox/
