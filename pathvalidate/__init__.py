@@ -25,6 +25,8 @@ __BUILT_CONSTANTS = [
     "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
 ]
 
+__RE_INVALID_FILENAME = re.compile(
+    "[%s]" % (re.escape(__INVALID_FILENAME_CHARS)))
 __RE_INVALID_PATH = re.compile("[%s]" % (re.escape(__INVALID_PATH_CHARS)))
 __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
 __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
@@ -41,8 +43,7 @@ def validate_filename(filename):
     if dataproperty.is_empty_string(filename):
         raise ValueError("null name")
 
-    match = re.search("[%s]" % (
-        re.escape(__INVALID_FILENAME_CHARS)), filename)
+    match = __RE_INVALID_FILENAME.search(filename)
     if match is not None:
         raise ValueError(
             "invalid char found in the filename: '%s'" % (
@@ -111,10 +112,7 @@ def sanitize_filename(filename, replacement_text=""):
     :rtype: str
     """
 
-    filename = filename.strip()
-    re_replace = re.compile("[%s]" % re.escape(__INVALID_FILENAME_CHARS))
-
-    return re_replace.sub(replacement_text, filename)
+    return __RE_INVALID_FILENAME.sub(replacement_text, filename.strip())
 
 
 def sanitize_file_path(file_path, replacement_text=""):
