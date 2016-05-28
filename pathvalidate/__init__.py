@@ -5,13 +5,13 @@
 """
 
 import re
+import string
 
 import dataproperty
 
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
 __INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
-__INVALID_VAR_CHARS = __INVALID_FILENAME_CHARS + "!#$&'=~^@`[]+-;{},.()%"
 __RESERVED_KEYWORDS = [
     "and", "del", "from", "not", "while",
     "as", "elif", "global", "or", "with",
@@ -21,6 +21,12 @@ __RESERVED_KEYWORDS = [
     "continue", "finally", "is", "return",
     "def", "for", "lambda", "try",
 ]
+__BUILT_CONSTANTS = [
+    "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
+]
+
+__RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
+__RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
 
 
 def validate_filename(filename):
@@ -28,7 +34,7 @@ def validate_filename(filename):
     :param str filename: Filename to validate.
     :raises ValueError:
         If the ``filename`` is empty or includes invalid char(s):
-        |invalid_path_chars|.
+        |invalid_filename_chars|.
     """
 
     if dataproperty.is_empty_string(filename):
@@ -44,44 +50,41 @@ def validate_filename(filename):
 
 def validate_python_var_name(var_name):
     """
-    Replace invalid characters for a python variable name within
-    the ``var_name`` with the ``replacement_text``.
-    Invalid characters are as follows: |invalid_var_name_chars|.
-
     :param str var_name: Variable name to validate.
-    :raises ValueError: If
-        a) the ``var_name`` is empty.
-        b) includes invalid char(s): |invalid_path_chars|.
-        c) ``var_name`` is start from digits or symbols (except ``"_"``).
+    :raises ValueError: If the ``var_name`` is
+        **a)** empty.
+        **b)** invalid as
+        `Python identifier <https://docs.python.org/3/reference/lexical_analysis.html#identifiers>`__.
+        **c)** equals to
+        `reserved keywords <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`__ or
+        `built-in constants <https://docs.python.org/3/library/constants.html>`__.
     """
 
     if dataproperty.is_empty_string(var_name):
         raise ValueError("null name")
 
-    match = re.search("[%s]" % (
-        re.escape(__INVALID_VAR_CHARS)), var_name)
+    if var_name in __RESERVED_KEYWORDS + __BUILT_CONSTANTS:
+        raise ValueError(
+            "%s is a reserved keyword by pyhon" % (var_name))
+
+    match = __RE_INVALID_VAR_NAME.search(var_name)
     if match is not None:
         raise ValueError(
             "invalid char found in the variable name: '%s'" % (
                 re.escape(match.group())))
 
-    match = re.search("^[0-9%s]" % (
-        re.escape(__INVALID_VAR_CHARS)), var_name)
+    match = __RE_INVALID_VAR_NAME_HEAD.search(var_name)
     if match is not None:
         raise ValueError(
             "the first char of the variable name is invalid: '%s'" % (
                 re.escape(match.group())))
-
-    if var_name in __RESERVED_KEYWORDS:
-        raise ValueError(
-            "%s is a reserved keyword by pyhon" % (var_name))
 
 
 def sanitize_filename(filename, replacement_text=""):
     """
     Replace invalid characters for a file path within the ``filename``
     with the ``replacement_text``. Invalid characters are as follows:
-    |invalid_path_chars|.
+    |invalid_filename_chars|.
 
     :param str filename: Filename to validate.
     :param str replacement_text: Replacement text.
@@ -97,9 +100,9 @@ def sanitize_filename(filename, replacement_text=""):
 
 def sanitize_python_var_name(var_name, replacement_text=""):
     """
-    Replace invalid characters for a python variable name within
+    Replace invalid characters for a Python variable name within
     the ``var_name`` with the ``replacement_text``.
-    Invalid characters are as follows: |invalid_var_name_chars|.
+    Invalid chars of the beginning of the variable name will be deleted.
 
     :param str filename: Filename to validate.
     :param str replacement_text: Replacement text.
@@ -113,9 +116,25 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     """
 
     var_name = var_name.strip()
-    re_replace = re.compile("[%s]" % re.escape(__INVALID_VAR_CHARS))
+    sanitize_var_name = __RE_INVALID_VAR_NAME.sub(
+        replacement_text, var_name)
 
-    sanitize_var_name = re_replace.sub(replacement_text, var_name)
+    # delete invalid char(s) in the beginning of the variable name
+    is_delete_head = any([
+        dataproperty.is_empty_string(replacement_text),
+        __RE_INVALID_VAR_NAME_HEAD.search(replacement_text) is not None,
+    ])
+
+    if is_delete_head:
+        sanitize_var_name = __RE_INVALID_VAR_NAME_HEAD.sub(
+            "", sanitize_var_name)
+    else:
+        match = __RE_INVALID_VAR_NAME_HEAD.search(sanitize_var_name)
+        if match is not None:
+            sanitize_var_name = (
+                match.end() * replacement_text +
+                __RE_INVALID_VAR_NAME_HEAD.sub("", sanitize_var_name)
+            )
 
     validate_python_var_name(sanitize_var_name)
 

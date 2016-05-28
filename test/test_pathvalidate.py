@@ -25,6 +25,7 @@ INVALID_VAR_CHARS = INVALID_FILENAME_CHARS + [
     "!", "#", "$", '&', "'",
     "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
     ",", ".", "(", ")", "%",
+    " ", "\t", "\n", "\r", "\f", "\v",
 ]
 VALID_PATH_CHARS = [
     "!", "#", "$", '&', "'", "_",
@@ -70,7 +71,7 @@ class Test_validate_python_var_name:
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
-    INVALID_CHAR_LIST = INVALID_FILENAME_CHARS
+    INVALID_CHAR_LIST = INVALID_VAR_CHARS
 
     @pytest.mark.parametrize(["value"], [
         ["abc" + valid_char + "hoge123"]
@@ -83,15 +84,15 @@ class Test_validate_python_var_name:
         ["abc" + invalid_char + "hoge123"]
         for invalid_char in INVALID_CHAR_LIST
     ])
-    def test_exception_0(self, value):
+    def test_exception_invalid_char(self, value):
         with pytest.raises(ValueError):
             validate_python_var_name(value)
 
     @pytest.mark.parametrize(["value"], [
         [invalid_char + "hoge123"]
-        for invalid_char in [string.digits + "_"]
+        for invalid_char in string.digits + "_"
     ])
-    def test_exception_1(self, value):
+    def test_exception_invalid_first_char(self, value):
         with pytest.raises(ValueError):
             validate_python_var_name(value)
 
@@ -100,7 +101,7 @@ class Test_validate_python_var_name:
         [1, ValueError],
         [True, ValueError],
     ])
-    def test_exception_2(self, value, expected):
+    def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             validate_python_var_name(value)
 
@@ -132,7 +133,7 @@ class Test_sanitize_filename:
         [1, AttributeError],
         [True, AttributeError],
     ])
-    def test_exception(self, value, expected):
+    def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             sanitize_filename(value)
 
@@ -159,20 +160,42 @@ class Test_sanitize_python_var_name:
         assert sanitized_name == expected
         validate_python_var_name(sanitized_name)
 
-    @pytest.mark.parametrize(["value"], [
-        [invalid_char + "hoge123"]
-        for invalid_char in [string.digits + "_"]
-    ])
-    def test_exception_0(self, value):
-        with pytest.raises(ValueError):
-            sanitize_python_var_name(value)
+    @pytest.mark.parametrize(
+        ["value", "replace_text", "expected"],
+        [
+            [invalid_char + "hoge_123", "_", "hoge_123"]
+            for invalid_char in string.digits + "_"
+        ] + [
+            [invalid_char + "hoge_123", "a", "ahoge_123"]
+            for invalid_char in string.digits + "_"
+        ]
+    )
+    def test_normal_invalid_first_char_x1(self, value, replace_text, expected):
+        sanitized_name = sanitize_python_var_name(value, replace_text)
+        assert sanitized_name == expected
+        validate_python_var_name(sanitized_name)
+
+    @pytest.mark.parametrize(
+        ["value", "replace_text", "expected"],
+        [
+            [invalid_char * 2 + "hoge_123", "_", "hoge_123"]
+            for invalid_char in string.digits + "_"
+        ] + [
+            [invalid_char * 2 + "hoge_123", "a", "aahoge_123"]
+            for invalid_char in string.digits + "_"
+        ]
+    )
+    def test_normal_invalid_first_char_x2(self, value, replace_text, expected):
+        sanitized_name = sanitize_python_var_name(value, replace_text)
+        assert sanitized_name == expected
+        validate_python_var_name(sanitized_name)
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, AttributeError],
         [1, AttributeError],
         [True, AttributeError],
     ])
-    def test_exception_1(self, value, expected):
+    def test_exception(self, value, expected):
         with pytest.raises(expected):
             sanitize_python_var_name(value)
 
