@@ -33,6 +33,16 @@ VALID_FILENAME_CHARS = [
     ",", ".", "(", ")", "%",
 ]
 VALID_PATH_CHARS = VALID_FILENAME_CHARS + ["/"]
+RESERVED_KEYWORDS = [
+    "and", "del", "from", "not", "while",
+    "as", "elif", "global", "or", "with",
+    "assert", "else", "if", "pass", "yield",
+    "break", "except", "import", "print",
+    "class", "exec", "in", "raise",
+    "continue", "finally", "is", "return",
+    "def", "for", "lambda", "try",
+    "False", "True", "None", "NotImplemented", "Ellipsis",
+]
 
 
 def make_random_str(length):
@@ -132,6 +142,14 @@ class Test_validate_python_var_name:
         [True, ValueError],
     ])
     def test_exception_type(self, value, expected):
+        with pytest.raises(expected):
+            validate_python_var_name(value)
+
+    @pytest.mark.parametrize(["value", "expected"], [
+        [reserved_keyword, ValueError]
+        for reserved_keyword in RESERVED_KEYWORDS + ["__debug__"]
+    ])
+    def test_exception_reserved(self, value, expected):
         with pytest.raises(expected):
             validate_python_var_name(value)
 
@@ -253,11 +271,19 @@ class Test_sanitize_python_var_name:
         validate_python_var_name(sanitized_name)
 
     @pytest.mark.parametrize(["value", "expected"], [
+        [reserved_keyword, ValueError]
+        for reserved_keyword in RESERVED_KEYWORDS
+    ])
+    def test_exception_reserved(self, value, expected):
+        with pytest.raises(expected):
+            sanitize_python_var_name(value)
+
+    @pytest.mark.parametrize(["value", "expected"], [
         [None, AttributeError],
         [1, AttributeError],
         [True, AttributeError],
     ])
-    def test_exception(self, value, expected):
+    def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             sanitize_python_var_name(value)
 
