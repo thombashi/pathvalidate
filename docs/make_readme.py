@@ -48,13 +48,19 @@ def write_examples(f):
         "Validate a filename",
         "----------------------------",
     ])
-    write_usage_file(f, "validate_code.txt")
+    write_usage_file(f, "validate_filename_code.txt")
 
     write_line_list(f, [
         "Sanitize a filename",
         "----------------------------",
     ])
-    write_usage_file(f, "sanitize_file_path_code.txt")
+    write_usage_file(f, "sanitize_filename_code.txt")
+
+    write_line_list(f, [
+        "Sanitize a variable name",
+        "----------------------------",
+    ])
+    write_usage_file(f, "sanitize_var_name_code.txt")
 
     write_line_list(f, [
         "For more information",

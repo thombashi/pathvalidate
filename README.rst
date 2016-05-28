@@ -18,16 +18,15 @@ pathvalidate is a python library to validate/sanitize a string such as filename/
 Examples
 ========
 
-Filename validation
+Validate a filename
 ----------------------------
 
 .. code:: python
 
     import pathvalidate
 
-    filename = "a*b:c<d>e%f(g)h+i_0.txt"
     try:
-        pathvalidate.validate_filename(filename)
+        pathvalidate.validate_filename("_a*b:c<d>e%f/(g)h+i_0.txt")
     except ValueError:
         print("invalid filename!")
 
@@ -35,20 +34,32 @@ Filename validation
 
     invalid filename!
 
-Sanitize a file path
+Sanitize a filename
 ----------------------------
 
 .. code:: python
 
     import pathvalidate
 
-    filename = "a*b:c<d>e%f(g)h+i_0.txt"
+    filename = "_a*b:c<d>e%f/(g)h+i_0.txt"
     print(pathvalidate.sanitize_filename(filename))
 
 .. code::
 
-    abcde%f(g)h+i_0.txt
+    _abcde%f(g)h+i_0.txt
 
+Sanitize a variable name
+----------------------------
+
+.. code:: python
+
+    import pathvalidate
+
+    print(pathvalidate.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
+
+.. code::
+
+    abcdefghi_0txt
 
 For more information
 --------------------
