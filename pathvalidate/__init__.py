@@ -82,7 +82,7 @@ def validate_python_var_name(var_name):
 
 def sanitize_filename(filename, replacement_text=""):
     """
-    Replace invalid characters for a file path within the ``filename``
+    Replace invalid characters for a filename within the ``filename``
     with the ``replacement_text``. Invalid characters are as follows:
     |invalid_filename_chars|.
 
