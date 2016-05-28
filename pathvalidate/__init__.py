@@ -117,6 +117,21 @@ def sanitize_filename(filename, replacement_text=""):
     return re_replace.sub(replacement_text, filename)
 
 
+def sanitize_file_path(file_path, replacement_text=""):
+    """
+    Replace invalid characters for a file path within the ``filename``
+    with the ``replacement_text``. Invalid characters are as follows:
+    |invalid_filename_chars|.
+
+    :param str filename: Filename to validate.
+    :param str replacement_text: Replacement text.
+    :return: A replacement string.
+    :rtype: str
+    """
+
+    return __RE_INVALID_PATH.sub(replacement_text, file_path.strip())
+
+
 def sanitize_python_var_name(var_name, replacement_text=""):
     """
     Replace invalid characters for a Python variable name within
