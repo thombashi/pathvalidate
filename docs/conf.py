@@ -283,7 +283,7 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 rst_prolog = u"""
-.. |invalid_path_chars| replace::
+.. |invalid_file_path_chars| replace::
     ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
 
 .. |invalid_filename_chars| replace::
