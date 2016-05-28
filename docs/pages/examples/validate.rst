@@ -11,6 +11,6 @@ Validate a variable name
 ----------------------------
 
 The :py:func:`.validate_python_var_name()` function will raise ``ValueError`` if
-the name includes invalid character(s) for a python variable name.
+the name includes invalid character(s) for a Python variable name.
 
 .. include:: validate_var_name_code.txt

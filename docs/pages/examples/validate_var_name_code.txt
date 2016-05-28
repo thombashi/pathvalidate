@@ -4,7 +4,7 @@
     import pathvalidate
 
     try:
-        pathvalidate.validate_filename("a*b:c<d>e%f(g)h+i_0.txt")
+        pathvalidate.validate_filename(_a*b:c<d>e%f/(g)h+i_0.txt")
     except ValueError:
         print("invalid variable name!")
 
