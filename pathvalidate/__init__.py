@@ -44,7 +44,7 @@ def validate_filename(filename):
         re.escape(__INVALID_FILENAME_CHARS)), filename)
     if match is not None:
         raise ValueError(
-            "invalid char found in the file path: '%s'" % (
+            "invalid char found in the filename: '%s'" % (
                 re.escape(match.group())))
 
 
