@@ -25,6 +25,7 @@ __BUILT_CONSTANTS = [
     "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
 ]
 
+__RE_INVALID_PATH = re.compile("[%s]" % (re.escape(__INVALID_PATH_CHARS)))
 __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
 __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
 
@@ -45,6 +46,24 @@ def validate_filename(filename):
     if match is not None:
         raise ValueError(
             "invalid char found in the filename: '%s'" % (
+                re.escape(match.group())))
+
+
+def validate_file_path(file_path):
+    """
+    :param str filename: File path to validate.
+    :raises ValueError:
+        If the ``file_path`` is empty or includes invalid char(s):
+        |invalid_path_chars|.
+    """
+
+    if dataproperty.is_empty_string(file_path):
+        raise ValueError("null name")
+
+    match = __RE_INVALID_PATH.search(file_path)
+    if match is not None:
+        raise ValueError(
+            "invalid char found in the file path: '%s'" % (
                 re.escape(match.group())))
 
 
