@@ -30,6 +30,7 @@ __RE_INVALID_FILENAME = re.compile(
 __RE_INVALID_PATH = re.compile("[%s]" % (re.escape(__INVALID_PATH_CHARS)))
 __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
 __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
+__RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 
 def validate_filename(filename):
@@ -173,11 +174,14 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     return sanitize_var_name
 
 
-def replace_symbol(filename, replacement_text=""):
-    fname = sanitize_filename(filename, replacement_text)
-    if fname is None:
-        return None
+def replace_symbol(text, replacement_text=""):
+    """
+    Replace all of the symbols.
 
-    re_replace = re.compile("[%s]" % re.escape(" ,.%()/"))
+    :param str text: Input text.
+    :param str replacement_text: Replacement text.
+    :return: A replacement string.
+    :rtype: str
+    """
 
-    return re_replace.sub(replacement_text, fname)
+    return __RE_SYMBOL.sub(replacement_text, text)
