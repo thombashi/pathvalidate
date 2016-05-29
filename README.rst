@@ -1,5 +1,5 @@
 pathvalidate
-=============
+============
 
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
@@ -19,7 +19,7 @@ Examples
 ========
 
 Validate a filename
-----------------------------
+-------------------
 
 .. code:: python
 
@@ -35,7 +35,7 @@ Validate a filename
     invalid filename!
 
 Sanitize a filename
-----------------------------
+-------------------
 
 .. code:: python
 
@@ -49,7 +49,7 @@ Sanitize a filename
     _abcde%f(g)h+i_0.txt
 
 Sanitize a variable name
-----------------------------
+------------------------
 
 .. code:: python
 
@@ -63,9 +63,9 @@ Sanitize a variable name
 
 For more information
 --------------------
+
 More examples are available at 
 http://pathvalidate.readthedocs.org/en/latest/pages/examples/index.html
-
 
 Installation
 ============
