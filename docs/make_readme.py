@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
+"""
+.. codeauthor:: Tsuyoshi Hombashi <gogogo.vm@gmail.com>
+"""
+
 import sys
 
 import readmemaker
@@ -49,6 +53,8 @@ def main():
     maker.write_line_list([
         "http://pathvalidate.readthedocs.org/en/latest/"
     ])
+
+    return 0
 
 
 if __name__ == '__main__':
