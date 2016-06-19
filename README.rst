@@ -1,6 +1,10 @@
 pathvalidate
 ============
 
+.. image:: https://badges.gitter.im/thombashi/pathvalidate.svg
+   :alt: Join the chat at https://gitter.im/thombashi/pathvalidate
+   :target: https://gitter.im/thombashi/pathvalidate?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
 .. image:: https://travis-ci.org/thombashi/pathvalidate.svg?branch=master
