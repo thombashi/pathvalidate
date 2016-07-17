@@ -47,8 +47,7 @@ def validate_filename(filename):
         |invalid_filename_chars|.
     """
 
-    if dataproperty.is_empty_string(filename):
-        raise ValueError("null name")
+    __validate_null_string(filename)
 
     match = __RE_INVALID_FILENAME.search(filename)
     if match is not None:
@@ -65,8 +64,7 @@ def validate_file_path(file_path):
         |invalid_file_path_chars|.
     """
 
-    if dataproperty.is_empty_string(file_path):
-        raise ValueError("null name")
+    __validate_null_string(file_path)
 
     match = __RE_INVALID_PATH.search(file_path)
     if match is not None:
@@ -87,8 +85,7 @@ def validate_python_var_name(var_name):
         `built-in constants <https://docs.python.org/3/library/constants.html>`__.
     """
 
-    if dataproperty.is_empty_string(var_name):
-        raise ValueError("null name")
+    __validate_null_string(var_name)
 
     if var_name in __RESERVED_KEYWORDS + __BUILT_CONSTANTS:
         raise ValueError(
