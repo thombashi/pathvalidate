@@ -288,4 +288,7 @@ rst_prolog = u"""
 
 .. |invalid_filename_chars| replace::
     ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``, ``/``
+    
+.. |invalid_excel_sheet_chars| replace::
+    ``[``, ``]``, ``:``, ``*``, ``?``, ``/``, ``\``
 """

@@ -27,6 +27,9 @@ INVALID_VAR_CHARS = INVALID_FILENAME_CHARS + [
     ",", ".", "(", ")", "%",
     " ", "\t", "\n", "\r", "\f", "\v",
 ]
+INVALID_EXCEL_CHARS = [
+    "[", "]", ":", "*", "?", "/", "\\",
+]
 VALID_FILENAME_CHARS = [
     "!", "#", "$", '&', "'", "_",
     "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
@@ -152,6 +155,36 @@ class Test_validate_python_var_name:
     def test_exception_reserved(self, value, expected):
         with pytest.raises(expected):
             validate_python_var_name(value)
+
+
+class Test_validate_excel_sheet_name:
+    VALID_CHAR_LIST = set(VALID_PATH_CHARS).difference(
+        set(INVALID_EXCEL_CHARS))
+    INVALID_CHAR_LIST = INVALID_EXCEL_CHARS
+
+    @pytest.mark.parametrize(["value"], [
+        [make_random_str(64) + invalid_char + make_random_str(64)]
+        for invalid_char in VALID_CHAR_LIST
+    ])
+    def test_normal(self, value):
+        validate_excel_sheet_name(value)
+
+    @pytest.mark.parametrize(["value"], [
+        [make_random_str(64) + invalid_char + make_random_str(64)]
+        for invalid_char in INVALID_CHAR_LIST
+    ])
+    def test_exception_0(self, value):
+        with pytest.raises(ValueError):
+            validate_excel_sheet_name(value)
+
+    @pytest.mark.parametrize(["value", "expected"], [
+        [None, ValueError],
+        [1, ValueError],
+        [True, ValueError],
+    ])
+    def test_exception_1(self, value, expected):
+        with pytest.raises(expected):
+            validate_excel_sheet_name(value)
 
 
 class Test_sanitize_filename:

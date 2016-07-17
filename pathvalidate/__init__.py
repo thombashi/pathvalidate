@@ -12,6 +12,8 @@ import dataproperty
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
 __INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
+__INVALID_EXCEL_CHARS = "[]:*?/\\"
+
 __RESERVED_KEYWORDS = [
     "and", "del", "from", "not", "while",
     "as", "elif", "global", "or", "with",
@@ -31,6 +33,9 @@ __RE_INVALID_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
 __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
 __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
+__RE_INVALID_EXCEL_SHEET_NAME = re.compile(
+    "[{:s}]".format(re.escape(__INVALID_EXCEL_CHARS)))
+
 __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 
@@ -101,6 +106,23 @@ def validate_python_var_name(var_name):
     if match is not None:
         raise ValueError(
             "the first char of the variable name is invalid: '{:s}'".format(
+                re.escape(match.group())))
+
+
+def validate_excel_sheet_name(sheet_name):
+    """
+    :param str sheet_name: Excel sheet name to validate.
+    :raises ValueError:
+        If the ``sheet_name`` is empty or includes invalid char(s):
+        |invalid_excel_sheet_chars|.
+    """
+
+    __validate_null_string(sheet_name)
+
+    match = __RE_INVALID_EXCEL_SHEET_NAME.search(sheet_name)
+    if match is not None:
+        raise ValueError(
+            "invalid char found in the sheet name: '{:s}'".format(
                 re.escape(match.group())))
 
 
