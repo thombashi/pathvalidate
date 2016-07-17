@@ -199,6 +199,22 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     return sanitize_var_name
 
 
+def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
+    """
+    Replace invalid characters for a Excel sheet name within the ``sheet_name``
+    with the ``replacement_text``. Invalid characters are as follows:
+    |invalid_excel_sheet_chars|.
+
+    :param str sheet_name: Excel sheet name to sanitize.
+    :param str replacement_text: Replacement text.
+    :return: A replacement string.
+    :rtype: str
+    """
+
+    return __RE_INVALID_EXCEL_SHEET_NAME.sub(
+        replacement_text, sheet_name.strip())
+
+
 def replace_symbol(text, replacement_text=""):
     """
     Replace all of the symbols.
