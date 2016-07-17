@@ -34,6 +34,11 @@ __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
 __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 
+def __validate_null_string(text):
+    if dataproperty.is_empty_string(text):
+        raise ValueError("null name")
+
+
 def validate_filename(filename):
     """
     :param str filename: Filename to validate.
