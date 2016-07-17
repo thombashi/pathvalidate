@@ -26,8 +26,9 @@ __BUILT_CONSTANTS = [
 ]
 
 __RE_INVALID_FILENAME = re.compile(
-    "[%s]" % (re.escape(__INVALID_FILENAME_CHARS)))
-__RE_INVALID_PATH = re.compile("[%s]" % (re.escape(__INVALID_PATH_CHARS)))
+    "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)))
+__RE_INVALID_PATH = re.compile(
+    "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
 __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
 __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
 __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
@@ -47,7 +48,7 @@ def validate_filename(filename):
     match = __RE_INVALID_FILENAME.search(filename)
     if match is not None:
         raise ValueError(
-            "invalid char found in the filename: '%s'" % (
+            "invalid char found in the filename: '{:s}'".format(
                 re.escape(match.group())))
 
 
@@ -65,7 +66,7 @@ def validate_file_path(file_path):
     match = __RE_INVALID_PATH.search(file_path)
     if match is not None:
         raise ValueError(
-            "invalid char found in the file path: '%s'" % (
+            "invalid char found in the file path: '{:s}'".format(
                 re.escape(match.group())))
 
 
@@ -86,18 +87,18 @@ def validate_python_var_name(var_name):
 
     if var_name in __RESERVED_KEYWORDS + __BUILT_CONSTANTS:
         raise ValueError(
-            "%s is a reserved keyword by pyhon" % (var_name))
+            "{:s} is a reserved keyword by pyhon".format(var_name))
 
     match = __RE_INVALID_VAR_NAME.search(var_name)
     if match is not None:
         raise ValueError(
-            "invalid char found in the variable name: '%s'" % (
+            "invalid char found in the variable name: '{:s}'".format(
                 re.escape(match.group())))
 
     match = __RE_INVALID_VAR_NAME_HEAD.search(var_name)
     if match is not None:
         raise ValueError(
-            "the first char of the variable name is invalid: '%s'" % (
+            "the first char of the variable name is invalid: '{:s}'".format(
                 re.escape(match.group())))
 
 
