@@ -170,14 +170,18 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
-    :raises ValueError: If the replacement string is invalid.
+    :raises ValueError: If ``var_name`` or ``replacement_text`` is invalid.
 
     .. seealso::
 
         :py:func:`.validate_python_var_name`
     """
 
-    var_name = var_name.strip()
+    try:
+        var_name = var_name.strip()
+    except AttributeError as e:
+        raise ValueError(e)
+
     sanitize_var_name = __RE_INVALID_VAR_NAME.sub(
         replacement_text, var_name)
 

@@ -312,9 +312,9 @@ class Test_sanitize_python_var_name:
             sanitize_python_var_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, AttributeError],
-        [1, AttributeError],
-        [True, AttributeError],
+        [None, ValueError],
+        [1, ValueError],
+        [True, ValueError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
