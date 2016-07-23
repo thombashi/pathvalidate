@@ -221,10 +221,14 @@ def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
+    :raises ValueError: If the ``sheet_name`` is a invalid sheet name.
     """
 
-    return __RE_INVALID_EXCEL_SHEET_NAME.sub(
-        replacement_text, sheet_name.strip())
+    try:
+        return __RE_INVALID_EXCEL_SHEET_NAME.sub(
+            replacement_text, sheet_name.strip())
+    except AttributeError as e:
+        raise ValueError(e)
 
 
 def replace_symbol(text, replacement_text=""):
