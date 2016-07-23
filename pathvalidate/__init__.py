@@ -151,7 +151,7 @@ def sanitize_file_path(file_path, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
-    :raises ValueError: If the ``file_path`` is not a valid file path.
+    :raises ValueError: If the ``file_path`` is a invalid file path.
     """
 
     try:
