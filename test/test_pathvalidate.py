@@ -242,9 +242,9 @@ class Test_sanitize_file_path:
         validate_file_path(sanitized_name)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, AttributeError],
-        [1, AttributeError],
-        [True, AttributeError],
+        [None, ValueError],
+        [1, ValueError],
+        [True, ValueError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):

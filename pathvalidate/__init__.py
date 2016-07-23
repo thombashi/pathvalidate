@@ -151,9 +151,13 @@ def sanitize_file_path(file_path, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
+    :raises ValueError: If the ``file_path`` is not a valid file path.
     """
 
-    return __RE_INVALID_PATH.sub(replacement_text, file_path.strip())
+    try:
+        return __RE_INVALID_PATH.sub(replacement_text, file_path.strip())
+    except AttributeError as e:
+        raise ValueError(e)
 
 
 def sanitize_python_var_name(var_name, replacement_text=""):
