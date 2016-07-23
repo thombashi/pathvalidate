@@ -136,9 +136,13 @@ def sanitize_filename(filename, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
+    :raises ValueError: If the ``filename`` is a invalid filename.
     """
 
-    return __RE_INVALID_FILENAME.sub(replacement_text, filename.strip())
+    try:
+        return __RE_INVALID_FILENAME.sub(replacement_text, filename.strip())
+    except AttributeError as e:
+        raise ValueError(e)
 
 
 def sanitize_file_path(file_path, replacement_text=""):
