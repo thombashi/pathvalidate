@@ -78,7 +78,7 @@ Installation
 Dependencies
 ============
 
-Python 2.6+ or 3.3+
+Python 2.7 or 3.3+
 
 - `DataPropery <https://github.com/thombashi/DataProperty>`__
 
