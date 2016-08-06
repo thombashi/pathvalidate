@@ -13,7 +13,7 @@ pathvalidate
 Summary
 -------
 
-pathvalidate is a python library to validate/sanitize a string such as filename/variable-name.
+pathvalidate is a python library to validate/sanitize a string such as filename/variable-name/excel-sheet-name.
 
 Examples
 ========
