@@ -11,19 +11,19 @@ import string
 import dataproperty
 
 from ._common import __validate_null_string
+from ._app import validate_excel_sheet_name
+from ._app import sanitize_excel_sheet_name
 from ._var_name import validate_python_var_name
 from ._var_name import sanitize_python_var_name
 
+
 __INVALID_PATH_CHARS = '\:*?"<>|'
 __INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
-__INVALID_EXCEL_CHARS = "[]:*?/\\"
 
 __RE_INVALID_FILENAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)))
 __RE_INVALID_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
-__RE_INVALID_EXCEL_SHEET_NAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_EXCEL_CHARS)))
 
 __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
@@ -62,23 +62,6 @@ def validate_file_path(file_path):
                 re.escape(match.group())))
 
 
-def validate_excel_sheet_name(sheet_name):
-    """
-    :param str sheet_name: Excel sheet name to validate.
-    :raises ValueError:
-        If the ``sheet_name`` is empty or includes invalid char(s):
-        |invalid_excel_sheet_chars|.
-    """
-
-    __validate_null_string(sheet_name)
-
-    match = __RE_INVALID_EXCEL_SHEET_NAME.search(sheet_name)
-    if match is not None:
-        raise ValueError(
-            "invalid char found in the sheet name: '{:s}'".format(
-                re.escape(match.group())))
-
-
 def sanitize_filename(filename, replacement_text=""):
     """
     Replace invalid characters for a filename within the ``filename``
@@ -113,26 +96,6 @@ def sanitize_file_path(file_path, replacement_text=""):
 
     try:
         return __RE_INVALID_PATH.sub(replacement_text, file_path.strip())
-    except AttributeError as e:
-        raise ValueError(e)
-
-
-def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
-    """
-    Replace invalid characters for a Excel sheet name within the ``sheet_name``
-    with the ``replacement_text``. Invalid characters are as follows:
-    |invalid_excel_sheet_chars|.
-
-    :param str sheet_name: Excel sheet name to sanitize.
-    :param str replacement_text: Replacement text.
-    :return: A replacement string.
-    :rtype: str
-    :raises ValueError: If the ``sheet_name`` is a invalid sheet name.
-    """
-
-    try:
-        return __RE_INVALID_EXCEL_SHEET_NAME.sub(
-            replacement_text, sheet_name.strip())
     except AttributeError as e:
         raise ValueError(e)
 
