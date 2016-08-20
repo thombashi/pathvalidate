@@ -13,7 +13,7 @@ import dataproperty
 from ._common import _validate_null_string
 
 
-__RESERVED_KEYWORDS = [
+__PYTHON_RESERVED_KEYWORDS = [
     "and", "del", "from", "not", "while",
     "as", "elif", "global", "or", "with",
     "assert", "else", "if", "pass", "yield",
@@ -22,7 +22,7 @@ __RESERVED_KEYWORDS = [
     "continue", "finally", "is", "return",
     "def", "for", "lambda", "try",
 ]
-__BUILT_CONSTANTS = [
+__PYTHON_BUILT_CONSTANTS = [
     "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
 ]
 
@@ -44,7 +44,7 @@ def validate_python_var_name(var_name):
 
     _validate_null_string(var_name)
 
-    if var_name in __RESERVED_KEYWORDS + __BUILT_CONSTANTS:
+    if var_name in __PYTHON_RESERVED_KEYWORDS + __PYTHON_BUILT_CONSTANTS:
         raise ValueError(
             "{:s} is a reserved keyword by pyhon".format(var_name))
 
