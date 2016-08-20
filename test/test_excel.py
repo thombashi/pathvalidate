@@ -50,7 +50,7 @@ class Test_validate_excel_sheet_name:
         [True, ValueError],
         ["a" * 32, InvalidLengthError],
     ])
-    def test_exception_1(self, value, expected):
+    def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_excel_sheet_name(value)
 

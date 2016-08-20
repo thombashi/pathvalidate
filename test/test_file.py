@@ -56,7 +56,7 @@ class Test_validate_filename:
         [1, ValueError],
         [True, ValueError],
     ])
-    def test_exception_1(self, value, expected):
+    def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_filename(value)
 
@@ -85,7 +85,7 @@ class Test_validate_file_path:
         [1, ValueError],
         [True, ValueError],
     ])
-    def test_exception_1(self, value, expected):
+    def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_file_path(value)
 
