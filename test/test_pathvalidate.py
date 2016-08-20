@@ -15,36 +15,14 @@ from pathvalidate import *
 
 from ._common import char_list
 from ._common import make_random_str
+from ._common import INVALID_PATH_CHARS
+from ._common import INVALID_FILENAME_CHARS
+from ._common import INVALID_VAR_CHARS
+from ._common import VALID_FILENAME_CHARS
+from ._common import VALID_PATH_CHARS
 
 
 random.seed(0)
-
-INVALID_PATH_CHARS = [
-    "\\", ":", "*", "?", '"', "<", ">", "|",
-]
-INVALID_FILENAME_CHARS = INVALID_PATH_CHARS + ["/"]
-INVALID_VAR_CHARS = INVALID_FILENAME_CHARS + [
-    "!", "#", "$", '&', "'",
-    "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
-    ",", ".", "(", ")", "%",
-    " ", "\t", "\n", "\r", "\f", "\v",
-]
-VALID_FILENAME_CHARS = [
-    "!", "#", "$", '&', "'", "_",
-    "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
-    ",", ".", "(", ")", "%",
-]
-VALID_PATH_CHARS = VALID_FILENAME_CHARS + ["/"]
-RESERVED_KEYWORDS = [
-    "and", "del", "from", "not", "while",
-    "as", "elif", "global", "or", "with",
-    "assert", "else", "if", "pass", "yield",
-    "break", "except", "import", "print",
-    "class", "exec", "in", "raise",
-    "continue", "finally", "is", "return",
-    "def", "for", "lambda", "try",
-    "False", "True", "None", "NotImplemented", "Ellipsis",
-]
 
 
 class Test_validate_filename:

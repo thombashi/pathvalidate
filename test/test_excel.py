@@ -13,7 +13,7 @@ import pytest
 from pathvalidate import *
 
 from ._common import make_random_str
-from .test_pathvalidate import VALID_PATH_CHARS
+from ._common import VALID_PATH_CHARS
 
 
 random.seed(0)
