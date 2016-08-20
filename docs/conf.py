@@ -284,10 +284,16 @@ texinfo_documents = [
 
 rst_prolog = u"""
 .. |invalid_file_path_chars| replace::
-    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``, ``\0``
+    ``\\0``
+
+.. |invalid_win_file_path_chars| replace::
+    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
 
 .. |invalid_filename_chars| replace::
-    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``, ``/``, ``\0``
+    ``/``, ``\\0``
+    
+.. |invalid_win_filename_chars| replace::
+    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
     
 .. |invalid_excel_sheet_chars| replace::
     ``[``, ``]``, ``:``, ``*``, ``?``, ``/``, ``\``

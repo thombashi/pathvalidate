@@ -1,6 +1,8 @@
 Reference
 =========
 
-.. automodule:: pathvalidate
-    :members:
-    :show-inheritance:
+.. toctree::
+   :maxdepth: 3
+   
+   error
+   function
