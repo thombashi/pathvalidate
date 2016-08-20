@@ -12,7 +12,6 @@ from ._error import InvalidCharWindowsError
 from ._error import InvalidLengthError
 from ._error import ReservedNameError
 
-from ._common import _validate_null_string
 from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
 from ._file import validate_filename
