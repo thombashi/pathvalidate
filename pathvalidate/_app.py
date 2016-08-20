@@ -9,7 +9,10 @@ from __future__ import unicode_literals
 import re
 
 from ._common import _validate_null_string
+from ._error import InvalidLengthError
 
+
+__MAX_SHEET_NAME_LEN = 31
 
 __INVALID_EXCEL_CHARS = "[]:*?/\\"
 
@@ -20,12 +23,17 @@ __RE_INVALID_EXCEL_SHEET_NAME = re.compile(
 def validate_excel_sheet_name(sheet_name):
     """
     :param str sheet_name: Excel sheet name to validate.
-    :raises ValueError:
-        If the ``sheet_name`` is empty or includes invalid char(s):
-        |invalid_excel_sheet_chars|.
+    :raises ValueError: If the ``sheet_name`` is
+        **a)** empty or includes invalid char(s): |invalid_excel_sheet_chars|.
+        **b)** longer than 31 characters.
     """
 
     _validate_null_string(sheet_name)
+
+    if len(sheet_name) > __MAX_SHEET_NAME_LEN:
+        raise InvalidLengthError(
+            "sheet name is too long: expected<={:d}, actual={:d}".format(
+                __MAX_SHEET_NAME_LEN, len(sheet_name)))
 
     match = __RE_INVALID_EXCEL_SHEET_NAME.search(sheet_name)
     if match is not None:

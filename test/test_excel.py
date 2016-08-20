@@ -29,14 +29,14 @@ class Test_validate_excel_sheet_name:
     INVALID_CHAR_LIST = INVALID_EXCEL_CHARS
 
     @pytest.mark.parametrize(["value"], [
-        [make_random_str(64) + invalid_char + make_random_str(64)]
+        [make_random_str(15) + invalid_char + make_random_str(15)]
         for invalid_char in VALID_CHAR_LIST
     ])
     def test_normal(self, value):
         validate_excel_sheet_name(value)
 
     @pytest.mark.parametrize(["value"], [
-        [make_random_str(64) + invalid_char + make_random_str(64)]
+        [make_random_str(15) + invalid_char + make_random_str(15)]
         for invalid_char in INVALID_CHAR_LIST
     ])
     def test_exception_0(self, value):
@@ -48,6 +48,7 @@ class Test_validate_excel_sheet_name:
         ["", NullNameError],
         [1, ValueError],
         [True, ValueError],
+        ["a" * 32, InvalidLengthError],
     ])
     def test_exception_1(self, value, expected):
         with pytest.raises(expected):
