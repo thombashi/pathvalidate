@@ -9,7 +9,9 @@ from __future__ import unicode_literals
 
 import dataproperty
 
+from ._error import NullNameError
+
 
 def _validate_null_string(text):
     if dataproperty.is_empty_string(text):
-        raise ValueError("null name")
+        raise NullNameError("null name")

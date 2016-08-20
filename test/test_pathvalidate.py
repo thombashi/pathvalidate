@@ -42,7 +42,8 @@ class Test_validate_filename:
             validate_filename(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, ValueError],
+        [None, NullNameError],
+        ["", NullNameError],
         [1, ValueError],
         [True, ValueError],
     ])
@@ -71,7 +72,8 @@ class Test_validate_file_path:
             validate_file_path(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, ValueError],
+        [None, NullNameError],
+        ["", NullNameError],
         [1, ValueError],
         [True, ValueError],
     ])
