@@ -12,8 +12,12 @@ from ._common import _validate_null_string
 from ._error import InvalidCharError
 
 
+__INVALID_FILENAME_CHARS = "/"
 __INVALID_WIN_PATH_CHARS = '\:*?"<>|'
-__INVALID_WIN_FILENAME_CHARS = __INVALID_WIN_PATH_CHARS + "/"
+__INVALID_WIN_FILENAME_CHARS = (
+    __INVALID_FILENAME_CHARS +
+    __INVALID_WIN_PATH_CHARS
+)
 
 __RE_INVALID_WIN_FILENAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)))
