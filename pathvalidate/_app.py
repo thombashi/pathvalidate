@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import re
 
 from ._common import _validate_null_string
+from ._error import InvalidCharError
 from ._error import InvalidLengthError
 
 
@@ -37,7 +38,7 @@ def validate_excel_sheet_name(sheet_name):
 
     match = __RE_INVALID_EXCEL_SHEET_NAME.search(sheet_name)
     if match is not None:
-        raise ValueError(
+        raise InvalidCharError(
             "invalid char found in the sheet name: '{:s}'".format(
                 re.escape(match.group())))
 

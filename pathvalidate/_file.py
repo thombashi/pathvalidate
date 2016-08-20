@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import re
 
 from ._common import _validate_null_string
+from ._error import InvalidCharError
 
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
@@ -32,7 +33,7 @@ def validate_filename(filename):
 
     match = __RE_INVALID_FILENAME.search(filename)
     if match is not None:
-        raise ValueError(
+        raise InvalidCharError(
             "invalid char found in the filename: '{:s}'".format(
                 re.escape(match.group())))
 
@@ -49,7 +50,7 @@ def validate_file_path(file_path):
 
     match = __RE_INVALID_PATH.search(file_path)
     if match is not None:
-        raise ValueError(
+        raise InvalidCharError(
             "invalid char found in the file path: '{:s}'".format(
                 re.escape(match.group())))
 

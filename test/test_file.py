@@ -37,8 +37,8 @@ class Test_validate_filename:
         [make_random_str(64) + invalid_char + make_random_str(64)]
         for invalid_char in INVALID_CHAR_LIST
     ])
-    def test_exception_0(self, value):
-        with pytest.raises(ValueError):
+    def test_exception_invalid_char(self, value):
+        with pytest.raises(InvalidCharError):
             validate_filename(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
@@ -67,8 +67,8 @@ class Test_validate_file_path:
         [make_random_str(64) + invalid_char + make_random_str(64)]
         for invalid_char in INVALID_CHAR_LIST
     ])
-    def test_exception_0(self, value):
-        with pytest.raises(ValueError):
+    def test_exception_invalid_char(self, value):
+        with pytest.raises(InvalidCharError):
             validate_file_path(value)
 
     @pytest.mark.parametrize(["value", "expected"], [

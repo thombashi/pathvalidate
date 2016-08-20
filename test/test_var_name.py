@@ -45,7 +45,7 @@ class Test_validate_python_var_name:
         for invalid_char in INVALID_CHAR_LIST
     ])
     def test_exception_invalid_char(self, value):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidCharError):
             validate_python_var_name(value)
 
     @pytest.mark.parametrize(["value"], [
@@ -53,7 +53,7 @@ class Test_validate_python_var_name:
         for invalid_char in string.digits + "_"
     ])
     def test_exception_invalid_first_char(self, value):
-        with pytest.raises(ValueError):
+        with pytest.raises(InvalidCharError):
             validate_python_var_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [

@@ -11,6 +11,7 @@ import re
 import dataproperty
 
 from ._common import _validate_null_string
+from ._error import InvalidCharError
 
 
 __PYTHON_RESERVED_KEYWORDS = [
@@ -50,14 +51,13 @@ def validate_python_var_name(var_name):
 
     match = __RE_INVALID_VAR_NAME.search(var_name)
     if match is not None:
-        raise ValueError(
+        raise InvalidCharError(
             "invalid char found in the variable name: '{:s}'".format(
                 re.escape(match.group())))
 
     match = __RE_INVALID_VAR_NAME_HEAD.search(var_name)
     if match is not None:
-        raise ValueError(
-            "the first char of the variable name is invalid: '{:s}'".format(
+        raise InvalidCharError(
             "the first character of the variable name is invalid: '{:s}'".format(
                 re.escape(match.group())))
 
