@@ -4,12 +4,6 @@
 .. codeauthor:: Tsuyoshi Hombashi <gogogo.vm@gmail.com>
 """
 
-from __future__ import unicode_literals
-import re
-import string
-
-import dataproperty
-
 from ._common import _validate_null_string
 from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
