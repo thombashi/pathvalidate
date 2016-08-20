@@ -9,7 +9,7 @@ import re
 
 import dataproperty
 
-from ._common import __validate_null_string
+from ._common import _validate_null_string
 
 
 __RESERVED_KEYWORDS = [
@@ -41,7 +41,7 @@ def validate_python_var_name(var_name):
         `built-in constants <https://docs.python.org/3/library/constants.html>`__.
     """
 
-    __validate_null_string(var_name)
+    _validate_null_string(var_name)
 
     if var_name in __RESERVED_KEYWORDS + __BUILT_CONSTANTS:
         raise ValueError(

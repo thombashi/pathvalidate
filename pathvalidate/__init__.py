@@ -10,7 +10,7 @@ import string
 
 import dataproperty
 
-from ._common import __validate_null_string
+from ._common import _validate_null_string
 from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
 from ._var_name import validate_python_var_name
@@ -36,7 +36,7 @@ def validate_filename(filename):
         |invalid_filename_chars|.
     """
 
-    __validate_null_string(filename)
+    _validate_null_string(filename)
 
     match = __RE_INVALID_FILENAME.search(filename)
     if match is not None:
@@ -53,7 +53,7 @@ def validate_file_path(file_path):
         |invalid_file_path_chars|.
     """
 
-    __validate_null_string(file_path)
+    _validate_null_string(file_path)
 
     match = __RE_INVALID_PATH.search(file_path)
     if match is not None:

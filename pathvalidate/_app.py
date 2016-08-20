@@ -7,7 +7,7 @@
 from __future__ import unicode_literals
 import re
 
-from ._common import __validate_null_string
+from ._common import _validate_null_string
 
 
 __INVALID_EXCEL_CHARS = "[]:*?/\\"
@@ -24,7 +24,7 @@ def validate_excel_sheet_name(sheet_name):
         |invalid_excel_sheet_chars|.
     """
 
-    __validate_null_string(sheet_name)
+    _validate_null_string(sheet_name)
 
     match = __RE_INVALID_EXCEL_SHEET_NAME.search(sheet_name)
     if match is not None:
