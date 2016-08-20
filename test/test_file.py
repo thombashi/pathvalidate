@@ -13,8 +13,9 @@ import pytest
 from pathvalidate import *
 
 from ._common import make_random_str
-from ._common import INVALID_WIN_PATH_CHARS
+from ._common import INVALID_PATH_CHARS
 from ._common import INVALID_FILENAME_CHARS
+from ._common import INVALID_WIN_PATH_CHARS
 from ._common import INVALID_WIN_FILENAME_CHARS
 from ._common import VALID_FILENAME_CHARS
 from ._common import VALID_PATH_CHARS
@@ -56,7 +57,8 @@ class Test_validate_filename:
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in INVALID_WIN_PATH_CHARS
+        for invalid_char in set(INVALID_WIN_PATH_CHARS).difference(
+            set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS))
     ])
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
@@ -73,6 +75,7 @@ class Test_validate_filename:
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
+        ["a" * 256, InvalidLengthError],
         [1, ValueError],
         [True, ValueError],
     ])
@@ -93,7 +96,16 @@ class Test_validate_file_path:
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in INVALID_WIN_PATH_CHARS
+        for invalid_char in INVALID_PATH_CHARS
+    ])
+    def test_exception_invalid_char(self, value):
+        with pytest.raises(InvalidCharError):
+            validate_file_path(value)
+
+    @pytest.mark.parametrize(["value"], [
+        [make_random_str(64) + invalid_char + make_random_str(64)]
+        for invalid_char in set(INVALID_WIN_PATH_CHARS).difference(
+            set(INVALID_PATH_CHARS))
     ])
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
@@ -102,6 +114,7 @@ class Test_validate_file_path:
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
+        ["a" * 1025, InvalidLengthError],
         [1, ValueError],
         [True, ValueError],
     ])
