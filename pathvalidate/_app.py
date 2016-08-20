@@ -24,10 +24,11 @@ __RE_INVALID_EXCEL_SHEET_NAME = re.compile(
 def validate_excel_sheet_name(sheet_name):
     """
     :param str sheet_name: Excel sheet name to validate.
-    :raises InvalidCharError:
-        If the ``sheet_name`` is empty or includes invalid char(s):
+    :raises pathvalidate.NullNameError: If the ``sheet_name`` is empty.
+    :raises pathvalidate.InvalidCharError:
+        If the ``sheet_name`` includes invalid char(s):
         |invalid_excel_sheet_chars|.
-    :raises InvalidLengthError:
+    :raises pathvalidate.InvalidLengthError:
         If the ``sheet_name`` is longer than 31 characters.
     """
 

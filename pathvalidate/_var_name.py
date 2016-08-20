@@ -35,12 +35,11 @@ __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
 def validate_python_var_name(var_name):
     """
     :param str var_name: Name to validate.
-    :raises InvalidCharError: If the ``var_name`` is
-        **a)** empty.
-        **b)** invalid as
+    :raises pathvalidate.NullNameError: If the ``var_name`` is empty.
+    :raises pathvalidate.InvalidCharError: If the ``var_name`` is invalid as
         `Python identifier
         <https://docs.python.org/3/reference/lexical_analysis.html#identifiers>`__.
-    :raises ReservedNameError: If the ``var_name`` is equals to
+    :raises pathvalidate.ReservedNameError: If the ``var_name`` is equals to
         `Python reserved keywords
         <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`__
         or

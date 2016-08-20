@@ -47,9 +47,15 @@ __LINUX_MAX_PATH = 1024
 def validate_filename(filename):
     """
     :param str filename: Filename to validate.
-    :raises ValueError:
-        If the ``filename`` is empty or includes invalid char(s):
+    :raises pathvalidate.NullNameError: If the ``filename`` is empty.
+    :raises pathvalidate.InvalidCharError:
+        If the ``filename`` includes invalid character(s) for a filename:
         |invalid_filename_chars|.
+    :raises pathvalidate.InvalidCharWindowsError:
+        If the ``filename`` includes invalid character(s) for a Windows
+        filename: |invalid_win_filename_chars|
+    :raises pathvalidate.InvalidLengthError:
+        If the ``filename`` is longer than 255 characters.
     """
 
     _validate_null_string(filename)
@@ -78,10 +84,16 @@ def validate_filename(filename):
 
 def validate_file_path(file_path):
     """
-    :param str filename: File path to validate.
-    :raises ValueError:
-        If the ``file_path`` is empty or includes invalid char(s):
+    :param str file_path: File path to validate.
+    :raises pathvalidate.NullNameError: If the ``file_path`` is empty.
+    :raises pathvalidate.InvalidCharError:
+        If the ``file_path`` includes invalid char(s):
         |invalid_file_path_chars|.
+    :raises pathvalidate.InvalidCharWindowsError:
+        If the ``file_path`` includes invalid character(s) for a Windows
+        file path: |invalid_win_file_path_chars|
+    :raises pathvalidate.InvalidLengthError:
+        If the ``file_path`` is longer than 1024 characters.
     """
 
     _validate_null_string(file_path)
