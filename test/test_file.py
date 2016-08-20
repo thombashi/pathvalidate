@@ -13,8 +13,8 @@ import pytest
 from pathvalidate import *
 
 from ._common import make_random_str
-from ._common import INVALID_PATH_CHARS
-from ._common import INVALID_FILENAME_CHARS
+from ._common import INVALID_WIN_PATH_CHARS
+from ._common import INVALID_WIN_FILENAME_CHARS
 from ._common import VALID_FILENAME_CHARS
 from ._common import VALID_PATH_CHARS
 
@@ -24,7 +24,7 @@ random.seed(0)
 
 class Test_validate_filename:
     VALID_CHAR_LIST = VALID_FILENAME_CHARS
-    INVALID_CHAR_LIST = INVALID_FILENAME_CHARS
+    INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
@@ -54,7 +54,7 @@ class Test_validate_filename:
 
 class Test_validate_file_path:
     VALID_CHAR_LIST = VALID_PATH_CHARS
-    INVALID_CHAR_LIST = INVALID_PATH_CHARS
+    INVALID_CHAR_LIST = INVALID_WIN_PATH_CHARS
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
@@ -83,7 +83,7 @@ class Test_validate_file_path:
 
 
 class Test_sanitize_filename:
-    SANITIZE_CHAR_LIST = INVALID_FILENAME_CHARS
+    SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS
     NOT_SANITIZE_CHAR_LIST = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
@@ -115,7 +115,7 @@ class Test_sanitize_filename:
 
 
 class Test_sanitize_file_path:
-    SANITIZE_CHAR_LIST = INVALID_PATH_CHARS
+    SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS
     NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
