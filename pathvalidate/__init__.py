@@ -6,6 +6,9 @@
 
 from __future__ import absolute_import
 
+from ._error import NullNameError
+from ._error import InvalidCharError
+
 from ._common import _validate_null_string
 from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
