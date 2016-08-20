@@ -20,6 +20,12 @@ class InvalidCharError(ValueError):
     """
 
 
+class InvalidCharWindowsError(InvalidCharError):
+    """
+    Raised when includes Windows specific invalid character(s) within a string.
+    """
+
+
 class InvalidLengthError(ValueError):
     """
     Raised when a string too long/short.
