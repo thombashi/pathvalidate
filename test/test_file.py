@@ -14,6 +14,7 @@ from pathvalidate import *
 
 from ._common import make_random_str
 from ._common import INVALID_WIN_PATH_CHARS
+from ._common import INVALID_FILENAME_CHARS
 from ._common import INVALID_WIN_FILENAME_CHARS
 from ._common import VALID_FILENAME_CHARS
 from ._common import VALID_PATH_CHARS
@@ -35,10 +36,18 @@ class Test_validate_filename:
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in INVALID_CHAR_LIST
+        for invalid_char in INVALID_FILENAME_CHARS
     ])
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
+            validate_filename(value)
+
+    @pytest.mark.parametrize(["value"], [
+        [make_random_str(64) + invalid_char + make_random_str(64)]
+        for invalid_char in INVALID_WIN_PATH_CHARS
+    ])
+    def test_exception_invalid_win_char(self, value):
+        with pytest.raises(InvalidCharWindowsError):
             validate_filename(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
@@ -54,7 +63,6 @@ class Test_validate_filename:
 
 class Test_validate_file_path:
     VALID_CHAR_LIST = VALID_PATH_CHARS
-    INVALID_CHAR_LIST = INVALID_WIN_PATH_CHARS
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
@@ -65,10 +73,10 @@ class Test_validate_file_path:
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in INVALID_CHAR_LIST
+        for invalid_char in INVALID_WIN_PATH_CHARS
     ])
-    def test_exception_invalid_char(self, value):
-        with pytest.raises(InvalidCharError):
+    def test_exception_invalid_win_char(self, value):
+        with pytest.raises(InvalidCharWindowsError):
             validate_file_path(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
