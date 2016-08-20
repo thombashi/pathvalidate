@@ -301,11 +301,6 @@ class Test_replace_symbol:
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(
                 NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
-        ] + [
-            ["A" + reserved_keyword + "B", rep, "A" + reserved_keyword + "B"]
-            for reserved_keyword, rep in itertools.product(
-                RESERVED_KEYWORDS, REPLACE_TEXT_LIST)
-
         ]
     )
     def test_normal(self, value, replace_text, expected):
