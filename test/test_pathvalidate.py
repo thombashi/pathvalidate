@@ -13,10 +13,11 @@ import pytest
 
 from pathvalidate import *
 
+from ._common import char_list
+from ._common import make_random_str
+
 
 random.seed(0)
-
-char_list = [x for x in string.digits + string.ascii_letters]
 
 INVALID_PATH_CHARS = [
     "\\", ":", "*", "?", '"', "<", ">", "|",
@@ -44,10 +45,6 @@ RESERVED_KEYWORDS = [
     "def", "for", "lambda", "try",
     "False", "True", "None", "NotImplemented", "Ellipsis",
 ]
-
-
-def make_random_str(length):
-    return "".join([random.choice(char_list) for _i in range(length)])
 
 
 class Test_validate_filename:
