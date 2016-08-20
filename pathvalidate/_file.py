@@ -82,7 +82,8 @@ def sanitize_filename(filename, replacement_text=""):
     """
 
     try:
-        return __RE_INVALID_WIN_FILENAME.sub(replacement_text, filename.strip())
+        return __RE_INVALID_WIN_FILENAME.sub(
+            replacement_text, filename.strip())
     except AttributeError as e:
         raise ValueError(e)
 
