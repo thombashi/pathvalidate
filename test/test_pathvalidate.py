@@ -7,17 +7,14 @@
 from __future__ import absolute_import
 import itertools
 import random
-import string
 
 import pytest
 
 from pathvalidate import *
 
-from ._common import char_list
 from ._common import make_random_str
 from ._common import INVALID_PATH_CHARS
 from ._common import INVALID_FILENAME_CHARS
-from ._common import INVALID_VAR_CHARS
 from ._common import VALID_FILENAME_CHARS
 from ._common import VALID_PATH_CHARS
 
