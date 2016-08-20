@@ -15,7 +15,7 @@ char_list = [x for x in string.digits + string.ascii_letters]
 INVALID_WIN_PATH_CHARS = [
     "\\", ":", "*", "?", '"', "<", ">", "|",
 ]
-INVALID_FILENAME_CHARS = ["/"]
+INVALID_FILENAME_CHARS = ["/", "\0"]
 INVALID_WIN_FILENAME_CHARS = INVALID_WIN_PATH_CHARS + INVALID_FILENAME_CHARS
 
 VALID_FILENAME_CHARS = [

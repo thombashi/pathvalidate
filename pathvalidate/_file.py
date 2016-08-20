@@ -13,7 +13,7 @@ from ._error import InvalidCharError
 from ._error import InvalidCharWindowsError
 
 
-__INVALID_FILENAME_CHARS = "/"
+__INVALID_FILENAME_CHARS = "/\0"
 __INVALID_WIN_PATH_CHARS = '\:*?"<>|'
 __INVALID_WIN_FILENAME_CHARS = (
     __INVALID_FILENAME_CHARS +
