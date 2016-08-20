@@ -67,7 +67,7 @@ class Test_validate_python_var_name:
             validate_python_var_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [reserved_keyword, ValueError]
+        [reserved_keyword, ReservedNameError]
         for reserved_keyword in RESERVED_KEYWORDS + ["__debug__"]
     ])
     def test_exception_reserved(self, value, expected):

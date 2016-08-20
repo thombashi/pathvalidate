@@ -12,6 +12,7 @@ import dataproperty
 
 from ._common import _validate_null_string
 from ._error import InvalidCharError
+from ._error import ReservedNameError
 
 
 __PYTHON_RESERVED_KEYWORDS = [
@@ -50,7 +51,7 @@ def validate_python_var_name(var_name):
     _validate_null_string(var_name)
 
     if var_name in __PYTHON_RESERVED_KEYWORDS + __PYTHON_BUILT_CONSTANTS:
-        raise ValueError(
+        raise ReservedNameError(
             "{:s} is a reserved keyword by pyhon".format(var_name))
 
     match = __RE_INVALID_VAR_NAME.search(var_name)
