@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import
 import itertools
+import random
 
 import pytest
 
@@ -14,6 +15,8 @@ from pathvalidate import *
 from ._common import make_random_str
 from .test_pathvalidate import VALID_PATH_CHARS
 
+
+random.seed(0)
 
 INVALID_EXCEL_CHARS = [
     "[", "]", ":", "*", "?", "/", "\\",
