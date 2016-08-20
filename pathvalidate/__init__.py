@@ -15,6 +15,7 @@ from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
 from ._var_name import validate_python_var_name
 from ._var_name import sanitize_python_var_name
+from ._symbol import replace_symbol
 
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
@@ -24,8 +25,6 @@ __RE_INVALID_FILENAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)))
 __RE_INVALID_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
-
-__RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 
 def validate_filename(filename):
@@ -98,16 +97,3 @@ def sanitize_file_path(file_path, replacement_text=""):
         return __RE_INVALID_PATH.sub(replacement_text, file_path.strip())
     except AttributeError as e:
         raise ValueError(e)
-
-
-def replace_symbol(text, replacement_text=""):
-    """
-    Replace all of the symbols.
-
-    :param str text: Input text.
-    :param str replacement_text: Replacement text.
-    :return: A replacement string.
-    :rtype: str
-    """
-
-    return __RE_SYMBOL.sub(replacement_text, text)
