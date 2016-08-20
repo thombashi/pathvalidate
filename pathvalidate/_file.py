@@ -56,6 +56,11 @@ def validate_filename(filename):
         filename: |invalid_win_filename_chars|
     :raises pathvalidate.InvalidLengthError:
         If the ``filename`` is longer than 255 characters.
+
+    .. seealso::
+
+        `Naming Files, Paths, and Namespaces (Windows)
+        <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
     _validate_null_string(filename)
@@ -94,6 +99,11 @@ def validate_file_path(file_path):
         file path: |invalid_win_file_path_chars|
     :raises pathvalidate.InvalidLengthError:
         If the ``file_path`` is longer than 1024 characters.
+
+    .. seealso::
+
+        `Naming Files, Paths, and Namespaces (Windows)
+        <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
     _validate_null_string(file_path)
