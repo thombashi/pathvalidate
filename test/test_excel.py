@@ -72,7 +72,7 @@ class Test_sanitize_excel_sheet_name:
             for c, rep in itertools.product(
                 NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ] + [
-            "a" * 32, "", "a" * 31
+            ["a" * 32, "", "a" * 31],
         ]
     )
     def test_normal(self, value, replace_text, expected):
