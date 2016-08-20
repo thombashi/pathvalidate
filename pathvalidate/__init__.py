@@ -4,6 +4,8 @@
 .. codeauthor:: Tsuyoshi Hombashi <gogogo.vm@gmail.com>
 """
 
+from __future__ import absolute_import
+
 from ._common import _validate_null_string
 from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
