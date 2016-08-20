@@ -10,6 +10,7 @@ import string
 
 import dataproperty
 
+from ._common import __validate_null_string
 
 __INVALID_PATH_CHARS = '\:*?"<>|'
 __INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
@@ -38,11 +39,6 @@ __RE_INVALID_EXCEL_SHEET_NAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_EXCEL_CHARS)))
 
 __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
-
-
-def __validate_null_string(text):
-    if dataproperty.is_empty_string(text):
-        raise ValueError("null name")
 
 
 def validate_filename(filename):
