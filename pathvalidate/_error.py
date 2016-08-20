@@ -30,3 +30,9 @@ class InvalidLengthError(ValueError):
     """
     Raised when a string too long/short.
     """
+
+
+class ReservedNameError(ValueError):
+    """
+    Raised when a string is matched a reserved name.
+    """
