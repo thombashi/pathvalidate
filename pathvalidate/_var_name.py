@@ -58,6 +58,7 @@ def validate_python_var_name(var_name):
     if match is not None:
         raise ValueError(
             "the first char of the variable name is invalid: '{:s}'".format(
+            "the first character of the variable name is invalid: '{:s}'".format(
                 re.escape(match.group())))
 
 
