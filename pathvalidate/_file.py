@@ -12,11 +12,13 @@ import re
 from ._common import _validate_null_string
 from ._error import InvalidCharError
 from ._error import InvalidCharWindowsError
+from ._error import InvalidLengthError
 from ._error import ReservedNameError
 
 
-__INVALID_FILENAME_CHARS = "/\0"
-__INVALID_WIN_PATH_CHARS = '\:*?"<>|'
+__INVALID_PATH_CHARS = "\0"
+__INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
+__INVALID_WIN_PATH_CHARS = __INVALID_PATH_CHARS + '\:*?"<>|'
 __INVALID_WIN_FILENAME_CHARS = (
     __INVALID_FILENAME_CHARS +
     __INVALID_WIN_PATH_CHARS
@@ -26,6 +28,8 @@ __RE_INVALID_FILENAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)))
 __RE_INVALID_WIN_FILENAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)))
+__RE_INVALID_PATH = re.compile(
+    "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
 __RE_INVALID_WIN_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)))
 
@@ -35,6 +39,9 @@ __WINDOWS_RESERVED_FILE_NAME_LIST = [
     "{:s}{:d}".format(name, num)
     for name, num in itertools.product(["COM", "LPT"], range(1, 10))
 ]
+
+__MAX_FILENAME = 255
+__LINUX_MAX_PATH = 1024
 
 
 def validate_filename(filename):
@@ -46,6 +53,11 @@ def validate_filename(filename):
     """
 
     _validate_null_string(filename)
+
+    if len(filename) > __MAX_FILENAME:
+        raise InvalidLengthError(
+            "filename is too long: expected<={:d}, actual={:d}".format(
+                __MAX_FILENAME, len(filename)))
 
     error_message_template = "invalid char found in the filename: '{:s}'"
 
@@ -74,11 +86,22 @@ def validate_file_path(file_path):
 
     _validate_null_string(file_path)
 
+    error_message_template = "invalid char found in the file path: '{:s}'"
+
+    match = __RE_INVALID_PATH.search(file_path)
+    if match is not None:
+        raise InvalidCharError(
+            error_message_template.format(re.escape(match.group())))
+
     match = __RE_INVALID_WIN_PATH.search(file_path)
     if match is not None:
         raise InvalidCharWindowsError(
-            "invalid char found in the file path: '{:s}'".format(
-                re.escape(match.group())))
+            error_message_template.format(re.escape(match.group())))
+
+    if len(file_path) > __LINUX_MAX_PATH:
+        raise InvalidLengthError(
+            "file path is too long: expected<={:d}, actual={:d}".format(
+                __LINUX_MAX_PATH, len(file_path)))
 
 
 def sanitize_filename(filename, replacement_text=""):
