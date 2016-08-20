@@ -23,6 +23,18 @@ from ._common import VALID_PATH_CHARS
 random.seed(0)
 
 
+WIN_RESERVED_FILE_NAME_LIST = [
+    "CON", "con",
+    "PRN", "prn",
+    "AUX", "aux",
+    "NUL", "nul",
+] + [
+    "{:s}{:d}".format(name, num)
+    for name, num
+    in itertools.product(["COM", "com", "LPT", "lpt"], range(1, 10))
+]
+
+
 class Test_validate_filename:
     VALID_CHAR_LIST = VALID_FILENAME_CHARS
     INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS
@@ -48,6 +60,14 @@ class Test_validate_filename:
     ])
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
+            validate_filename(value)
+
+    @pytest.mark.parametrize(["value", "expected"], [
+        [reserved_keyword, ReservedNameError]
+        for reserved_keyword in WIN_RESERVED_FILE_NAME_LIST
+    ])
+    def test_exception_reserved(self, value, expected):
+        with pytest.raises(expected):
             validate_filename(value)
 
     @pytest.mark.parametrize(["value", "expected"], [

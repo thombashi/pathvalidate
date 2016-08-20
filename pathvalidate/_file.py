@@ -6,11 +6,13 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+import itertools
 import re
 
 from ._common import _validate_null_string
 from ._error import InvalidCharError
 from ._error import InvalidCharWindowsError
+from ._error import ReservedNameError
 
 
 __INVALID_FILENAME_CHARS = "/\0"
@@ -26,6 +28,13 @@ __RE_INVALID_WIN_FILENAME = re.compile(
     "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)))
 __RE_INVALID_WIN_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)))
+
+__WINDOWS_RESERVED_FILE_NAME_LIST = [
+    "CON", "PRN", "AUX", "NUL",
+] + [
+    "{:s}{:d}".format(name, num)
+    for name, num in itertools.product(["COM", "LPT"], range(1, 10))
+]
 
 
 def validate_filename(filename):
@@ -49,6 +58,10 @@ def validate_filename(filename):
     if match is not None:
         raise InvalidCharWindowsError(
             error_message_template.format(re.escape(match.group())))
+
+    if filename.upper() in __WINDOWS_RESERVED_FILE_NAME_LIST:
+        raise ReservedNameError(
+            "{:s} is a reserved name by Windows".format(filename))
 
 
 def validate_file_path(file_path):
