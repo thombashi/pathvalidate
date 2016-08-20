@@ -37,10 +37,14 @@ def validate_python_var_name(var_name):
     :raises ValueError: If the ``var_name`` is
         **a)** empty.
         **b)** invalid as
-        `Python identifier <https://docs.python.org/3/reference/lexical_analysis.html#identifiers>`__.
+        `Python identifier
+        <https://docs.python.org/3/reference/lexical_analysis.html#identifiers>`__.
         **c)** equals to
-        `reserved keywords <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`__ or
-        `built-in constants <https://docs.python.org/3/library/constants.html>`__.
+        `Python reserved keywords
+        <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`__
+        or
+        `Python built-in constants
+        <https://docs.python.org/3/library/constants.html>`__.
     """
 
     _validate_null_string(var_name)
