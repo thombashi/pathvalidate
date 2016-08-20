@@ -12,13 +12,13 @@ from ._common import _validate_null_string
 from ._error import InvalidCharError
 
 
-__INVALID_PATH_CHARS = '\:*?"<>|'
-__INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
+__INVALID_WIN_PATH_CHARS = '\:*?"<>|'
+__INVALID_WIN_FILENAME_CHARS = __INVALID_WIN_PATH_CHARS + "/"
 
-__RE_INVALID_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)))
-__RE_INVALID_PATH = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
+__RE_INVALID_WIN_FILENAME = re.compile(
+    "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)))
+__RE_INVALID_WIN_PATH = re.compile(
+    "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)))
 
 
 def validate_filename(filename):
@@ -31,7 +31,7 @@ def validate_filename(filename):
 
     _validate_null_string(filename)
 
-    match = __RE_INVALID_FILENAME.search(filename)
+    match = __RE_INVALID_WIN_FILENAME.search(filename)
     if match is not None:
         raise InvalidCharError(
             "invalid char found in the filename: '{:s}'".format(
@@ -48,7 +48,7 @@ def validate_file_path(file_path):
 
     _validate_null_string(file_path)
 
-    match = __RE_INVALID_PATH.search(file_path)
+    match = __RE_INVALID_WIN_PATH.search(file_path)
     if match is not None:
         raise InvalidCharError(
             "invalid char found in the file path: '{:s}'".format(
@@ -69,7 +69,7 @@ def sanitize_filename(filename, replacement_text=""):
     """
 
     try:
-        return __RE_INVALID_FILENAME.sub(replacement_text, filename.strip())
+        return __RE_INVALID_WIN_FILENAME.sub(replacement_text, filename.strip())
     except AttributeError as e:
         raise ValueError(e)
 
@@ -88,6 +88,6 @@ def sanitize_file_path(file_path, replacement_text=""):
     """
 
     try:
-        return __RE_INVALID_PATH.sub(replacement_text, file_path.strip())
+        return __RE_INVALID_WIN_PATH.sub(replacement_text, file_path.strip())
     except AttributeError as e:
         raise ValueError(e)
