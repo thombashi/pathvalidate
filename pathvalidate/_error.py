@@ -18,3 +18,9 @@ class InvalidCharError(ValueError):
     """
     Raised when includes invalid character(s) within a string.
     """
+
+
+class InvalidLengthError(ValueError):
+    """
+    Raised when a string too long/short.
+    """
