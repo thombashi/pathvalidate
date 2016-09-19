@@ -42,3 +42,10 @@ class ReservedNameError(InvalidNameError):
     """
     Raised when a string is matched a reserved name.
     """
+
+
+class ValidReservedNameError(InvalidNameError):
+    """
+    Raised when a string is matched a reserved name.
+    However, it can be used as a name.
+    """
