@@ -19,5 +19,6 @@ from ._file import validate_file_path
 from ._file import sanitize_filename
 from ._file import sanitize_file_path
 from ._symbol import replace_symbol
+from ._sqlite import validate_sqlite_name
 from ._var_name import validate_python_var_name
 from ._var_name import sanitize_python_var_name
