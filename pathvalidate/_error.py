@@ -8,13 +8,19 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 
-class NullNameError(ValueError):
+class InvalidNameError(ValueError):
+    """
+    Base class of invalid name error.
+    """
+
+
+class NullNameError(InvalidNameError):
     """
     Raised when a name is empty.
     """
 
 
-class InvalidCharError(ValueError):
+class InvalidCharError(InvalidNameError):
     """
     Raised when includes invalid character(s) within a string.
     """
@@ -26,13 +32,13 @@ class InvalidCharWindowsError(InvalidCharError):
     """
 
 
-class InvalidLengthError(ValueError):
+class InvalidLengthError(InvalidNameError):
     """
     Raised when a string too long/short.
     """
 
 
-class ReservedNameError(ValueError):
+class ReservedNameError(InvalidNameError):
     """
     Raised when a string is matched a reserved name.
     """
