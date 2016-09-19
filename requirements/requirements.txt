@@ -1,1 +1,1 @@
-DataProperty>=0.8.1
+DataProperty>=0.9.0
