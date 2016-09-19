@@ -124,6 +124,14 @@ class Test_validate_sqlite_table_name:
         with pytest.raises(expected):
             validate_sqlite_table_name(value)
 
+    @pytest.mark.parametrize(["value"], [
+        [invalid_char + "hoge123"]
+        for invalid_char in string.digits + "_"
+    ])
+    def test_exception_invalid_first_char(self, value):
+        with pytest.raises(InvalidCharError):
+            validate_sqlite_table_name(value)
+
 
 class Test_validate_sqlite_attr_name:
     VALID_CHAR_LIST = [
@@ -170,3 +178,11 @@ class Test_validate_sqlite_attr_name:
     def test_exception_reserved_invalid_name(self, value, expected):
         with pytest.raises(expected):
             validate_sqlite_attr_name(value)
+
+    @pytest.mark.parametrize(["value"], [
+        [invalid_char + "hoge123"]
+        for invalid_char in string.digits + "_"
+    ])
+    def test_exception_invalid_first_char(self, value):
+        with pytest.raises(InvalidCharError):
+            validate_sqlite_table_name(value)
