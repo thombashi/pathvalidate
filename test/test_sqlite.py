@@ -120,7 +120,7 @@ class Test_validate_sqlite_table_name:
         in INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
         INVALID_RESERVED_KEYWORDS_TABLE_LOWER
     ])
-    def test_exception_reserved_invalid(self, value, expected):
+    def test_exception_reserved_invalid_name(self, value, expected):
         with pytest.raises(expected):
             validate_sqlite_table_name(value)
 
@@ -167,6 +167,6 @@ class Test_validate_sqlite_attr_name:
         in INVALID_RESERVED_KEYWORDS_ATTR_UPPER +
         INVALID_RESERVED_KEYWORDS_ATTR_LOWER
     ])
-    def test_exception_reserved_invalid(self, value, expected):
+    def test_exception_reserved_invalid_name(self, value, expected):
         with pytest.raises(expected):
             validate_sqlite_attr_name(value)
