@@ -15,7 +15,9 @@ Functions
 
 .. autofunction:: pathvalidate.replace_symbol
 
-.. autofunction:: pathvalidate.validate_sqlite_name
+.. autofunction:: pathvalidate.validate_sqlite_table_name
+
+.. autofunction:: pathvalidate.validate_sqlite_attr_name
 
 .. autofunction:: pathvalidate.validate_python_var_name
 

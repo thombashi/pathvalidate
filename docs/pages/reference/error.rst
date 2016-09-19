@@ -1,6 +1,10 @@
 Errors
 ---------------
 
+.. autoclass:: pathvalidate.InvalidNameError
+    :undoc-members:
+    :show-inheritance:
+
 .. autoclass:: pathvalidate.NullNameError
     :undoc-members:
     :show-inheritance:
@@ -16,7 +20,11 @@ Errors
 .. autoclass:: pathvalidate.InvalidLengthError
     :undoc-members:
     :show-inheritance:
-    
+
 .. autoclass:: pathvalidate.ReservedNameError
+    :undoc-members:
+    :show-inheritance:
+
+.. autoclass:: pathvalidate.ValidReservedNameError
     :undoc-members:
     :show-inheritance:

@@ -297,4 +297,9 @@ rst_prolog = u"""
     
 .. |invalid_excel_sheet_chars| replace::
     ``[``, ``]``, ``:``, ``*``, ``?``, ``/``, ``\``
+    
+.. |raises_sqlite_keywords| replace::
+    If the ``name`` is equals to
+    `SQLite Keywords <https://www.sqlite.org/lang_keywords.html>`__.
+
 """
