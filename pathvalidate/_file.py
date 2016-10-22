@@ -57,7 +57,7 @@ def validate_filename(filename):
         If the ``filename`` includes invalid character(s) for a Windows
         filename: |invalid_win_filename_chars|
     :raises pathvalidate.InvalidReservedNameError:
-
+        If the ``filename`` equals reserved name by OS
 
     .. seealso::
 
