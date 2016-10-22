@@ -65,7 +65,7 @@ class Test_validate_filename:
             validate_filename(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [reserved_keyword, ReservedNameError]
+        [reserved_keyword, InvalidReservedNameError]
         for reserved_keyword in WIN_RESERVED_FILE_NAME_LIST
     ])
     def test_exception_reserved(self, value, expected):

@@ -12,7 +12,7 @@ import dataproperty
 
 from ._common import _validate_null_string
 from ._error import InvalidCharError
-from ._error import ReservedNameError
+from ._error import InvalidReservedNameError
 
 
 __PYTHON_RESERVED_KEYWORDS = [
@@ -39,7 +39,8 @@ def validate_python_var_name(var_name):
     :raises pathvalidate.InvalidCharError: If the ``var_name`` is invalid as
         `Python identifier
         <https://docs.python.org/3/reference/lexical_analysis.html#identifiers>`__.
-    :raises pathvalidate.ReservedNameError: If the ``var_name`` is equals to
+    :raises pathvalidate.InvalidReservedNameError:
+        If the ``var_name`` is equals to
         `Python reserved keywords
         <https://docs.python.org/3/reference/lexical_analysis.html#keywords>`__
         or
@@ -50,7 +51,7 @@ def validate_python_var_name(var_name):
     _validate_null_string(var_name)
 
     if var_name in __PYTHON_RESERVED_KEYWORDS + __PYTHON_BUILT_CONSTANTS:
-        raise ReservedNameError(
+        raise InvalidReservedNameError(
             "{:s} is a reserved keyword by pyhon".format(var_name))
 
     match = __RE_INVALID_VAR_NAME.search(var_name)

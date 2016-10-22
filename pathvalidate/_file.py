@@ -13,7 +13,7 @@ from ._common import _validate_null_string
 from ._error import InvalidCharError
 from ._error import InvalidCharWindowsError
 from ._error import InvalidLengthError
-from ._error import ReservedNameError
+from ._error import InvalidReservedNameError
 
 
 __INVALID_PATH_CHARS = "\0"
@@ -48,14 +48,16 @@ def validate_filename(filename):
     """
     :param str filename: Filename to validate.
     :raises pathvalidate.NullNameError: If the ``filename`` is empty.
+    :raises pathvalidate.InvalidLengthError:
+        If the ``filename`` is longer than 255 characters.
     :raises pathvalidate.InvalidCharError:
         If the ``filename`` includes invalid character(s) for a filename:
         |invalid_filename_chars|.
     :raises pathvalidate.InvalidCharWindowsError:
         If the ``filename`` includes invalid character(s) for a Windows
         filename: |invalid_win_filename_chars|
-    :raises pathvalidate.InvalidLengthError:
-        If the ``filename`` is longer than 255 characters.
+    :raises pathvalidate.InvalidReservedNameError:
+
 
     .. seealso::
 
@@ -83,7 +85,7 @@ def validate_filename(filename):
             error_message_template.format(re.escape(match.group())))
 
     if filename.upper() in __WINDOWS_RESERVED_FILE_NAME_LIST:
-        raise ReservedNameError(
+        raise InvalidReservedNameError(
             "{:s} is a reserved name by Windows".format(filename))
 
 
