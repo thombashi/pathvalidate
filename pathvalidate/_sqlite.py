@@ -10,8 +10,8 @@ import re
 
 from ._common import _validate_null_string
 from ._error import InvalidCharError
-from ._error import ReservedNameError
 from ._error import ValidReservedNameError
+from ._error import InvalidReservedNameError
 
 
 __SQLITE_VALID_RESERVED_KEYWORDS = [
@@ -81,7 +81,7 @@ def validate_sqlite_table_name(name):
     :raises pathvalidate.InvalidCharError:
         If the first character of the ``name`` is invalid
         (not an alphabetic character).
-    :raises pathvalidate.ReservedNameError:
+    :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
         And invalid as a table name.
     :raises pathvalidate.ValidReservedNameError:
@@ -92,7 +92,7 @@ def validate_sqlite_table_name(name):
     _validate_null_string(name)
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_TABLE:
-        raise ReservedNameError(
+        raise InvalidReservedNameError(
             "'{:s}' is a reserved keyword by sqlite".format(name))
 
     if name.upper() in __SQLITE_VALID_RESERVED_KEYWORDS_TABLE:
@@ -124,7 +124,7 @@ def validate_sqlite_attr_name(name):
     _validate_null_string(name)
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR:
-        raise ReservedNameError(
+        raise InvalidReservedNameError(
             "'{:s}' is a reserved keyword by sqlite".format(name))
 
     if name.upper() in __SQLITE_VALID_RESERVED_KEYWORDS_ATTR:

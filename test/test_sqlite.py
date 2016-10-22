@@ -115,7 +115,7 @@ class Test_validate_sqlite_table_name:
             validate_sqlite_table_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [reserved_keyword, ReservedNameError]
+        [reserved_keyword, InvalidReservedNameError]
         for reserved_keyword
         in INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
         INVALID_RESERVED_KEYWORDS_TABLE_LOWER
@@ -170,7 +170,7 @@ class Test_validate_sqlite_attr_name:
             validate_sqlite_attr_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [reserved_keyword, ReservedNameError]
+        [reserved_keyword, InvalidReservedNameError]
         for reserved_keyword
         in INVALID_RESERVED_KEYWORDS_ATTR_UPPER +
         INVALID_RESERVED_KEYWORDS_ATTR_LOWER

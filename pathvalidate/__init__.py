@@ -13,6 +13,7 @@ from ._error import InvalidCharWindowsError
 from ._error import InvalidLengthError
 from ._error import ReservedNameError
 from ._error import ValidReservedNameError
+from ._error import InvalidReservedNameError
 
 from ._app import validate_excel_sheet_name
 from ._app import sanitize_excel_sheet_name
