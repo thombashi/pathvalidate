@@ -7,6 +7,7 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 import itertools
+import os.path
 import re
 
 from ._common import _validate_null_string
@@ -18,10 +19,11 @@ from ._error import InvalidReservedNameError
 
 __INVALID_PATH_CHARS = "\0"
 __INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
-__INVALID_WIN_PATH_CHARS = __INVALID_PATH_CHARS + '\:*?"<>|'
+__INVALID_WIN_PATH_CHARS = __INVALID_PATH_CHARS + ':*?"<>|'
 __INVALID_WIN_FILENAME_CHARS = (
     __INVALID_FILENAME_CHARS +
-    __INVALID_WIN_PATH_CHARS
+    __INVALID_WIN_PATH_CHARS +
+    "\\"
 )
 
 __RE_INVALID_FILENAME = re.compile(
@@ -112,6 +114,7 @@ def validate_file_path(file_path):
 
     error_message_template = "invalid char found in the file path: '{:s}'"
 
+    file_path = os.path.normpath(os.path.splitdrive(file_path)[1])
     match = __RE_INVALID_PATH.search(file_path)
     if match is not None:
         raise InvalidCharError(

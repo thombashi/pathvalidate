@@ -287,7 +287,7 @@ rst_prolog = u"""
     ``\\0``
 
 .. |invalid_win_file_path_chars| replace::
-    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
+    ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
 
 .. |invalid_filename_chars| replace::
     ``/``, ``\\0``

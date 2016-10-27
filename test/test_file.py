@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import
 import itertools
+import platform
 import random
 
 import pytest
@@ -121,6 +122,23 @@ class Test_validate_file_path:
     def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_file_path(value)
+
+
+@pytest.mark.skipif("platform.system() != 'Windows'")
+class Test_validate_win_file_path:
+    VALID_CHAR_LIST = VALID_PATH_CHARS
+
+    @pytest.mark.parametrize(["value"], [
+        ['C:\\Users\\test\\AppData\\Local\\Temp\\pytest-of-go\\pytest-0\\test_exception__hoge_csv_heade1\\hoge.csv'],
+        ['Z:\\Users\\test\\AppData\\Local\\Temp\\pytest-of-go\\pytest-0\\test_exception__hoge_csv_heade1\\hoge.csv'],
+        ['C:/Users/test/AppData/Local/Temp/pytest-of-go/pytest-0/test_exception__hoge_csv_heade1/hoge.csv'],
+        ['C:\\Users/test\\AppData/Local\\Temp/pytest-of-go\\pytest-0/test_exception__hoge_csv_heade1\\hoge.csv'],
+        ['C:\\Users'],
+        ['C:\\'],
+        ['\\Users'],
+    ])
+    def test_normal(self, value):
+        validate_file_path(value)
 
 
 class Test_sanitize_filename:
