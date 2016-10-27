@@ -112,18 +112,18 @@ def validate_file_path(file_path):
 
     _validate_null_string(file_path)
 
-    error_message_template = "invalid char found in the file path: '{:s}'"
+    error_message_template = "invalid char found : invalid-char='{:s}', path='{:s}'"
 
     file_path = os.path.normpath(os.path.splitdrive(file_path)[1])
     match = __RE_INVALID_PATH.search(file_path)
     if match is not None:
         raise InvalidCharError(
-            error_message_template.format(re.escape(match.group())))
+            error_message_template.format(re.escape(match.group()), file_path))
 
     match = __RE_INVALID_WIN_PATH.search(file_path)
     if match is not None:
         raise InvalidCharWindowsError(
-            error_message_template.format(re.escape(match.group())))
+            error_message_template.format(re.escape(match.group()), file_path))
 
     if len(file_path) > __LINUX_MAX_PATH:
         raise InvalidLengthError(
