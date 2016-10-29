@@ -3,10 +3,15 @@ pathvalidate
 
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
-.. image:: https://travis-ci.org/thombashi/pathvalidate.svg?branch=master
+
+.. image:: https://img.shields.io/travis/rust-lang/rust/master.svg?label=Linux
     :target: https://travis-ci.org/thombashi/pathvalidate
-.. image:: https://ci.appveyor.com/api/projects/status/oygpr3q8bqitrl3y/branch/master?svg=true
+    :alt: Linux CI test status
+
+.. image:: https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?label=Windows
     :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
+    :alt: Windows CI test status
+
 .. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
 
