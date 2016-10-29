@@ -2,8 +2,8 @@ import sys
 import os.path
 import setuptools
 
-needs_pytest = set(['pytest', 'test', 'ptr']).intersection(sys.argv)
-pytest_runner = ['pytest-runner'] if needs_pytest else []
+needs_pytest = set(["pytest", "test", "ptr"]).intersection(sys.argv)
+pytest_runner = ["pytest-runner"] if needs_pytest else []
 
 
 REQUIREMENT_DIR = "requirements"
@@ -22,7 +22,7 @@ with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
 
 setuptools.setup(
     name="pathvalidate",
-    version="0.8.2",
+    version="0.8.3",
     author="Tsuyoshi Hombashi",
     author_email="gogogo.vm@gmail.com",
     url="https://github.com/thombashi/pathvalidate",
@@ -32,7 +32,7 @@ setuptools.setup(
     long_description=long_description,
     include_package_data=True,
     install_requires=install_requires,
-    packages=setuptools.find_packages(exclude=['test*']),
+    packages=setuptools.find_packages(exclude=["test*"]),
     setup_requires=pytest_runner,
     tests_require=tests_require,
     classifiers=[
