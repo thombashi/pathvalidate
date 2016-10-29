@@ -44,14 +44,14 @@ class ReservedNameError(InvalidNameError):
     """
 
 
-class ValidReservedNameError(InvalidNameError):
+class ValidReservedNameError(ReservedNameError):
     """
     Raised when a string is matched a reserved name.
     However, it can be used as a name.
     """
 
 
-class InvalidReservedNameError(InvalidNameError):
+class InvalidReservedNameError(ReservedNameError):
     """
     Raised when a string is matched a reserved name.
     And the reserved name is invalid as a name.
