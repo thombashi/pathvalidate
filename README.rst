@@ -4,11 +4,11 @@ pathvalidate
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
 
-.. image:: https://img.shields.io/travis/rust-lang/rust/master.svg?label=Linux
+.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux
     :target: https://travis-ci.org/thombashi/pathvalidate
     :alt: Linux CI test status
 
-.. image:: https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg?label=Windows
+.. image:: https://img.shields.io/appveyor/ci/thombashi/pathvalidate/master.svg?label=Windows
     :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
     :alt: Windows CI test status
 
