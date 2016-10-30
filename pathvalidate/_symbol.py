@@ -14,7 +14,7 @@ __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 def replace_symbol(text, replacement_text=""):
     """
-    Replace all of the symbols.
+    Replace all of the symbols in text.
 
     :param str text: Input text.
     :param str replacement_text: Replacement text.

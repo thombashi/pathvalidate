@@ -113,7 +113,7 @@ def validate_sqlite_attr_name(name):
     :raises pathvalidate.InvalidCharError:
         If the first character of the ``name`` is invalid
         (not an alphabetic character).
-    :raises pathvalidate.ReservedNameError:
+    :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
         And invalid as a attribute name.
     :raises pathvalidate.ValidReservedNameError:
