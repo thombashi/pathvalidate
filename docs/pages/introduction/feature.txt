@@ -1,0 +1,9 @@
+Feature
+-------
+
+- Validate/Sanitize a string:
+    - file name
+    - file path
+    - variable name
+    - Excel sheet name
+    - SQLite table/attribute name

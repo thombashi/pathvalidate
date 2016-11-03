@@ -42,6 +42,7 @@ def main():
     maker.inc_indent_level()
     maker.write_chapter("Summary")
     maker.write_introduction_file("summary.txt")
+    maker.write_introduction_file("feature.txt")
 
     write_examples(maker)
 
