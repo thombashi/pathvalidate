@@ -20,6 +20,16 @@ Summary
 
 pathvalidate is a python library to validate/sanitize a string such as filename/variable-name/excel-sheet-name.
 
+Feature
+-------
+
+- Validate/Sanitize a string:
+    - file name
+    - file path
+    - variable name
+    - Excel sheet name
+    - SQLite table/attribute name
+
 Examples
 ========
 
