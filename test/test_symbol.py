@@ -11,13 +11,13 @@ import pytest
 
 from pathvalidate import *
 
-from ._common import char_list
+from ._common import alphanum_char_list
 from ._common import INVALID_VAR_CHARS
 
 
 class Test_replace_symbol:
     TARGET_CHAR_LIST = INVALID_VAR_CHARS
-    NOT_TARGET_CHAR_LIST = char_list
+    NOT_TARGET_CHAR_LIST = alphanum_char_list
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
