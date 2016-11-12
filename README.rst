@@ -1,6 +1,9 @@
 pathvalidate
 ============
 
+.. image:: https://badge.fury.io/py/pathvalidate.svg
+    :target: https://badge.fury.io/py/pathvalidate
+
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
 
