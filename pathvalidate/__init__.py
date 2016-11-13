@@ -23,6 +23,7 @@ from ._file import validate_filename
 from ._file import validate_file_path
 from ._file import sanitize_filename
 from ._file import sanitize_file_path
+from ._symbol import validate_symbol
 from ._symbol import replace_symbol
 from ._sqlite import validate_sqlite_table_name
 from ._sqlite import validate_sqlite_attr_name
