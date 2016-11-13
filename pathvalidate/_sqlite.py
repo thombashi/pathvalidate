@@ -9,10 +9,11 @@ from __future__ import unicode_literals
 import re
 
 from ._common import _validate_null_string
-from ._error import InvalidCharError
-from ._error import ValidReservedNameError
-from ._error import InvalidReservedNameError
-
+from ._error import (
+    InvalidCharError,
+    ValidReservedNameError,
+    InvalidReservedNameError
+)
 
 __SQLITE_VALID_RESERVED_KEYWORDS = [
     'ABORT', 'ACTION', 'AFTER', 'ANALYZE', 'ASC', 'ATTACH',
