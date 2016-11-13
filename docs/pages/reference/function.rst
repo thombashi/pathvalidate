@@ -40,5 +40,6 @@ Python validate/sanitize
 Symbol validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: pathvalidate.replace_symbol
+.. autofunction:: pathvalidate.validate_symbol
 
+.. autofunction:: pathvalidate.replace_symbol

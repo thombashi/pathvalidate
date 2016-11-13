@@ -28,3 +28,7 @@ Errors
 .. autoclass:: pathvalidate.ValidReservedNameError
     :undoc-members:
     :show-inheritance:
+
+.. autoclass:: pathvalidate.InvalidReservedNameError
+    :undoc-members:
+    :show-inheritance:
