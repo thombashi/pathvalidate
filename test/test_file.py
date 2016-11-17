@@ -37,6 +37,12 @@ WIN_RESERVED_FILE_NAME_LIST = [
 ]
 
 
+UTF8_NAME_LIST = [
+    ["あいうえお.txt"],
+    ["属性.txt"],
+]
+
+
 class Test_validate_filename:
     VALID_CHAR_LIST = VALID_FILENAME_CHARS
     INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS
@@ -46,6 +52,10 @@ class Test_validate_filename:
         for invalid_char in VALID_CHAR_LIST
     ])
     def test_normal(self, value):
+        validate_filename(value)
+
+    @pytest.mark.parametrize(["value"], UTF8_NAME_LIST)
+    def test_normal_utf8(self, value):
         validate_filename(value)
 
     @pytest.mark.parametrize(["value"], [
@@ -94,6 +104,10 @@ class Test_validate_file_path:
     ])
     def test_normal(self, value):
         validate_file_path(value)
+
+    @pytest.mark.parametrize(["value"], UTF8_NAME_LIST)
+    def test_normal_utf8(self, value):
+        validate_file_path("/tmp/{}".format(value))
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]

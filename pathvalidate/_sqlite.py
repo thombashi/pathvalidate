@@ -5,7 +5,6 @@
 """
 
 from __future__ import absolute_import
-from __future__ import unicode_literals
 import re
 
 from ._common import _validate_null_string
@@ -102,9 +101,21 @@ def validate_sqlite_table_name(name):
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
+        name = match.group()
+
+        try:
+            name.decode("ascii")
+        except UnicodeDecodeError:
+            try:
+                name.decode("utf8")
+            except:
+                raise
+            else:
+                return
+
         raise InvalidCharError(
             "the first character of the sqlite name is invalid: '{:s}'".format(
-                re.escape(match.group())))
+                re.escape(name)))
 
 
 def validate_sqlite_attr_name(name):
@@ -134,6 +145,18 @@ def validate_sqlite_attr_name(name):
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
+        name = match.group()
+
+        try:
+            name.decode("ascii")
+        except UnicodeDecodeError:
+            try:
+                name.decode("utf8")
+            except:
+                raise
+            else:
+                return
+
         raise InvalidCharError(
             "the first character of the sqlite name is invalid: '{:s}'".format(
                 re.escape(match.group())))

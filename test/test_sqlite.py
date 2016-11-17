@@ -77,6 +77,11 @@ VALID_RESERVED_KEYWORDS_ATTR_LOWER = [
 INVALID_RESERVED_KEYWORDS_ATTR_LOWER = [
     keyword.lower() for keyword in INVALID_RESERVED_KEYWORDS_ATTR_UPPER]
 
+UTF8_WORDS = [
+    ["あいうえお"],
+    ["属性"],
+]
+
 
 class Test_validate_sqlite_table_name:
     VALID_CHAR_LIST = [
@@ -91,7 +96,11 @@ class Test_validate_sqlite_table_name:
         VALID_RESERVED_KEYWORDS_ATTR_UPPER +
         INVALID_RESERVED_KEYWORDS_ATTR_UPPER
     ])
-    def test_normal(self, value):
+    def test_normal_ascii(self, value):
+        validate_sqlite_table_name(value)
+
+    @pytest.mark.parametrize(["value"], UTF8_WORDS)
+    def test_normal_utf8(self, value):
         validate_sqlite_table_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
@@ -146,7 +155,11 @@ class Test_validate_sqlite_attr_name:
         VALID_RESERVED_KEYWORDS_ATTR_UPPER +
         INVALID_RESERVED_KEYWORDS_ATTR_UPPER
     ])
-    def test_normal(self, value):
+    def test_normal_ascii(self, value):
+        validate_sqlite_attr_name(value)
+
+    @pytest.mark.parametrize(["value"], UTF8_WORDS)
+    def test_normal_utf8(self, value):
         validate_sqlite_attr_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
