@@ -7,6 +7,8 @@
 from __future__ import absolute_import
 import re
 
+import six
+
 from ._common import _validate_null_string
 from ._error import (
     InvalidCharError,
@@ -101,13 +103,13 @@ def validate_sqlite_table_name(name):
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
-        name = match.group()
+        name = six.u(match.group())
 
         try:
-            name.decode("ascii")
-        except UnicodeDecodeError:
+            name.encode("ascii")
+        except UnicodeEncodeError:
             try:
-                name.decode("utf8")
+                name.encode("utf8")
             except:
                 raise
             else:
@@ -145,13 +147,13 @@ def validate_sqlite_attr_name(name):
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
-        name = match.group()
+        name = six.u(match.group())
 
         try:
-            name.decode("ascii")
-        except UnicodeDecodeError:
+            name.encode("ascii")
+        except UnicodeEncodeError:
             try:
-                name.decode("utf8")
+                name.encode("utf8")
             except:
                 raise
             else:
