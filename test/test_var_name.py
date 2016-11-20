@@ -128,12 +128,11 @@ class Test_sanitize_python_var_name:
         validate_python_var_name(sanitized_name)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [reserved_keyword, ValueError]
+        [reserved_keyword, reserved_keyword + "_"]
         for reserved_keyword in RESERVED_KEYWORDS
     ])
-    def test_exception_reserved(self, value, expected):
-        with pytest.raises(expected):
-            sanitize_python_var_name(value)
+    def test_normal_reserved(self, value, expected):
+        assert sanitize_python_var_name(value) == expected
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],

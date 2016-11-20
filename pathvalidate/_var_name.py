@@ -11,8 +11,11 @@ import re
 import dataproperty
 
 from ._common import _validate_null_string
-from ._error import InvalidCharError
-from ._error import InvalidReservedNameError
+from ._error import (
+    InvalidCharError,
+    InvalidReservedNameError,
+    NullNameError
+)
 
 
 __PYTHON_RESERVED_KEYWORDS = [
@@ -69,9 +72,15 @@ def validate_python_var_name(var_name):
 
 def sanitize_python_var_name(var_name, replacement_text=""):
     """
-    Replace invalid characters for a Python variable name within
-    the ``var_name`` with the ``replacement_text``.
-    Invalid chars of the beginning of the variable name will be deleted.
+    Make a valid Python variable name from ``var_name``.
+
+    To make a valid name:
+
+    - Replace invalid characters for a Python variable name within
+      the ``var_name`` with the ``replacement_text``
+    - Delete invalid chars for the beginning of the variable name
+    - Append under bar at the tail of the name if sanitized name
+      is one of the Python reserved names
 
     :param str filename: Name to sanitize.
     :param str replacement_text: Replacement text.
@@ -109,6 +118,11 @@ def sanitize_python_var_name(var_name, replacement_text=""):
                 __RE_INVALID_VAR_NAME_HEAD.sub("", sanitize_var_name)
             )
 
-    validate_python_var_name(sanitize_var_name)
+    try:
+        validate_python_var_name(sanitize_var_name)
+    except InvalidReservedNameError:
+        sanitize_var_name += u"_"
+    except NullNameError:
+        pass
 
     return sanitize_var_name
