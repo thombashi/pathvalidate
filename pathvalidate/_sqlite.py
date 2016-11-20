@@ -7,7 +7,7 @@
 from __future__ import absolute_import
 import re
 
-import six
+import dataproperty
 
 from ._common import _validate_null_string
 from ._error import (
@@ -103,7 +103,7 @@ def validate_sqlite_table_name(name):
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
-        name = six.u(match.group())
+        name = dataproperty.to_unicode(match.group())
 
         try:
             name.encode("ascii")
@@ -147,7 +147,7 @@ def validate_sqlite_attr_name(name):
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
-        name = six.u(match.group())
+        name = dataproperty.to_unicode(match.group())
 
         try:
             name.encode("ascii")
