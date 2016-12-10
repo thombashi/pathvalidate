@@ -88,7 +88,7 @@ def validate_filename(filename):
 
     if filename.upper() in __WINDOWS_RESERVED_FILE_NAME_LIST:
         raise InvalidReservedNameError(
-            "{:s} is a reserved name by Windows".format(filename))
+            "{} is a reserved name by Windows".format(filename))
 
 
 def validate_file_path(file_path):
@@ -112,7 +112,7 @@ def validate_file_path(file_path):
 
     _validate_null_string(file_path)
 
-    error_message_template = "invalid char found : invalid-char='{:s}', path='{:s}'"
+    error_message_template = "invalid char found : invalid-char='{}', path='{}'"
 
     file_path = os.path.normpath(os.path.splitdrive(file_path)[1])
     match = __RE_INVALID_PATH.search(file_path)

@@ -16,6 +16,7 @@ from ._error import (
     InvalidReservedNameError
 )
 
+
 __SQLITE_VALID_RESERVED_KEYWORDS = [
     'ABORT', 'ACTION', 'AFTER', 'ANALYZE', 'ASC', 'ATTACH',
     'BEFORE', 'BEGIN', 'BY',
@@ -116,7 +117,7 @@ def validate_sqlite_table_name(name):
                 return
 
         raise InvalidCharError(
-            "the first character of the sqlite name is invalid: '{:s}'".format(
+            "the first character of the sqlite name is invalid: '{}'".format(
                 re.escape(name)))
 
 
@@ -139,11 +140,11 @@ def validate_sqlite_attr_name(name):
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR:
         raise InvalidReservedNameError(
-            "'{:s}' is a reserved keyword by sqlite".format(name))
+            "'{}' is a reserved keyword by sqlite".format(name))
 
     if name.upper() in __SQLITE_VALID_RESERVED_KEYWORDS_ATTR:
         raise ValidReservedNameError(
-            "'{:s}' is a reserved keyword by sqlite".format(name))
+            "'{}' is a reserved keyword by sqlite".format(name))
 
     match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
     if match is not None:
@@ -160,5 +161,5 @@ def validate_sqlite_attr_name(name):
                 return
 
         raise InvalidCharError(
-            "the first character of the sqlite name is invalid: '{:s}'".format(
+            "the first character of the sqlite name is invalid: '{}'".format(
                 re.escape(match.group())))
