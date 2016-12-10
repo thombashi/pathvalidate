@@ -12,6 +12,7 @@ Dependencies
 Python 2.7 or 3.3+
 
 - `DataPropery <https://github.com/thombashi/DataProperty>`__
+- `mbstrdecoder <https://github.com/thombashi/mbstrdecoder>`__
 
 
 Test dependencies
