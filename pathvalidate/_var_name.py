@@ -60,13 +60,13 @@ def validate_python_var_name(var_name):
     match = __RE_INVALID_VAR_NAME.search(var_name)
     if match is not None:
         raise InvalidCharError(
-            "invalid char found in the variable name: '{:s}'".format(
+            "invalid char found in the variable name: '{}'".format(
                 re.escape(match.group())))
 
     match = __RE_INVALID_VAR_NAME_HEAD.search(var_name)
     if match is not None:
         raise InvalidCharError(
-            "the first character of the variable name is invalid: '{:s}'".format(
+            "the first character of the variable name is invalid: '{}'".format(
                 re.escape(match.group())))
 
 
