@@ -4,6 +4,7 @@ Feature
 - Validate/Sanitize a string:
     - file name
     - file path
-    - variable name
+    - variable name: Python
+    - `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label
     - Excel sheet name
     - SQLite table/attribute name

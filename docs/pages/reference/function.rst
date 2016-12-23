@@ -13,7 +13,7 @@ File name/path validate/sanitize
 .. autofunction:: pathvalidate.sanitize_file_path
 
 
-Excel validate/sanitize
+Excel shee name validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: pathvalidate.validate_excel_sheet_name
@@ -37,8 +37,8 @@ SQLite validate/sanitize
 .. autofunction:: pathvalidate.validate_sqlite_attr_name
 
 
-Python validate/sanitize
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Python variable name validate/sanitize
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: pathvalidate.validate_python_var_name
 
