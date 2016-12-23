@@ -11,10 +11,12 @@ import os.path
 import re
 
 from ._common import _validate_null_string
-from ._error import InvalidCharError
-from ._error import InvalidCharWindowsError
-from ._error import InvalidLengthError
-from ._error import InvalidReservedNameError
+from ._error import (
+    InvalidCharError,
+    InvalidCharWindowsError,
+    InvalidLengthError,
+    InvalidReservedNameError
+)
 
 
 __INVALID_PATH_CHARS = "\0"

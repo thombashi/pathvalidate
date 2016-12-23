@@ -9,9 +9,10 @@ from __future__ import unicode_literals
 import re
 
 from ._common import _validate_null_string
-from ._error import InvalidCharError
-from ._error import InvalidLengthError
-
+from ._error import (
+    InvalidCharError,
+    InvalidLengthError
+)
 
 __MAX_SHEET_NAME_LEN = 31
 
