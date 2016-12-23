@@ -21,6 +21,14 @@ Excel validate/sanitize
 .. autofunction:: pathvalidate.sanitize_excel_sheet_name
 
 
+LTSV label validate/sanitize
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: pathvalidate.validate_ltsv_label
+
+.. autofunction:: pathvalidate.sanitize_ltsv_label
+
+
 SQLite validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
