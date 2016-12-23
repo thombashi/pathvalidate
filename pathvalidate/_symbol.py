@@ -24,8 +24,7 @@ def validate_symbol(text):
     :raises pathvalidate.InvalidCharError: If the ``text`` includes symbol(s)
     """
 
-    re_symbol = re.compile("[^a-zA-Z0-9]+")
-    match_list = re_symbol.findall(text)
+    match_list = __RE_SYMBOL.findall(text)
     if dataproperty.is_not_empty_sequence(match_list):
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
