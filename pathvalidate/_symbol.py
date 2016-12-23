@@ -18,10 +18,11 @@ __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 def validate_symbol(text):
     """
-    Raise an exception if symbol(s) included in the ``text``.
+    Verifying whether symbol(s) included in the ``text`` or not.
 
     :param str text: Input text.
-    :raises pathvalidate.InvalidCharError: If the ``text`` includes symbol(s)
+    :raises pathvalidate.InvalidCharError:
+        If symbol(s) included in the ``text``.
     """
 
     match_list = __RE_SYMBOL.findall(text)
