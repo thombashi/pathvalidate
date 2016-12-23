@@ -18,7 +18,7 @@ __RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
 
 def validate_symbol(text):
     """
-    Raise an exception if symbol(s) included in ``text``.
+    Raise an exception if symbol(s) included in the ``text``.
 
     :param str text: Input text.
     :raises pathvalidate.InvalidCharError: If the ``text`` includes symbol(s)
@@ -31,7 +31,7 @@ def validate_symbol(text):
 
 def replace_symbol(text, replacement_text=""):
     """
-    Replace all of the symbols in text.
+    Replace all of the symbols in the ``text``.
 
     :param str text: Input text.
     :param str replacement_text: Replacement text.
