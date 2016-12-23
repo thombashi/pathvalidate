@@ -21,7 +21,7 @@ pathvalidate
 Summary
 -------
 
-pathvalidate is a python library to validate/sanitize a string such as filename/variable-name/excel-sheet-name.
+pathvalidate is a python library to validate/sanitize a string such as filename/LTSV-label/variable-name/excel-sheet-name.
 
 Feature
 -------
@@ -29,7 +29,8 @@ Feature
 - Validate/Sanitize a string:
     - file name
     - file path
-    - variable name
+    - variable name: Python
+    - `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label
     - Excel sheet name
     - SQLite table/attribute name
 
