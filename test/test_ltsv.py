@@ -67,9 +67,10 @@ class Test_sanitize_ltsv_label:
         assert sanitize_ltsv_label(value, replace_text) == expected
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, TypeError],
-        [1, TypeError],
-        [True, TypeError],
+        ["", NullNameError],
+        [None, NullNameError],
+        [1, ValueError],
+        [True, ValueError],
     ])
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):

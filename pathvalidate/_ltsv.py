@@ -8,9 +8,13 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import re
 
-import dataproperty
+import dataproperty as dp
 
-from ._error import InvalidCharError
+from ._common import _validate_null_string
+from ._error import (
+    NullNameError,
+    InvalidCharError
+)
 
 
 __RE_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]")
@@ -26,8 +30,10 @@ def validate_ltsv_label(label):
         If invalid character(s) found in the ``label`` for a LTSV format label.
     """
 
+    _validate_null_string(label, error_msg="label is empty")
+
     match_list = __RE_LTSV_LABEL.findall(label)
-    if dataproperty.is_not_empty_sequence(match_list):
+    if dp.is_not_empty_sequence(match_list):
         raise InvalidCharError(
             "invalid character found for a LTSV format label: {}".format(
                 match_list))
@@ -42,5 +48,7 @@ def sanitize_ltsv_label(label, replacement_text=""):
     :return: A replacement string.
     :rtype: str
     """
+
+    _validate_null_string(label, error_msg="label is empty")
 
     return __RE_LTSV_LABEL.sub(replacement_text, label)
