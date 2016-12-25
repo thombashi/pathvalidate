@@ -11,10 +11,7 @@ import re
 import dataproperty as dp
 
 from ._common import _validate_null_string
-from ._error import (
-    NullNameError,
-    InvalidCharError
-)
+from ._error import InvalidCharError
 
 
 __RE_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]")
