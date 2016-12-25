@@ -5,6 +5,7 @@
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import itertools
 import platform
 import random
@@ -13,17 +14,18 @@ import pytest
 
 from pathvalidate import *
 
-from ._common import make_random_str
-from ._common import INVALID_PATH_CHARS
-from ._common import INVALID_FILENAME_CHARS
-from ._common import INVALID_WIN_PATH_CHARS
-from ._common import INVALID_WIN_FILENAME_CHARS
-from ._common import VALID_FILENAME_CHARS
-from ._common import VALID_PATH_CHARS
+from ._common import (
+    make_random_str,
+    INVALID_PATH_CHARS,
+    INVALID_FILENAME_CHARS,
+    INVALID_WIN_PATH_CHARS,
+    INVALID_WIN_FILENAME_CHARS,
+    VALID_FILENAME_CHARS,
+    VALID_PATH_CHARS
+)
 
 
 random.seed(0)
-
 
 WIN_RESERVED_FILE_NAME_LIST = [
     "CON", "con",
@@ -36,10 +38,9 @@ WIN_RESERVED_FILE_NAME_LIST = [
     in itertools.product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
 
-
 UTF8_NAME_LIST = [
-    ["あいうえお.txt"],
-    ["属性.txt"],
+    ["あいうえお.txt".encode("utf_8")],
+    #["属性.txt".encode("utf_16")],
 ]
 
 
@@ -50,12 +51,17 @@ class Test_validate_filename:
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
         for invalid_char in VALID_CHAR_LIST
+    ] + [
+        ["テスト.txt".encode("utf_8")],
     ])
     def test_normal(self, value):
         validate_filename(value)
 
-    @pytest.mark.parametrize(["value"], UTF8_NAME_LIST)
-    def test_normal_utf8(self, value):
+    @pytest.mark.parametrize(["value"], [
+        ["あいうえお.txt".encode("utf_8")],
+        ["属性.txt".encode("utf_16")],
+    ])
+    def test_normal_multibyte(self, value):
         validate_filename(value)
 
     @pytest.mark.parametrize(["value"], [
@@ -105,9 +111,12 @@ class Test_validate_file_path:
     def test_normal(self, value):
         validate_file_path(value)
 
-    @pytest.mark.parametrize(["value"], UTF8_NAME_LIST)
-    def test_normal_utf8(self, value):
-        validate_file_path("/tmp/{}".format(value))
+    @pytest.mark.parametrize(["value"], [
+        ["/tmp/ユーザ/あいうえお.txt".encode("utf_8")],
+        ["/tmp/ユーザ属性.txt".encode("utf_16")],
+    ])
+    def test_normal_multibyte(self, value):
+        validate_file_path(value)
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
@@ -160,19 +169,25 @@ class Test_sanitize_filename:
     NOT_SANITIZE_CHAR_LIST = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
-    @pytest.mark.parametrize(
-        ["value", "replace_text", "expected"],
-        [
-            ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(
-                SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
-        ] + [
-            ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(
-                NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
-        ]
-    )
+    @pytest.mark.parametrize(["value", "replace_text", "expected"], [
+        ["A" + c + "B", rep, "A" + rep + "B"]
+        for c, rep in itertools.product(
+            SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+    ] + [
+        ["A" + c + "B", rep, "A" + c + "B"]
+        for c, rep in itertools.product(
+            NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+    ])
     def test_normal(self, value, replace_text, expected):
+        sanitized_name = sanitize_filename(value, replace_text)
+        assert sanitized_name == expected
+        validate_filename(sanitized_name)
+
+    @pytest.mark.parametrize(["value", "replace_text", "expected"], [
+        ["あい/うえお.txt".encode("utf_8"), "", "あいうえお.txt"],
+        ["属/性.txt".encode("utf_16"), "-", "属-性.txt"],
+    ])
+    def test_normal_multibyte(self, value, replace_text, expected):
         sanitized_name = sanitize_filename(value, replace_text)
         assert sanitized_name == expected
         validate_filename(sanitized_name)
@@ -205,6 +220,15 @@ class Test_sanitize_file_path:
         ]
     )
     def test_normal(self, value, replace_text, expected):
+        sanitized_name = sanitize_file_path(value, replace_text)
+        assert sanitized_name == expected
+        validate_file_path(sanitized_name)
+
+    @pytest.mark.parametrize(["value", "replace_text", "expected"], [
+        ["/tmp/あいう\0えお.txt".encode("utf_8"), "", "/tmp/あいうえお.txt"],
+        ["/tmp/属\0性.txt".encode("utf_16"), "-", "/tmp/属-性.txt"],
+    ])
+    def test_normal_multibyte(self, value, replace_text, expected):
         sanitized_name = sanitize_file_path(value, replace_text)
         assert sanitized_name == expected
         validate_file_path(sanitized_name)

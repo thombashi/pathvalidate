@@ -10,6 +10,8 @@ import itertools
 import os.path
 import re
 
+from mbstrdecoder import MultiByteStrDecoder
+
 from ._common import _validate_null_string
 from ._error import (
     InvalidCharError,
@@ -29,13 +31,13 @@ __INVALID_WIN_FILENAME_CHARS = (
 )
 
 __RE_INVALID_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)))
+    "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)), re.UNICODE)
 __RE_INVALID_WIN_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)))
+    "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)), re.UNICODE)
 __RE_INVALID_PATH = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)))
+    "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)), re.UNICODE)
 __RE_INVALID_WIN_PATH = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)))
+    "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)), re.UNICODE)
 
 __WINDOWS_RESERVED_FILE_NAME_LIST = [
     "CON", "PRN", "AUX", "NUL",
@@ -80,19 +82,20 @@ def validate_filename(filename):
 
     error_message_template = "invalid char found in the filename: '{:s}'"
 
-    match = __RE_INVALID_FILENAME.search(filename)
+    unicode_filename = MultiByteStrDecoder(filename).unicode_str
+    match = __RE_INVALID_FILENAME.search(unicode_filename)
     if match is not None:
         raise InvalidCharError(
             error_message_template.format(re.escape(match.group())))
 
-    match = __RE_INVALID_WIN_FILENAME.search(filename)
+    match = __RE_INVALID_WIN_FILENAME.search(unicode_filename)
     if match is not None:
         raise InvalidCharWindowsError(
             error_message_template.format(re.escape(match.group())))
 
-    if filename.upper() in __WINDOWS_RESERVED_FILE_NAME_LIST:
+    if unicode_filename.upper() in __WINDOWS_RESERVED_FILE_NAME_LIST:
         raise InvalidReservedNameError(
-            "{} is a reserved name by Windows".format(filename))
+            "{} is a reserved name by Windows".format(unicode_filename))
 
 
 def validate_file_path(file_path):
@@ -121,20 +124,22 @@ def validate_file_path(file_path):
     error_message_template = "invalid char found : invalid-char='{}', path='{}'"
 
     file_path = os.path.normpath(os.path.splitdrive(file_path)[1])
-    match = __RE_INVALID_PATH.search(file_path)
-    if match is not None:
-        raise InvalidCharError(
-            error_message_template.format(re.escape(match.group()), file_path))
 
-    match = __RE_INVALID_WIN_PATH.search(file_path)
+    unicode_file_path = MultiByteStrDecoder(file_path).unicode_str
+    match = __RE_INVALID_PATH.search(unicode_file_path)
     if match is not None:
-        raise InvalidCharWindowsError(
-            error_message_template.format(re.escape(match.group()), file_path))
+        raise InvalidCharError(error_message_template.format(
+            re.escape(match.group()), unicode_file_path))
 
-    if len(file_path) > __LINUX_MAX_PATH:
+    match = __RE_INVALID_WIN_PATH.search(unicode_file_path)
+    if match is not None:
+        raise InvalidCharWindowsError(error_message_template.format(
+            re.escape(match.group()), unicode_file_path))
+
+    if len(unicode_file_path) > __LINUX_MAX_PATH:
         raise InvalidLengthError(
             "file path is too long: expected<={:d}, actual={:d}".format(
-                __LINUX_MAX_PATH, len(file_path)))
+                __LINUX_MAX_PATH, len(unicode_file_path)))
 
 
 def sanitize_filename(filename, replacement_text=""):
@@ -151,10 +156,12 @@ def sanitize_filename(filename, replacement_text=""):
     """
 
     try:
-        return __RE_INVALID_WIN_FILENAME.sub(
-            replacement_text, filename.strip())
+        unicode_filename = MultiByteStrDecoder(filename.strip()).unicode_str
     except AttributeError as e:
         raise ValueError(e)
+
+    return __RE_INVALID_WIN_FILENAME.sub(
+        replacement_text, unicode_filename)
 
 
 def sanitize_file_path(file_path, replacement_text=""):
@@ -171,6 +178,8 @@ def sanitize_file_path(file_path, replacement_text=""):
     """
 
     try:
-        return __RE_INVALID_WIN_PATH.sub(replacement_text, file_path.strip())
+        unicode_file_path = MultiByteStrDecoder(file_path.strip()).unicode_str
     except AttributeError as e:
         raise ValueError(e)
+
+    return __RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)

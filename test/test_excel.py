@@ -5,6 +5,7 @@
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import itertools
 import random
 
@@ -12,8 +13,10 @@ import pytest
 
 from pathvalidate import *
 
-from ._common import make_random_str
-from ._common import VALID_PATH_CHARS
+from ._common import (
+    make_random_str,
+    VALID_PATH_CHARS
+)
 
 
 random.seed(0)
@@ -33,6 +36,13 @@ class Test_validate_excel_sheet_name:
         for invalid_char in VALID_CHAR_LIST
     ])
     def test_normal(self, value):
+        validate_excel_sheet_name(value)
+
+    @pytest.mark.parametrize(["value"], [
+        ["あいうえお".encode("utf_8")],
+        ["シート".encode("utf_16")],
+    ])
+    def test_normal_multibyte(self, value):
         validate_excel_sheet_name(value)
 
     @pytest.mark.parametrize(["value"], [
@@ -79,6 +89,13 @@ class Test_sanitize_excel_sheet_name:
         sanitized_name = sanitize_excel_sheet_name(value, replace_text)
         assert sanitized_name == expected
         validate_excel_sheet_name(sanitized_name)
+
+    @pytest.mark.parametrize(["value", "expected"], [
+        ["あい*うえお".encode("utf_8"), "あいうえお".encode("utf_8")],
+        ["シー?ト".encode("utf_16"), "シート".encode("utf_16")],
+    ])
+    def test_normal_multibyte(self, value, expected):
+        sanitize_excel_sheet_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],

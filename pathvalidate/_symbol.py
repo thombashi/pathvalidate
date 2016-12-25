@@ -9,11 +9,12 @@ from __future__ import unicode_literals
 import re
 
 import dataproperty
+from mbstrdecoder import MultiByteStrDecoder
 
 from ._error import InvalidCharError
 
 
-__RE_SYMBOL = re.compile("[^a-zA-Z0-9]")
+__RE_SYMBOL = re.compile("[^a-zA-Z0-9]", re.UNICODE)  # todo: multibyte support
 
 
 def validate_symbol(text):
@@ -25,7 +26,8 @@ def validate_symbol(text):
         If symbol(s) included in the ``text``.
     """
 
-    match_list = __RE_SYMBOL.findall(text)
+    match_list = __RE_SYMBOL.findall(
+        MultiByteStrDecoder(text).unicode_str)
     if dataproperty.is_not_empty_sequence(match_list):
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 

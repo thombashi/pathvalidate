@@ -1,2 +1,2 @@
-DataProperty>=0.13.6
-mbstrdecoder>=0.1.1
+DataProperty>=0.13.8
+mbstrdecoder>=0.2.0

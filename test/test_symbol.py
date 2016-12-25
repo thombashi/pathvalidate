@@ -5,14 +5,17 @@
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import itertools
 
 import pytest
 
 from pathvalidate import *
 
-from ._common import alphanum_char_list
-from ._common import INVALID_VAR_CHARS
+from ._common import (
+    alphanum_char_list,
+    INVALID_VAR_CHARS
+)
 
 
 class Test_validate_symbol:
@@ -24,6 +27,15 @@ class Test_validate_symbol:
         for valid_char in VALID_CHAR_LIST
     ])
     def test_normal(self, value):
+        validate_symbol(value)
+
+    @pytest.mark.parametrize(["value"], [
+        ["あいうえお".encode("utf_8")],
+        ["シート".encode("utf_16")],
+    ])
+    def test_normal_multibyte(self, value):
+        pytest.skip("TODO")
+
         validate_symbol(value)
 
     @pytest.mark.parametrize(["value"], [

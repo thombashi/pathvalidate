@@ -8,6 +8,8 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import re
 
+from mbstrdecoder import MultiByteStrDecoder
+
 from ._common import _validate_null_string
 from ._error import (
     InvalidCharError,
@@ -19,7 +21,7 @@ __MAX_SHEET_NAME_LEN = 31
 __INVALID_EXCEL_CHARS = "[]:*?/\\"
 
 __RE_INVALID_EXCEL_SHEET_NAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_EXCEL_CHARS)))
+    "[{:s}]".format(re.escape(__INVALID_EXCEL_CHARS)), re.UNICODE)
 
 
 def validate_excel_sheet_name(sheet_name):
@@ -40,7 +42,8 @@ def validate_excel_sheet_name(sheet_name):
             "sheet name is too long: expected<={:d}, actual={:d}".format(
                 __MAX_SHEET_NAME_LEN, len(sheet_name)))
 
-    match = __RE_INVALID_EXCEL_SHEET_NAME.search(sheet_name)
+    unicode_sheet_name = MultiByteStrDecoder(sheet_name).unicode_str
+    match = __RE_INVALID_EXCEL_SHEET_NAME.search(unicode_sheet_name)
     if match is not None:
         raise InvalidCharError(
             "invalid char found in the sheet name: '{:s}'".format(
@@ -64,9 +67,12 @@ def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
     """
 
     try:
-        modify_sheet_name = __RE_INVALID_EXCEL_SHEET_NAME.sub(
-            replacement_text, sheet_name.strip())
+        unicode_sheet_name = MultiByteStrDecoder(
+            sheet_name.strip()).unicode_str
     except AttributeError as e:
         raise ValueError(e)
+
+    modify_sheet_name = __RE_INVALID_EXCEL_SHEET_NAME.sub(
+        replacement_text, unicode_sheet_name)
 
     return modify_sheet_name[:__MAX_SHEET_NAME_LEN]
