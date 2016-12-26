@@ -1,6 +1,9 @@
 Welcome to pathvalidate's documentation!
 ========================================
 
+.. image:: https://img.shields.io/github/stars/thombashi/pathvalidate.svg?style=social&label=Star
+   :target: https://github.com/thombashi/pathvalidate
+
 .. toctree::
    :caption: Table of Contents
    :maxdepth: 3
