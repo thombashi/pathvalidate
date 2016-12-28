@@ -20,7 +20,7 @@ from ._common import (
 
 class Test_validate_symbol:
     VALID_CHAR_LIST = alphanum_char_list
-    INVALID_CHAR_LIST = INVALID_VAR_CHARS
+    INVALID_CHAR_LIST = INVALID_VAR_CHARS + ["_"]
 
     @pytest.mark.parametrize(["value"], [
         ["abc" + valid_char + "hoge123"]
@@ -48,7 +48,7 @@ class Test_validate_symbol:
 
 
 class Test_replace_symbol:
-    TARGET_CHAR_LIST = INVALID_VAR_CHARS
+    TARGET_CHAR_LIST = INVALID_VAR_CHARS + ["_"]
     NOT_TARGET_CHAR_LIST = alphanum_char_list
     REPLACE_TEXT_LIST = ["", "_"]
 
