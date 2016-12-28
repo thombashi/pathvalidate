@@ -15,7 +15,7 @@ from ._common import _validate_null_string
 from ._error import InvalidCharError
 
 
-__RE_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]")
+__RE_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)
 
 
 def validate_ltsv_label(label):
