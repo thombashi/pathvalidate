@@ -4,7 +4,7 @@
     import pathvalidate
 
     try:
-        pathvalidate.validate_file_path("_a*b:c<d>e%f/(g)h+i_0.txt")
+        pathvalidate.validate_file_path("\0_a*b:c<d>e%f/(g)h+i_0.txt")
     except ValueError:
         print("invalid file path!")
 
