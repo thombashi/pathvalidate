@@ -5,6 +5,7 @@
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import re
 
 from mbstrdecoder import MultiByteStrDecoder
@@ -74,7 +75,7 @@ __SQLITE_VALID_RESERVED_KEYWORDS_ATTR = (
 __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR = (
     __SQLITE_INVALID_RESERVED_KEYWORDS)
 
-__RE_INVALID_SQLITE_NAME_HEAD = re.compile("^[^a-zA-Z]+")
+__RE_INVALID_SQLITE_NAME_HEAD = re.compile("^[^a-zA-Z]+", re.UNICODE)
 
 
 def validate_sqlite_table_name(name):
@@ -102,9 +103,10 @@ def validate_sqlite_table_name(name):
         raise ValidReservedNameError(
             "'{:s}' is a reserved keyword by sqlite".format(name))
 
-    match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
+    match = __RE_INVALID_SQLITE_NAME_HEAD.search(
+        MultiByteStrDecoder(name).unicode_str)
     if match is not None:
-        name = MultiByteStrDecoder(match.group()).unicode_str
+        name = match.group()
 
         try:
             name.encode("ascii")
@@ -146,9 +148,10 @@ def validate_sqlite_attr_name(name):
         raise ValidReservedNameError(
             "'{}' is a reserved keyword by sqlite".format(name))
 
-    match = __RE_INVALID_SQLITE_NAME_HEAD.search(name)
+    match = __RE_INVALID_SQLITE_NAME_HEAD.search(
+        MultiByteStrDecoder(name).unicode_str)
     if match is not None:
-        name = MultiByteStrDecoder(match.group()).unicode_str
+        name = match.group()
 
         try:
             name.encode("ascii")

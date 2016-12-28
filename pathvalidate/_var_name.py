@@ -9,6 +9,7 @@ from __future__ import unicode_literals
 import re
 
 import dataproperty
+from mbstrdecoder import MultiByteStrDecoder
 
 from ._common import _validate_null_string
 from ._error import (
@@ -57,7 +58,8 @@ def validate_python_var_name(var_name):
         raise InvalidReservedNameError(
             "{:s} is a reserved keyword by pyhon".format(var_name))
 
-    match = __RE_INVALID_VAR_NAME.search(var_name)
+    match = __RE_INVALID_VAR_NAME.search(
+        MultiByteStrDecoder(var_name).unicode_str)
     if match is not None:
         raise InvalidCharError(
             "invalid char found in the variable name: '{}'".format(
@@ -99,7 +101,7 @@ def sanitize_python_var_name(var_name, replacement_text=""):
         raise ValueError(e)
 
     sanitize_var_name = __RE_INVALID_VAR_NAME.sub(
-        replacement_text, var_name)
+        replacement_text, MultiByteStrDecoder(var_name).unicode_str)
 
     # delete invalid char(s) in the beginning of the variable name
     is_delete_head = any([

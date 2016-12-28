@@ -14,7 +14,8 @@ from mbstrdecoder import MultiByteStrDecoder
 from ._error import InvalidCharError
 
 
-__RE_SYMBOL = re.compile("[^a-zA-Z0-9]", re.UNICODE)  # todo: multibyte support
+__RE_SYMBOL = re.compile(
+    "[\\\0/:*?\"<>|!#$&\'=~^@`\[\]+-;\{\},.\(\)%\s]", re.UNICODE)
 
 
 def validate_symbol(text):

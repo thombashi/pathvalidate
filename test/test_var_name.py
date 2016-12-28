@@ -5,6 +5,7 @@
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 import itertools
 import string
 
@@ -39,6 +40,13 @@ class Test_validate_python_var_name:
     ])
     def test_normal(self, value):
         validate_python_var_name(value)
+
+    @pytest.mark.parametrize(["encoding"], [
+        ["utf_8"],
+        ["utf_16"],
+    ])
+    def test_normal_encode(self, encoding):
+        validate_python_var_name("var_name".encode(encoding))
 
     @pytest.mark.parametrize(["value"], [
         ["abc" + invalid_char + "hoge123"]
@@ -96,6 +104,12 @@ class Test_sanitize_python_var_name:
         sanitized_name = sanitize_python_var_name(value, replace_text)
         assert sanitized_name == expected
         validate_python_var_name(sanitized_name)
+
+    @pytest.mark.parametrize(["value", "expected"], [
+        ["a!あ#い$b%う%え&c'お".encode("utf_8"), "aあいbうえcお"],
+    ])
+    def test_normal_multibyte(self, value, expected):
+        sanitize_ltsv_label(value)
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
