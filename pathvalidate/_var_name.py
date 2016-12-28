@@ -58,14 +58,15 @@ def validate_python_var_name(var_name):
         raise InvalidReservedNameError(
             "{:s} is a reserved keyword by pyhon".format(var_name))
 
-    match = __RE_INVALID_VAR_NAME.search(
-        MultiByteStrDecoder(var_name).unicode_str)
+    unicode_var_name = MultiByteStrDecoder(var_name).unicode_str
+
+    match = __RE_INVALID_VAR_NAME.search(unicode_var_name)
     if match is not None:
         raise InvalidCharError(
             "invalid char found in the variable name: '{}'".format(
                 re.escape(match.group())))
 
-    match = __RE_INVALID_VAR_NAME_HEAD.search(var_name)
+    match = __RE_INVALID_VAR_NAME_HEAD.search(unicode_var_name)
     if match is not None:
         raise InvalidCharError(
             "the first character of the variable name is invalid: '{}'".format(
