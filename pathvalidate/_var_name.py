@@ -28,7 +28,7 @@ __PYTHON_RESERVED_KEYWORDS = [
     "continue", "finally", "is", "return",
     "def", "for", "lambda", "try",
 ]
-__PYTHON_BUILT_CONSTANTS = [
+__PYTHON_BUILTIN_CONSTANTS = [
     "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
 ]
 
@@ -54,7 +54,7 @@ def validate_python_var_name(var_name):
 
     _validate_null_string(var_name)
 
-    if var_name in __PYTHON_RESERVED_KEYWORDS + __PYTHON_BUILT_CONSTANTS:
+    if var_name in __PYTHON_RESERVED_KEYWORDS + __PYTHON_BUILTIN_CONSTANTS:
         raise InvalidReservedNameError(
             "{:s} is a reserved keyword by pyhon".format(var_name))
 
