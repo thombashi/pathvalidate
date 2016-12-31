@@ -283,6 +283,8 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 rst_prolog = u"""
+.. |None| replace:: :py:obj:`None`
+
 .. |invalid_file_path_chars| replace::
     ``\\0``
 

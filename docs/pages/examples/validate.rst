@@ -1,3 +1,5 @@
+.. _example-validate-filename:
+
 Validate a filename
 ----------------------------
 
@@ -7,6 +9,8 @@ the name includes invalid character(s) for a filename.
 .. include:: validate_filename_code.txt
 
 
+.. _example-validate-file-path:
+
 Validate a file path
 ----------------------------
 
@@ -15,6 +19,8 @@ the name includes invalid character(s) for a file path.
 
 .. include:: validate_file_path_code.txt
 
+
+.. _example-validate-var-name:
 
 Validate a variable name
 ----------------------------

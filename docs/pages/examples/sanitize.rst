@@ -1,3 +1,5 @@
+.. _example-sanitize-filename:
+
 Sanitize a filename
 ----------------------------
 
@@ -6,6 +8,8 @@ for a filename within the argument.
 
 .. include:: sanitize_filename_code.txt
 
+
+.. _example-sanitize-file-path:
 
 Sanitize a file path
 ----------------------------
@@ -16,6 +20,8 @@ for a file path within the argument.
 .. include:: sanitize_file_path_code.txt
 
 
+.. _example-sanitize-var-name:
+
 Sanitize a variable name
 ----------------------------
 
@@ -24,6 +30,8 @@ for a python variable within the argument.
 
 .. include:: sanitize_var_name_code.txt
 
+
+.. _example-sanitize-symbol:
 
 Replace symbols
 ----------------------------
