@@ -50,6 +50,10 @@ def validate_python_var_name(var_name):
         or
         `Python built-in constants
         <https://docs.python.org/3/library/constants.html>`__.
+
+    :Examples:
+
+        :ref:`example-validate-var-name`
     """
 
     _validate_null_string(var_name)
@@ -90,6 +94,14 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     :return: A replacement string.
     :rtype: str
     :raises ValueError: If ``var_name`` or ``replacement_text`` is invalid.
+
+    :Examples:
+
+        :ref:`example-sanitize-var-name`
+
+    .. note::
+
+        Reserved names by Python will not be replaced.
 
     .. seealso::
 

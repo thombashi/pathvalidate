@@ -42,6 +42,10 @@ def replace_symbol(text, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
+
+    :Examples:
+
+        :ref:`example-sanitize-symbol`
     """
 
     if not dp.StringType(text).is_strict_type():

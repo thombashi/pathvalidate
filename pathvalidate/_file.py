@@ -72,7 +72,8 @@ def validate_filename(filename, platform_name=None):
 
     :param str filename: Filename to validate.
     :param str platform_name:
-        Execution platform. Available names are ``"Linux"`` or ``"Windows"``.
+        Execution platform name.
+        Available palatforms are ``"Linux"`` or ``"Windows"``.
         Defaults to |None| (automatically detect platform).
     :raises pathvalidate.NullNameError: If the ``filename`` is empty.
     :raises pathvalidate.InvalidLengthError:
@@ -82,9 +83,16 @@ def validate_filename(filename, platform_name=None):
         |invalid_filename_chars|.
     :raises pathvalidate.InvalidCharWindowsError:
         If the ``filename`` includes invalid character(s) for a Windows
-        filename: |invalid_win_filename_chars|
+        filename: |invalid_win_filename_chars|.
     :raises pathvalidate.InvalidReservedNameError:
-        If the ``filename`` equals reserved name by OS
+        If the ``filename`` equals reserved name by OS.
+        Windows reserved name is as follows:
+        ``"CON"``, ``"PRN"``, ``"AUX"``, ``"NUL"``,
+        ``"COM[1-9]"``, ``"LPT[1-9]"``
+
+    :Examples:
+
+        :ref:`example-validate-filename`
 
     .. seealso::
 
@@ -136,6 +144,10 @@ def validate_file_path(file_path, platform_name=None):
     :raises pathvalidate.InvalidLengthError:
         If the ``file_path`` is longer than 1024 characters.
 
+    :Examples:
+
+        :ref:`example-validate-file-path`
+
     .. seealso::
 
         `Naming Files, Paths, and Namespaces (Windows)
@@ -176,6 +188,14 @@ def sanitize_filename(filename, replacement_text=""):
     :return: A replacement string.
     :rtype: str
     :raises ValueError: If the ``filename`` is a invalid filename.
+
+    :Examples:
+
+        :ref:`example-sanitize-filename`
+
+    .. note::
+
+        Reserved names by OS will not be replaced.
     """
 
     try:
@@ -189,6 +209,7 @@ def sanitize_filename(filename, replacement_text=""):
 
 def sanitize_file_path(file_path, replacement_text=""):
     """
+    Make valid file path for both Windows and Linux.
     Replace invalid characters for a file path within the ``file_path``
     with the ``replacement_text``. Invalid characters are as follows:
     |invalid_file_path_chars|, |invalid_win_file_path_chars|.
@@ -198,6 +219,10 @@ def sanitize_file_path(file_path, replacement_text=""):
     :return: A replacement string.
     :rtype: str
     :raises ValueError: If the ``file_path`` is a invalid file path.
+
+    :Examples:
+
+        :ref:`example-sanitize-file-path`
     """
 
     try:
