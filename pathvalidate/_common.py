@@ -39,6 +39,14 @@ class NameSanitizer(object):
     def _unicode_str(self):
         return MultiByteStrDecoder(self._value).unicode_str
 
+    def __init__(self, value):
+        try:
+            dataproperty.StringType(value, is_strict=True).validate()
+        except TypeError as e:
+            raise ValueError(e)
+
+        self._value = value.strip()
+
     def _is_reserved_keyword(self, value):
         return value in self.reserved_keywords
 

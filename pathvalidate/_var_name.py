@@ -41,14 +41,6 @@ class PythonVarNameSanitizer(NameSanitizer):
         return (
             self.__PYTHON_RESERVED_KEYWORDS + self.__PYTHON_BUILTIN_CONSTANTS)
 
-    def __init__(self, value):
-        try:
-            dp.StringType(value, is_strict=True).validate()
-        except TypeError as e:
-            raise ValueError(e)
-
-        self._value = value.strip()
-
     def validate(self):
         self._validate(self._value)
 
