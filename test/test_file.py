@@ -191,7 +191,7 @@ class Test_validate_file_path:
             validate_file_path(value, platform_name="windows")
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, NullNameError],
+        [None, ValueError],
         ["", NullNameError],
         ["a" * 1025, InvalidLengthError],
         [1, ValueError],

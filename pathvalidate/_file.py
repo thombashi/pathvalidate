@@ -14,7 +14,6 @@ import re
 from mbstrdecoder import MultiByteStrDecoder
 
 from ._common import NameSanitizer
-from ._common import _validate_null_string
 from ._error import (
     InvalidCharError,
     InvalidCharWindowsError,
@@ -23,28 +22,17 @@ from ._error import (
 )
 
 
-__INVALID_PATH_CHARS = "\0"
-_INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
-__INVALID_WIN_PATH_CHARS = __INVALID_PATH_CHARS + ':*?"<>|'
-_INVALID_WIN_FILENAME_CHARS = (
-    _INVALID_FILENAME_CHARS +
-    __INVALID_WIN_PATH_CHARS +
-    "\\"
-)
-
-__RE_INVALID_PATH = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)), re.UNICODE)
-__RE_INVALID_WIN_PATH = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)), re.UNICODE)
-
-__LINUX_MAX_PATH = 1024
-
-__VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
-__error_message_template = "invalid char found : invalid-char='{}', value='{}'"
-
-
 class FileSanitizer(NameSanitizer):
     _VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
+
+    _INVALID_PATH_CHARS = "\0"
+    _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
+    _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|'
+    _INVALID_WIN_FILENAME_CHARS = (
+        _INVALID_FILENAME_CHARS +
+        _INVALID_WIN_PATH_CHARS +
+        "\\"
+    )
 
     _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
 
@@ -74,10 +62,10 @@ class FileNameSanitizer(FileSanitizer):
         for name, num in itertools.product(["COM", "LPT"], range(1, 10))
     ]
 
-    __RE_INVALID_FILENAME = re.compile(
-        "[{:s}]".format(re.escape(_INVALID_FILENAME_CHARS)), re.UNICODE)
-    __RE_INVALID_WIN_FILENAME = re.compile(
-        "[{:s}]".format(re.escape(_INVALID_WIN_FILENAME_CHARS)), re.UNICODE)
+    __RE_INVALID_FILENAME = re.compile("[{:s}]".format(
+        re.escape(FileSanitizer._INVALID_FILENAME_CHARS)), re.UNICODE)
+    __RE_INVALID_WIN_FILENAME = re.compile("[{:s}]".format(
+        re.escape(FileSanitizer._INVALID_WIN_FILENAME_CHARS)), re.UNICODE)
 
     @property
     def reserved_keywords(self):
@@ -120,6 +108,58 @@ class FileNameSanitizer(FileSanitizer):
                 "{} is a reserved name by Windows".format(unicode_filename))
 
 
+class FilePathSanitizer(FileSanitizer):
+
+    __RE_INVALID_PATH = re.compile("[{:s}]".format(
+        re.escape(FileSanitizer._INVALID_PATH_CHARS)), re.UNICODE)
+    __RE_INVALID_WIN_PATH = re.compile("[{:s}]".format(
+        re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE)
+
+    __LINUX_MAX_PATH = 1024
+
+    @property
+    def reserved_keywords(self):
+        return []
+
+    def validate(self):
+        self._validate(self._value)
+
+    def sanitize(self, replacement_text=""):
+        try:
+            unicode_file_path = MultiByteStrDecoder(
+                self._value.strip()).unicode_str
+        except AttributeError as e:
+            raise ValueError(e)
+
+        return self.__RE_INVALID_WIN_PATH.sub(
+            replacement_text, unicode_file_path)
+
+    def _validate(self, value):
+        self._validate_null_string(value)
+
+        file_path = os.path.normpath(os.path.splitdrive(value)[1])
+        unicode_file_path = MultiByteStrDecoder(file_path).unicode_str
+
+        if self.platform_name in self._VALID_WIN_PLATFORM_NAME_LIST:
+            self.__validate_win_file_path(unicode_file_path)
+        else:
+            match = self.__RE_INVALID_PATH.search(unicode_file_path)
+            if match is not None:
+                raise InvalidCharError(self._ERROR_MSG_TEMPLATE.format(
+                    re.escape(match.group()), unicode_file_path))
+
+        if len(unicode_file_path) > self.__LINUX_MAX_PATH:
+            raise InvalidLengthError(
+                "file path is too long: expected<={:d}, actual={:d}".format(
+                    self.__LINUX_MAX_PATH, len(unicode_file_path)))
+
+    def __validate_win_file_path(self, unicode_file_path):
+        match = self.__RE_INVALID_WIN_PATH.search(unicode_file_path)
+        if match is not None:
+            raise InvalidCharWindowsError(self._ERROR_MSG_TEMPLATE.format(
+                re.escape(match.group()), unicode_file_path))
+
+
 def validate_filename(filename, platform_name=None):
     """
     Verifying whether the ``filename`` is a valid file name or not.
@@ -157,13 +197,6 @@ def validate_filename(filename, platform_name=None):
     FileNameSanitizer(filename, platform_name).validate()
 
 
-def __validate_win_file_path(unicode_file_path):
-    match = __RE_INVALID_WIN_PATH.search(unicode_file_path)
-    if match is not None:
-        raise InvalidCharWindowsError(__error_message_template.format(
-            re.escape(match.group()), unicode_file_path))
-
-
 def validate_file_path(file_path, platform_name=None):
     """
     Verifying whether the ``file_path`` is a valid file path or not.
@@ -189,26 +222,7 @@ def validate_file_path(file_path, platform_name=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    _validate_null_string(file_path)
-
-    file_path = os.path.normpath(os.path.splitdrive(file_path)[1])
-    unicode_file_path = MultiByteStrDecoder(file_path).unicode_str
-
-    if platform_name is None:
-        platform_name = platform.system()
-
-    if platform_name.lower() in __VALID_WIN_PLATFORM_NAME_LIST:
-        __validate_win_file_path(unicode_file_path)
-    else:
-        match = __RE_INVALID_PATH.search(unicode_file_path)
-        if match is not None:
-            raise InvalidCharError(__error_message_template.format(
-                re.escape(match.group()), unicode_file_path))
-
-    if len(unicode_file_path) > __LINUX_MAX_PATH:
-        raise InvalidLengthError(
-            "file path is too long: expected<={:d}, actual={:d}".format(
-                __LINUX_MAX_PATH, len(unicode_file_path)))
+    FilePathSanitizer(file_path, platform_name).validate()
 
 
 def sanitize_filename(filename, replacement_text=""):
@@ -254,9 +268,4 @@ def sanitize_file_path(file_path, replacement_text=""):
         :ref:`example-sanitize-file-path`
     """
 
-    try:
-        unicode_file_path = MultiByteStrDecoder(file_path.strip()).unicode_str
-    except AttributeError as e:
-        raise ValueError(e)
-
-    return __RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)
+    return FilePathSanitizer(file_path).sanitize(replacement_text)
