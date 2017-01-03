@@ -39,7 +39,7 @@ from ._sqlite import (
     validate_sqlite_table_name,
     validate_sqlite_attr_name
 )
-from ._var_name import (
+from ._python_var_name import (
     validate_python_var_name,
     sanitize_python_var_name
 )
