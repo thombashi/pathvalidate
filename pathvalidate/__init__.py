@@ -43,3 +43,7 @@ from ._python_var_name import (
     validate_python_var_name,
     sanitize_python_var_name
 )
+from ._js_var_name import (
+    validate_js_var_name,
+    sanitize_js_var_name
+)
