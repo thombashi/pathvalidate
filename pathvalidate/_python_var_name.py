@@ -87,10 +87,6 @@ def sanitize_python_var_name(var_name, replacement_text=""):
 
         :ref:`example-sanitize-var-name`
 
-    .. note::
-
-        Reserved names by Python will not be replaced.
-
     .. seealso::
 
         :py:func:`.validate_python_var_name`
