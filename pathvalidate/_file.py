@@ -48,6 +48,20 @@ class FileSanitizer(NameSanitizer):
 
     _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
 
+    @property
+    def platform_name(self):
+        if self._platform_name is None:
+            platform_name = platform.system()
+        else:
+            platform_name = self._platform_name
+
+        return platform_name.lower()
+
+    def __init__(self, filename, platform_name=None):
+        super(FileSanitizer, self).__init__(filename)
+
+        self._platform_name = platform_name
+
 
 class FileNameSanitizer(FileSanitizer):
 
@@ -69,11 +83,6 @@ class FileNameSanitizer(FileSanitizer):
     def reserved_keywords(self):
         return self.__WINDOWS_RESERVED_FILE_NAME_LIST
 
-    def __init__(self, filename, platform_name=None):
-        super(FileNameSanitizer, self).__init__(filename)
-
-        self.__platform_name = platform_name
-
     def validate(self):
         self._validate(self._value)
 
@@ -92,12 +101,7 @@ class FileNameSanitizer(FileSanitizer):
         error_message_template = "invalid char found in the filename: '{:s}'"
         unicode_filename = MultiByteStrDecoder(value).unicode_str
 
-        if self.__platform_name is None:
-            platform_name = platform.system()
-        else:
-            platform_name = self.__platform_name
-
-        if platform_name.lower() in self._VALID_WIN_PLATFORM_NAME_LIST:
+        if self.platform_name in self._VALID_WIN_PLATFORM_NAME_LIST:
             self.__validate_win_filename(unicode_filename)
         else:
             match = self.__RE_INVALID_FILENAME.search(unicode_filename)
