@@ -234,10 +234,15 @@ def validate_file_path(file_path, platform_name=None):
 
 def sanitize_filename(filename, replacement_text=""):
     """
-    Make valid filename for both Windows and Linux.
-    Replace invalid characters for a filename within the ``filename``
-    with the ``replacement_text``. Invalid characters are as follows:
-    |invalid_filename_chars|, |invalid_win_filename_chars|.
+    Make a valid filename for both Windows and Linux.
+
+    To make a valid filename:
+
+    - Replace invalid characters for a filename within the ``filename``
+      with the ``replacement_text``. Invalid characters are as follows:
+      |invalid_filename_chars|, |invalid_win_filename_chars|.
+    - Append under bar (``"_"``) at the tail of the name if sanitized name
+      is one of the reserved names by the OS.
 
     :param str filename: Filename to sanitize.
     :param str replacement_text: Replacement text.
@@ -259,7 +264,7 @@ def sanitize_filename(filename, replacement_text=""):
 
 def sanitize_file_path(file_path, replacement_text=""):
     """
-    Make valid file path for both Windows and Linux.
+    Make a valid file path for both Windows and Linux.
     Replace invalid characters for a file path within the ``file_path``
     with the ``replacement_text``. Invalid characters are as follows:
     |invalid_file_path_chars|, |invalid_win_file_path_chars|.
