@@ -29,13 +29,13 @@ with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
 
 setuptools.setup(
     name="pathvalidate",
-    version="0.12.1",
+    version="0.13.0",
     author="Tsuyoshi Hombashi",
     author_email="gogogo.vm@gmail.com",
     url="https://github.com/thombashi/pathvalidate",
     keywords=[
-        "path", "validation", "validator", "sanitize",
-        "file", "LTSV", "Excel", "SQLite",
+        "path", "validation", "validator", "sanitize", "file",
+        "Excel", "JavaScript", "LTSV", "SQLite",
     ],
     license="MIT License",
     description=summary,
