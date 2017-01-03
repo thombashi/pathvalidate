@@ -69,7 +69,7 @@ class PythonVarNameSanitizer(NameSanitizer):
         try:
             self._validate(sanitize_var_name)
         except InvalidReservedNameError:
-            sanitize_var_name += u"_"
+            sanitize_var_name += "_"
         except NullNameError:
             pass
 
