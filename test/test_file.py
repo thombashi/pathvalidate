@@ -256,18 +256,26 @@ class Test_sanitize_filename:
     def platform_linux(self):
         return "linux"
 
-    @pytest.mark.parametrize(["value", "patch", "expected"], [
-        [reserved.lower(), platform_win, reserved.lower() + "_"]
+    @pytest.mark.parametrize(["value", "test_platform", "expected"], [
+        [reserved.lower(), "windows", reserved.lower() + "_"]
         for reserved in WIN_RESERVED_FILE_NAME_LIST
     ] + [
-        [reserved.upper(), platform_win, reserved.upper() + "_"]
+        [reserved.upper(), "windows", reserved.upper() + "_"]
         for reserved in WIN_RESERVED_FILE_NAME_LIST
     ] + [
-        [reserved, platform_linux, reserved]
+        [reserved, "linux", reserved]
         for reserved in WIN_RESERVED_FILE_NAME_LIST
     ])
     def test_normal_win_reserved_name(
-            self, monkeypatch, value, patch, expected):
+            self, monkeypatch, value, test_platform, expected):
+        if test_platform == "windows":
+            patch = self.platform_win
+        elif test_platform == "linux":
+            patch = self.platform_linux
+        else:
+            raise ValueError(
+                "unexpected test platform: {}".format(test_platform))
+
         monkeypatch.setattr(
             FileSanitizer, "platform_name", patch)
 
