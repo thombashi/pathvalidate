@@ -112,7 +112,7 @@ class Test_validate_filename:
             validate_filename(value, platform_name="windows")
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [None, NullNameError],
+        [None, ValueError],
         ["", NullNameError],
         ["a" * 256, InvalidLengthError],
         [1, ValueError],

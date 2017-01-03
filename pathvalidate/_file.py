@@ -13,6 +13,7 @@ import re
 
 from mbstrdecoder import MultiByteStrDecoder
 
+from ._common import NameSanitizer
 from ._common import _validate_null_string
 from ._error import (
     InvalidCharError,
@@ -23,47 +24,96 @@ from ._error import (
 
 
 __INVALID_PATH_CHARS = "\0"
-__INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
+_INVALID_FILENAME_CHARS = __INVALID_PATH_CHARS + "/"
 __INVALID_WIN_PATH_CHARS = __INVALID_PATH_CHARS + ':*?"<>|'
-__INVALID_WIN_FILENAME_CHARS = (
-    __INVALID_FILENAME_CHARS +
+_INVALID_WIN_FILENAME_CHARS = (
+    _INVALID_FILENAME_CHARS +
     __INVALID_WIN_PATH_CHARS +
     "\\"
 )
 
-__RE_INVALID_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_FILENAME_CHARS)), re.UNICODE)
-__RE_INVALID_WIN_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(__INVALID_WIN_FILENAME_CHARS)), re.UNICODE)
 __RE_INVALID_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_PATH_CHARS)), re.UNICODE)
 __RE_INVALID_WIN_PATH = re.compile(
     "[{:s}]".format(re.escape(__INVALID_WIN_PATH_CHARS)), re.UNICODE)
 
-__WINDOWS_RESERVED_FILE_NAME_LIST = [
-    "CON", "PRN", "AUX", "NUL",
-] + [
-    "{:s}{:d}".format(name, num)
-    for name, num in itertools.product(["COM", "LPT"], range(1, 10))
-]
-
-__MAX_FILENAME = 255
 __LINUX_MAX_PATH = 1024
 
 __VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
-
 __error_message_template = "invalid char found : invalid-char='{}', value='{}'"
 
 
-def __validate_win_filename(unicode_filename):
-    match = __RE_INVALID_WIN_FILENAME.search(unicode_filename)
-    if match is not None:
-        raise InvalidCharWindowsError(__error_message_template.format(
-            unicode_filename, re.escape(match.group())))
+class FileSanitizer(NameSanitizer):
+    _VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
 
-    if unicode_filename.upper() in __WINDOWS_RESERVED_FILE_NAME_LIST:
-        raise InvalidReservedNameError(
-            "{} is a reserved name by Windows".format(unicode_filename))
+    _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
+
+
+class FileNameSanitizer(FileSanitizer):
+
+    __MAX_FILENAME_LEN = 255
+
+    __WINDOWS_RESERVED_FILE_NAME_LIST = [
+        "CON", "PRN", "AUX", "NUL",
+    ] + [
+        "{:s}{:d}".format(name, num)
+        for name, num in itertools.product(["COM", "LPT"], range(1, 10))
+    ]
+
+    __RE_INVALID_FILENAME = re.compile(
+        "[{:s}]".format(re.escape(_INVALID_FILENAME_CHARS)), re.UNICODE)
+    __RE_INVALID_WIN_FILENAME = re.compile(
+        "[{:s}]".format(re.escape(_INVALID_WIN_FILENAME_CHARS)), re.UNICODE)
+
+    @property
+    def reserved_keywords(self):
+        return self.__WINDOWS_RESERVED_FILE_NAME_LIST
+
+    def __init__(self, filename, platform_name=None):
+        super(FileNameSanitizer, self).__init__(filename)
+
+        self.__platform_name = platform_name
+
+    def validate(self):
+        self._validate(self._value)
+
+    def sanitize(self, replacement_text=""):
+        return self.__RE_INVALID_WIN_FILENAME.sub(
+            replacement_text, self._unicode_str)
+
+    def _validate(self, value):
+        self._validate_null_string(value)
+
+        if len(value) > self.__MAX_FILENAME_LEN:
+            raise InvalidLengthError(
+                "filename is too long: expected<={:d}, actual={:d}".format(
+                    self.__MAX_FILENAME_LEN, len(value)))
+
+        error_message_template = "invalid char found in the filename: '{:s}'"
+        unicode_filename = MultiByteStrDecoder(value).unicode_str
+
+        if self.__platform_name is None:
+            platform_name = platform.system()
+        else:
+            platform_name = self.__platform_name
+
+        if platform_name.lower() in self._VALID_WIN_PLATFORM_NAME_LIST:
+            self.__validate_win_filename(unicode_filename)
+        else:
+            match = self.__RE_INVALID_FILENAME.search(unicode_filename)
+            if match is not None:
+                raise InvalidCharError(
+                    error_message_template.format(re.escape(match.group())))
+
+    def __validate_win_filename(self, unicode_filename):
+        match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
+        if match is not None:
+            raise InvalidCharWindowsError(self._ERROR_MSG_TEMPLATE.format(
+                unicode_filename, re.escape(match.group())))
+
+        if unicode_filename.upper() in self.__WINDOWS_RESERVED_FILE_NAME_LIST:
+            raise InvalidReservedNameError(
+                "{} is a reserved name by Windows".format(unicode_filename))
 
 
 def validate_filename(filename, platform_name=None):
@@ -100,26 +150,7 @@ def validate_filename(filename, platform_name=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    _validate_null_string(filename)
-
-    if len(filename) > __MAX_FILENAME:
-        raise InvalidLengthError(
-            "filename is too long: expected<={:d}, actual={:d}".format(
-                __MAX_FILENAME, len(filename)))
-
-    error_message_template = "invalid char found in the filename: '{:s}'"
-    unicode_filename = MultiByteStrDecoder(filename).unicode_str
-
-    if platform_name is None:
-        platform_name = platform.system()
-
-    if platform_name.lower() in __VALID_WIN_PLATFORM_NAME_LIST:
-        __validate_win_filename(unicode_filename)
-    else:
-        match = __RE_INVALID_FILENAME.search(unicode_filename)
-        if match is not None:
-            raise InvalidCharError(
-                error_message_template.format(re.escape(match.group())))
+    FileNameSanitizer(filename, platform_name).validate()
 
 
 def __validate_win_file_path(unicode_file_path):
@@ -198,13 +229,7 @@ def sanitize_filename(filename, replacement_text=""):
         Reserved names by OS will not be replaced.
     """
 
-    try:
-        unicode_filename = MultiByteStrDecoder(filename.strip()).unicode_str
-    except AttributeError as e:
-        raise ValueError(e)
-
-    return __RE_INVALID_WIN_FILENAME.sub(
-        replacement_text, unicode_filename)
+    return FileNameSanitizer(filename).sanitize(replacement_text)
 
 
 def sanitize_file_path(file_path, replacement_text=""):
