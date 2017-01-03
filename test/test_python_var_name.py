@@ -13,7 +13,7 @@ import pytest
 
 from pathvalidate import *
 
-from ._common import INVALID_VAR_CHARS
+from ._common import INVALID_PYTHON_VAR_CHARS
 
 
 RESERVED_KEYWORDS = [
@@ -32,7 +32,7 @@ class Test_validate_python_var_name:
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
-    INVALID_CHAR_LIST = INVALID_VAR_CHARS
+    INVALID_CHAR_LIST = INVALID_PYTHON_VAR_CHARS
 
     @pytest.mark.parametrize(["value"], [
         ["abc" + valid_char + "hoge123"]
@@ -85,7 +85,7 @@ class Test_validate_python_var_name:
 
 
 class Test_sanitize_python_var_name:
-    SANITIZE_CHAR_LIST = INVALID_VAR_CHARS
+    SANITIZE_CHAR_LIST = INVALID_PYTHON_VAR_CHARS
     NOT_SANITIZE_CHAR_LIST = ["_"]
     REPLACE_TEXT_LIST = ["", "_"]
 

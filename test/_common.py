@@ -31,7 +31,7 @@ VALID_FILENAME_CHARS = [
 ]
 VALID_PATH_CHARS = VALID_FILENAME_CHARS + ["/"]
 
-INVALID_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + [
+INVALID_PYTHON_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + [
     "!", "#", "$", '&', "'",
     "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
     ",", ".", "(", ")", "%",
