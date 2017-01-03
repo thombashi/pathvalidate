@@ -49,13 +49,13 @@ class PythonVarNameSanitizer(NameSanitizer):
             replacement_text, self._unicode_str)
 
         # delete invalid char(s) in the beginning of the variable name
-        is_delete_head = any([
+        is_require_remove_head = any([
             dp.is_empty_string(replacement_text),
             self.__RE_INVALID_VAR_NAME_HEAD.search(
                 replacement_text) is not None,
         ])
 
-        if is_delete_head:
+        if is_require_remove_head:
             sanitize_var_name = self.__RE_INVALID_VAR_NAME_HEAD.sub(
                 "", sanitize_var_name)
         else:
