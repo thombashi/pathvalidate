@@ -6,14 +6,12 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-import abc
 import re
 
 import dataproperty as dp
 from mbstrdecoder import MultiByteStrDecoder
-import six
 
-from ._common import _validate_null_string
+from ._common import NameSanitizer
 from ._error import (
     InvalidCharError,
     InvalidReservedNameError,
@@ -21,30 +19,7 @@ from ._error import (
 )
 
 
-@six.add_metaclass(abc.ABCMeta)
-class NameChecker(object):
-
-    @abc.abstractproperty
-    def reserved_keywords(self):  # pragma: no cover
-        pass
-
-    @abc.abstractmethod
-    def validate(self):  # pragma: no cover
-        pass
-
-    @abc.abstractmethod
-    def sanitize(self, replacement_text=""):  # pragma: no cover
-        pass
-
-    @property
-    def _unicode_str(self):
-        return MultiByteStrDecoder(self._value).unicode_str
-
-    def _is_reserved_keyword(self, value):
-        return value in self.reserved_keywords
-
-
-class PythonVarNameChecker(NameChecker):
+class PythonVarNameSanitizer(NameSanitizer):
     __PYTHON_RESERVED_KEYWORDS = [
         "and", "del", "from", "not", "while",
         "as", "elif", "global", "or", "with",
@@ -109,7 +84,7 @@ class PythonVarNameChecker(NameChecker):
         return sanitize_var_name
 
     def _validate(self, value):
-        _validate_null_string(value)
+        self._validate_null_string(value)
 
         unicode_var_name = MultiByteStrDecoder(value).unicode_str
 
@@ -150,7 +125,7 @@ def validate_python_var_name(var_name):
         :ref:`example-validate-var-name`
     """
 
-    PythonVarNameChecker(var_name).validate()
+    PythonVarNameSanitizer(var_name).validate()
 
 
 def sanitize_python_var_name(var_name, replacement_text=""):
@@ -184,4 +159,4 @@ def sanitize_python_var_name(var_name, replacement_text=""):
         :py:func:`.validate_python_var_name`
     """
 
-    return PythonVarNameChecker(var_name).sanitize(replacement_text)
+    return PythonVarNameSanitizer(var_name).sanitize(replacement_text)
