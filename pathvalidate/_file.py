@@ -75,8 +75,15 @@ class FileNameSanitizer(FileSanitizer):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
-        return self.__RE_INVALID_WIN_FILENAME.sub(
+        sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(
             replacement_text, self._unicode_str)
+
+        try:
+            self._validate(sanitize_file_name)
+        except InvalidReservedNameError:
+            sanitize_file_name += "_"
+
+        return sanitize_file_name
 
     def _validate(self, value):
         self._validate_null_string(value)
@@ -103,7 +110,7 @@ class FileNameSanitizer(FileSanitizer):
             raise InvalidCharWindowsError(self._ERROR_MSG_TEMPLATE.format(
                 unicode_filename, re.escape(match.group())))
 
-        if unicode_filename.upper() in self.__WINDOWS_RESERVED_FILE_NAME_LIST:
+        if self._is_reserved_keyword(unicode_filename.upper()):
             raise InvalidReservedNameError(
                 "{} is a reserved name by Windows".format(unicode_filename))
 

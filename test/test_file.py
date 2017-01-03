@@ -13,6 +13,7 @@ import random
 import pytest
 
 from pathvalidate import *
+from pathvalidate._file import FileSanitizer
 
 from ._common import (
     make_random_str,
@@ -246,6 +247,31 @@ class Test_sanitize_filename:
         sanitized_name = sanitize_filename(value, replace_text)
         assert sanitized_name == expected
         validate_filename(sanitized_name)
+
+    @property
+    def platform_win(self):
+        return "windows"
+
+    @property
+    def platform_linux(self):
+        return "linux"
+
+    @pytest.mark.parametrize(["value", "patch", "expected"], [
+        [reserved.lower(), platform_win, reserved.lower() + "_"]
+        for reserved in WIN_RESERVED_FILE_NAME_LIST
+    ] + [
+        [reserved.upper(), platform_win, reserved.upper() + "_"]
+        for reserved in WIN_RESERVED_FILE_NAME_LIST
+    ] + [
+        [reserved, platform_linux, reserved]
+        for reserved in WIN_RESERVED_FILE_NAME_LIST
+    ])
+    def test_normal_win_reserved_name(
+            self, monkeypatch, value, patch, expected):
+        monkeypatch.setattr(
+            FileSanitizer, "platform_name", patch)
+
+        assert sanitize_filename(value) == expected
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],
