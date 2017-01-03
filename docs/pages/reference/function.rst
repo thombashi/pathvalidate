@@ -1,14 +1,18 @@
 Functions
 ---------------
 
-File name/path validate/sanitize
+File name validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autofunction:: pathvalidate.validate_filename
 
-.. autofunction:: pathvalidate.validate_file_path
-
 .. autofunction:: pathvalidate.sanitize_filename
+
+
+File path validate/sanitize
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: pathvalidate.validate_file_path
 
 .. autofunction:: pathvalidate.sanitize_file_path
 
@@ -43,6 +47,14 @@ Python variable name validate/sanitize
 .. autofunction:: pathvalidate.validate_python_var_name
 
 .. autofunction:: pathvalidate.sanitize_python_var_name
+
+
+JavaScript variable name validate/sanitize
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. autofunction:: pathvalidate.validate_js_var_name
+
+.. autofunction:: pathvalidate.sanitize_js_var_name
 
 
 Symbol validate/sanitize
