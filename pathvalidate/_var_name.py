@@ -80,7 +80,7 @@ class PythonVarNameSanitizer(NameSanitizer):
 
         unicode_var_name = MultiByteStrDecoder(value).unicode_str
 
-        if self._is_reserved_keyword(value):
+        if self._is_reserved_keyword(unicode_var_name):
             raise InvalidReservedNameError(
                 "{:s} is a reserved keyword by pyhon".format(unicode_var_name))
 
