@@ -6,10 +6,12 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+import abc
 import re
 
-import dataproperty
+import dataproperty as dp
 from mbstrdecoder import MultiByteStrDecoder
+import six
 
 from ._common import _validate_null_string
 from ._error import (
@@ -19,21 +21,113 @@ from ._error import (
 )
 
 
-__PYTHON_RESERVED_KEYWORDS = [
-    "and", "del", "from", "not", "while",
-    "as", "elif", "global", "or", "with",
-    "assert", "else", "if", "pass", "yield",
-    "break", "except", "import", "print",
-    "class", "exec", "in", "raise",
-    "continue", "finally", "is", "return",
-    "def", "for", "lambda", "try",
-]
-__PYTHON_BUILTIN_CONSTANTS = [
-    "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
-]
+@six.add_metaclass(abc.ABCMeta)
+class NameChecker(object):
 
-__RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
-__RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
+    @abc.abstractproperty
+    def reserved_keywords(self):  # pragma: no cover
+        pass
+
+    @abc.abstractmethod
+    def validate(self):  # pragma: no cover
+        pass
+
+    @abc.abstractmethod
+    def sanitize(self, replacement_text=""):  # pragma: no cover
+        pass
+
+    @property
+    def _unicode_str(self):
+        return MultiByteStrDecoder(self._value).unicode_str
+
+    def _is_reserved_keyword(self, value):
+        return value in self.reserved_keywords
+
+
+class PythonVarNameChecker(NameChecker):
+    __PYTHON_RESERVED_KEYWORDS = [
+        "and", "del", "from", "not", "while",
+        "as", "elif", "global", "or", "with",
+        "assert", "else", "if", "pass", "yield",
+        "break", "except", "import", "print",
+        "class", "exec", "in", "raise",
+        "continue", "finally", "is", "return",
+        "def", "for", "lambda", "try",
+    ]
+    __PYTHON_BUILTIN_CONSTANTS = [
+        "False", "True", "None", "NotImplemented", "Ellipsis", "__debug__",
+    ]
+
+    __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_]")
+    __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z]+")
+
+    @property
+    def reserved_keywords(self):
+        return (
+            self.__PYTHON_RESERVED_KEYWORDS + self.__PYTHON_BUILTIN_CONSTANTS)
+
+    def __init__(self, value):
+        try:
+            dp.StringType(value, is_strict=True).validate()
+        except TypeError as e:
+            raise ValueError(e)
+
+        self._value = value.strip()
+
+    def validate(self):
+        self._validate(self._value)
+
+    def sanitize(self, replacement_text=""):
+        sanitize_var_name = self.__RE_INVALID_VAR_NAME.sub(
+            replacement_text, self._unicode_str)
+
+        # delete invalid char(s) in the beginning of the variable name
+        is_delete_head = any([
+            dp.is_empty_string(replacement_text),
+            self.__RE_INVALID_VAR_NAME_HEAD.search(
+                replacement_text) is not None,
+        ])
+
+        if is_delete_head:
+            sanitize_var_name = self.__RE_INVALID_VAR_NAME_HEAD.sub(
+                "", sanitize_var_name)
+        else:
+            match = self.__RE_INVALID_VAR_NAME_HEAD.search(sanitize_var_name)
+            if match is not None:
+                sanitize_var_name = (
+                    match.end() * replacement_text +
+                    self.__RE_INVALID_VAR_NAME_HEAD.sub("", sanitize_var_name)
+                )
+
+        try:
+            self._validate(sanitize_var_name)
+        except InvalidReservedNameError:
+            sanitize_var_name += u"_"
+        except NullNameError:
+            pass
+
+        return sanitize_var_name
+
+    def _validate(self, value):
+        _validate_null_string(value)
+
+        unicode_var_name = MultiByteStrDecoder(value).unicode_str
+
+        if self._is_reserved_keyword(value):
+            raise InvalidReservedNameError(
+                "{:s} is a reserved keyword by pyhon".format(unicode_var_name))
+
+        match = self.__RE_INVALID_VAR_NAME.search(unicode_var_name)
+        if match is not None:
+            raise InvalidCharError(
+                "invalid char found in the variable name: '{}'".format(
+                    re.escape(match.group())))
+
+        match = self.__RE_INVALID_VAR_NAME_HEAD.search(unicode_var_name)
+        if match is not None:
+            raise InvalidCharError(
+                "the first character of the variable name is invalid: '{}'".format(
+                    re.escape(match.group())))
 
 
 def validate_python_var_name(var_name):
@@ -56,25 +150,7 @@ def validate_python_var_name(var_name):
         :ref:`example-validate-var-name`
     """
 
-    _validate_null_string(var_name)
-
-    if var_name in __PYTHON_RESERVED_KEYWORDS + __PYTHON_BUILTIN_CONSTANTS:
-        raise InvalidReservedNameError(
-            "{:s} is a reserved keyword by pyhon".format(var_name))
-
-    unicode_var_name = MultiByteStrDecoder(var_name).unicode_str
-
-    match = __RE_INVALID_VAR_NAME.search(unicode_var_name)
-    if match is not None:
-        raise InvalidCharError(
-            "invalid char found in the variable name: '{}'".format(
-                re.escape(match.group())))
-
-    match = __RE_INVALID_VAR_NAME_HEAD.search(unicode_var_name)
-    if match is not None:
-        raise InvalidCharError(
-            "the first character of the variable name is invalid: '{}'".format(
-                re.escape(match.group())))
+    PythonVarNameChecker(var_name).validate()
 
 
 def sanitize_python_var_name(var_name, replacement_text=""):
@@ -108,36 +184,4 @@ def sanitize_python_var_name(var_name, replacement_text=""):
         :py:func:`.validate_python_var_name`
     """
 
-    try:
-        var_name = var_name.strip()
-    except AttributeError as e:
-        raise ValueError(e)
-
-    sanitize_var_name = __RE_INVALID_VAR_NAME.sub(
-        replacement_text, MultiByteStrDecoder(var_name).unicode_str)
-
-    # delete invalid char(s) in the beginning of the variable name
-    is_delete_head = any([
-        dataproperty.is_empty_string(replacement_text),
-        __RE_INVALID_VAR_NAME_HEAD.search(replacement_text) is not None,
-    ])
-
-    if is_delete_head:
-        sanitize_var_name = __RE_INVALID_VAR_NAME_HEAD.sub(
-            "", sanitize_var_name)
-    else:
-        match = __RE_INVALID_VAR_NAME_HEAD.search(sanitize_var_name)
-        if match is not None:
-            sanitize_var_name = (
-                match.end() * replacement_text +
-                __RE_INVALID_VAR_NAME_HEAD.sub("", sanitize_var_name)
-            )
-
-    try:
-        validate_python_var_name(sanitize_var_name)
-    except InvalidReservedNameError:
-        sanitize_var_name += u"_"
-    except NullNameError:
-        pass
-
-    return sanitize_var_name
+    return PythonVarNameChecker(var_name).sanitize(replacement_text)
