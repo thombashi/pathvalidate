@@ -173,7 +173,7 @@ def validate_filename(filename, platform_name=None):
     :param str filename: Filename to validate.
     :param str platform_name:
         Execution platform name.
-        Available palatforms are ``"Linux"`` or ``"Windows"``.
+        Available platforms are ``"Linux"`` or ``"Windows"``.
         Defaults to |None| (automatically detect platform).
     :raises pathvalidate.NullNameError: If the ``filename`` is empty.
     :raises pathvalidate.InvalidLengthError:
