@@ -190,6 +190,26 @@ class Test_validate_file_path:
     def test_normal_win(self, value):
         validate_file_path(value, "windows")
 
+    @pytest.mark.parametrize(
+        ["value", "platform_name", "max_path_len", "expected"],
+        [
+            ["a" * 4096, "linux", None, None],
+            ["a" * 4097, "linux", None, InvalidLengthError],
+            ["a" * 255, "linux", 100, InvalidLengthError],
+            ["a" * 260, "windows", None, None],
+            ["a" * 261, "windows", None, InvalidLengthError],
+        ]
+    )
+    def test_normal_max_path_len(
+            self, value, platform_name, max_path_len, expected):
+        if expected is None:
+            validate_file_path(
+                value, platform_name=platform_name, max_path_len=max_path_len)
+        else:
+            with pytest.raises(expected):
+                validate_file_path(
+                    value, platform_name=platform_name, max_path_len=max_path_len)
+
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
         for invalid_char in INVALID_PATH_CHARS
@@ -210,7 +230,6 @@ class Test_validate_file_path:
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],
         ["", NullNameError],
-        ["a" * 1025, InvalidLengthError],
         [1, TypeError],
         [True, TypeError],
     ])
