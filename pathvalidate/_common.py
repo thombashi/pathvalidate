@@ -50,12 +50,6 @@ class NameSanitizer(object):
         return MultiByteStrDecoder(self._value).unicode_str
 
     def __init__(self, value):
-        """
-        try:
-            String(value).validate()
-        except TypeError as e:
-            raise ValueError(e)
-        """
         self._validate_null_string(value)
 
         self._value = value.strip()
