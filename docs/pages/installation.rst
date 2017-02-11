@@ -9,10 +9,11 @@ Installation
 Dependencies
 ============
 
-Python 2.7 or 3.3+
+Python 2.7+ or 3.3+
 
-- `DataPropery <https://github.com/thombashi/DataProperty>`__
 - `mbstrdecoder <https://github.com/thombashi/mbstrdecoder>`__
+- `pytypeutil <https://github.com/thombashi/pytypeutil>`__
+- `six <https://pypi.python.org/pypi/six/>`__
 
 
 Test dependencies
