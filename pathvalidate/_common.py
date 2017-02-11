@@ -11,10 +11,6 @@ import abc
 
 from mbstrdecoder import MultiByteStrDecoder
 import pytypeutil
-from pytypeutil.type import (
-    String,
-    NullString,
-)
 import six
 
 from ._error import NullNameError
