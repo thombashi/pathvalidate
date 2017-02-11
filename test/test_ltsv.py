@@ -6,16 +6,17 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import itertools
 
-import pytest
-
 from pathvalidate import *
+import pytest
 
 from ._common import (
     alphanum_char_list,
     INVALID_WIN_FILENAME_CHARS
 )
+
 
 VALID_LABEL_CHARS = alphanum_char_list + ["_", ".", "-"]
 INVALID_LABEL_CHARS = INVALID_WIN_FILENAME_CHARS + [
@@ -78,8 +79,8 @@ class Test_sanitize_ltsv_label:
     @pytest.mark.parametrize(["value", "expected"], [
         ["", NullNameError],
         [None, NullNameError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):

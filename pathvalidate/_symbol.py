@@ -6,10 +6,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import re
 
-import dataproperty as dp
 from mbstrdecoder import MultiByteStrDecoder
+import pytypeutil
 
 from ._error import InvalidCharError
 
@@ -30,7 +31,7 @@ def validate_symbol(text):
 
     match_list = __RE_SYMBOL.findall(
         MultiByteStrDecoder(text).unicode_str)
-    if dp.is_not_empty_sequence(match_list):
+    if pytypeutil.is_not_empty_sequence(match_list):
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
 
@@ -48,7 +49,7 @@ def replace_symbol(text, replacement_text=""):
         :ref:`example-sanitize-symbol`
     """
 
-    if not dp.StringType(text).is_strict_type():
+    if not pytypeutil.is_not_empty_string(text):
         raise TypeError("text must be a string")
 
     return __RE_SYMBOL.sub(

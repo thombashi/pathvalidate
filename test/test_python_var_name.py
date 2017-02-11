@@ -6,12 +6,12 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import itertools
 import string
 
-import pytest
-
 from pathvalidate import *
+import pytest
 
 from ._common import INVALID_PYTHON_VAR_CHARS
 
@@ -68,8 +68,8 @@ class Test_validate_python_var_name:
         [None, ValueError],
         ["", NullNameError],
         ["123", ValueError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
@@ -151,8 +151,8 @@ class Test_sanitize_python_var_name:
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):

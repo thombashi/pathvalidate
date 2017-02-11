@@ -6,11 +6,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import string
 
-import pytest
-
 from pathvalidate import *
+import pytest
 
 
 __SQLITE_VALID_RESERVED_KEYWORDS = [
@@ -107,8 +107,8 @@ class Test_validate_sqlite_table_name:
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
@@ -166,8 +166,8 @@ class Test_validate_sqlite_attr_name:
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):

@@ -6,14 +6,14 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import itertools
 import platform
 import random
 
-import pytest
-
 from pathvalidate import *
 from pathvalidate._file import FileSanitizer
+import pytest
 
 from ._common import (
     make_random_str,
@@ -116,8 +116,8 @@ class Test_validate_filename:
         [None, ValueError],
         ["", NullNameError],
         ["a" * 256, InvalidLengthError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception(self, value, expected):
         with pytest.raises(expected):
@@ -195,8 +195,8 @@ class Test_validate_file_path:
         [None, ValueError],
         ["", NullNameError],
         ["a" * 1025, InvalidLengthError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception(self, value, expected):
         with pytest.raises(expected):
@@ -283,8 +283,8 @@ class Test_sanitize_filename:
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
@@ -324,8 +324,8 @@ class Test_sanitize_file_path:
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, ValueError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):

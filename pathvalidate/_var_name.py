@@ -6,11 +6,12 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import abc
 import re
 
-import dataproperty as dp
 from mbstrdecoder import MultiByteStrDecoder
+import pytypeutil
 
 from ._common import NameSanitizer
 from ._error import (
@@ -39,7 +40,7 @@ class VarNameSanitizer(NameSanitizer):
 
         # delete invalid char(s) in the beginning of the variable name
         is_require_remove_head = any([
-            dp.is_empty_string(replacement_text),
+            pytypeutil.is_empty_string(replacement_text),
             self._invalid_var_name_head_re.search(
                 replacement_text) is not None,
         ])

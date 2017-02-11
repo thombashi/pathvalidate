@@ -6,12 +6,12 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import itertools
 import random
 
-import pytest
-
 from pathvalidate import *
+import pytest
 
 from ._common import (
     make_random_str,
@@ -56,8 +56,8 @@ class Test_validate_excel_sheet_name:
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
-        [1, ValueError],
-        [True, ValueError],
+        [1, TypeError],
+        [True, TypeError],
         ["a" * 32, InvalidLengthError],
     ])
     def test_exception(self, value, expected):

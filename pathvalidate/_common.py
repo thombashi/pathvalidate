@@ -6,18 +6,28 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import abc
 
-import dataproperty
 from mbstrdecoder import MultiByteStrDecoder
+import pytypeutil
+from pytypeutil.type import (
+    String,
+    NullString,
+)
 import six
 
 from ._error import NullNameError
 
 
 def _validate_null_string(text, error_msg="null name"):
-    if dataproperty.is_empty_string(text):
+    if pytypeutil.is_not_empty_string(text):
+        return
+
+    if pytypeutil.is_empty_string(text):
         raise NullNameError(error_msg)
+
+    raise TypeError("text must be a string")
 
 
 @six.add_metaclass(abc.ABCMeta)
@@ -40,10 +50,13 @@ class NameSanitizer(object):
         return MultiByteStrDecoder(self._value).unicode_str
 
     def __init__(self, value):
+        """
         try:
-            dataproperty.StringType(value, is_strict=True).validate()
+            String(value).validate()
         except TypeError as e:
             raise ValueError(e)
+        """
+        self._validate_null_string(value)
 
         self._value = value.strip()
 
@@ -52,5 +65,4 @@ class NameSanitizer(object):
 
     @staticmethod
     def _validate_null_string(text, error_msg="null name"):
-        if dataproperty.is_empty_string(text):
-            raise NullNameError(error_msg)
+        _validate_null_string(text)
