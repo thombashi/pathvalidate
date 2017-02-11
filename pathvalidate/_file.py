@@ -23,6 +23,9 @@ from ._error import (
 )
 
 
+_DEFAULT_MAX_FILENAME_LEN = 255
+
+
 class FileSanitizer(NameSanitizer):
     _VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
 
@@ -52,8 +55,6 @@ class FileSanitizer(NameSanitizer):
 
 class FileNameSanitizer(FileSanitizer):
 
-    __MAX_FILENAME_LEN = 255
-
     __WINDOWS_RESERVED_FILE_NAME_LIST = [
         "CON", "PRN", "AUX", "NUL",
     ] + [
@@ -70,12 +71,20 @@ class FileNameSanitizer(FileSanitizer):
     def reserved_keywords(self):
         return self.__WINDOWS_RESERVED_FILE_NAME_LIST
 
+    def __init__(
+            self, filename, platform_name=None,
+            max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
+        super(FileNameSanitizer, self).__init__(filename, platform_name)
+
+        self.__max_filename_len = max_filename_len
+
     def validate(self):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
         sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(
             replacement_text, self._unicode_str)
+        sanitize_file_name = sanitize_file_name[:self.__max_filename_len]
 
         try:
             self._validate(sanitize_file_name)
@@ -87,10 +96,10 @@ class FileNameSanitizer(FileSanitizer):
     def _validate(self, value):
         self._validate_null_string(value)
 
-        if len(value) > self.__MAX_FILENAME_LEN:
+        if len(value) > self.__max_filename_len:
             raise InvalidLengthError(
                 "filename is too long: expected<={:d}, actual={:d}".format(
-                    self.__MAX_FILENAME_LEN, len(value)))
+                    self.__max_filename_len, len(value)))
 
         error_message_template = "invalid char found in the filename: '{:s}'"
         unicode_filename = MultiByteStrDecoder(value).unicode_str
@@ -166,7 +175,9 @@ class FilePathSanitizer(FileSanitizer):
                 re.escape(match.group()), unicode_file_path))
 
 
-def validate_filename(filename, platform_name=None):
+def validate_filename(
+        filename, platform_name=None,
+        max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
     """
     Verifying whether the ``filename`` is a valid file name or not.
 
@@ -174,10 +185,13 @@ def validate_filename(filename, platform_name=None):
     :param str platform_name:
         Execution platform name.
         Available platforms are ``"Linux"`` or ``"Windows"``.
-        Defaults to |None| (automatically detect platform).
+        Automatically detect the platform if the value is |None|.
+        Defaults to |None|.
+    :param int max_filename_len:
+        Upper limit of the ``filename`` length. Defaults to 255.
     :raises pathvalidate.NullNameError: If the ``filename`` is empty.
     :raises pathvalidate.InvalidLengthError:
-        If the ``filename`` is longer than 255 characters.
+        If the ``filename`` is longer than ``max_filename_len`` characters.
     :raises pathvalidate.InvalidCharError:
         If the ``filename`` includes invalid character(s) for a filename:
         |invalid_filename_chars|.
@@ -200,7 +214,8 @@ def validate_filename(filename, platform_name=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FileNameSanitizer(filename, platform_name).validate()
+    FileNameSanitizer(
+        filename, platform_name, max_filename_len=max_filename_len).validate()
 
 
 def validate_file_path(file_path, platform_name=None):
@@ -228,10 +243,12 @@ def validate_file_path(file_path, platform_name=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FilePathSanitizer(file_path, platform_name).validate()
+    FilePathSanitizer(file_path, platform_name=platform_name).validate()
 
 
-def sanitize_filename(filename, replacement_text=""):
+def sanitize_filename(
+        filename, replacement_text="",
+        max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
     """
     Make a valid filename for both Windows and Linux.
 
@@ -245,6 +262,10 @@ def sanitize_filename(filename, replacement_text=""):
 
     :param str filename: Filename to sanitize.
     :param str replacement_text: Replacement text.
+    :param int max_filename_len:
+        Upper limit of the ``filename`` length. Truncate the name length if
+        the ``filename`` length exceed this value.
+        Defaults to 255.
     :return: A replacement string.
     :rtype: str
     :raises ValueError: If the ``filename`` is a invalid filename.
@@ -258,7 +279,8 @@ def sanitize_filename(filename, replacement_text=""):
         Reserved names by OS will not be replaced.
     """
 
-    return FileNameSanitizer(filename).sanitize(replacement_text)
+    return FileNameSanitizer(
+        filename, max_filename_len=max_filename_len).sanitize(replacement_text)
 
 
 def sanitize_file_path(file_path, replacement_text=""):

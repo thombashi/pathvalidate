@@ -80,6 +80,22 @@ class Test_validate_filename:
         validate_filename(value, platform_name)
 
     @pytest.mark.parametrize(
+        ["value", "max_filename_len", "expected"],
+        [
+            ["valid_length", 255, None],
+            ["invalid_length", 2, InvalidLengthError],
+            ["invalid_length" * 100, 255, InvalidLengthError],
+        ]
+    )
+    def test_normal_max_filename_len(
+            self, value, max_filename_len, expected):
+        if expected is None:
+            validate_filename(value, max_filename_len=max_filename_len)
+        else:
+            with pytest.raises(expected):
+                validate_filename(value, max_filename_len=max_filename_len)
+
+    @pytest.mark.parametrize(
         ["value", "platform_name"],
         itertools.chain.from_iterable([
             [
@@ -247,6 +263,19 @@ class Test_sanitize_filename:
         sanitized_name = sanitize_filename(value, replace_text)
         assert sanitized_name == expected
         validate_filename(sanitized_name)
+
+    @pytest.mark.parametrize(
+        ["value", "max_filename_len", "expected"],
+        [
+            ["a" * 10, 255, 10],
+            ["invalid_length" * 100, 255, 255],
+            ["invalid_length" * 100, 10, 10],
+        ]
+    )
+    def test_normal_max_filename_len(
+            self, value, max_filename_len, expected):
+        assert len(sanitize_filename(
+            value, max_filename_len=max_filename_len)) == expected
 
     @property
     def platform_win(self):
