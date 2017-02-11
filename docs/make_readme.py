@@ -5,8 +5,12 @@
 .. codeauthor:: Tsuyoshi Hombashi <gogogo.vm@gmail.com>
 """
 
+from __future__ import unicode_literals
+
+import os.path
 import sys
 
+from path import Path
 import readmemaker
 
 
@@ -17,15 +21,17 @@ def write_examples(maker):
     maker.set_indent_level(0)
     maker.write_chapter("Examples")
 
+    example_root = Path(os.path.join("pages", "examples"))
+
     maker.inc_indent_level()
     maker.write_chapter("Validate a filename")
-    maker.write_example_file("validate_filename_code.txt")
+    maker.write_file(example_root.joinpath("validate_filename_code.txt"))
 
     maker.write_chapter("Sanitize a filename")
-    maker.write_example_file("sanitize_filename_code.txt")
+    maker.write_file(example_root.joinpath("sanitize_filename_code.txt"))
 
     maker.write_chapter("Sanitize a variable name")
-    maker.write_example_file("sanitize_var_name_code.txt")
+    maker.write_file(example_root.joinpath("sanitize_var_name_code.txt"))
 
     maker.write_chapter("For more information")
     maker.write_line_list([
