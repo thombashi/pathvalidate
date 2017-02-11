@@ -12,6 +12,7 @@ import platform
 import re
 
 from mbstrdecoder import MultiByteStrDecoder
+import pytypeutil
 
 from ._common import NameSanitizer
 from ._error import (
@@ -38,17 +39,15 @@ class FileSanitizer(NameSanitizer):
 
     @property
     def platform_name(self):
-        if self._platform_name is None:
-            platform_name = platform.system()
-        else:
-            platform_name = self._platform_name
-
-        return platform_name.lower()
+        return self.__platform_name
 
     def __init__(self, filename, platform_name=None):
         super(FileSanitizer, self).__init__(filename)
 
-        self._platform_name = platform_name
+        if pytypeutil.is_empty_string(platform_name):
+            platform_name = platform.system()
+
+        self.__platform_name = platform_name.lower()
 
 
 class FileNameSanitizer(FileSanitizer):
