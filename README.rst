@@ -18,6 +18,9 @@ pathvalidate
 .. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
 
+.. image:: https://img.shields.io/github/stars/thombashi/pathvalidate.svg?style=social&label=Star
+   :target: https://github.com/thombashi/pathvalidate
+
 Summary
 -------
 
