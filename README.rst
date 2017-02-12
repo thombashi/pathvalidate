@@ -21,7 +21,7 @@ pathvalidate
 Summary
 -------
 
-A python library to validate/sanitize a string such as filename/LTSV-label/variable-name/excel-sheet-name.
+A python library to validate/sanitize a string such as filenames/variable-names/excel-sheet-names.
 
 Feature
 -------
