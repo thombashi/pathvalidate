@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 import re
 
 from mbstrdecoder import MultiByteStrDecoder
-import pytypeutil
+import typepy
 
 from ._common import _validate_null_string
 from ._error import InvalidCharError
@@ -34,7 +34,7 @@ def validate_ltsv_label(label):
 
     match_list = __RE_LTSV_LABEL.findall(
         MultiByteStrDecoder(label).unicode_str)
-    if pytypeutil.is_not_empty_sequence(match_list):
+    if typepy.is_not_empty_sequence(match_list):
         raise InvalidCharError(
             "invalid character found for a LTSV format label: {}".format(
                 match_list))

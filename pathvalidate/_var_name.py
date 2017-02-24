@@ -11,7 +11,7 @@ import abc
 import re
 
 from mbstrdecoder import MultiByteStrDecoder
-import pytypeutil
+import typepy
 
 from ._common import NameSanitizer
 from ._error import (
@@ -40,7 +40,7 @@ class VarNameSanitizer(NameSanitizer):
 
         # delete invalid char(s) in the beginning of the variable name
         is_require_remove_head = any([
-            pytypeutil.is_empty_string(replacement_text),
+            typepy.is_null_string(replacement_text),
             self._invalid_var_name_head_re.search(
                 replacement_text) is not None,
         ])

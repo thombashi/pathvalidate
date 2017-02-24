@@ -10,7 +10,7 @@ from __future__ import unicode_literals
 import re
 
 from mbstrdecoder import MultiByteStrDecoder
-import pytypeutil
+import typepy
 
 from ._error import InvalidCharError
 
@@ -31,7 +31,7 @@ def validate_symbol(text):
 
     match_list = __RE_SYMBOL.findall(
         MultiByteStrDecoder(text).unicode_str)
-    if pytypeutil.is_not_empty_sequence(match_list):
+    if typepy.is_not_empty_sequence(match_list):
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
 
@@ -49,7 +49,7 @@ def replace_symbol(text, replacement_text=""):
         :ref:`example-sanitize-symbol`
     """
 
-    if not pytypeutil.is_not_empty_string(text):
+    if not typepy.is_not_null_string(text):
         raise TypeError("text must be a string")
 
     return __RE_SYMBOL.sub(

@@ -12,7 +12,7 @@ import platform
 import re
 
 from mbstrdecoder import MultiByteStrDecoder
-import pytypeutil
+import typepy
 
 from ._common import NameSanitizer
 from ._error import (
@@ -53,7 +53,7 @@ class FileSanitizer(NameSanitizer):
 
         self._max_len = max_len
 
-        if pytypeutil.is_empty_string(platform_name):
+        if typepy.is_null_string(platform_name):
             platform_name = platform.system()
 
         self.__platform_name = platform_name.lower()

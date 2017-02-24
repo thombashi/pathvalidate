@@ -10,17 +10,17 @@ from __future__ import unicode_literals
 import abc
 
 from mbstrdecoder import MultiByteStrDecoder
-import pytypeutil
+import typepy
 import six
 
 from ._error import NullNameError
 
 
 def _validate_null_string(text, error_msg="null name"):
-    if pytypeutil.is_not_empty_string(text):
+    if typepy.is_not_null_string(text):
         return
 
-    if pytypeutil.is_empty_string(text):
+    if typepy.is_null_string(text):
         raise NullNameError(error_msg)
 
     raise TypeError("text must be a string")
