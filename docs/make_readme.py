@@ -7,7 +7,6 @@
 
 from __future__ import unicode_literals
 
-import os.path
 import sys
 
 from path import Path
@@ -21,7 +20,7 @@ def write_examples(maker):
     maker.set_indent_level(0)
     maker.write_chapter("Examples")
 
-    example_root = Path(os.path.join("pages", "examples"))
+    example_root = Path("pages").joinpath("examples")
 
     maker.inc_indent_level()
     maker.write_chapter("Validate a filename")
