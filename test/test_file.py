@@ -26,6 +26,9 @@ from ._common import (
 )
 
 
+nan = float("nan")
+inf = float("inf")
+
 random.seed(0)
 
 VALID_PLATFORM_NAME_LIST = ["linux", "windows"]
@@ -134,6 +137,8 @@ class Test_validate_filename:
         ["a" * 256, InvalidLengthError],
         [1, TypeError],
         [True, TypeError],
+        [nan, TypeError],
+        [inf, TypeError],
     ])
     def test_exception(self, value, expected):
         with pytest.raises(expected):
@@ -374,6 +379,8 @@ class Test_sanitize_file_path:
         [None, ValueError],
         [1, TypeError],
         [True, TypeError],
+        [nan, TypeError],
+        [inf, TypeError],
     ])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
