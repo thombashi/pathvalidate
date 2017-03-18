@@ -111,7 +111,7 @@ class Test_sanitize_js_var_name:
         validate_js_var_name(sanitized_name)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        ["a!あ#い$b%う%え&c'お".encode("utf_8"), "aあいbうえcお"],
+        ["a!あ#い$b%う%え&c'お", "aあいbうえcお"],
     ])
     def test_normal_multibyte(self, value, expected):
         sanitize_ltsv_label(value)

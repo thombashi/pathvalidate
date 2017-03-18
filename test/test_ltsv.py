@@ -42,8 +42,8 @@ class Test_validate_ltsv_label:
         ["abc" + invalid_char + "hoge123"]
         for invalid_char in INVALID_CHAR_LIST
     ] + [
-        ["あいうえお".encode("utf_8")],
-        ["ラベル".encode("utf_16")],
+        ["あいうえお"],
+        ["ラベル"],
     ])
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
@@ -71,7 +71,7 @@ class Test_sanitize_ltsv_label:
         assert sanitize_ltsv_label(value, replace_text) == expected
 
     @pytest.mark.parametrize(["value", "expected"], [
-        ["aあいbうえcお".encode("utf_8"), "abc"],
+        ["aあいbうえcお", "abc"],
     ])
     def test_normal_multibyte(self, value, expected):
         sanitize_ltsv_label(value)

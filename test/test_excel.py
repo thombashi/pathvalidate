@@ -39,8 +39,8 @@ class Test_validate_excel_sheet_name:
         validate_excel_sheet_name(value)
 
     @pytest.mark.parametrize(["value"], [
-        ["あいうえお".encode("utf_8")],
-        ["シート".encode("utf_16")],
+        ["あいうえお"],
+        ["シート"],
     ])
     def test_normal_multibyte(self, value):
         validate_excel_sheet_name(value)

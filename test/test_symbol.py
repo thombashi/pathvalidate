@@ -6,11 +6,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import itertools
 
-import pytest
-
 from pathvalidate import *
+import pytest
 
 from ._common import (
     alphanum_char_list,
@@ -30,8 +30,8 @@ class Test_validate_symbol:
         validate_symbol(value)
 
     @pytest.mark.parametrize(["value"], [
-        ["あいうえお".encode("utf_8")],
-        ["シート".encode("utf_16")],
+        ["あいうえお"],
+        ["シート"],
     ])
     def test_normal_multibyte(self, value):
         pytest.skip("TODO")
