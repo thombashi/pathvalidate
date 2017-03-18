@@ -18,7 +18,7 @@ from ._common import (
 from ._error import InvalidCharError
 
 
-__RE_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)
+__RE_INVALID_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)
 
 
 def validate_ltsv_label(label):
@@ -34,7 +34,7 @@ def validate_ltsv_label(label):
 
     _validate_null_string(label, error_msg="label is empty")
 
-    match_list = __RE_LTSV_LABEL.findall(_preprocess(label))
+    match_list = __RE_INVALID_LTSV_LABEL.findall(_preprocess(label))
     if typepy.is_not_empty_sequence(match_list):
         raise InvalidCharError(
             "invalid character found for a LTSV format label: {}".format(
@@ -53,5 +53,5 @@ def sanitize_ltsv_label(label, replacement_text=""):
 
     _validate_null_string(label, error_msg="label is empty")
 
-    return __RE_LTSV_LABEL.sub(
+    return __RE_INVALID_LTSV_LABEL.sub(
         replacement_text, _preprocess(label))
