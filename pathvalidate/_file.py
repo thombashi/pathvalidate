@@ -138,8 +138,6 @@ class FilePathSanitizer(FileSanitizer):
     __RE_INVALID_WIN_PATH = re.compile("[{:s}]".format(
         re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE)
 
-    #__LINUX_MAX_PATH = 1024
-
     @property
     def reserved_keywords(self):
         return []
