@@ -10,10 +10,12 @@ from __future__ import unicode_literals
 import abc
 import re
 
-from mbstrdecoder import MultiByteStrDecoder
 import typepy
 
-from ._common import NameSanitizer
+from ._common import (
+    _preprocess,
+    NameSanitizer,
+)
 from ._error import (
     InvalidCharError,
     InvalidReservedNameError,
@@ -68,7 +70,7 @@ class VarNameSanitizer(NameSanitizer):
     def _validate(self, value):
         self._validate_null_string(value)
 
-        unicode_var_name = MultiByteStrDecoder(value).unicode_str
+        unicode_var_name = _preprocess(value)
 
         if self._is_reserved_keyword(unicode_var_name):
             raise InvalidReservedNameError(

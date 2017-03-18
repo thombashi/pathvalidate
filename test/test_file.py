@@ -45,8 +45,8 @@ WIN_RESERVED_FILE_NAME_LIST = [
 ]
 
 VALID_MULTIBYTE_NAME_LIST = [
-    "新しいテキスト ドキュメント.txt".encode("utf_8"),
-    "新規 Microsoft Excel Worksheet.xlsx".encode("utf_16"),
+    "新しいテキスト ドキュメント.txt",
+    "新規 Microsoft Excel Worksheet.xlsx",
 ]
 
 
@@ -148,8 +148,8 @@ class Test_validate_filename:
 class Test_validate_file_path:
     VALID_CHAR_LIST = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
-        "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt".encode("utf_8"),
-        "\\\\localhost\\新しいフォルダー\\ユーザ属性.txt".encode("utf_16"),
+        "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
+        "\\\\localhost\\新しいフォルダー\\ユーザ属性.txt",
     ]
     WIN_VALID_PATH_LIST = [
         '\\\\localhost\\Users\\test\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\test_exception__hoge_csv_heade1\\hoge.csv',
@@ -280,8 +280,8 @@ class Test_sanitize_filename:
         validate_filename(sanitized_name)
 
     @pytest.mark.parametrize(["value", "replace_text", "expected"], [
-        ["あい/うえお.txt".encode("utf_8"), "", "あいうえお.txt"],
-        ["属/性.txt".encode("utf_16"), "-", "属-性.txt"],
+        ["あい/うえお.txt", "", "あいうえお.txt"],
+        ["属/性.txt", "-", "属-性.txt"],
     ])
     def test_normal_multibyte(self, value, replace_text, expected):
         sanitized_name = sanitize_filename(value, replace_text)
@@ -367,8 +367,8 @@ class Test_sanitize_file_path:
         validate_file_path(sanitized_name)
 
     @pytest.mark.parametrize(["value", "replace_text", "expected"], [
-        ["/tmp/あいう\0えお.txt".encode("utf_8"), "", "/tmp/あいうえお.txt"],
-        ["/tmp/属\0性.txt".encode("utf_16"), "-", "/tmp/属-性.txt"],
+        ["/tmp/あいう\0えお.txt", "", "/tmp/あいうえお.txt"],
+        ["/tmp/属\0性.txt", "-", "/tmp/属-性.txt"],
     ])
     def test_normal_multibyte(self, value, replace_text, expected):
         sanitized_name = sanitize_file_path(value, replace_text)

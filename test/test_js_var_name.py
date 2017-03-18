@@ -52,13 +52,6 @@ class Test_validate_js_var_name:
     def test_normal(self, value):
         validate_js_var_name(value)
 
-    @pytest.mark.parametrize(["encoding"], [
-        ["utf_8"],
-        ["utf_16"],
-    ])
-    def test_normal_encode(self, encoding):
-        validate_js_var_name("var_name".encode(encoding))
-
     @pytest.mark.parametrize(["value"], [
         ["abc" + invalid_char + "hoge123"]
         for invalid_char in INVALID_CHAR_LIST

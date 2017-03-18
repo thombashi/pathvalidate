@@ -11,10 +11,12 @@ import os.path
 import platform
 import re
 
-from mbstrdecoder import MultiByteStrDecoder
 import typepy
 
-from ._common import NameSanitizer
+from ._common import (
+    _preprocess,
+    NameSanitizer,
+)
 from ._error import (
     InvalidCharError,
     InvalidCharWindowsError,
@@ -108,7 +110,7 @@ class FileNameSanitizer(FileSanitizer):
                     self.max_len, len(value)))
 
         error_message_template = "invalid char found in the filename: '{:s}'"
-        unicode_filename = MultiByteStrDecoder(value).unicode_str
+        unicode_filename = _preprocess(value)
 
         if self.platform_name in self._VALID_WIN_PLATFORM_NAME_LIST:
             self.__validate_win_filename(unicode_filename)
@@ -156,8 +158,7 @@ class FilePathSanitizer(FileSanitizer):
 
     def sanitize(self, replacement_text=""):
         try:
-            unicode_file_path = MultiByteStrDecoder(
-                self._value.strip()).unicode_str
+            unicode_file_path = _preprocess(self._value)
         except AttributeError as e:
             raise ValueError(e)
 
@@ -168,7 +169,7 @@ class FilePathSanitizer(FileSanitizer):
         self._validate_null_string(value)
 
         file_path = os.path.normpath(os.path.splitdrive(value)[1])
-        unicode_file_path = MultiByteStrDecoder(file_path).unicode_str
+        unicode_file_path = _preprocess(file_path)
 
         if self.platform_name in self._VALID_WIN_PLATFORM_NAME_LIST:
             self.__validate_win_file_path(unicode_file_path)

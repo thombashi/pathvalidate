@@ -8,9 +8,10 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import re
 
-from mbstrdecoder import MultiByteStrDecoder
-
-from ._common import _validate_null_string
+from ._common import (
+    _validate_null_string,
+    _preprocess,
+)
 from ._error import (
     InvalidCharError,
     InvalidLengthError
@@ -42,7 +43,7 @@ def validate_excel_sheet_name(sheet_name):
             "sheet name is too long: expected<={:d}, actual={:d}".format(
                 __MAX_SHEET_NAME_LEN, len(sheet_name)))
 
-    unicode_sheet_name = MultiByteStrDecoder(sheet_name).unicode_str
+    unicode_sheet_name = _preprocess(sheet_name)
     match = __RE_INVALID_EXCEL_SHEET_NAME.search(unicode_sheet_name)
     if match is not None:
         raise InvalidCharError(
@@ -67,8 +68,7 @@ def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
     """
 
     try:
-        unicode_sheet_name = MultiByteStrDecoder(
-            sheet_name.strip()).unicode_str
+        unicode_sheet_name = _preprocess(sheet_name)
     except AttributeError as e:
         raise ValueError(e)
 

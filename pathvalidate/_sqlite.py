@@ -8,9 +8,10 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 import re
 
-from mbstrdecoder import MultiByteStrDecoder
-
-from ._common import _validate_null_string
+from ._common import (
+    _validate_null_string,
+    _preprocess,
+)
 from ._error import (
     InvalidCharError,
     ValidReservedNameError,
@@ -103,8 +104,7 @@ def validate_sqlite_table_name(name):
         raise ValidReservedNameError(
             "'{:s}' is a reserved keyword by sqlite".format(name))
 
-    match = __RE_INVALID_SQLITE_NAME_HEAD.search(
-        MultiByteStrDecoder(name).unicode_str)
+    match = __RE_INVALID_SQLITE_NAME_HEAD.search(_preprocess(name))
     if match is not None:
         name = match.group()
 
@@ -148,8 +148,7 @@ def validate_sqlite_attr_name(name):
         raise ValidReservedNameError(
             "'{}' is a reserved keyword by sqlite".format(name))
 
-    match = __RE_INVALID_SQLITE_NAME_HEAD.search(
-        MultiByteStrDecoder(name).unicode_str)
+    match = __RE_INVALID_SQLITE_NAME_HEAD.search(_preprocess(name))
     if match is not None:
         name = match.group()
 

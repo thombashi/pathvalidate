@@ -26,6 +26,10 @@ def _validate_null_string(text, error_msg="null name"):
     raise TypeError("text must be a string")
 
 
+def _preprocess(name):
+    return name.strip()
+
+
 @six.add_metaclass(abc.ABCMeta)
 class NameSanitizer(object):
 

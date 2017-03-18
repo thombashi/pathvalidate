@@ -1,3 +1,2 @@
-mbstrdecoder>=0.2.2
 typepy>=0.0.2
 six
