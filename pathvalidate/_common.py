@@ -9,9 +9,8 @@ from __future__ import unicode_literals
 
 import abc
 
-import six
-
 from ._error import NullNameError
+from ._six import add_metaclass
 
 
 def _validate_null_string(text, error_msg="null name"):
@@ -45,7 +44,7 @@ def is_not_null_string(value):
         return False
 
 
-@six.add_metaclass(abc.ABCMeta)
+@add_metaclass(abc.ABCMeta)
 class NameSanitizer(object):
 
     @abc.abstractproperty
