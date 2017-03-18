@@ -10,10 +10,7 @@ Dependencies
 ============
 
 Python 2.7+ or 3.3+
-
-- `mbstrdecoder <https://github.com/thombashi/mbstrdecoder>`__
-- `typepy <https://github.com/thombashi/typepy>`__
-- `six <https://pypi.python.org/pypi/six/>`__
+No package dependencies.
 
 
 Test dependencies
