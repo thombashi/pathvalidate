@@ -38,7 +38,7 @@ class VarNameSanitizer(NameSanitizer):
 
     def sanitize(self, replacement_text=""):
         sanitize_var_name = self._invalid_var_name_re.sub(
-            replacement_text, self._unicode_str)
+            replacement_text, self._str)
 
         # delete invalid char(s) in the beginning of the variable name
         is_require_remove_head = any([

@@ -9,7 +9,6 @@ from __future__ import unicode_literals
 
 import abc
 
-from mbstrdecoder import MultiByteStrDecoder
 import typepy
 import six
 
@@ -46,8 +45,8 @@ class NameSanitizer(object):
         pass
 
     @property
-    def _unicode_str(self):
-        return MultiByteStrDecoder(self._value).unicode_str
+    def _str(self):
+        return self._value
 
     def __init__(self, value):
         self._validate_null_string(value)

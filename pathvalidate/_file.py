@@ -91,7 +91,7 @@ class FileNameSanitizer(FileSanitizer):
 
     def sanitize(self, replacement_text=""):
         sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(
-            replacement_text, self._unicode_str)
+            replacement_text, self._str)
         sanitize_file_name = sanitize_file_name[:self.max_len]
 
         try:
