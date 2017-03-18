@@ -9,8 +9,6 @@ from __future__ import unicode_literals
 
 import re
 
-import typepy
-
 from ._common import (
     _validate_null_string,
     _preprocess,
@@ -35,7 +33,7 @@ def validate_ltsv_label(label):
     _validate_null_string(label, error_msg="label is empty")
 
     match_list = __RE_INVALID_LTSV_LABEL.findall(_preprocess(label))
-    if typepy.is_not_empty_sequence(match_list):
+    if match_list:
         raise InvalidCharError(
             "invalid character found for a LTSV format label: {}".format(
                 match_list))

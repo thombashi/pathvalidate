@@ -9,9 +9,10 @@ from __future__ import unicode_literals
 
 import re
 
-import typepy
-
-from ._common import _preprocess
+from ._common import (
+    _preprocess,
+    is_not_null_string,
+)
 from ._error import InvalidCharError
 
 
@@ -30,7 +31,7 @@ def validate_symbol(text):
     """
 
     match_list = __RE_SYMBOL.findall(_preprocess(text))
-    if typepy.is_not_empty_sequence(match_list):
+    if match_list:
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
 
@@ -48,7 +49,7 @@ def replace_symbol(text, replacement_text=""):
         :ref:`example-sanitize-symbol`
     """
 
-    if not typepy.is_not_null_string(text):
+    if not is_not_null_string(text):
         raise TypeError("text must be a string")
 
     return __RE_SYMBOL.sub(replacement_text, _preprocess(text))

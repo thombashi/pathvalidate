@@ -9,17 +9,16 @@ from __future__ import unicode_literals
 
 import abc
 
-import typepy
 import six
 
 from ._error import NullNameError
 
 
 def _validate_null_string(text, error_msg="null name"):
-    if typepy.is_not_null_string(text):
+    if is_not_null_string(text):
         return
 
-    if typepy.is_null_string(text):
+    if is_null_string(text):
         raise NullNameError(error_msg)
 
     raise TypeError("text must be a string")
@@ -27,6 +26,23 @@ def _validate_null_string(text, error_msg="null name"):
 
 def _preprocess(name):
     return name.strip()
+
+
+def is_null_string(value):
+    if value is None:
+        return True
+
+    try:
+        return len(value.strip()) == 0
+    except AttributeError:
+        return False
+
+
+def is_not_null_string(value):
+    try:
+        return len(value.strip()) > 0
+    except AttributeError:
+        return False
 
 
 @six.add_metaclass(abc.ABCMeta)

@@ -10,10 +10,9 @@ from __future__ import unicode_literals
 import abc
 import re
 
-import typepy
-
 from ._common import (
     _preprocess,
+    is_null_string,
     NameSanitizer,
 )
 from ._error import (
@@ -42,7 +41,7 @@ class VarNameSanitizer(NameSanitizer):
 
         # delete invalid char(s) in the beginning of the variable name
         is_require_remove_head = any([
-            typepy.is_null_string(replacement_text),
+            is_null_string(replacement_text),
             self._invalid_var_name_head_re.search(
                 replacement_text) is not None,
         ])

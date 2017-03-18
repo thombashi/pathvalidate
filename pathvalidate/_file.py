@@ -11,7 +11,6 @@ import os.path
 import platform
 import re
 
-import typepy
 
 from ._common import (
     _preprocess,
@@ -55,7 +54,7 @@ class FileSanitizer(NameSanitizer):
 
         self._max_len = max_len
 
-        if typepy.is_null_string(platform_name):
+        if platform_name is None:
             platform_name = platform.system()
 
         self.__platform_name = platform_name.lower()
