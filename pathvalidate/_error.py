@@ -28,7 +28,8 @@ class InvalidCharError(InvalidNameError):
 
 class InvalidCharWindowsError(InvalidCharError):
     """
-    Exception raised when includes Windows specific invalid character(s) within a string.
+    Exception raised when includes Windows specific invalid character(s)
+    within a string.
     """
 
 

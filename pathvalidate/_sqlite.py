@@ -113,7 +113,7 @@ def validate_sqlite_table_name(name):
         except UnicodeEncodeError:
             try:
                 name.encode("utf8")
-            except:
+            except Exception:
                 raise
             else:
                 return
@@ -157,7 +157,7 @@ def validate_sqlite_attr_name(name):
         except UnicodeEncodeError:
             try:
                 name.encode("utf8")
-            except:
+            except Exception:
                 raise
             else:
                 return
