@@ -6,11 +6,11 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import itertools
 import os.path
 import platform
 import re
-
 
 from ._common import (
     _preprocess,

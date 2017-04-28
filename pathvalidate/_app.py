@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
+
 import re
 
 from ._common import (
@@ -16,6 +17,7 @@ from ._error import (
     InvalidCharError,
     InvalidLengthError
 )
+
 
 __MAX_SHEET_NAME_LEN = 31
 
