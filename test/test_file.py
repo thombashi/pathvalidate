@@ -50,7 +50,7 @@ VALID_MULTIBYTE_NAME_LIST = [
 ]
 
 
-class Test_validate_filename:
+class Test_validate_filename(object):
     VALID_CHAR_LIST = VALID_FILENAME_CHARS
     INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS
 
@@ -145,7 +145,7 @@ class Test_validate_filename:
             validate_filename(value)
 
 
-class Test_validate_file_path:
+class Test_validate_file_path(object):
     VALID_CHAR_LIST = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
         "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
@@ -244,7 +244,7 @@ class Test_validate_file_path:
 
 
 @pytest.mark.skipif("platform.system() != 'Windows'")
-class Test_validate_win_file_path:
+class Test_validate_win_file_path(object):
     VALID_CHAR_LIST = VALID_PATH_CHARS
 
     @pytest.mark.parametrize(["value"], [
@@ -260,7 +260,7 @@ class Test_validate_win_file_path:
         validate_file_path(value)
 
 
-class Test_sanitize_filename:
+class Test_sanitize_filename(object):
     SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS
     NOT_SANITIZE_CHAR_LIST = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
@@ -344,7 +344,7 @@ class Test_sanitize_filename:
             sanitize_filename(value)
 
 
-class Test_sanitize_file_path:
+class Test_sanitize_file_path(object):
     SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS
     NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]

@@ -27,7 +27,7 @@ INVALID_LABEL_CHARS = INVALID_WIN_FILENAME_CHARS + [
 ]
 
 
-class Test_validate_ltsv_label:
+class Test_validate_ltsv_label(object):
     VALID_CHAR_LIST = alphanum_char_list
     INVALID_CHAR_LIST = INVALID_LABEL_CHARS
 
@@ -50,7 +50,7 @@ class Test_validate_ltsv_label:
             validate_ltsv_label(value)
 
 
-class Test_sanitize_ltsv_label:
+class Test_sanitize_ltsv_label(object):
     TARGET_CHAR_LIST = INVALID_LABEL_CHARS
     NOT_TARGET_CHAR_LIST = alphanum_char_list
     REPLACE_TEXT_LIST = ["", "_"]

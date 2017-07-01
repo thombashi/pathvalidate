@@ -39,7 +39,7 @@ RESERVED_KEYWORDS = [
 ]
 
 
-class Test_validate_js_var_name:
+class Test_validate_js_var_name(object):
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
@@ -88,7 +88,7 @@ class Test_validate_js_var_name:
             validate_js_var_name(value)
 
 
-class Test_sanitize_js_var_name:
+class Test_sanitize_js_var_name(object):
     SANITIZE_CHAR_LIST = INVALID_JS_VAR_CHARS
     NOT_SANITIZE_CHAR_LIST = ["_"]
     REPLACE_TEXT_LIST = ["", "_"]

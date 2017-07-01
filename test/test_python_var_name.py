@@ -28,7 +28,7 @@ RESERVED_KEYWORDS = [
 ]
 
 
-class Test_validate_python_var_name:
+class Test_validate_python_var_name(object):
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
@@ -77,7 +77,7 @@ class Test_validate_python_var_name:
             validate_python_var_name(value)
 
 
-class Test_sanitize_python_var_name:
+class Test_sanitize_python_var_name(object):
     SANITIZE_CHAR_LIST = INVALID_PYTHON_VAR_CHARS
     NOT_SANITIZE_CHAR_LIST = ["_"]
     REPLACE_TEXT_LIST = ["", "_"]

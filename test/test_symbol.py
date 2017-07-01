@@ -18,7 +18,7 @@ from ._common import (
 )
 
 
-class Test_validate_symbol:
+class Test_validate_symbol(object):
     VALID_CHAR_LIST = alphanum_char_list
     INVALID_CHAR_LIST = INVALID_PYTHON_VAR_CHARS + ["_"]
 
@@ -47,7 +47,7 @@ class Test_validate_symbol:
             validate_symbol(value)
 
 
-class Test_replace_symbol:
+class Test_replace_symbol(object):
     TARGET_CHAR_LIST = INVALID_PYTHON_VAR_CHARS + ["_"]
     NOT_TARGET_CHAR_LIST = alphanum_char_list
     REPLACE_TEXT_LIST = ["", "_"]

@@ -26,7 +26,7 @@ INVALID_EXCEL_CHARS = [
 ]
 
 
-class Test_validate_excel_sheet_name:
+class Test_validate_excel_sheet_name(object):
     VALID_CHAR_LIST = set(VALID_PATH_CHARS).difference(
         set(INVALID_EXCEL_CHARS))
     INVALID_CHAR_LIST = INVALID_EXCEL_CHARS
@@ -65,7 +65,7 @@ class Test_validate_excel_sheet_name:
             validate_excel_sheet_name(value)
 
 
-class Test_sanitize_excel_sheet_name:
+class Test_sanitize_excel_sheet_name(object):
     SANITIZE_CHAR_LIST = INVALID_EXCEL_CHARS
     NOT_SANITIZE_CHAR_LIST = set(VALID_PATH_CHARS).difference(
         set(INVALID_EXCEL_CHARS))

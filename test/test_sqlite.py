@@ -84,7 +84,7 @@ UTF8_WORDS = [
 ]
 
 
-class Test_validate_sqlite_table_name:
+class Test_validate_sqlite_table_name(object):
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
@@ -143,7 +143,7 @@ class Test_validate_sqlite_table_name:
             validate_sqlite_table_name(value)
 
 
-class Test_validate_sqlite_attr_name:
+class Test_validate_sqlite_attr_name(object):
     VALID_CHAR_LIST = [
         c for c in string.digits + string.ascii_letters + "_"
     ]
