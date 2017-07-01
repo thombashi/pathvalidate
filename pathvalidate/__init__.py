@@ -41,8 +41,9 @@ from ._symbol import (
 from .variable import (
     validate_js_var_name,
     sanitize_js_var_name,
-    JavaScriptVarNameSanitizer,
     validate_python_var_name,
     sanitize_python_var_name,
+    ElasticsearchIndexNameSanitizer,
+    JavaScriptVarNameSanitizer,
     PythonVarNameSanitizer,
 )

@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import
 
+from ._elasticsearch import ElasticsearchIndexNameSanitizer
 from ._javascript import (
     validate_js_var_name,
     sanitize_js_var_name,
