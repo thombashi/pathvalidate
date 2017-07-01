@@ -13,13 +13,13 @@ import re
 from ._common import (
     _preprocess,
     is_null_string,
-    NameSanitizer,
 )
 from ._error import (
     InvalidCharError,
     InvalidReservedNameError,
     NullNameError
 )
+from ._interface import NameSanitizer
 
 
 class VarNameSanitizer(NameSanitizer):

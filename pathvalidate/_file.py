@@ -12,16 +12,14 @@ import os.path
 import platform
 import re
 
-from ._common import (
-    _preprocess,
-    NameSanitizer,
-)
+from ._common import _preprocess
 from ._error import (
     InvalidCharError,
     InvalidCharWindowsError,
     InvalidLengthError,
     InvalidReservedNameError
 )
+from ._interface import NameSanitizer
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
