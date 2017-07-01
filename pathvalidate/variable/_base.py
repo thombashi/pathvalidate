@@ -10,16 +10,16 @@ from __future__ import unicode_literals
 import abc
 import re
 
-from ._common import (
+from .._common import (
     _preprocess,
     is_null_string,
 )
-from ._error import (
+from .._error import (
     InvalidCharError,
     InvalidReservedNameError,
     NullNameError
 )
-from ._interface import NameSanitizer
+from .._interface import NameSanitizer
 
 
 class VarNameSanitizer(NameSanitizer):

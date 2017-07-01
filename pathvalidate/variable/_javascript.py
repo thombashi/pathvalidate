@@ -9,7 +9,7 @@ from __future__ import unicode_literals
 
 import re
 
-from ._var_name import VarNameSanitizer
+from ._base import VarNameSanitizer
 
 
 class JavaScriptVarNameSanitizer(VarNameSanitizer):
