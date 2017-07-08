@@ -58,8 +58,7 @@ def validate_python_var_name(var_name):
         `Python built-in constants
         <https://docs.python.org/3/library/constants.html>`__.
 
-    :Examples:
-
+    :Example:
         :ref:`example-validate-var-name`
     """
 
@@ -84,12 +83,10 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     :rtype: str
     :raises ValueError: If ``var_name`` or ``replacement_text`` is invalid.
 
-    :Examples:
-
+    :Example:
         :ref:`example-sanitize-var-name`
 
     .. seealso::
-
         :py:func:`.validate_python_var_name`
     """
 

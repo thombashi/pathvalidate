@@ -223,12 +223,10 @@ def validate_filename(
         ``"CON"``, ``"PRN"``, ``"AUX"``, ``"NUL"``,
         ``"COM[1-9]"``, ``"LPT[1-9]"``
 
-    :Examples:
-
+    :Example:
         :ref:`example-validate-filename`
 
     .. seealso::
-
         `Naming Files, Paths, and Namespaces (Windows)
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
@@ -259,12 +257,10 @@ def validate_file_path(file_path, platform_name=None, max_path_len=None):
     :raises pathvalidate.InvalidLengthError:
         If the ``file_path`` is longer than 1024 characters.
 
-    :Examples:
-
+    :Example:
         :ref:`example-validate-file-path`
 
     .. seealso::
-
         `Naming Files, Paths, and Namespaces (Windows)
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
@@ -286,27 +282,25 @@ def sanitize_filename(
     - Replace invalid characters for a filename within the ``filename``
       with the ``replacement_text``. Invalid characters are as follows:
       |invalid_filename_chars|, |invalid_win_filename_chars|.
-    - Append under bar (``"_"``) at the tail of the name if sanitized name
+    - Append underbar (``"_"``) at the tail of the name if sanitized name
       is one of the reserved names by the OS.
 
     :param str filename: Filename to sanitize.
     :param str replacement_text: Replacement text.
     :param str platform_name: |platform_name|
     :param int max_filename_len:
-        Upper limit of the ``filename`` length. Truncate the name length if
-        the ``filename`` length exceed this value.
+        The upper limit of the ``filename`` length. Truncate the name length if
+        the ``filename`` length exceeds this value.
         Defaults to 255.
     :return: A replacement string.
     :rtype: str
     :raises ValueError: If the ``filename`` is a invalid filename.
 
-    :Examples:
-
+    :Example:
         :ref:`example-sanitize-filename`
 
     .. note::
-
-        Reserved names by OS will not be replaced.
+        Reserved names by OS not be replaced.
     """
 
     return FileNameSanitizer(
@@ -327,8 +321,8 @@ def sanitize_file_path(
     :param str replacement_text: Replacement text.
     :param str platform_name: |platform_name|
     :param int max_path_len:
-        Upper limit of the ``file_path`` length. Truncate the name length if
-        the ``file_path`` length exceed this value.
+        The upper limit of the ``file_path`` length. Truncate the name length
+        if the ``file_path`` length exceedd this value.
         If the value is |None|, the default value will be automatically
         determined by the execution environment:
         **(1)** 4096 (``Linux``) **(2)** 260 (``Windows``).
@@ -336,8 +330,7 @@ def sanitize_file_path(
     :rtype: str
     :raises ValueError: If the ``file_path`` is a invalid file path.
 
-    :Examples:
-
+    :Example:
         :ref:`example-sanitize-file-path`
     """
 

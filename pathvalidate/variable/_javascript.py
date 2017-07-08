@@ -96,16 +96,13 @@ def sanitize_js_var_name(var_name, replacement_text=""):
     :rtype: str
     :raises ValueError: If ``var_name`` or ``replacement_text`` is invalid.
 
-    :Examples:
-
+    :Example:
         :ref:`example-sanitize-var-name`
 
     .. note::
-
-        Currently, not supported unicode variable names.
+        Currently, not supported Unicode variable names.
 
     .. seealso::
-
         :py:func:`.validate_js_var_name`
     """
 

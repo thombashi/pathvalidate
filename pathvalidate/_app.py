@@ -55,10 +55,11 @@ def validate_excel_sheet_name(sheet_name):
 
 def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
     """
-    Replace invalid characters for a Excel sheet name within the ``sheet_name``
-    with the ``replacement_text``. Invalid characters are as follows:
+    Replace invalid characters for an Excel sheet name within
+    the ``sheet_name`` with the ``replacement_text``.
+    Invalid characters are as follows:
     |invalid_excel_sheet_chars|.
-    The ``sheet_name`` will truncated to 31 characters
+    The ``sheet_name`` truncate to 31 characters
     (max sheet name length of Excel) from the head, if the length
     of the name is exceed 31 characters.
 

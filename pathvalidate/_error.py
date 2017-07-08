@@ -41,19 +41,19 @@ class InvalidLengthError(InvalidNameError):
 
 class ReservedNameError(InvalidNameError):
     """
-    Exception raised when a string is matched a reserved name.
+    Exception raised when a string matched a reserved name.
     """
 
 
 class ValidReservedNameError(ReservedNameError):
     """
-    Exception raised when a string is matched a reserved name.
+    Exception raised when a string matched a reserved name.
     However, it can be used as a name.
     """
 
 
 class InvalidReservedNameError(ReservedNameError):
     """
-    Exception raised when a string is matched a reserved name.
-    And the reserved name is invalid as a name.
+    Exception raised when a string matched a reserved name.
+    Moreover, the reserved name is invalid as a name.
     """
