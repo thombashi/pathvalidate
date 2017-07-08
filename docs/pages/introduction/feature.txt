@@ -1,5 +1,5 @@
-Feature
--------
+Features
+---------
 
 - Validate/Sanitize a string:
     - file name

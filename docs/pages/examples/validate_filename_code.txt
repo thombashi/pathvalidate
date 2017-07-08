@@ -1,14 +1,14 @@
-.. code-block:: python
-    :caption: Sample code
-    
-    import pathvalidate
+:Sample Code:
+    .. code-block:: python
 
-    try:
-        pathvalidate.validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
-    except ValueError:
-        print("invalid filename!")
+        import pathvalidate
 
-.. code-block:: none
-    :caption: Output
-    
-    invalid filename!
+        try:
+            pathvalidate.validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
+        except ValueError:
+            print("invalid filename!")
+
+:Output:
+    .. code-block:: none
+
+        invalid filename!

@@ -1,11 +1,11 @@
-.. code-block:: python
-    :caption: Sample code
-    
-    import pathvalidate
+:Sample Code:
+    .. code-block:: python
 
-    print(pathvalidate.replace_symbol("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        import pathvalidate
 
-.. code-block:: none
-    :caption: Output
-    
-    abcdefghi0txt
+        print(pathvalidate.replace_symbol("_a*b:c<d>e%f/(g)h+i_0.txt"))
+
+:Output:
+    .. code-block:: none
+
+        abcdefghi0txt
