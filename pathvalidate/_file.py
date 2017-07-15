@@ -294,7 +294,7 @@ def sanitize_filename(
         Defaults to 255.
     :return: A replacement string.
     :rtype: str
-    :raises ValueError: If the ``filename`` is a invalid filename.
+    :raises ValueError: If the ``filename`` is an invalid filename.
 
     :Example:
         :ref:`example-sanitize-filename`
@@ -328,7 +328,7 @@ def sanitize_file_path(
         **(1)** 4096 (``Linux``) **(2)** 260 (``Windows``).
     :return: A replacement string.
     :rtype: str
-    :raises ValueError: If the ``file_path`` is a invalid file path.
+    :raises ValueError: If the ``file_path`` is an invalid file path.
 
     :Example:
         :ref:`example-sanitize-file-path`

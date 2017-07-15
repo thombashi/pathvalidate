@@ -67,7 +67,7 @@ def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
     :param str replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
-    :raises ValueError: If the ``sheet_name`` is a invalid sheet name.
+    :raises ValueError: If the ``sheet_name`` is an invalid sheet name.
     """
 
     try:
