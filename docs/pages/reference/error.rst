@@ -1,34 +1,34 @@
 Errors
 ---------------
 
-.. autoclass:: pathvalidate.InvalidNameError
+.. autoexception:: pathvalidate.InvalidNameError
     :undoc-members:
     :show-inheritance:
 
-.. autoclass:: pathvalidate.NullNameError
+.. autoexception:: pathvalidate.NullNameError
     :undoc-members:
     :show-inheritance:
 
-.. autoclass:: pathvalidate.InvalidCharError
+.. autoexception:: pathvalidate.InvalidCharError
     :undoc-members:
     :show-inheritance:
     
-.. autoclass:: pathvalidate.InvalidCharWindowsError
+.. autoexception:: pathvalidate.InvalidCharWindowsError
     :undoc-members:
     :show-inheritance:
     
-.. autoclass:: pathvalidate.InvalidLengthError
+.. autoexception:: pathvalidate.InvalidLengthError
     :undoc-members:
     :show-inheritance:
 
-.. autoclass:: pathvalidate.ReservedNameError
+.. autoexception:: pathvalidate.ReservedNameError
     :undoc-members:
     :show-inheritance:
 
-.. autoclass:: pathvalidate.ValidReservedNameError
+.. autoexception:: pathvalidate.ValidReservedNameError
     :undoc-members:
     :show-inheritance:
 
-.. autoclass:: pathvalidate.InvalidReservedNameError
+.. autoexception:: pathvalidate.InvalidReservedNameError
     :undoc-members:
     :show-inheritance:
