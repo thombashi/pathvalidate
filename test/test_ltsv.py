@@ -9,7 +9,12 @@ from __future__ import unicode_literals
 
 import itertools
 
-from pathvalidate import *
+from pathvalidate import (
+    validate_ltsv_label,
+    sanitize_ltsv_label,
+    InvalidCharError,
+    NullNameError,
+)
 import pytest
 
 from ._common import (

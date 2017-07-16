@@ -10,7 +10,13 @@ from __future__ import unicode_literals
 import itertools
 import string
 
-from pathvalidate import *
+from pathvalidate import (
+    validate_js_var_name,
+    sanitize_js_var_name,
+    InvalidCharError,
+    InvalidReservedNameError,
+    NullNameError,
+)
 import pytest
 
 from ._common import INVALID_JS_VAR_CHARS

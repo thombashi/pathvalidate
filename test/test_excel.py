@@ -10,7 +10,13 @@ from __future__ import unicode_literals
 import itertools
 import random
 
-from pathvalidate import *
+from pathvalidate import (
+    validate_excel_sheet_name,
+    sanitize_excel_sheet_name,
+    InvalidCharError,
+    InvalidLengthError,
+    NullNameError,
+)
 import pytest
 
 from ._common import (

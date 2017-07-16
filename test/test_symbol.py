@@ -9,7 +9,11 @@ from __future__ import unicode_literals
 
 import itertools
 
-from pathvalidate import *
+from pathvalidate import (
+    validate_symbol,
+    replace_symbol,
+    InvalidCharError,
+)
 import pytest
 
 from ._common import (

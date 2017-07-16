@@ -9,7 +9,14 @@ from __future__ import unicode_literals
 
 import string
 
-from pathvalidate import *
+from pathvalidate import (
+    validate_sqlite_attr_name,
+    validate_sqlite_table_name,
+    InvalidCharError,
+    InvalidReservedNameError,
+    NullNameError,
+    ValidReservedNameError,
+)
 import pytest
 
 
