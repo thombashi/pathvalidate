@@ -77,8 +77,8 @@ class FileNameSanitizer(FileSanitizer):
         return self.__WINDOWS_RESERVED_FILE_NAME_LIST
 
     def __init__(
-        self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN,
-        platform_name=None
+            self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN,
+            platform_name=None
     ):
         super(FileNameSanitizer, self).__init__(
             filename, max_len=max_filename_len, platform_name=platform_name)
