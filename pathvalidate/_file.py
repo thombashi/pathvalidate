@@ -244,8 +244,8 @@ def validate_file_path(file_path, platform_name=None, max_path_len=None):
     :param str file_path: File path to validate.
     :param str platform_name: |platform_name|
     :param int max_filename_len:
-        Upper limit of the ``file_path`` length. If the value is |None|,
-        the default value will be automatically determined by the execution
+        The upper limit of the ``file_path`` length. If the value is |None|,
+        the default value automatically determined by the execution
         environment: **(1)** 4096 (``Linux``) **(2)** 260 (``Windows``).
     :raises pathvalidate.NullNameError: If the ``file_path`` is empty.
     :raises pathvalidate.InvalidCharError:
@@ -323,7 +323,7 @@ def sanitize_file_path(
     :param int max_path_len:
         The upper limit of the ``file_path`` length. Truncate the name length
         if the ``file_path`` length exceedd this value.
-        If the value is |None|, the default value will be automatically
+        If the value is |None|, the default value automatically
         determined by the execution environment:
         **(1)** 4096 (``Linux``) **(2)** 260 (``Windows``).
     :return: A replacement string.
