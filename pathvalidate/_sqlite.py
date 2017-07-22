@@ -133,10 +133,10 @@ def validate_sqlite_attr_name(name):
         (not an alphabetic character).
     :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
-        And invalid as a attribute name.
+        And invalid as an attribute name.
     :raises pathvalidate.ValidReservedNameError:
         |raises_sqlite_keywords|
-        However, valid as a attribute name.
+        However, valid as an attribute name.
     """
 
     _validate_null_string(name)
