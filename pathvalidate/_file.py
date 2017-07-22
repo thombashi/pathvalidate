@@ -78,8 +78,7 @@ class FileNameSanitizer(FileSanitizer):
 
     def __init__(
             self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN,
-            platform_name=None
-    ):
+            platform_name=None):
         super(FileNameSanitizer, self).__init__(
             filename, max_len=max_filename_len, platform_name=platform_name)
 

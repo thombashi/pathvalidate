@@ -70,8 +70,7 @@ class Test_sanitize_ltsv_label(object):
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(
                 NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
-        ]
-    )
+        ])
     def test_normal(self, value, replace_text, expected):
         assert sanitize_ltsv_label(value, replace_text) == expected
 

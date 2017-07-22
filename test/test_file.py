@@ -70,12 +70,10 @@ class Test_validate_filename(object):
             [
                 arg_list for arg_list in itertools.product(
                     [make_random_str(64) + valid_char + make_random_str(64)],
-                    VALID_PLATFORM_NAME_LIST
-                )
+                    VALID_PLATFORM_NAME_LIST)
             ]
             for valid_char in VALID_CHAR_LIST
-        ])
-    )
+        ]))
     def test_normal(self, value, platform_name):
         validate_filename(value, platform_name)
 
@@ -87,8 +85,7 @@ class Test_validate_filename(object):
                     [multibyte_name], VALID_PLATFORM_NAME_LIST)
             ]
             for multibyte_name in VALID_MULTIBYTE_NAME_LIST
-        ])
-    )
+        ]))
     def test_normal_multibyte(self, value, platform_name):
         validate_filename(value, platform_name)
 
@@ -98,8 +95,7 @@ class Test_validate_filename(object):
             ["valid_length", 255, None],
             ["invalid_length", 2, InvalidLengthError],
             ["invalid_length" * 100, 255, InvalidLengthError],
-        ]
-    )
+        ])
     def test_normal_max_filename_len(
             self, value, max_filename_len, expected):
         if expected is None:
@@ -114,12 +110,10 @@ class Test_validate_filename(object):
             [
                 arg_list for arg_list in itertools.product(
                     [make_random_str(64) + invalid_char + make_random_str(64)],
-                    VALID_PLATFORM_NAME_LIST
-                )
+                    VALID_PLATFORM_NAME_LIST)
             ]
             for invalid_char in INVALID_FILENAME_CHARS
-        ])
-    )
+        ]))
     def test_exception_invalid_char(self, value, platform_name):
         with pytest.raises(InvalidCharError):
             validate_filename(value, platform_name)
@@ -176,12 +170,10 @@ class Test_validate_file_path(object):
             [
                 arg_list for arg_list in itertools.product(
                     [make_random_str(64) + valid_char + make_random_str(64)],
-                    VALID_PLATFORM_NAME_LIST
-                )
+                    VALID_PLATFORM_NAME_LIST)
             ]
             for valid_char in VALID_CHAR_LIST
-        ])
-    )
+        ]))
     def test_normal(self, value, platform_name):
         validate_file_path(value, platform_name)
 
@@ -193,8 +185,7 @@ class Test_validate_file_path(object):
                     [valid_path], VALID_PLATFORM_NAME_LIST)
             ]
             for valid_path in VALID_MULTIBYTE_PATH_LIST
-        ])
-    )
+        ]))
     def test_normal_multibyte(self, value, platform_name):
         validate_file_path(value, platform_name)
 
@@ -213,8 +204,7 @@ class Test_validate_file_path(object):
             ["a" * 255, "linux", 100, InvalidLengthError],
             ["a" * 260, "windows", None, None],
             ["a" * 261, "windows", None, InvalidLengthError],
-        ]
-    )
+        ])
     def test_normal_max_path_len(
             self, value, platform_name, max_path_len, expected):
         if expected is None:
@@ -304,8 +294,7 @@ class Test_sanitize_filename(object):
             ["a" * 10, 255, 10],
             ["invalid_length" * 100, 255, 255],
             ["invalid_length" * 100, 10, 10],
-        ]
-    )
+        ])
     def test_normal_max_filename_len(
             self, value, max_filename_len, expected):
         assert len(sanitize_filename(
@@ -369,8 +358,7 @@ class Test_sanitize_file_path(object):
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(
                 NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
-        ]
-    )
+        ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_file_path(value, replace_text)
         assert sanitized_name == expected

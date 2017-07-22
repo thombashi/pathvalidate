@@ -89,8 +89,7 @@ class Test_sanitize_excel_sheet_name(object):
                 NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ] + [
             ["a" * 32, "", "a" * 31],
-        ]
-    )
+        ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_excel_sheet_name(value, replace_text)
         assert sanitized_name == expected

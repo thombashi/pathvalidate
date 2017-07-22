@@ -98,8 +98,7 @@ class Test_sanitize_python_var_name(object):
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(
                 NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
-        ]
-    )
+        ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_python_var_name(value, replace_text)
         assert sanitized_name == expected
@@ -113,8 +112,7 @@ class Test_sanitize_python_var_name(object):
         ] + [
             [invalid_char + "hoge_123", "a", "ahoge_123"]
             for invalid_char in string.digits + "_"
-        ]
-    )
+        ])
     def test_normal_invalid_first_char_x1(self, value, replace_text, expected):
         sanitized_name = sanitize_python_var_name(value, replace_text)
         assert sanitized_name == expected
@@ -128,8 +126,7 @@ class Test_sanitize_python_var_name(object):
         ] + [
             [invalid_char * 2 + "hoge_123", "a", "aahoge_123"]
             for invalid_char in string.digits + "_"
-        ]
-    )
+        ])
     def test_normal_invalid_first_char_x2(self, value, replace_text, expected):
         sanitized_name = sanitize_python_var_name(value, replace_text)
         assert sanitized_name == expected
