@@ -74,7 +74,7 @@ def sanitize_python_var_name(var_name, replacement_text=""):
     - Replace invalid characters for a Python variable name within
       the ``var_name`` with the ``replacement_text``
     - Delete invalid chars for the beginning of the variable name
-    - Append under bar (``"_"``) at the tail of the name if sanitized name
+    - Append underscore (``"_"``) at the tail of the name if sanitized name
       is one of the Python reserved names
 
     :param str filename: Name to sanitize.

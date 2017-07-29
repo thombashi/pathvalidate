@@ -281,7 +281,7 @@ def sanitize_filename(
     - Replace invalid characters for a filename within the ``filename``
       with the ``replacement_text``. Invalid characters are as follows:
       |invalid_filename_chars|, |invalid_win_filename_chars|.
-    - Append underbar (``"_"``) at the tail of the name if sanitized name
+    - Append underscore (``"_"``) at the tail of the name if sanitized name
       is one of the reserved names by the OS.
 
     :param str filename: Filename to sanitize.

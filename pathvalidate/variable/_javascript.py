@@ -87,7 +87,7 @@ def sanitize_js_var_name(var_name, replacement_text=""):
     - Replace invalid characters for a JavaScript variable name within
       the ``var_name`` with the ``replacement_text``
     - Delete invalid chars for the beginning of the variable name
-    - Append under bar (``"_"``) at the tail of the name if sanitized name
+    - Append underscore (``"_"``) at the tail of the name if sanitized name
       is one of the JavaScript reserved names
 
     :JavaScriptstr filename: Name to sanitize.
