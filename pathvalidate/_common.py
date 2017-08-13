@@ -17,7 +17,7 @@ def _validate_null_string(text, error_msg="null name"):
     if is_null_string(text):
         raise NullNameError(error_msg)
 
-    raise TypeError("text must be a string")
+    raise TypeError("text must be a string: actual={}".format(type(text)))
 
 
 def _preprocess(name):
