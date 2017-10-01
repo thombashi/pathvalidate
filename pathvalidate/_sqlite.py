@@ -77,7 +77,7 @@ __SQLITE_VALID_RESERVED_KEYWORDS_ATTR = (
 __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR = (
     __SQLITE_INVALID_RESERVED_KEYWORDS)
 
-__RE_INVALID_SQLITE_NAME_HEAD = re.compile("^[^a-zA-Z]+", re.UNICODE)
+__RE_INVALID_SQLITE_NAME_HEAD = re.compile("^[^a-zA-Z_]+", re.UNICODE)
 
 
 def validate_sqlite_table_name(name):
@@ -130,7 +130,7 @@ def validate_sqlite_attr_name(name):
     :raises pathvalidate.NullNameError: If the ``name`` is empty.
     :raises pathvalidate.InvalidCharError:
         If the first character of the ``name`` is invalid
-        (not an alphabetic character).
+        (not an alphabet or underscore character).
     :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
         And invalid as an attribute name.
