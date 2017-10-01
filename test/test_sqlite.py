@@ -92,9 +92,6 @@ UTF8_WORDS = [
 
 
 class Test_validate_sqlite_table_name(object):
-    VALID_CHAR_LIST = [
-        c for c in string.digits + string.ascii_letters + "_"
-    ]
 
     @pytest.mark.parametrize(["value"], [
         ["{}a".format(keyword)]
@@ -151,9 +148,6 @@ class Test_validate_sqlite_table_name(object):
 
 
 class Test_validate_sqlite_attr_name(object):
-    VALID_CHAR_LIST = [
-        c for c in string.digits + string.ascii_letters + "_"
-    ]
 
     @pytest.mark.parametrize(["value"], [
         ["{}a".format(keyword)]
