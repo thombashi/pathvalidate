@@ -86,7 +86,7 @@ def validate_sqlite_table_name(name):
     :raises pathvalidate.NullNameError: If the ``name`` is empty.
     :raises pathvalidate.InvalidCharError:
         If the first character of the ``name`` is invalid
-        (not an alphabetic character).
+        (not an alphabetic character nor underscore).
     :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
         And invalid as a table name.
