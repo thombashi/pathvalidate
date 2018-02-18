@@ -1,6 +1,5 @@
 pathvalidate
-============
-
+==============
 .. image:: https://badge.fury.io/py/pathvalidate.svg
     :target: https://badge.fury.io/py/pathvalidate
 
@@ -22,8 +21,7 @@ pathvalidate
    :target: https://github.com/thombashi/pathvalidate
 
 Summary
--------
-
+---------
 A Python library to validate/sanitize a string such as filenames/variable-names/excel-sheet-names.
 
 Features
@@ -39,13 +37,11 @@ Features
     - SQLite table/attribute name
 
 Examples
-========
-
+==========
 Validate a filename
--------------------
-
+---------------------
 :Sample Code:
-    .. code:: python
+    .. code-block:: python
 
         import pathvalidate
 
@@ -55,15 +51,14 @@ Validate a filename
             print("invalid filename!")
 
 :Output:
-    .. code::
+    .. code-block:: none
 
         invalid filename!
 
 Sanitize a filename
--------------------
-
+---------------------
 :Sample Code:
-    .. code:: python
+    .. code-block:: python
 
         import pathvalidate
 
@@ -71,28 +66,26 @@ Sanitize a filename
         print(pathvalidate.sanitize_filename(filename))
 
 :Output:
-    .. code::
+    .. code-block:: none
 
         _abcde%f(g)h+i_0.txt
 
 Sanitize a variable name
-------------------------
-
+--------------------------
 :Sample Code:
-    .. code:: python
+    .. code-block:: python
 
         import pathvalidate
 
         print(pathvalidate.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
 
 :Output:
-    .. code::
+    .. code-block:: none
 
         abcdefghi_0txt
 
 For more information
---------------------
-
+----------------------
 More examples are available at 
 http://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
 
@@ -106,7 +99,7 @@ Installation
 
 Dependencies
 ============
-Python 2.7+ or 3.3+
+Python 2.7+ or 3.4+
 No external dependencies.
 
 
@@ -117,7 +110,6 @@ Test dependencies
 - `tox <https://testrun.org/tox/latest/>`__
 
 Documentation
-=============
-
+===============
 http://pathvalidate.rtfd.io/
 
