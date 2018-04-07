@@ -4,21 +4,13 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import abc
 import re
 
-from .._common import (
-    _preprocess,
-    is_null_string,
-)
-from .._error import (
-    InvalidCharError,
-    InvalidReservedNameError,
-    NullNameError
-)
+from .._common import _preprocess, is_null_string
+from .._error import InvalidCharError, InvalidReservedNameError, NullNameError
 from .._interface import NameSanitizer
 
 

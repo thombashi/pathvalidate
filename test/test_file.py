@@ -4,36 +4,21 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import itertools
 import platform
 import random
 
-from pathvalidate import (
-    validate_file_path,
-    validate_filename,
-    sanitize_file_path,
-    sanitize_filename,
-    InvalidCharError,
-    InvalidCharWindowsError,
-    InvalidLengthError,
-    InvalidReservedNameError,
-    NullNameError,
-)
-from pathvalidate._file import FileSanitizer
 import pytest
+from pathvalidate import (
+    InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError,
+    NullNameError, sanitize_file_path, sanitize_filename, validate_file_path, validate_filename)
+from pathvalidate._file import FileSanitizer
 
 from ._common import (
-    make_random_str,
-    INVALID_PATH_CHARS,
-    INVALID_FILENAME_CHARS,
-    INVALID_WIN_PATH_CHARS,
-    INVALID_WIN_FILENAME_CHARS,
-    VALID_FILENAME_CHARS,
-    VALID_PATH_CHARS
-)
+    INVALID_FILENAME_CHARS, INVALID_PATH_CHARS, INVALID_WIN_FILENAME_CHARS, INVALID_WIN_PATH_CHARS,
+    VALID_FILENAME_CHARS, VALID_PATH_CHARS, make_random_str)
 
 
 nan = float("nan")

@@ -4,22 +4,14 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import itertools
 
-from pathvalidate import (
-    validate_symbol,
-    replace_symbol,
-    InvalidCharError,
-)
 import pytest
+from pathvalidate import InvalidCharError, replace_symbol, validate_symbol
 
-from ._common import (
-    alphanum_char_list,
-    INVALID_PYTHON_VAR_CHARS
-)
+from ._common import INVALID_PYTHON_VAR_CHARS, alphanum_char_list
 
 
 class Test_validate_symbol(object):

@@ -4,25 +4,17 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import itertools
 import random
 
-from pathvalidate import (
-    validate_excel_sheet_name,
-    sanitize_excel_sheet_name,
-    InvalidCharError,
-    InvalidLengthError,
-    NullNameError,
-)
 import pytest
+from pathvalidate import (
+    InvalidCharError, InvalidLengthError, NullNameError, sanitize_excel_sheet_name,
+    validate_excel_sheet_name)
 
-from ._common import (
-    make_random_str,
-    VALID_PATH_CHARS
-)
+from ._common import VALID_PATH_CHARS, make_random_str
 
 
 random.seed(0)

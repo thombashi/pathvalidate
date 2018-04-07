@@ -4,23 +4,14 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import itertools
 
-from pathvalidate import (
-    validate_ltsv_label,
-    sanitize_ltsv_label,
-    InvalidCharError,
-    NullNameError,
-)
 import pytest
+from pathvalidate import InvalidCharError, NullNameError, sanitize_ltsv_label, validate_ltsv_label
 
-from ._common import (
-    alphanum_char_list,
-    INVALID_WIN_FILENAME_CHARS
-)
+from ._common import INVALID_WIN_FILENAME_CHARS, alphanum_char_list
 
 
 VALID_LABEL_CHARS = alphanum_char_list + ["_", ".", "-"]

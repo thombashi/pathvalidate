@@ -4,20 +4,14 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import string
 
-from pathvalidate import (
-    validate_sqlite_attr_name,
-    validate_sqlite_table_name,
-    InvalidCharError,
-    InvalidReservedNameError,
-    NullNameError,
-    ValidReservedNameError,
-)
 import pytest
+from pathvalidate import (
+    InvalidCharError, InvalidReservedNameError, NullNameError, ValidReservedNameError,
+    validate_sqlite_attr_name, validate_sqlite_table_name)
 
 
 __SQLITE_VALID_RESERVED_KEYWORDS = [

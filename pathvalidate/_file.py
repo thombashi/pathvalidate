@@ -4,8 +4,7 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
 import itertools
 import os.path
@@ -14,11 +13,7 @@ import re
 
 from ._common import _preprocess
 from ._error import (
-    InvalidCharError,
-    InvalidCharWindowsError,
-    InvalidLengthError,
-    InvalidReservedNameError
-)
+    InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError)
 from ._interface import NameSanitizer
 
 
