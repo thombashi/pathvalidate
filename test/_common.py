@@ -32,7 +32,7 @@ VALID_FILENAME_CHARS = [
 VALID_PATH_CHARS = VALID_FILENAME_CHARS + ["/"]
 
 INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + [
-    "!", "#",  '&', "'",
+    "!", "#", '&', "'",
     "=", "~", "^", "@", "`", "[", "]", "+", "-", ";", "{", "}",
     ",", ".", "(", ")", "%",
     " ", "\t", "\n", "\r", "\f", "\v",
