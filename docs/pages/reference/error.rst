@@ -1,7 +1,7 @@
 Errors
 ---------------
 
-.. autoexception:: pathvalidate.InvalidNameError
+.. autoexception:: pathvalidate.NameError
     :undoc-members:
     :show-inheritance:
 
@@ -12,11 +12,11 @@ Errors
 .. autoexception:: pathvalidate.InvalidCharError
     :undoc-members:
     :show-inheritance:
-    
+
 .. autoexception:: pathvalidate.InvalidCharWindowsError
     :undoc-members:
     :show-inheritance:
-    
+
 .. autoexception:: pathvalidate.InvalidLengthError
     :undoc-members:
     :show-inheritance:
