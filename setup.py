@@ -16,8 +16,9 @@ import setuptools
 REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
 
-needs_pytest = set(["pytest", "test", "ptr"]).intersection(sys.argv)
-pytest_runner = ["pytest-runner"] if needs_pytest else []
+
+def need_pytest():
+    return set(["pytest", "test", "ptr"]).intersection(sys.argv)
 
 
 with io.open("README.rst", encoding=ENCODING) as fp:
@@ -48,7 +49,7 @@ setuptools.setup(
     include_package_data=True,
     install_requires=install_requires,
     packages=setuptools.find_packages(exclude=["test*"]),
-    setup_requires=pytest_runner,
+    setup_requires=["pytest-runner"] if need_pytest() else [],
     tests_require=tests_require,
     classifiers=[
         "Development Status :: 4 - Beta",
