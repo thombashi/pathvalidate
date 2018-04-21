@@ -7,7 +7,7 @@
 from __future__ import absolute_import
 
 from ._app import sanitize_excel_sheet_name, validate_excel_sheet_name
-from ._error import (
+from .error import (
     InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidNameError,
     InvalidReservedNameError, NullNameError, ReservedNameError, ValidReservedNameError)
 from ._file import sanitize_file_path, sanitize_filename, validate_file_path, validate_filename

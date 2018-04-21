@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 from ._common import _preprocess, _validate_null_string
-from ._error import InvalidCharError, InvalidReservedNameError, ValidReservedNameError
+from .error import InvalidCharError, InvalidReservedNameError, ValidReservedNameError
 
 
 __SQLITE_VALID_RESERVED_KEYWORDS = [

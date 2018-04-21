@@ -12,7 +12,7 @@ import platform
 import re
 
 from ._common import _preprocess
-from ._error import (
+from .error import (
     InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError)
 from ._interface import NameSanitizer
 

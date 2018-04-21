@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 from ._common import _preprocess, _validate_null_string
-from ._error import InvalidCharError
+from .error import InvalidCharError
 
 
 __RE_INVALID_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)

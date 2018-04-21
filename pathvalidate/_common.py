@@ -6,7 +6,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from ._error import NullNameError
+from .error import NullNameError
 
 
 def _validate_null_string(text, error_msg="null name"):

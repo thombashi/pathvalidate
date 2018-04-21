@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 from ._common import _preprocess, _validate_null_string
-from ._error import InvalidCharError, InvalidLengthError
+from .error import InvalidCharError, InvalidLengthError
 
 
 __MAX_SHEET_NAME_LEN = 31

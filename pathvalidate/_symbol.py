@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import re
 
 from ._common import _preprocess, is_not_null_string
-from ._error import InvalidCharError
+from .error import InvalidCharError
 
 
 __RE_SYMBOL = re.compile(
