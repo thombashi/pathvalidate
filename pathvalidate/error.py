@@ -7,19 +7,19 @@
 from __future__ import absolute_import, unicode_literals
 
 
-class NameError(ValueError):
+class ValidationError(ValueError):
     """
     Base exception class that indicates invalid name errors.
     """
 
 
-class NullNameError(NameError):
+class NullNameError(ValidationError):
     """
     Exception raised when a name is empty.
     """
 
 
-class InvalidCharError(NameError):
+class InvalidCharError(ValidationError):
     """
     Exception raised when includes invalid character(s) within a string.
     """
@@ -32,13 +32,13 @@ class InvalidCharWindowsError(InvalidCharError):
     """
 
 
-class InvalidLengthError(NameError):
+class InvalidLengthError(ValidationError):
     """
     Exception raised when a string too long/short.
     """
 
 
-class ReservedNameError(NameError):
+class ReservedNameError(ValidationError):
     """
     Exception raised when a string matched a reserved name.
     """

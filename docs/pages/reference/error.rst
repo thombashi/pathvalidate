@@ -1,7 +1,7 @@
 Errors
 ---------------
 
-.. autoexception:: pathvalidate.NameError
+.. autoexception:: pathvalidate.ValidationError
     :undoc-members:
     :show-inheritance:
 
