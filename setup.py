@@ -12,14 +12,20 @@ import sys
 
 import setuptools
 
-
+MODULE_NAME = "pathvalidate"
+REPOSITORY_URL = "https://github.com/thombashi/{:s}".format(MODULE_NAME)
 REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
+
+pkg_info = {}
 
 
 def need_pytest():
     return set(["pytest", "test", "ptr"]).intersection(sys.argv)
 
+
+with open(os.path.join(MODULE_NAME, "__version__.py")) as f:
+    exec(f.read(), pkg_info)
 
 with io.open("README.rst", encoding=ENCODING) as fp:
     long_description = fp.read()
@@ -34,23 +40,30 @@ with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     tests_require = [line.strip() for line in f if line.strip()]
 
 setuptools.setup(
-    name="pathvalidate",
-    version="0.16.3",
-    author="Tsuyoshi Hombashi",
-    author_email="tsuyoshi.hombashi@gmail.com",
-    url="https://github.com/thombashi/pathvalidate",
+    name=MODULE_NAME,
+    version=pkg_info["__version__"],
+    url=REPOSITORY_URL,
+
+    author=pkg_info["__author__"],
+    author_email=pkg_info["__email__"],
+    description=summary,
     keywords=[
         "path", "validation", "validator", "sanitize", "file",
         "Excel", "JavaScript", "LTSV", "SQLite",
     ],
-    license="MIT License",
-    description=summary,
+    license=pkg_info["__license__"],
     long_description=long_description,
     include_package_data=True,
     install_requires=install_requires,
     packages=setuptools.find_packages(exclude=["test*"]),
+    project_urls={
+        "Documentation": "http://{typepy}.rtfd.io/",
+        "Tracker": "{:s}/issues".format(REPOSITORY_URL),
+    },
+
     setup_requires=["pytest-runner"] if need_pytest() else [],
     tests_require=tests_require,
+
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
