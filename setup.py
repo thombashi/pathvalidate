@@ -39,6 +39,9 @@ with open(os.path.join(REQUIREMENT_DIR, "requirements.txt")) as f:
 with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     tests_require = [line.strip() for line in f if line.strip()]
 
+with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
+    DOCS_REQUIRES = [line.strip() for line in f if line.strip()]
+
 setuptools.setup(
     name=MODULE_NAME,
     version=pkg_info["__version__"],
@@ -63,6 +66,11 @@ setuptools.setup(
 
     setup_requires=["pytest-runner"] if need_pytest() else [],
     tests_require=tests_require,
+    extras_require={
+        "build": "wheel",
+        "docs": DOCS_REQUIRES,
+        "release": "releasecmd>=0.0.7",
+    },
 
     classifiers=[
         "Development Status :: 4 - Beta",
