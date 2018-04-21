@@ -24,6 +24,15 @@ def need_pytest():
     return set(["pytest", "test", "ptr"]).intersection(sys.argv)
 
 
+def get_release_command_class():
+    try:
+        from releasecmd import ReleaseCommand
+    except ImportError:
+        return {}
+
+    return {"release": ReleaseCommand}
+
+
 with open(os.path.join(MODULE_NAME, "__version__.py")) as f:
     exec(f.read(), pkg_info)
 
@@ -41,6 +50,9 @@ with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
 
 with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
     DOCS_REQUIRES = [line.strip() for line in f if line.strip()]
+
+cmdclass = {}
+cmdclass.update(get_release_command_class())
 
 setuptools.setup(
     name=MODULE_NAME,
@@ -86,4 +98,5 @@ setuptools.setup(
         "Programming Language :: Python :: 3.6",
         "Topic :: Software Development :: Libraries",
         "Topic :: Software Development :: Libraries :: Python Modules",
-    ])
+    ],
+    cmdclass=cmdclass)
