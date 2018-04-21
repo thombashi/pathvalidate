@@ -51,7 +51,7 @@ Validate a filename
             print("invalid filename!")
 
 :Output:
-    .. code-block:: none
+    .. code-block::
 
         invalid filename!
 
@@ -66,7 +66,7 @@ Sanitize a filename
         print(pathvalidate.sanitize_filename(filename))
 
 :Output:
-    .. code-block:: none
+    .. code-block::
 
         _abcde%f(g)h+i_0.txt
 
@@ -80,7 +80,7 @@ Sanitize a variable name
         print(pathvalidate.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
 
 :Output:
-    .. code-block:: none
+    .. code-block::
 
         abcdefghi_0txt
 
