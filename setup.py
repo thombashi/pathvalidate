@@ -51,6 +51,7 @@ with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
 with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
     DOCS_REQUIRES = [line.strip() for line in f if line.strip()]
 
+PYTEST_RUNNER_REQUIRES = ["pytest-runner"] if need_pytest() else []
 cmdclass = {}
 cmdclass.update(get_release_command_class())
 
@@ -76,7 +77,7 @@ setuptools.setup(
         "Tracker": "{:s}/issues".format(REPOSITORY_URL),
     },
 
-    setup_requires=["pytest-runner"] if need_pytest() else [],
+    setup_requires=PYTEST_RUNNER_REQUIRES,
     tests_require=tests_require,
     extras_require={
         "build": "wheel",
