@@ -10,8 +10,8 @@ import abc
 import re
 
 from .._common import _preprocess, is_null_string
-from ..error import InvalidCharError, InvalidReservedNameError, NullNameError
 from .._interface import NameSanitizer
+from ..error import InvalidCharError, InvalidReservedNameError, NullNameError
 
 
 class VarNameSanitizer(NameSanitizer):

@@ -12,9 +12,9 @@ import platform
 import re
 
 from ._common import _preprocess
+from ._interface import NameSanitizer
 from .error import (
     InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError)
-from ._interface import NameSanitizer
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
