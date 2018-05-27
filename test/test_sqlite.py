@@ -101,6 +101,13 @@ class Test_validate_sqlite_table_name(object):
     def test_normal_utf8(self, value):
         validate_sqlite_table_name(value)
 
+    @pytest.mark.parametrize(["value"], [
+        [first_char + "hoge123"]
+        for first_char in string.digits + "%#!-*"
+    ])
+    def test_normal_non_alphabet_first_char(self, value):
+        validate_sqlite_table_name(value)
+
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
@@ -131,14 +138,6 @@ class Test_validate_sqlite_table_name(object):
         with pytest.raises(expected):
             validate_sqlite_table_name(value)
 
-    @pytest.mark.parametrize(["value"], [
-        [invalid_char + "hoge123"]
-        for invalid_char in string.digits
-    ])
-    def test_exception_invalid_first_char(self, value):
-        with pytest.raises(InvalidCharError):
-            validate_sqlite_table_name(value)
-
 
 class Test_validate_sqlite_attr_name(object):
 
@@ -155,6 +154,13 @@ class Test_validate_sqlite_attr_name(object):
 
     @pytest.mark.parametrize(["value"], UTF8_WORDS)
     def test_normal_utf8(self, value):
+        validate_sqlite_attr_name(value)
+
+    @pytest.mark.parametrize(["value"], [
+        [first_char + "hoge123"]
+        for first_char in string.digits + "%#!-*"
+    ])
+    def test_normal_non_alphabet_first_char(self, value):
         validate_sqlite_attr_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
@@ -186,11 +192,3 @@ class Test_validate_sqlite_attr_name(object):
     def test_exception_reserved_invalid_name(self, value, expected):
         with pytest.raises(expected):
             validate_sqlite_attr_name(value)
-
-    @pytest.mark.parametrize(["value"], [
-        [invalid_char + "hoge123"]
-        for invalid_char in string.digits
-    ])
-    def test_exception_invalid_first_char(self, value):
-        with pytest.raises(InvalidCharError):
-            validate_sqlite_table_name(value)
