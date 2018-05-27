@@ -89,11 +89,10 @@ class Test_validate_sqlite_table_name(object):
 
     @pytest.mark.parametrize(["value"], [
         ["{}a".format(keyword)]
-        for keyword
-        in VALID_RESERVED_KEYWORDS_TABLE_UPPER +
-        INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
-        VALID_RESERVED_KEYWORDS_ATTR_UPPER +
-        INVALID_RESERVED_KEYWORDS_ATTR_UPPER
+        for keyword in (VALID_RESERVED_KEYWORDS_TABLE_UPPER +
+                        INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
+                        VALID_RESERVED_KEYWORDS_ATTR_UPPER +
+                        INVALID_RESERVED_KEYWORDS_ATTR_UPPER)
     ])
     def test_normal_ascii(self, value):
         validate_sqlite_table_name(value)
@@ -145,12 +144,11 @@ class Test_validate_sqlite_attr_name(object):
 
     @pytest.mark.parametrize(["value"], [
         ["{}a".format(keyword)]
-        for keyword
-        in VALID_RESERVED_KEYWORDS_TABLE_UPPER +
-        INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
-        VALID_RESERVED_KEYWORDS_ATTR_UPPER +
-        INVALID_RESERVED_KEYWORDS_ATTR_UPPER +
-        ["_"]
+        for keyword in (VALID_RESERVED_KEYWORDS_TABLE_UPPER +
+                        INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
+                        VALID_RESERVED_KEYWORDS_ATTR_UPPER +
+                        INVALID_RESERVED_KEYWORDS_ATTR_UPPER +
+                        ["_"])
     ])
     def test_normal_ascii(self, value):
         validate_sqlite_attr_name(value)
