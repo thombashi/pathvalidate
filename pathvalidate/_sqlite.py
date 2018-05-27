@@ -69,8 +69,6 @@ __SQLITE_VALID_RESERVED_KEYWORDS_ATTR = (
 __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR = (
     __SQLITE_INVALID_RESERVED_KEYWORDS)
 
-__RE_INVALID_SQLITE_NAME_HEAD = re.compile("^[^a-zA-Z_]+", re.UNICODE)
-
 
 def validate_sqlite_table_name(name):
     """
@@ -96,24 +94,6 @@ def validate_sqlite_table_name(name):
     if name.upper() in __SQLITE_VALID_RESERVED_KEYWORDS_TABLE:
         raise ValidReservedNameError(
             "'{:s}' is a reserved keyword by sqlite".format(name))
-
-    match = __RE_INVALID_SQLITE_NAME_HEAD.search(_preprocess(name))
-    if match is not None:
-        name = match.group()
-
-        try:
-            name.encode("ascii")
-        except UnicodeEncodeError:
-            try:
-                name.encode("utf8")
-            except Exception:
-                raise
-            else:
-                return
-
-        raise InvalidCharError(
-            "the first character of the sqlite name is invalid: '{}'".format(
-                re.escape(name)))
 
 
 def validate_sqlite_attr_name(name):
