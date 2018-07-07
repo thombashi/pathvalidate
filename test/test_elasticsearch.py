@@ -32,8 +32,7 @@ class Test_ElasticsearchIndexNameSanitizer(object):
                 NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ])
     def test_normal(self, value, replace_text, expected):
-        sanitized_name = ElasticsearchIndexNameSanitizer(
-            value).sanitize(replace_text)
+        sanitized_name = ElasticsearchIndexNameSanitizer(value).sanitize(replace_text)
 
         assert sanitized_name == expected
 
@@ -49,8 +48,7 @@ class Test_ElasticsearchIndexNameSanitizer(object):
             for invalid_char in "_"
         ])
     def test_normal_invalid_first_char_x1(self, value, replace_text, expected):
-        sanitized_name = ElasticsearchIndexNameSanitizer(
-            value).sanitize(replace_text)
+        sanitized_name = ElasticsearchIndexNameSanitizer(value).sanitize(replace_text)
 
         assert sanitized_name == expected
 
@@ -66,8 +64,7 @@ class Test_ElasticsearchIndexNameSanitizer(object):
             for invalid_char in "_"
         ])
     def test_normal_invalid_first_char_x2(self, value, replace_text, expected):
-        sanitized_name = ElasticsearchIndexNameSanitizer(
-            value).sanitize(replace_text)
+        sanitized_name = ElasticsearchIndexNameSanitizer(value).sanitize(replace_text)
 
         assert sanitized_name == expected
 

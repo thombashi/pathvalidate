@@ -26,11 +26,7 @@ class FileSanitizer(NameSanitizer):
     _INVALID_PATH_CHARS = "\0"
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|'
-    _INVALID_WIN_FILENAME_CHARS = (
-        _INVALID_FILENAME_CHARS +
-        _INVALID_WIN_PATH_CHARS +
-        "\\"
-    )
+    _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
 
     _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
 
@@ -71,9 +67,7 @@ class FileNameSanitizer(FileSanitizer):
     def reserved_keywords(self):
         return self.__WINDOWS_RESERVED_FILE_NAME_LIST
 
-    def __init__(
-            self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN,
-            platform_name=None):
+    def __init__(self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN, platform_name=None):
         super(FileNameSanitizer, self).__init__(
             filename, max_len=max_filename_len, platform_name=platform_name)
 
@@ -81,8 +75,7 @@ class FileNameSanitizer(FileSanitizer):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
-        sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(
-            replacement_text, self._str)
+        sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(replacement_text, self._str)
         sanitize_file_name = sanitize_file_name[:self.max_len]
 
         try:
@@ -108,8 +101,7 @@ class FileNameSanitizer(FileSanitizer):
         else:
             match = self.__RE_INVALID_FILENAME.search(unicode_filename)
             if match is not None:
-                raise InvalidCharError(
-                    error_message_template.format(re.escape(match.group())))
+                raise InvalidCharError(error_message_template.format(re.escape(match.group())))
 
     def __validate_win_filename(self, unicode_filename):
         match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
@@ -133,8 +125,7 @@ class FilePathSanitizer(FileSanitizer):
     def reserved_keywords(self):
         return []
 
-    def __init__(
-            self, filename, platform_name=None, max_path_len=None):
+    def __init__(self, filename, platform_name=None, max_path_len=None):
 
         super(FilePathSanitizer, self).__init__(
             filename, max_len=max_path_len, platform_name=platform_name)
@@ -192,9 +183,7 @@ class FilePathSanitizer(FileSanitizer):
                 re.escape(match.group()), unicode_file_path))
 
 
-def validate_filename(
-        filename, platform_name=None,
-        max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
+def validate_filename(filename, platform_name=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
     """
     Verifying whether the ``filename`` is a valid file name or not.
 
@@ -303,8 +292,7 @@ def sanitize_filename(
         max_filename_len=max_filename_len).sanitize(replacement_text)
 
 
-def sanitize_file_path(
-        file_path, replacement_text="", platform_name=None, max_path_len=None):
+def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_path_len=None):
     """
     Make a valid file path for both Windows and Linux.
     Replace invalid characters for a file path within the ``file_path``
