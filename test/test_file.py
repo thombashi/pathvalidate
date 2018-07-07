@@ -9,7 +9,6 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 import platform
 import random
-import string
 
 import pytest
 from pathvalidate import (
