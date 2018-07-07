@@ -13,8 +13,8 @@ from ._ltsv import sanitize_ltsv_label, validate_ltsv_label
 from ._sqlite import validate_sqlite_attr_name, validate_sqlite_table_name
 from ._symbol import replace_symbol, validate_symbol
 from .error import (
-    InvalidCharError, InvalidCharWindowsError, InvalidLengthError, ValidationError,
-    InvalidReservedNameError, NullNameError, ReservedNameError, ValidReservedNameError)
+    InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError,
+    NullNameError, ReservedNameError, ValidationError, ValidReservedNameError)
 from .variable import (
     ElasticsearchIndexNameSanitizer, JavaScriptVarNameSanitizer, PythonVarNameSanitizer,
     sanitize_js_var_name, sanitize_python_var_name, validate_js_var_name, validate_python_var_name)
