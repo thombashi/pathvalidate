@@ -327,6 +327,9 @@ class Test_sanitize_file_path(object):
         ] + [
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ] + [
+            ["あ" + c + "い", rep, "あ" + c + "い"]
+            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_file_path(value, replace_text)
