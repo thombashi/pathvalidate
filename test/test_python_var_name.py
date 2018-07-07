@@ -36,23 +36,20 @@ class Test_validate_python_var_name(object):
     INVALID_CHAR_LIST = INVALID_PYTHON_VAR_CHARS
 
     @pytest.mark.parametrize(["value"], [
-        ["abc" + valid_char + "hoge123"]
-        for valid_char in VALID_CHAR_LIST
+        ["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST
     ])
     def test_normal(self, value):
         validate_python_var_name(value)
 
     @pytest.mark.parametrize(["value"], [
-        ["abc" + invalid_char + "hoge123"]
-        for invalid_char in INVALID_CHAR_LIST
+        ["abc" + invalid_char + "hoge123"] for invalid_char in INVALID_CHAR_LIST
     ])
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
             validate_python_var_name(value)
 
     @pytest.mark.parametrize(["value"], [
-        [invalid_char + "hoge123"]
-        for invalid_char in string.digits + "_"
+        [invalid_char + "hoge123"] for invalid_char in string.digits + "_"
     ])
     def test_exception_invalid_first_char(self, value):
         with pytest.raises(InvalidCharError):
@@ -87,12 +84,10 @@ class Test_sanitize_python_var_name(object):
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(
-                SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ] + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(
-                NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_python_var_name(value, replace_text)
@@ -102,11 +97,9 @@ class Test_sanitize_python_var_name(object):
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
-            [invalid_char + "hoge_123", "_", "hoge_123"]
-            for invalid_char in string.digits + "_"
+            [invalid_char + "hoge_123", "_", "hoge_123"] for invalid_char in string.digits + "_"
         ] + [
-            [invalid_char + "hoge_123", "a", "ahoge_123"]
-            for invalid_char in string.digits + "_"
+            [invalid_char + "hoge_123", "a", "ahoge_123"] for invalid_char in string.digits + "_"
         ])
     def test_normal_invalid_first_char_x1(self, value, replace_text, expected):
         sanitized_name = sanitize_python_var_name(value, replace_text)
@@ -128,8 +121,7 @@ class Test_sanitize_python_var_name(object):
         validate_python_var_name(sanitized_name)
 
     @pytest.mark.parametrize(["value", "expected"], [
-        [reserved_keyword, reserved_keyword + "_"]
-        for reserved_keyword in RESERVED_KEYWORDS
+        [reserved_keyword, reserved_keyword + "_"] for reserved_keyword in RESERVED_KEYWORDS
     ])
     def test_normal_reserved(self, value, expected):
         assert sanitize_python_var_name(value) == expected

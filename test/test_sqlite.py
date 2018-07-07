@@ -102,8 +102,7 @@ class Test_validate_sqlite_table_name(object):
         validate_sqlite_table_name(value)
 
     @pytest.mark.parametrize(["value"], [
-        [first_char + "hoge123"]
-        for first_char in string.digits + "%#!-*"
+        [first_char + "hoge123"] for first_char in string.digits + "%#!-*"
     ])
     def test_normal_non_alphabet_first_char(self, value):
         validate_sqlite_table_name(value)
@@ -121,8 +120,7 @@ class Test_validate_sqlite_table_name(object):
     @pytest.mark.parametrize(["value", "expected"], [
         [reserved_keyword, ValidReservedNameError]
         for reserved_keyword
-        in VALID_RESERVED_KEYWORDS_TABLE_UPPER +
-        VALID_RESERVED_KEYWORDS_TABLE_LOWER
+        in VALID_RESERVED_KEYWORDS_TABLE_UPPER + VALID_RESERVED_KEYWORDS_TABLE_LOWER
     ])
     def test_exception_reserved_valid(self, value, expected):
         with pytest.raises(expected):
@@ -131,8 +129,7 @@ class Test_validate_sqlite_table_name(object):
     @pytest.mark.parametrize(["value", "expected"], [
         [reserved_keyword, InvalidReservedNameError]
         for reserved_keyword
-        in INVALID_RESERVED_KEYWORDS_TABLE_UPPER +
-        INVALID_RESERVED_KEYWORDS_TABLE_LOWER
+        in INVALID_RESERVED_KEYWORDS_TABLE_UPPER + INVALID_RESERVED_KEYWORDS_TABLE_LOWER
     ])
     def test_exception_reserved_invalid_name(self, value, expected):
         with pytest.raises(expected):
@@ -157,8 +154,7 @@ class Test_validate_sqlite_attr_name(object):
         validate_sqlite_attr_name(value)
 
     @pytest.mark.parametrize(["value"], [
-        [first_char + "hoge123"]
-        for first_char in string.digits + "%#!-*"
+        [first_char + "hoge123"] for first_char in string.digits + "%#!-*"
     ])
     def test_normal_non_alphabet_first_char(self, value):
         validate_sqlite_attr_name(value)
@@ -176,8 +172,7 @@ class Test_validate_sqlite_attr_name(object):
     @pytest.mark.parametrize(["value", "expected"], [
         [reserved_keyword, ValidReservedNameError]
         for reserved_keyword
-        in VALID_RESERVED_KEYWORDS_ATTR_UPPER +
-        VALID_RESERVED_KEYWORDS_ATTR_LOWER
+        in VALID_RESERVED_KEYWORDS_ATTR_UPPER + VALID_RESERVED_KEYWORDS_ATTR_LOWER
     ])
     def test_exception_reserved_valid(self, value, expected):
         with pytest.raises(expected):
@@ -186,8 +181,7 @@ class Test_validate_sqlite_attr_name(object):
     @pytest.mark.parametrize(["value", "expected"], [
         [reserved_keyword, InvalidReservedNameError]
         for reserved_keyword
-        in INVALID_RESERVED_KEYWORDS_ATTR_UPPER +
-        INVALID_RESERVED_KEYWORDS_ATTR_LOWER
+        in INVALID_RESERVED_KEYWORDS_ATTR_UPPER + INVALID_RESERVED_KEYWORDS_ATTR_LOWER
     ])
     def test_exception_reserved_invalid_name(self, value, expected):
         with pytest.raises(expected):

@@ -35,8 +35,7 @@ WIN_RESERVED_FILE_NAME_LIST = [
     "NUL", "nul",
 ] + [
     "{:s}{:d}".format(name, num)
-    for name, num
-    in itertools.product(["COM", "com", "LPT", "lpt"], range(1, 10))
+    for name, num in itertools.product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
 
 VALID_MULTIBYTE_NAME_LIST = [
@@ -81,8 +80,7 @@ class Test_validate_filename(object):
             ["invalid_length", 2, InvalidLengthError],
             ["invalid_length" * 100, 255, InvalidLengthError],
         ])
-    def test_normal_max_filename_len(
-            self, value, max_filename_len, expected):
+    def test_normal_max_filename_len(self, value, max_filename_len, expected):
         if expected is None:
             validate_filename(value, max_filename_len=max_filename_len)
         else:
@@ -175,8 +173,7 @@ class Test_validate_file_path(object):
         validate_file_path(value, platform_name)
 
     @pytest.mark.parametrize(["value"], [
-        [valid_path]
-        for valid_path in WIN_VALID_PATH_LIST
+        [valid_path] for valid_path in WIN_VALID_PATH_LIST
     ])
     def test_normal_win(self, value):
         validate_file_path(value, "windows")
@@ -190,15 +187,12 @@ class Test_validate_file_path(object):
             ["a" * 260, "windows", None, None],
             ["a" * 261, "windows", None, InvalidLengthError],
         ])
-    def test_normal_max_path_len(
-            self, value, platform_name, max_path_len, expected):
+    def test_normal_max_path_len(self, value, platform_name, max_path_len, expected):
         if expected is None:
-            validate_file_path(
-                value, platform_name=platform_name, max_path_len=max_path_len)
+            validate_file_path(value, platform_name=platform_name, max_path_len=max_path_len)
         else:
             with pytest.raises(expected):
-                validate_file_path(
-                    value, platform_name=platform_name, max_path_len=max_path_len)
+                validate_file_path(value, platform_name=platform_name, max_path_len=max_path_len)
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
@@ -210,8 +204,7 @@ class Test_validate_file_path(object):
 
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in set(INVALID_WIN_PATH_CHARS).difference(
-            set(INVALID_PATH_CHARS))
+        for invalid_char in set(INVALID_WIN_PATH_CHARS).difference(set(INVALID_PATH_CHARS))
     ])
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
@@ -252,12 +245,10 @@ class Test_sanitize_filename(object):
 
     @pytest.mark.parametrize(["value", "replace_text", "expected"], [
         ["A" + c + "B", rep, "A" + rep + "B"]
-        for c, rep in itertools.product(
-            SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
     ] + [
         ["A" + c + "B", rep, "A" + c + "B"]
-        for c, rep in itertools.product(
-            NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
     ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_filename(value, replace_text)
@@ -280,10 +271,8 @@ class Test_sanitize_filename(object):
             ["invalid_length" * 100, 255, 255],
             ["invalid_length" * 100, 10, 10],
         ])
-    def test_normal_max_filename_len(
-            self, value, max_filename_len, expected):
-        assert len(sanitize_filename(
-            value, max_filename_len=max_filename_len)) == expected
+    def test_normal_max_filename_len(self, value, max_filename_len, expected):
+        assert len(sanitize_filename(value, max_filename_len=max_filename_len)) == expected
 
     @property
     def platform_win(self):
@@ -303,18 +292,15 @@ class Test_sanitize_filename(object):
         [reserved, "linux", reserved]
         for reserved in WIN_RESERVED_FILE_NAME_LIST
     ])
-    def test_normal_win_reserved_name(
-            self, monkeypatch, value, test_platform, expected):
+    def test_normal_win_reserved_name(self, monkeypatch, value, test_platform, expected):
         if test_platform == "windows":
             patch = self.platform_win
         elif test_platform == "linux":
             patch = self.platform_linux
         else:
-            raise ValueError(
-                "unexpected test platform: {}".format(test_platform))
+            raise ValueError( "unexpected test platform: {}".format(test_platform))
 
-        monkeypatch.setattr(
-            FileSanitizer, "platform_name", patch)
+        monkeypatch.setattr(FileSanitizer, "platform_name", patch)
 
         assert sanitize_filename(value) == expected
 
@@ -337,12 +323,10 @@ class Test_sanitize_file_path(object):
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(
-                SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ] + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(
-                NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ])
     def test_normal(self, value, replace_text, expected):
         sanitized_name = sanitize_file_path(value, replace_text)

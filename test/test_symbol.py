@@ -19,8 +19,7 @@ class Test_validate_symbol(object):
     INVALID_CHAR_LIST = INVALID_PYTHON_VAR_CHARS + ["_"]
 
     @pytest.mark.parametrize(["value"], [
-        ["abc" + valid_char + "hoge123"]
-        for valid_char in VALID_CHAR_LIST
+        ["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST
     ])
     def test_normal(self, value):
         validate_symbol(value)
@@ -35,8 +34,7 @@ class Test_validate_symbol(object):
         validate_symbol(value)
 
     @pytest.mark.parametrize(["value"], [
-        ["abc" + invalid_char + "hoge123"]
-        for invalid_char in INVALID_CHAR_LIST
+        ["abc" + invalid_char + "hoge123"] for invalid_char in INVALID_CHAR_LIST
     ])
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
@@ -52,12 +50,10 @@ class Test_replace_symbol(object):
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(
-                TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
         ] + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(
-                NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
         ])
     def test_normal(self, value, replace_text, expected):
         assert replace_symbol(value, replace_text) == expected
