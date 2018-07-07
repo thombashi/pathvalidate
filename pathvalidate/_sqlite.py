@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _preprocess, _validate_null_string
+from ._common import _preprocess, _validate_null_string, unprintable_char_list
 from .error import InvalidCharError, InvalidReservedNameError, ValidReservedNameError
 
 
@@ -65,6 +65,9 @@ __SQLITE_INVALID_RESERVED_KEYWORDS_TABLE = __SQLITE_INVALID_RESERVED_KEYWORDS + 
 __SQLITE_VALID_RESERVED_KEYWORDS_ATTR = __SQLITE_VALID_RESERVED_KEYWORDS + ['IF']
 __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR = __SQLITE_INVALID_RESERVED_KEYWORDS
 
+__RE_INVALID_CHARS = re.compile("[{:s}]".format(
+    re.escape("".join(unprintable_char_list))), re.UNICODE)
+
 
 def validate_sqlite_table_name(name):
     """
@@ -82,6 +85,9 @@ def validate_sqlite_table_name(name):
     """
 
     _validate_null_string(name)
+
+    if __RE_INVALID_CHARS.search(name):
+        raise InvalidCharError("unprintable character found")
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_TABLE:
         raise InvalidReservedNameError("'{:s}' is a reserved keyword by sqlite".format(name))
@@ -106,6 +112,9 @@ def validate_sqlite_attr_name(name):
     """
 
     _validate_null_string(name)
+
+    if __RE_INVALID_CHARS.search(name):
+        raise InvalidCharError("unprintable character found")
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR:
         raise InvalidReservedNameError("'{}' is a reserved keyword by sqlite".format(name))

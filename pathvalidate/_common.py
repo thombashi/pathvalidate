@@ -38,3 +38,12 @@ def is_not_null_string(value):
         return len(value.strip()) > 0
     except AttributeError:
         return False
+
+
+def get_unprintable_char_list():
+    import string
+
+    return [chr(c) for c in range(256) if chr(c) not in string.printable]
+
+
+unprintable_char_list = get_unprintable_char_list()

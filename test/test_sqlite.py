@@ -12,6 +12,7 @@ import pytest
 from pathvalidate import (
     InvalidCharError, InvalidReservedNameError, NullNameError, ValidReservedNameError,
     validate_sqlite_attr_name, validate_sqlite_table_name)
+from pathvalidate._common import unprintable_char_list
 
 
 __SQLITE_VALID_RESERVED_KEYWORDS = [
@@ -103,6 +104,15 @@ class Test_validate_sqlite_table_name(object):
     def test_normal_non_alphabet_first_char(self, value):
         validate_sqlite_table_name(value)
 
+    @pytest.mark.parametrize(["value"], [
+        ["a{}b".format(invalid_c)] for invalid_c in unprintable_char_list
+    ] + [
+        ["テ{}！!スト".format(invalid_c)] for invalid_c in unprintable_char_list
+    ])
+    def test_exception_invalid_win_char(self, value):
+        with pytest.raises(InvalidCharError):
+            validate_sqlite_table_name(value)
+
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],
         ["", NullNameError],
@@ -154,6 +164,15 @@ class Test_validate_sqlite_attr_name(object):
     ])
     def test_normal_non_alphabet_first_char(self, value):
         validate_sqlite_attr_name(value)
+
+    @pytest.mark.parametrize(["value"], [
+        ["a{}b".format(invalid_c)] for invalid_c in unprintable_char_list
+    ] + [
+        ["テ{}！!スト".format(invalid_c)] for invalid_c in unprintable_char_list
+    ])
+    def test_exception_invalid_win_char(self, value):
+        with pytest.raises(InvalidCharError):
+            validate_sqlite_attr_name(value)
 
     @pytest.mark.parametrize(["value", "expected"], [
         [None, NullNameError],

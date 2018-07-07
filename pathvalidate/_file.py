@@ -11,7 +11,7 @@ import os.path
 import platform
 import re
 
-from ._common import _preprocess
+from ._common import _preprocess, unprintable_char_list
 from ._interface import NameSanitizer
 from .error import (
     InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError)
@@ -23,7 +23,7 @@ _DEFAULT_MAX_FILENAME_LEN = 255
 class FileSanitizer(NameSanitizer):
     _VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
 
-    _INVALID_PATH_CHARS = "\0"
+    _INVALID_PATH_CHARS = "".join(unprintable_char_list)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
