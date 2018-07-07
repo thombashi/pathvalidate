@@ -92,18 +92,18 @@ class Test_validate_filename(object):
         itertools.chain.from_iterable([
             [
                 arg_list for arg_list in itertools.product(
-                    [make_random_str(64) + invalid_char + make_random_str(64)],
+                    [make_random_str(64) + invalid_c + make_random_str(64)],
                     VALID_PLATFORM_NAME_LIST)
             ]
-            for invalid_char in INVALID_FILENAME_CHARS
+            for invalid_c in INVALID_FILENAME_CHARS
         ]))
     def test_exception_invalid_char(self, value, platform_name):
         with pytest.raises(InvalidCharError):
             validate_filename(value, platform_name)
 
     @pytest.mark.parametrize(["value"], [
-        [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in set(INVALID_WIN_PATH_CHARS).difference(
+        [make_random_str(64) + invalid_c + make_random_str(64)]
+        for invalid_c in set(INVALID_WIN_PATH_CHARS).difference(
             set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS))
     ])
     def test_exception_win_invalid_char(self, value):
@@ -195,16 +195,16 @@ class Test_validate_file_path(object):
                 validate_file_path(value, platform_name=platform_name, max_path_len=max_path_len)
 
     @pytest.mark.parametrize(["value"], [
-        [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in INVALID_PATH_CHARS
+        [make_random_str(64) + invalid_c + make_random_str(64)]
+        for invalid_c in INVALID_PATH_CHARS
     ])
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
             validate_file_path(value)
 
     @pytest.mark.parametrize(["value"], [
-        [make_random_str(64) + invalid_char + make_random_str(64)]
-        for invalid_char in set(INVALID_WIN_PATH_CHARS).difference(set(INVALID_PATH_CHARS))
+        [make_random_str(64) + invalid_c + make_random_str(64)]
+        for invalid_c in set(INVALID_WIN_PATH_CHARS).difference(set(INVALID_PATH_CHARS))
     ])
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
