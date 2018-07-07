@@ -86,6 +86,7 @@ setuptools.setup(
         "build": "wheel",
         "docs": DOCS_REQUIRES,
         "release": "releasecmd>=0.0.10",
+        "test": TESTS_REQUIRES,
     },
 
     classifiers=[
