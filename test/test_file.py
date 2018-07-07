@@ -7,7 +7,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import itertools
-import platform
+import platform  # noqa: W0611
 import random
 
 import pytest
