@@ -74,8 +74,7 @@ def validate_sqlite_table_name(name):
     :param str name: Name to validate.
     :raises pathvalidate.NullNameError: If the ``name`` is empty.
     :raises pathvalidate.InvalidCharError:
-        If the first character of the ``name`` is invalid
-        (not an alphabetic character nor underscore).
+        If the ``name`` includes unprintable character(s).
     :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
         And invalid as a table name.
@@ -101,8 +100,7 @@ def validate_sqlite_attr_name(name):
     :param str name: Name to validate.
     :raises pathvalidate.NullNameError: If the ``name`` is empty.
     :raises pathvalidate.InvalidCharError:
-        If the first character of the ``name`` is invalid
-        (not an alphabet or underscore character).
+        If the ``name`` includes unprintable character(s).
     :raises pathvalidate.InvalidReservedNameError:
         |raises_sqlite_keywords|
         And invalid as an attribute name.
