@@ -28,26 +28,22 @@ class VarNameSanitizer(NameSanitizer):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
-        sanitize_var_name = self._invalid_var_name_re.sub(
-            replacement_text, self._str)
+        sanitize_var_name = self._invalid_var_name_re.sub(replacement_text, self._str)
 
         # delete invalid char(s) in the beginning of the variable name
         is_require_remove_head = any([
             is_null_string(replacement_text),
-            self._invalid_var_name_head_re.search(
-                replacement_text) is not None,
+            self._invalid_var_name_head_re.search(replacement_text) is not None,
         ])
 
         if is_require_remove_head:
-            sanitize_var_name = self._invalid_var_name_head_re.sub(
-                "", sanitize_var_name)
+            sanitize_var_name = self._invalid_var_name_head_re.sub("", sanitize_var_name)
         else:
             match = self._invalid_var_name_head_re.search(sanitize_var_name)
             if match is not None:
                 sanitize_var_name = (
                     match.end() * replacement_text +
-                    self._invalid_var_name_head_re.sub("", sanitize_var_name)
-                )
+                    self._invalid_var_name_head_re.sub("", sanitize_var_name))
 
         try:
             self._validate(sanitize_var_name)

@@ -126,7 +126,6 @@ class FilePathSanitizer(FileSanitizer):
         return []
 
     def __init__(self, filename, platform_name=None, max_path_len=None):
-
         super(FilePathSanitizer, self).__init__(
             filename, max_len=max_path_len, platform_name=platform_name)
 

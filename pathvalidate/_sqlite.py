@@ -88,12 +88,10 @@ def validate_sqlite_table_name(name):
     _validate_null_string(name)
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_TABLE:
-        raise InvalidReservedNameError(
-            "'{:s}' is a reserved keyword by sqlite".format(name))
+        raise InvalidReservedNameError("'{:s}' is a reserved keyword by sqlite".format(name))
 
     if name.upper() in __SQLITE_VALID_RESERVED_KEYWORDS_TABLE:
-        raise ValidReservedNameError(
-            "'{:s}' is a reserved keyword by sqlite".format(name))
+        raise ValidReservedNameError("'{:s}' is a reserved keyword by sqlite".format(name))
 
 
 def validate_sqlite_attr_name(name):
@@ -114,9 +112,7 @@ def validate_sqlite_attr_name(name):
     _validate_null_string(name)
 
     if name.upper() in __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR:
-        raise InvalidReservedNameError(
-            "'{}' is a reserved keyword by sqlite".format(name))
+        raise InvalidReservedNameError("'{}' is a reserved keyword by sqlite".format(name))
 
     if name.upper() in __SQLITE_VALID_RESERVED_KEYWORDS_ATTR:
-        raise ValidReservedNameError(
-            "'{}' is a reserved keyword by sqlite".format(name))
+        raise ValidReservedNameError("'{}' is a reserved keyword by sqlite".format(name))

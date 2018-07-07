@@ -30,8 +30,7 @@ class PythonVarNameSanitizer(VarNameSanitizer):
 
     @property
     def reserved_keywords(self):
-        return (
-            self.__PYTHON_RESERVED_KEYWORDS + self.__PYTHON_BUILTIN_CONSTANTS)
+        return self.__PYTHON_RESERVED_KEYWORDS + self.__PYTHON_BUILTIN_CONSTANTS
 
     @property
     def _invalid_var_name_head_re(self):
