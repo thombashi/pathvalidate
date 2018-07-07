@@ -298,7 +298,7 @@ class Test_sanitize_filename(object):
         elif test_platform == "linux":
             patch = self.platform_linux
         else:
-            raise ValueError( "unexpected test platform: {}".format(test_platform))
+            raise ValueError("unexpected test platform: {}".format(test_platform))
 
         monkeypatch.setattr(FileSanitizer, "platform_name", patch)
 
