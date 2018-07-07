@@ -6,7 +6,7 @@ pathvalidate
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.python.org/pypi/pathvalidate
 
-.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux
+.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS
     :target: https://travis-ci.org/thombashi/pathvalidate
     :alt: Linux CI test status
 
