@@ -9,14 +9,15 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 
 import pytest
-from pathvalidate import InvalidCharError, replace_symbol, validate_symbol
+from pathvalidate import (
+    InvalidCharError, replace_symbol, unprintable_ascii_char_list, ascii_symbol_list, validate_symbol)
 
-from ._common import INVALID_PYTHON_VAR_CHARS, alphanum_char_list
+from ._common import alphanum_char_list
 
 
 class Test_validate_symbol(object):
     VALID_CHAR_LIST = alphanum_char_list
-    INVALID_CHAR_LIST = INVALID_PYTHON_VAR_CHARS + ["_"]
+    INVALID_CHAR_LIST = ascii_symbol_list
 
     @pytest.mark.parametrize(["value"], [
         ["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST
@@ -34,7 +35,8 @@ class Test_validate_symbol(object):
         validate_symbol(value)
 
     @pytest.mark.parametrize(["value"], [
-        ["abc" + invalid_char + "hoge123"] for invalid_char in INVALID_CHAR_LIST
+        ["abc" + invalid_char + "hoge123"]
+        for invalid_char in INVALID_CHAR_LIST + unprintable_ascii_char_list
     ])
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
@@ -42,7 +44,7 @@ class Test_validate_symbol(object):
 
 
 class Test_replace_symbol(object):
-    TARGET_CHAR_LIST = INVALID_PYTHON_VAR_CHARS + ["_"]
+    TARGET_CHAR_LIST = ascii_symbol_list
     NOT_TARGET_CHAR_LIST = alphanum_char_list
     REPLACE_TEXT_LIST = ["", "_"]
 

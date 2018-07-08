@@ -8,12 +8,13 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _preprocess, is_not_null_string
+from ._common import _preprocess, ascii_symbol_list, is_not_null_string, unprintable_ascii_char_list
 from .error import InvalidCharError
 
 
 __RE_SYMBOL = re.compile(
-    "[\0\"\s" + re.escape("\\/:*?<>|!#$&\'=~^@`[]+-;{},.()%_") + "]", re.UNICODE)
+    "[{}]".format(re.escape("".join(ascii_symbol_list + unprintable_ascii_char_list))),
+    re.UNICODE)
 
 
 def validate_symbol(text):
