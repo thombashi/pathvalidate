@@ -10,7 +10,8 @@ import itertools
 
 import pytest
 from pathvalidate import (
-    InvalidCharError, replace_symbol, unprintable_ascii_char_list, ascii_symbol_list, validate_symbol)
+    InvalidCharError, ascii_symbol_list, replace_symbol, unprintable_ascii_char_list,
+    validate_symbol)
 
 from ._common import alphanum_char_list
 
