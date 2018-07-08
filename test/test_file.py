@@ -14,7 +14,7 @@ import pytest
 from pathvalidate import (
     InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError,
     NullNameError, sanitize_file_path, sanitize_filename, validate_file_path, validate_filename)
-from pathvalidate._common import unprintable_char_list
+from pathvalidate._common import unprintable_ascii_char_list
 from pathvalidate._file import FileSanitizer
 
 from ._common import (
@@ -47,7 +47,7 @@ VALID_MULTIBYTE_NAME_LIST = [
 
 class Test_validate_filename(object):
     VALID_CHAR_LIST = VALID_FILENAME_CHARS
-    INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_char_list
+    INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
@@ -105,7 +105,7 @@ class Test_validate_filename(object):
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_c + make_random_str(64)]
         for invalid_c in set(INVALID_WIN_PATH_CHARS).difference(
-            set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_char_list))
+            set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_ascii_char_list))
     ])
     def test_exception_win_invalid_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
@@ -206,7 +206,7 @@ class Test_validate_file_path(object):
     @pytest.mark.parametrize(["value"], [
         [make_random_str(64) + invalid_c + make_random_str(64)]
         for invalid_c in set(
-            INVALID_WIN_PATH_CHARS + unprintable_char_list).difference(set(INVALID_PATH_CHARS))
+            INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list).difference(set(INVALID_PATH_CHARS))
     ])
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
@@ -241,7 +241,7 @@ class Test_validate_win_file_path(object):
 
 
 class Test_sanitize_filename(object):
-    SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_char_list
+    SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list
     NOT_SANITIZE_CHAR_LIST = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
@@ -317,7 +317,7 @@ class Test_sanitize_filename(object):
 
 
 class Test_sanitize_file_path(object):
-    SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS + unprintable_char_list
+    SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list
     NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 

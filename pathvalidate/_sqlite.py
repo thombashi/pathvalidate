@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _validate_null_string, unprintable_char_list
+from ._common import _validate_null_string, unprintable_ascii_char_list
 from .error import InvalidCharError, InvalidReservedNameError, ValidReservedNameError
 
 
@@ -66,7 +66,7 @@ __SQLITE_VALID_RESERVED_KEYWORDS_ATTR = __SQLITE_VALID_RESERVED_KEYWORDS + ['IF'
 __SQLITE_INVALID_RESERVED_KEYWORDS_ATTR = __SQLITE_INVALID_RESERVED_KEYWORDS
 
 __RE_INVALID_CHARS = re.compile("[{:s}]".format(
-    re.escape("".join(unprintable_char_list))), re.UNICODE)
+    re.escape("".join(unprintable_ascii_char_list))), re.UNICODE)
 
 
 def validate_sqlite_table_name(name):
