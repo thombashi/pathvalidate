@@ -8,7 +8,7 @@ from __future__ import absolute_import
 
 from .__version__ import __author__, __copyright__, __email__, __license__, __version__
 from ._app import sanitize_excel_sheet_name, validate_excel_sheet_name
-from ._common import unprintable_ascii_char_list
+from ._common import ascii_symbol_list, unprintable_ascii_char_list
 from ._file import sanitize_file_path, sanitize_filename, validate_file_path, validate_filename
 from ._ltsv import sanitize_ltsv_label, validate_ltsv_label
 from ._sqlite import validate_sqlite_attr_name, validate_sqlite_table_name

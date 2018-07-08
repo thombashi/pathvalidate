@@ -64,3 +64,4 @@ def get_ascii_symbol_list():
 
 
 unprintable_ascii_char_list = get_unprintable_ascii_char_list()
+ascii_symbol_list = get_ascii_symbol_list()
