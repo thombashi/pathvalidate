@@ -44,7 +44,7 @@ def get_unprintable_ascii_char_list():
     import six
     import string
 
-    return [six.unichr(c) for c in range(256) if chr(c) not in string.printable]
+    return [six.unichr(c) for c in range(128) if chr(c) not in string.printable]
 
 
 unprintable_char_list = get_unprintable_ascii_char_list()
