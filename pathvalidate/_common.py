@@ -6,6 +6,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import string
+
+import six
+
 from .error import NullNameError
 
 
@@ -41,10 +45,22 @@ def is_not_null_string(value):
 
 
 def get_unprintable_ascii_char_list():
-    import six
-    import string
 
     return [six.unichr(c) for c in range(128) if chr(c) not in string.printable]
+
+
+def get_ascii_symbol_list():
+    symbol_list = []
+
+    for c in range(128):
+        c = six.unichr(c)
+
+        if c in unprintable_ascii_char_list or c in string.digits + string.ascii_letters:
+            continue
+
+        symbol_list.append(c)
+
+    return symbol_list
 
 
 unprintable_ascii_char_list = get_unprintable_ascii_char_list()
