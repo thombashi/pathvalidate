@@ -40,11 +40,11 @@ def is_not_null_string(value):
         return False
 
 
-def get_unprintable_char_list():
+def get_unprintable_ascii_char_list():
     import six
     import string
 
     return [six.unichr(c) for c in range(256) if chr(c) not in string.printable]
 
 
-unprintable_char_list = get_unprintable_char_list()
+unprintable_char_list = get_unprintable_ascii_char_list()
