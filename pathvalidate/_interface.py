@@ -14,7 +14,6 @@ from ._six import add_metaclass
 
 @add_metaclass(abc.ABCMeta)
 class NameSanitizer(object):
-
     @abc.abstractproperty
     def reserved_keywords(self):  # pragma: no cover
         pass

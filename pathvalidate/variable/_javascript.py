@@ -14,29 +14,68 @@ from ._base import VarNameSanitizer
 class JavaScriptVarNameSanitizer(VarNameSanitizer):
     __JS_RESERVED_KEYWORDS_ES6 = [
         "break",
-        "case", "catch", "class", "const", "continue",
-        "debugger", "default", "delete", "do",
-        "else", "export", "extends",
-        "finally", "for", "function",
-        "if", "import", "in", "instanceof",
-        "new", "return",
-        "super", "switch",
-        "this", "throw", "try", "typeof",
-        "var", "void",
-        "while", "with",
+        "case",
+        "catch",
+        "class",
+        "const",
+        "continue",
+        "debugger",
+        "default",
+        "delete",
+        "do",
+        "else",
+        "export",
+        "extends",
+        "finally",
+        "for",
+        "function",
+        "if",
+        "import",
+        "in",
+        "instanceof",
+        "new",
+        "return",
+        "super",
+        "switch",
+        "this",
+        "throw",
+        "try",
+        "typeof",
+        "var",
+        "void",
+        "while",
+        "with",
         "yield",
     ]
     __JS_RESERVED_KEYWORDS_FUTURE = [
         "enum",
-        "implements", "interface", "let", "package", "private", "protected", "public", "static",
+        "implements",
+        "interface",
+        "let",
+        "package",
+        "private",
+        "protected",
+        "public",
+        "static",
         "await",
-        "abstract", "boolean", "byte", "char", "double", "final", "float",
-        "goto", "int", "long", "native", "short", "synchronized", "throws",
-        "transient", "volatile"
+        "abstract",
+        "boolean",
+        "byte",
+        "char",
+        "double",
+        "final",
+        "float",
+        "goto",
+        "int",
+        "long",
+        "native",
+        "short",
+        "synchronized",
+        "throws",
+        "transient",
+        "volatile",
     ]
-    __JS_BUILTIN_CONSTANTS = [
-        "null", "true", "false",
-    ]
+    __JS_BUILTIN_CONSTANTS = ["null", "true", "false"]
 
     __RE_INVALID_VAR_NAME = re.compile("[^a-zA-Z0-9_$]")
     __RE_INVALID_VAR_NAME_HEAD = re.compile("^[^a-zA-Z$]+")
@@ -44,9 +83,9 @@ class JavaScriptVarNameSanitizer(VarNameSanitizer):
     @property
     def reserved_keywords(self):
         return (
-            self.__JS_RESERVED_KEYWORDS_ES6 +
-            self.__JS_RESERVED_KEYWORDS_FUTURE +
-            self.__JS_BUILTIN_CONSTANTS
+            self.__JS_RESERVED_KEYWORDS_ES6
+            + self.__JS_RESERVED_KEYWORDS_FUTURE
+            + self.__JS_BUILTIN_CONSTANTS
         )
 
     @property

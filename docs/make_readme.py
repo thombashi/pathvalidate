@@ -33,10 +33,12 @@ def write_examples(maker):
     maker.write_file(example_root.joinpath("sanitize_var_name_code.txt"))
 
     maker.write_chapter("For more information")
-    maker.write_line_list([
-        "More examples are available at ",
-        "http://pathvalidate.rtfd.io/en/latest/pages/examples/index.html",
-    ])
+    maker.write_line_list(
+        [
+            "More examples are available at ",
+            "http://pathvalidate.rtfd.io/en/latest/pages/examples/index.html",
+        ]
+    )
 
 
 def main():
@@ -51,17 +53,14 @@ def main():
 
     write_examples(maker)
 
-    maker.write_file(
-        maker.doc_page_root_dir_path.joinpath("installation.rst"))
+    maker.write_file(maker.doc_page_root_dir_path.joinpath("installation.rst"))
 
     maker.set_indent_level(0)
     maker.write_chapter("Documentation")
-    maker.write_line_list([
-        "http://pathvalidate.rtfd.io/"
-    ])
+    maker.write_line_list(["http://pathvalidate.rtfd.io/"])
 
     return 0
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     sys.exit(main())

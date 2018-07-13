@@ -14,7 +14,11 @@ import re
 from ._common import _preprocess, unprintable_ascii_char_list
 from ._interface import NameSanitizer
 from .error import (
-    InvalidCharError, InvalidCharWindowsError, InvalidLengthError, InvalidReservedNameError)
+    InvalidCharError,
+    InvalidCharWindowsError,
+    InvalidLengthError,
+    InvalidReservedNameError,
+)
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -51,17 +55,17 @@ class FileSanitizer(NameSanitizer):
 
 class FileNameSanitizer(FileSanitizer):
 
-    __WINDOWS_RESERVED_FILE_NAME_LIST = [
-        "CON", "PRN", "AUX", "NUL",
-    ] + [
+    __WINDOWS_RESERVED_FILE_NAME_LIST = ["CON", "PRN", "AUX", "NUL"] + [
         "{:s}{:d}".format(name, num)
         for name, num in itertools.product(["COM", "LPT"], range(1, 10))
     ]
 
-    __RE_INVALID_FILENAME = re.compile("[{:s}]".format(
-        re.escape(FileSanitizer._INVALID_FILENAME_CHARS)), re.UNICODE)
-    __RE_INVALID_WIN_FILENAME = re.compile("[{:s}]".format(
-        re.escape(FileSanitizer._INVALID_WIN_FILENAME_CHARS)), re.UNICODE)
+    __RE_INVALID_FILENAME = re.compile(
+        "[{:s}]".format(re.escape(FileSanitizer._INVALID_FILENAME_CHARS)), re.UNICODE
+    )
+    __RE_INVALID_WIN_FILENAME = re.compile(
+        "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_FILENAME_CHARS)), re.UNICODE
+    )
 
     @property
     def reserved_keywords(self):
@@ -69,14 +73,15 @@ class FileNameSanitizer(FileSanitizer):
 
     def __init__(self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN, platform_name=None):
         super(FileNameSanitizer, self).__init__(
-            filename, max_len=max_filename_len, platform_name=platform_name)
+            filename, max_len=max_filename_len, platform_name=platform_name
+        )
 
     def validate(self):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
         sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(replacement_text, self._str)
-        sanitize_file_name = sanitize_file_name[:self.max_len]
+        sanitize_file_name = sanitize_file_name[: self.max_len]
 
         try:
             self._validate(sanitize_file_name)
@@ -90,8 +95,8 @@ class FileNameSanitizer(FileSanitizer):
 
         if len(value) > self.max_len:
             raise InvalidLengthError(
-                "filename is too long: expected<={:d}, actual={:d}".format(
-                    self.max_len, len(value)))
+                "filename is too long: expected<={:d}, actual={:d}".format(self.max_len, len(value))
+            )
 
         error_message_template = "invalid char found in the filename: '{:s}'"
         unicode_filename = _preprocess(value)
@@ -106,20 +111,24 @@ class FileNameSanitizer(FileSanitizer):
     def __validate_win_filename(self, unicode_filename):
         match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
         if match is not None:
-            raise InvalidCharWindowsError(self._ERROR_MSG_TEMPLATE.format(
-                unicode_filename, re.escape(match.group())))
+            raise InvalidCharWindowsError(
+                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group()))
+            )
 
         if self._is_reserved_keyword(unicode_filename.upper()):
             raise InvalidReservedNameError(
-                "{} is a reserved name by Windows".format(unicode_filename))
+                "{} is a reserved name by Windows".format(unicode_filename)
+            )
 
 
 class FilePathSanitizer(FileSanitizer):
 
-    __RE_INVALID_PATH = re.compile("[{:s}]".format(
-        re.escape(FileSanitizer._INVALID_PATH_CHARS)), re.UNICODE)
-    __RE_INVALID_WIN_PATH = re.compile("[{:s}]".format(
-        re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE)
+    __RE_INVALID_PATH = re.compile(
+        "[{:s}]".format(re.escape(FileSanitizer._INVALID_PATH_CHARS)), re.UNICODE
+    )
+    __RE_INVALID_WIN_PATH = re.compile(
+        "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE
+    )
 
     @property
     def reserved_keywords(self):
@@ -127,7 +136,8 @@ class FilePathSanitizer(FileSanitizer):
 
     def __init__(self, filename, platform_name=None, max_path_len=None):
         super(FilePathSanitizer, self).__init__(
-            filename, max_len=max_path_len, platform_name=platform_name)
+            filename, max_len=max_path_len, platform_name=platform_name
+        )
 
         if self.max_len is None:
             self._max_len = self.__get_default_max_path_len()
@@ -141,8 +151,7 @@ class FilePathSanitizer(FileSanitizer):
         except AttributeError as e:
             raise ValueError(e)
 
-        return self.__RE_INVALID_WIN_PATH.sub(
-            replacement_text, unicode_file_path)
+        return self.__RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)
 
     def _validate(self, value):
         self._validate_null_string(value)
@@ -155,13 +164,16 @@ class FilePathSanitizer(FileSanitizer):
         else:
             match = self.__RE_INVALID_PATH.search(unicode_file_path)
             if match is not None:
-                raise InvalidCharError(self._ERROR_MSG_TEMPLATE.format(
-                    re.escape(match.group()), unicode_file_path))
+                raise InvalidCharError(
+                    self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path)
+                )
 
         if len(unicode_file_path) > self.max_len:
             raise InvalidLengthError(
                 "file path is too long: expected<={:d}, actual={:d}".format(
-                    self.max_len, len(unicode_file_path)))
+                    self.max_len, len(unicode_file_path)
+                )
+            )
 
     def __get_default_max_path_len(self):
         if self.platform_name == "linux":
@@ -178,8 +190,9 @@ class FilePathSanitizer(FileSanitizer):
     def __validate_win_file_path(self, unicode_file_path):
         match = self.__RE_INVALID_WIN_PATH.search(unicode_file_path)
         if match is not None:
-            raise InvalidCharWindowsError(self._ERROR_MSG_TEMPLATE.format(
-                re.escape(match.group()), unicode_file_path))
+            raise InvalidCharWindowsError(
+                self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path)
+            )
 
 
 def validate_filename(filename, platform_name=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
@@ -214,9 +227,8 @@ def validate_filename(filename, platform_name=None, max_filename_len=_DEFAULT_MA
     """
 
     FileNameSanitizer(
-        filename,
-        platform_name=platform_name,
-        max_filename_len=max_filename_len).validate()
+        filename, platform_name=platform_name, max_filename_len=max_filename_len
+    ).validate()
 
 
 def validate_file_path(file_path, platform_name=None, max_path_len=None):
@@ -247,15 +259,12 @@ def validate_file_path(file_path, platform_name=None, max_path_len=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FilePathSanitizer(
-        file_path,
-        platform_name=platform_name,
-        max_path_len=max_path_len).validate()
+    FilePathSanitizer(file_path, platform_name=platform_name, max_path_len=max_path_len).validate()
 
 
 def sanitize_filename(
-        filename, replacement_text="", platform_name=None,
-        max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
+    filename, replacement_text="", platform_name=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN
+):
     """
     Make a valid filename for both Windows/Linux/macOS.
 
@@ -287,9 +296,8 @@ def sanitize_filename(
     """
 
     return FileNameSanitizer(
-        filename,
-        platform_name=platform_name,
-        max_filename_len=max_filename_len).sanitize(replacement_text)
+        filename, platform_name=platform_name, max_filename_len=max_filename_len
+    ).sanitize(replacement_text)
 
 
 def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_path_len=None):
@@ -318,6 +326,5 @@ def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_p
     """
 
     return FilePathSanitizer(
-        file_path,
-        platform_name=platform_name,
-        max_path_len=max_path_len).sanitize(replacement_text)
+        file_path, platform_name=platform_name, max_path_len=max_path_len
+    ).sanitize(replacement_text)

@@ -13,8 +13,8 @@ from .error import InvalidCharError
 
 
 __RE_SYMBOL = re.compile(
-    "[{}]".format(re.escape("".join(ascii_symbol_list + unprintable_ascii_char_list))),
-    re.UNICODE)
+    "[{}]".format(re.escape("".join(ascii_symbol_list + unprintable_ascii_char_list))), re.UNICODE
+)
 
 
 def validate_symbol(text):

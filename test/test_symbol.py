@@ -10,8 +10,12 @@ import itertools
 
 import pytest
 from pathvalidate import (
-    InvalidCharError, ascii_symbol_list, replace_symbol, unprintable_ascii_char_list,
-    validate_symbol)
+    InvalidCharError,
+    ascii_symbol_list,
+    replace_symbol,
+    unprintable_ascii_char_list,
+    validate_symbol,
+)
 
 from ._common import alphanum_char_list
 
@@ -20,25 +24,25 @@ class Test_validate_symbol(object):
     VALID_CHAR_LIST = alphanum_char_list
     INVALID_CHAR_LIST = ascii_symbol_list
 
-    @pytest.mark.parametrize(["value"], [
-        ["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST
-    ])
+    @pytest.mark.parametrize(
+        ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST]
+    )
     def test_normal(self, value):
         validate_symbol(value)
 
-    @pytest.mark.parametrize(["value"], [
-        ["あいうえお"],
-        ["シート"],
-    ])
+    @pytest.mark.parametrize(["value"], [["あいうえお"], ["シート"]])
     def test_normal_multibyte(self, value):
         pytest.skip("TODO")
 
         validate_symbol(value)
 
-    @pytest.mark.parametrize(["value"], [
-        ["abc" + invalid_char + "hoge123"]
-        for invalid_char in INVALID_CHAR_LIST + unprintable_ascii_char_list
-    ])
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["abc" + invalid_char + "hoge123"]
+            for invalid_char in INVALID_CHAR_LIST + unprintable_ascii_char_list
+        ],
+    )
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
             validate_symbol(value)
@@ -54,18 +58,19 @@ class Test_replace_symbol(object):
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
             for c, rep in itertools.product(TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
-        ] + [
+        ]
+        + [
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
-        ] + [["", "", ""]])
+        ]
+        + [["", "", ""]],
+    )
     def test_normal(self, value, replace_text, expected):
         assert replace_symbol(value, replace_text) == expected
 
-    @pytest.mark.parametrize(["value", "expected"], [
-        [None, TypeError],
-        [1, TypeError],
-        [True, TypeError],
-    ])
+    @pytest.mark.parametrize(
+        ["value", "expected"], [[None, TypeError], [1, TypeError], [True, TypeError]]
+    )
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):
             replace_symbol(value)

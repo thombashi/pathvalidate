@@ -31,8 +31,8 @@ def validate_ltsv_label(label):
     match_list = __RE_INVALID_LTSV_LABEL.findall(_preprocess(label))
     if match_list:
         raise InvalidCharError(
-            "invalid character found for a LTSV format label: {}".format(
-                match_list))
+            "invalid character found for a LTSV format label: {}".format(match_list)
+        )
 
 
 def sanitize_ltsv_label(label, replacement_text=""):
@@ -47,5 +47,4 @@ def sanitize_ltsv_label(label, replacement_text=""):
 
     _validate_null_string(label, error_msg="label is empty")
 
-    return __RE_INVALID_LTSV_LABEL.sub(
-        replacement_text, _preprocess(label))
+    return __RE_INVALID_LTSV_LABEL.sub(replacement_text, _preprocess(label))
