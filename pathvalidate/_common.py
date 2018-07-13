@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import re
 import string
 import sys
 
@@ -70,3 +71,14 @@ def get_ascii_symbol_list():
 
 unprintable_ascii_char_list = get_unprintable_ascii_char_list()
 ascii_symbol_list = get_ascii_symbol_list()
+
+__RE_UNPRINTABLE_CHARS = re.compile(
+    "[{}]".format(re.escape("".join(unprintable_ascii_char_list))), re.UNICODE
+)
+
+
+def replace_unprintable_char(text, replacement_text=""):
+    try:
+        return __RE_UNPRINTABLE_CHARS.sub(replacement_text, text)
+    except (TypeError, AttributeError):
+        raise TypeError("text must be a string")
