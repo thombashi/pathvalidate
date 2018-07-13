@@ -45,7 +45,7 @@ def replace_symbol(text, replacement_text=""):
         :ref:`example-sanitize-symbol`
     """
 
-    if not is_not_null_string(text):
+    try:
+        return __RE_SYMBOL.sub(replacement_text, _preprocess(text))
+    except (TypeError, AttributeError):
         raise TypeError("text must be a string")
-
-    return __RE_SYMBOL.sub(replacement_text, _preprocess(text))

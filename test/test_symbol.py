@@ -57,7 +57,7 @@ class Test_replace_symbol(object):
         ] + [
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
-        ])
+        ] + [["", "", ""]])
     def test_normal(self, value, replace_text, expected):
         assert replace_symbol(value, replace_text) == expected
 
