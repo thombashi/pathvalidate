@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _preprocess, ascii_symbol_list, is_not_null_string, unprintable_ascii_char_list
+from ._common import _preprocess, ascii_symbol_list, unprintable_ascii_char_list
 from .error import InvalidCharError
 
 
