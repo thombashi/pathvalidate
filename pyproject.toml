@@ -1,14 +1,15 @@
 [tool.black]
 line-length = 100
 exclude = """
-.eggs
-| .git
-| .tox
-| .venv
-| _build
-| build
-| dist
+.eggs/
 | _six.py
+| .git/
+| .tox/
+| .venv/
+| _build/
+| build/
+| dist/
+| _sandbox/
 | docs/conf.py
 | setup.py
 """
