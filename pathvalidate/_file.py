@@ -50,8 +50,14 @@ class FileSanitizer(NameSanitizer):
 
         self.__platform_name = platform_name.lower()
 
+    def _is_linux(self):
+        return self.platform_name in ["linux"]
+
     def _is_windows(self):
         return self.platform_name in ["windows", "win"]
+
+    def _is_macos(self):
+        return self.platform_name in ["mac", "macos", "darwin"]
 
 
 class FileNameSanitizer(FileSanitizer):
@@ -177,13 +183,13 @@ class FilePathSanitizer(FileSanitizer):
             )
 
     def __get_default_max_path_len(self):
-        if self.platform_name == "linux":
+        if self._is_linux():
             return 4096
 
-        if platform.system() == "windows":
+        if self._is_windows():
             return 260
 
-        if platform.system() == "mac":
+        if self._is_macos():
             return 1024
 
         return 260
