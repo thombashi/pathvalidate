@@ -25,8 +25,6 @@ _DEFAULT_MAX_FILENAME_LEN = 255
 
 
 class FileSanitizer(NameSanitizer):
-    _VALID_WIN_PLATFORM_NAME_LIST = ["windows", "win"]
-
     _INVALID_PATH_CHARS = "".join(unprintable_ascii_char_list)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|'
@@ -51,6 +49,9 @@ class FileSanitizer(NameSanitizer):
             platform_name = platform.system()
 
         self.__platform_name = platform_name.lower()
+
+    def _is_windows(self):
+        return self.platform_name in ["windows", "win"]
 
 
 class FileNameSanitizer(FileSanitizer):
@@ -101,7 +102,7 @@ class FileNameSanitizer(FileSanitizer):
         error_message_template = "invalid char found in the filename: '{:s}'"
         unicode_filename = _preprocess(value)
 
-        if self.platform_name in self._VALID_WIN_PLATFORM_NAME_LIST:
+        if self._is_windows():
             self.__validate_win_filename(unicode_filename)
         else:
             match = self.__RE_INVALID_FILENAME.search(unicode_filename)
@@ -159,7 +160,7 @@ class FilePathSanitizer(FileSanitizer):
         file_path = os.path.normpath(os.path.splitdrive(value)[1])
         unicode_file_path = _preprocess(file_path)
 
-        if self.platform_name in self._VALID_WIN_PLATFORM_NAME_LIST:
+        if self._is_windows():
             self.__validate_win_file_path(unicode_file_path)
         else:
             match = self.__RE_INVALID_PATH.search(unicode_file_path)
