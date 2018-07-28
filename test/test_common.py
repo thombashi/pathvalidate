@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 
 import pytest
-from pathvalidate import replace_unprintable_char, ascii_symbol_list, unprintable_ascii_char_list
+from pathvalidate import ascii_symbol_list, replace_unprintable_char, unprintable_ascii_char_list
 
 from ._common import alphanum_char_list
 
