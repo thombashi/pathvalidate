@@ -253,7 +253,7 @@ def validate_filename(filename, platform_name=None, max_filename_len=_DEFAULT_MA
     ).validate()
 
 
-def validate_file_path(file_path, platform_name=None, max_path_len=None):
+def validate_filepath(file_path, platform_name=None, max_path_len=None):
     """
     Verifying whether the ``file_path`` is a valid file path or not.
 
@@ -282,6 +282,11 @@ def validate_file_path(file_path, platform_name=None, max_path_len=None):
     """
 
     FilePathSanitizer(file_path, platform_name=platform_name, max_path_len=max_path_len).validate()
+
+
+def validate_file_path(file_path, platform_name=None, max_path_len=None):
+    # [Deprecated]
+    validate_filepath(file_path, platform_name, max_path_len)
 
 
 def sanitize_filename(
@@ -323,7 +328,7 @@ def sanitize_filename(
     ).sanitize(replacement_text)
 
 
-def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_path_len=None):
+def sanitize_filepath(file_path, replacement_text="", platform_name=None, max_path_len=None):
     """
     Make a valid file path for both Windows and Linux.
     Replace invalid characters for a file path within the ``file_path``
@@ -354,3 +359,8 @@ def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_p
     return FilePathSanitizer(
         file_path, platform_name=platform_name, max_path_len=max_path_len
     ).sanitize(replacement_text)
+
+
+def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_path_len=None):
+    # [Deprecated]
+    return sanitize_filepath(file_path, platform_name, max_path_len)

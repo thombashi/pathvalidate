@@ -19,10 +19,10 @@ from pathvalidate import (
     InvalidLengthError,
     InvalidReservedNameError,
     NullNameError,
-    sanitize_file_path,
     sanitize_filename,
-    validate_file_path,
+    sanitize_filepath,
     validate_filename,
+    validate_filepath,
 )
 from pathvalidate._common import unprintable_ascii_char_list
 from pathvalidate._file import FileSanitizer
@@ -169,7 +169,7 @@ class Test_validate_filename(object):
             validate_filename(value)
 
 
-class Test_validate_file_path(object):
+class Test_validate_filepath(object):
     VALID_CHAR_LIST = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
         "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
@@ -200,7 +200,7 @@ class Test_validate_file_path(object):
         ),
     )
     def test_normal(self, value, platform_name):
-        validate_file_path(value, platform_name)
+        validate_filepath(value, platform_name)
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
@@ -212,11 +212,11 @@ class Test_validate_file_path(object):
         ),
     )
     def test_normal_multibyte(self, value, platform_name):
-        validate_file_path(value, platform_name)
+        validate_filepath(value, platform_name)
 
     @pytest.mark.parametrize(["value"], [[valid_path] for valid_path in WIN_VALID_PATH_LIST])
     def test_normal_win(self, value):
-        validate_file_path(value, "windows")
+        validate_filepath(value, "windows")
 
     @pytest.mark.parametrize(
         ["value", "platform_name", "max_path_len", "expected"],
@@ -230,10 +230,10 @@ class Test_validate_file_path(object):
     )
     def test_normal_max_path_len(self, value, platform_name, max_path_len, expected):
         if expected is None:
-            validate_file_path(value, platform_name=platform_name, max_path_len=max_path_len)
+            validate_filepath(value, platform_name=platform_name, max_path_len=max_path_len)
         else:
             with pytest.raises(expected):
-                validate_file_path(value, platform_name=platform_name, max_path_len=max_path_len)
+                validate_filepath(value, platform_name=platform_name, max_path_len=max_path_len)
 
     @pytest.mark.parametrize(
         ["value"],
@@ -244,7 +244,7 @@ class Test_validate_file_path(object):
     )
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
-            validate_file_path(value)
+            validate_filepath(value)
 
     @pytest.mark.parametrize(
         ["value"],
@@ -257,7 +257,7 @@ class Test_validate_file_path(object):
     )
     def test_exception_invalid_win_char(self, value):
         with pytest.raises(InvalidCharWindowsError):
-            validate_file_path(value, platform_name="windows")
+            validate_filepath(value, platform_name="windows")
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -265,7 +265,7 @@ class Test_validate_file_path(object):
     )
     def test_exception(self, value, expected):
         with pytest.raises(expected):
-            validate_file_path(value)
+            validate_filepath(value)
 
 
 @pytest.mark.skipif("platform.system() != 'Windows'")
@@ -293,7 +293,7 @@ class Test_validate_win_file_path(object):
         ],
     )
     def test_normal(self, value):
-        validate_file_path(value)
+        validate_filepath(value)
 
 
 class Test_sanitize_filename(object):
@@ -391,7 +391,7 @@ class Test_sanitize_filename(object):
             sanitize_filename(value)
 
 
-class Test_sanitize_file_path(object):
+class Test_sanitize_filepath(object):
     SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list
     NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
@@ -412,10 +412,10 @@ class Test_sanitize_file_path(object):
         ],
     )
     def test_normal_str(self, value, replace_text, expected):
-        sanitized_name = sanitize_file_path(value, replace_text)
+        sanitized_name = sanitize_filepath(value, replace_text)
         assert sanitized_name == expected
         assert isinstance(sanitized_name, six.text_type)
-        validate_file_path(sanitized_name)
+        validate_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
@@ -433,19 +433,19 @@ class Test_sanitize_file_path(object):
         ],
     )
     def test_normal_pathlike(self, value, replace_text, expected):
-        sanitized_name = sanitize_file_path(value, replace_text)
+        sanitized_name = sanitize_filepath(value, replace_text)
         assert sanitized_name == expected
         assert _is_pathlike_obj(sanitized_name)
-        validate_file_path(sanitized_name)
+        validate_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [["/tmp/あいう\0えお.txt", "", "/tmp/あいうえお.txt"], ["/tmp/属\0性.txt", "-", "/tmp/属-性.txt"]],
     )
     def test_normal_multibyte(self, value, replace_text, expected):
-        sanitized_name = sanitize_file_path(value, replace_text)
+        sanitized_name = sanitize_filepath(value, replace_text)
         assert sanitized_name == expected
-        validate_file_path(sanitized_name)
+        validate_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -453,4 +453,4 @@ class Test_sanitize_file_path(object):
     )
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
-            sanitize_file_path(value)
+            sanitize_filepath(value)
