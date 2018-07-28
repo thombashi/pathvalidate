@@ -12,9 +12,25 @@ from ._common import _preprocess, ascii_symbol_list, unprintable_ascii_char_list
 from .error import InvalidCharError
 
 
+__RE_UNPRINTABLE = re.compile(
+    "[{}]".format(re.escape("".join(unprintable_ascii_char_list))), re.UNICODE
+)
 __RE_SYMBOL = re.compile(
     "[{}]".format(re.escape("".join(ascii_symbol_list + unprintable_ascii_char_list))), re.UNICODE
 )
+
+
+def validate_unprintable(text):
+    match_list = __RE_UNPRINTABLE.findall(_preprocess(text))
+    if match_list:
+        raise InvalidCharError("unprintable character found: {}".format(match_list))
+
+
+def replace_unprintable(text, replacement_text=""):
+    try:
+        return __RE_UNPRINTABLE.sub(replacement_text, _preprocess(text))
+    except (TypeError, AttributeError):
+        raise TypeError("text must be a string")
 
 
 def validate_symbol(text):
