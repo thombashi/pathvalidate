@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 import platform  # noqa: W0611
 import random
-import sys
+import sys  # noqa: W0611
 
 import pytest
 import six
