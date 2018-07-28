@@ -10,7 +10,6 @@ import itertools
 import os.path
 import platform
 import re
-from pathlib import Path
 
 from ._common import _preprocess, unprintable_ascii_char_list
 from ._interface import NameSanitizer
@@ -99,7 +98,12 @@ class FileNameSanitizer(FileSanitizer):
             sanitize_file_name += "_"
 
         if is_pathlike_obj:
-            return Path(sanitize_file_name)
+            try:
+                from pathlib import Path
+
+                return Path(sanitize_file_name)
+            except:
+                pass
 
         return sanitize_file_name
 
@@ -171,7 +175,12 @@ class FilePathSanitizer(FileSanitizer):
         sanitized_path = self.__RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)
 
         if is_pathlike_obj:
-            return Path(sanitized_path)
+            try:
+                from pathlib import Path
+
+                return Path(sanitized_path)
+            except:
+                pass
 
         return sanitized_path
 

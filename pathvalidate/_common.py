@@ -9,7 +9,6 @@ from __future__ import absolute_import, unicode_literals
 import re
 import string
 import sys
-from pathlib import Path
 
 from ._six import text_type
 from .error import NullNameError
@@ -21,12 +20,17 @@ else:
     unichr = unichr
 
 
-def _is_pathlike_obj(value):
-    return isinstance(value, Path)
+def is_pathlike_obj(value):
+    try:
+        from pathlib import Path
+
+        return isinstance(value, Path)
+    except ImportError:
+        return False
 
 
 def _validate_null_string(text, error_msg="null name"):
-    if is_not_null_string(text) or _is_pathlike_obj(text):
+    if is_not_null_string(text) or is_pathlike_obj(text):
         return
 
     if is_null_string(text):
@@ -36,7 +40,7 @@ def _validate_null_string(text, error_msg="null name"):
 
 
 def _preprocess(name):
-    if _is_pathlike_obj(name):
+    if is_pathlike_obj(name):
         return text_type(name)
 
     return name.strip()
