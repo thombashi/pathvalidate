@@ -12,9 +12,9 @@ File name validate/sanitize
 File path validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. autofunction:: pathvalidate.validate_file_path
+.. autofunction:: pathvalidate.validate_filepath
 
-.. autofunction:: pathvalidate.sanitize_file_path
+.. autofunction:: pathvalidate.sanitize_filepath
 
 
 Excel shee name validate/sanitize

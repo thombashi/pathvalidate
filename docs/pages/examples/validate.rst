@@ -12,10 +12,10 @@ the name includes invalid character(s) for a filename.
 
 Validate a file path
 ----------------------------
-The :py:func:`.validate_file_path()` function raise ``ValueError`` if
+The :py:func:`.validate_filepath()` function raise ``ValueError`` if
 the name includes invalid character(s) for a file path.
 
-.. include:: validate_file_path_code.txt
+.. include:: validate_filepath_code.txt
 
 
 .. _example-validate-var-name:

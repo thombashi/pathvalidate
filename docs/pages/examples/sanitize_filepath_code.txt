@@ -1,0 +1,13 @@
+:Sample Code:
+    .. code-block:: python
+
+        import pathvalidate as pv
+
+        print(pv.sanitize_filepath("fi:l*e/p\"a?t>h|.t<xt"))
+        print(pv.sanitize_filepath("_a*b:c<d>e%f/(g)h+i_0.txt"))
+
+:Output:
+    .. code-block:: none
+
+        file/path.txt
+        _abcde%f/(g)h+i_0.txt

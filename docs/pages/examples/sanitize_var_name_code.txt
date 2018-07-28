@@ -1,9 +1,9 @@
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate
+        import pathvalidate as pv
 
-        print(pathvalidate.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        print(pv.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
 
 :Output:
     .. code-block:: none
