@@ -294,10 +294,10 @@ rst_prolog = u"""
 
 .. |invalid_filename_chars| replace::
     ``/``, ``\\0``
-    
+
 .. |invalid_win_filename_chars| replace::
     ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
-    
+
 .. |invalid_excel_sheet_chars| replace::
     ``[``, ``]``, ``:``, ``*``, ``?``, ``/``, ``\``
 
@@ -307,7 +307,7 @@ rst_prolog = u"""
 
 .. |platform_name| replace::
     Execution platform name.
-    Available platforms are ``"Linux"`` or ``"Windows"``.
+    Available platforms are ``"Linux"``, ``"Windows"`` or ``"macOS"``.
     Automatically detect the platform if the value is |None|.
     Defaults to |None|.
 

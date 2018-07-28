@@ -299,15 +299,16 @@ def sanitize_filename(
     - Append underscore (``"_"``) at the tail of the name if sanitized name
       is one of the reserved names by the OS.
 
-    :param str filename: Filename to sanitize.
+    :param filename: Filename to sanitize.
+    :type filename: str or PathLike object
     :param str replacement_text: Replacement text.
     :param str platform_name: |platform_name|
     :param int max_filename_len:
         The upper limit of the ``filename`` length. Truncate the name length if
         the ``filename`` length exceeds this value.
         Defaults to 255.
-    :return: A replacement string.
-    :rtype: str
+    :return: Sanitized filename.
+    :rtype: Same type as the argument (str or PathLike object)
     :raises ValueError: If the ``filename`` is an invalid filename.
 
     :Example:
@@ -330,7 +331,8 @@ def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_p
     Invalid characters are as followings and unprintable characters:
     |invalid_file_path_chars|, |invalid_win_file_path_chars|.
 
-    :param str file_path: File path to sanitize.
+    :param file_path: File path to sanitize.
+    :type file_path: str or PathLike object
     :param str replacement_text: Replacement text.
     :param str platform_name: |platform_name|
     :param int max_path_len:
@@ -338,9 +340,11 @@ def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_p
         if the ``file_path`` length exceedd this value.
         If the value is |None|, the default value automatically
         determined by the execution environment:
-        **(1)** 4096 (``Linux``) **(2)** 260 (``Windows``).
-    :return: A replacement string.
-    :rtype: str
+        **(1)** 4096 (``Linux``)
+        **(2)** 260 (``Windows``)
+        **(3)** 1024 (``macOS``)
+    :return: Sanitized filepath.
+    :rtype: Same type as the argument (str or PathLike object)
     :raises ValueError: If the ``file_path`` is an invalid file path.
 
     :Example:
