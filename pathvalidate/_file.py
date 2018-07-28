@@ -10,9 +10,11 @@ import itertools
 import os.path
 import platform
 import re
+from pathlib import Path
 
 from ._common import _preprocess, unprintable_ascii_char_list
 from ._interface import NameSanitizer
+from ._six import text_type
 from .error import (
     InvalidCharError,
     InvalidCharWindowsError,
@@ -87,6 +89,7 @@ class FileNameSanitizer(FileSanitizer):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
+        is_pathlike_obj = self._is_pathlike_obj()
         sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(replacement_text, self._str)
         sanitize_file_name = sanitize_file_name[: self.max_len]
 
@@ -95,14 +98,19 @@ class FileNameSanitizer(FileSanitizer):
         except InvalidReservedNameError:
             sanitize_file_name += "_"
 
+        if is_pathlike_obj:
+            return Path(sanitize_file_name)
+
         return sanitize_file_name
 
     def _validate(self, value):
         self._validate_null_string(value)
 
-        if len(value) > self.max_len:
+        if len(text_type(value)) > self.max_len:
             raise InvalidLengthError(
-                "filename is too long: expected<={:d}, actual={:d}".format(self.max_len, len(value))
+                "filename is too long: expected<={:d}, actual={:d}".format(
+                    self.max_len, len(text_type(value))
+                )
             )
 
         error_message_template = "invalid char found in the filename: '{:s}'"
@@ -153,12 +161,19 @@ class FilePathSanitizer(FileSanitizer):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
+        is_pathlike_obj = self._is_pathlike_obj()
+
         try:
             unicode_file_path = _preprocess(self._value)
         except AttributeError as e:
             raise ValueError(e)
 
-        return self.__RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)
+        sanitized_path = self.__RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)
+
+        if is_pathlike_obj:
+            return Path(sanitized_path)
+
+        return sanitized_path
 
     def _validate(self, value):
         self._validate_null_string(value)

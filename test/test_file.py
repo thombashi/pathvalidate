@@ -9,8 +9,10 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 import platform  # noqa: W0611
 import random
+from pathlib import Path
 
 import pytest
+import six
 from pathvalidate import (
     InvalidCharError,
     InvalidCharWindowsError,
@@ -49,6 +51,10 @@ WIN_RESERVED_FILE_NAME_LIST = ["CON", "con", "PRN", "prn", "AUX", "aux", "NUL", 
 ]
 
 VALID_MULTIBYTE_NAME_LIST = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
+
+
+def _is_pathlike_obj(value):
+    return isinstance(value, Path)
 
 
 class Test_validate_filename(object):
@@ -306,9 +312,27 @@ class Test_sanitize_filename(object):
             for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ],
     )
-    def test_normal(self, value, replace_text, expected):
+    def test_normal_str(self, value, replace_text, expected):
         sanitized_name = sanitize_filename(value, replace_text)
         assert sanitized_name == expected
+        assert isinstance(sanitized_name, six.text_type)
+        validate_filename(sanitized_name)
+
+    @pytest.mark.parametrize(
+        ["value", "replace_text", "expected"],
+        [
+            [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
+            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ]
+        + [
+            [Path("A" + c + "B"), rep, Path("A" + c + "B")]
+            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ],
+    )
+    def test_normal_pathlike(self, value, replace_text, expected):
+        sanitized_name = sanitize_filename(value, replace_text)
+        assert sanitized_name == expected
+        assert _is_pathlike_obj(sanitized_name)
         validate_filename(sanitized_name)
 
     @pytest.mark.parametrize(
@@ -387,9 +411,31 @@ class Test_sanitize_file_path(object):
             for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ],
     )
-    def test_normal(self, value, replace_text, expected):
+    def test_normal_str(self, value, replace_text, expected):
         sanitized_name = sanitize_file_path(value, replace_text)
         assert sanitized_name == expected
+        assert isinstance(sanitized_name, six.text_type)
+        validate_file_path(sanitized_name)
+
+    @pytest.mark.parametrize(
+        ["value", "replace_text", "expected"],
+        [
+            [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
+            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ]
+        + [
+            [Path("A" + c + "B"), rep, Path("A" + c + "B")]
+            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ]
+        + [
+            [Path("あ" + c + "い"), rep, Path("あ" + c + "い")]
+            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ],
+    )
+    def test_normal_pathlike(self, value, replace_text, expected):
+        sanitized_name = sanitize_file_path(value, replace_text)
+        assert sanitized_name == expected
+        assert _is_pathlike_obj(sanitized_name)
         validate_file_path(sanitized_name)
 
     @pytest.mark.parametrize(

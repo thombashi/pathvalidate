@@ -7,9 +7,10 @@
 from __future__ import absolute_import, unicode_literals
 
 import abc
+from pathlib import Path
 
 from ._common import _validate_null_string
-from ._six import add_metaclass
+from ._six import add_metaclass, text_type
 
 
 @add_metaclass(abc.ABCMeta)
@@ -28,12 +29,18 @@ class NameSanitizer(object):
 
     @property
     def _str(self):
-        return self._value
+        return text_type(self._value)
 
     def __init__(self, value):
         self._validate_null_string(value)
 
-        self._value = value.strip()
+        if isinstance(value, Path):
+            self._value = value
+        else:
+            self._value = value.strip()
+
+    def _is_pathlike_obj(self):
+        return isinstance(self._value, Path)
 
     def _is_reserved_keyword(self, value):
         return value in self.reserved_keywords
