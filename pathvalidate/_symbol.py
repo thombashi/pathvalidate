@@ -47,7 +47,7 @@ def validate_symbol(text):
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
 
-def replace_symbol(text, replacement_text=""):
+def replace_symbol(text, replacement_text="", is_replace_consecutive_chars=False, is_strip=False):
     """
     Replace all of the symbols in the ``text``.
 
@@ -62,6 +62,17 @@ def replace_symbol(text, replacement_text=""):
     """
 
     try:
-        return __RE_SYMBOL.sub(replacement_text, _preprocess(text))
+        new_text = __RE_SYMBOL.sub(replacement_text, _preprocess(text))
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
+
+    if not replacement_text:
+        return new_text
+
+    if is_replace_consecutive_chars:
+        new_text = re.sub("{}+".format(re.escape(replacement_text)), replacement_text, new_text)
+
+    if is_strip:
+        new_text = new_text.strip(replacement_text)
+
+    return new_text
