@@ -75,10 +75,14 @@ class Test_replace_symbol(object):
             ["!a##b$$$c((((d]]]])", "_", True, False, "_a_b_c_d_"],
             ["!a##b$$$c((((d]]]])", "_", False, True, "a__b___c____d"],
             ["!a##b$$$c((((d]]]])", "_", False, False, "_a__b___c____d_____"],
-        ]
+        ],
     )
-    def test_normal_consecutive(self, value, replace_text, is_replace_consecutive_chars, is_strip, expected):
-        assert replace_symbol(value, replace_text, is_replace_consecutive_chars, is_strip) == expected
+    def test_normal_consecutive(
+        self, value, replace_text, is_replace_consecutive_chars, is_strip, expected
+    ):
+        assert (
+            replace_symbol(value, replace_text, is_replace_consecutive_chars, is_strip) == expected
+        )
 
     @pytest.mark.parametrize(
         ["value", "expected"], [[None, TypeError], [1, TypeError], [True, TypeError]]
