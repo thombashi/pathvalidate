@@ -102,7 +102,7 @@ class FileNameSanitizer(FileSanitizer):
                 from pathlib import Path
 
                 return Path(sanitize_file_name)
-            except:
+            except ImportError:
                 pass
 
         return sanitize_file_name
@@ -179,7 +179,7 @@ class FilePathSanitizer(FileSanitizer):
                 from pathlib import Path
 
                 return Path(sanitized_path)
-            except:
+            except ImportError:
                 pass
 
         return sanitized_path
