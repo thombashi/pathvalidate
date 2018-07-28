@@ -29,6 +29,9 @@ def write_examples(maker):
     maker.write_chapter("Sanitize a filename")
     maker.write_file(example_root.joinpath("sanitize_filename_code.txt"))
 
+    maker.write_chapter("Sanitize a filepath")
+    maker.write_file(example_root.joinpath("sanitize_filepath_code.txt"))
+
     maker.write_chapter("Sanitize a variable name")
     maker.write_file(example_root.joinpath("sanitize_var_name_code.txt"))
 

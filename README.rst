@@ -60,24 +60,40 @@ Sanitize a filename
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate
+        import pathvalidate as pv
 
-        filename = "_a*b:c<d>e%f/(g)h+i_0.txt"
-        print(pathvalidate.sanitize_filename(filename))
+        print(pv.sanitize_filename("f\\i:l*e?n\"a<m>e|.txt"))
+        print(pv.sanitize_filename("_a*b:c<d>e%f/(g)h+i_0.txt"))
 
 :Output:
     .. code-block::
 
         _abcde%f(g)h+i_0.txt
 
+Sanitize a filepath
+---------------------
+:Sample Code:
+    .. code-block:: python
+
+        import pathvalidate as pv
+
+        print(pv.sanitize_filepath("fi:l*e/p\"a?t>h|.t<xt"))
+        print(pv.sanitize_filepath("_a*b:c<d>e%f/(g)h+i_0.txt"))
+
+:Output:
+    .. code-block::
+
+        file/path.txt
+        _abcde%f/(g)h+i_0.txt
+
 Sanitize a variable name
 --------------------------
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate
+        import pathvalidate as pv
 
-        print(pathvalidate.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        print(pv.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
 
 :Output:
     .. code-block::
