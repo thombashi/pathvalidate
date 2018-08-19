@@ -39,7 +39,7 @@ def write_examples(maker):
     maker.write_line_list(
         [
             "More examples are available at ",
-            "http://pathvalidate.rtfd.io/en/latest/pages/examples/index.html",
+            "https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html",
         ]
     )
 
@@ -60,7 +60,7 @@ def main():
 
     maker.set_indent_level(0)
     maker.write_chapter("Documentation")
-    maker.write_line_list(["http://pathvalidate.rtfd.io/"])
+    maker.write_line_list(["https://pathvalidate.rtfd.io/"])
 
     return 0
 
