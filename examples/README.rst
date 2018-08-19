@@ -1,1 +1,1 @@
-http://nbviewer.jupyter.org/github/thombashi/pathvalidate/tree/master/ipynb/pathvalidate.ipynb
+https://nbviewer.jupyter.org/github/thombashi/pathvalidate/tree/master/ipynb/pathvalidate.ipynb

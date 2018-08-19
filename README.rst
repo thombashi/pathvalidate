@@ -103,7 +103,7 @@ Sanitize a variable name
 For more information
 ----------------------
 More examples are available at 
-http://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
+https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
 
 Installation
 ============
@@ -127,5 +127,5 @@ Test dependencies
 
 Documentation
 ===============
-http://pathvalidate.rtfd.io/
+https://pathvalidate.rtfd.io/
 
