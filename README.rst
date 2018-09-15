@@ -4,7 +4,7 @@ pathvalidate
     :target: https://badge.fury.io/py/pathvalidate
 
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
-    :target: https://pypi.python.org/pypi/pathvalidate
+    :target: https://pypi.org/project/pathvalidate
 
 .. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS
     :target: https://travis-ci.org/thombashi/pathvalidate
@@ -121,8 +121,8 @@ No external dependencies.
 
 Test dependencies
 -----------------
-- `pytest <http://pytest.org/latest/>`__
-- `pytest-runner <https://pypi.python.org/pypi/pytest-runner>`__
+- `pytest <https://docs.pytest.org/en/latest/>`__
+- `pytest-runner <https://github.com/pytest-dev/pytest-runner>`__
 - `tox <https://testrun.org/tox/latest/>`__
 
 Documentation
