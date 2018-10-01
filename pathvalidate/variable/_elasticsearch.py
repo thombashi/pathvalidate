@@ -13,7 +13,7 @@ from ._base import VarNameSanitizer
 
 class ElasticsearchIndexNameSanitizer(VarNameSanitizer):
 
-    __RE_INVALID_INDEX_NAME = re.compile("[" + re.escape('\\/*?"<>|,"') + "\s]+")
+    __RE_INVALID_INDEX_NAME = re.compile("[" + re.escape('\\/*?"<>|,"') + r"\s]+")
     __RE_INVALID_INDEX_NAME_HEAD = re.compile("^[_]+")
 
     @property
