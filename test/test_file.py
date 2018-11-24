@@ -320,7 +320,7 @@ class Test_sanitize_filename(object):
         assert isinstance(sanitized_name, six.text_type)
         validate_filename(sanitized_name)
 
-    @pytest.mark.skipif("platform.system() == 'Windows' and sys.version_info[0:2] <= (3, 5)")
+    @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
@@ -421,7 +421,7 @@ class Test_sanitize_filepath(object):
         assert isinstance(sanitized_name, six.text_type)
         validate_filepath(sanitized_name)
 
-    @pytest.mark.skipif("platform.system() == 'Windows' and sys.version_info[0:2] <= (3, 5)")
+    @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
