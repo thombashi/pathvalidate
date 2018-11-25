@@ -5,4 +5,8 @@ if [ "$TRAVIS_OS_NAME" = "osx" ]; then
         # Install Python3 on osx
         brew upgrade python
     fi
+
+    pip3 install tox --upgrade
+else
+    pip install tox --upgrade
 fi
