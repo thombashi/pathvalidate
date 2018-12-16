@@ -28,7 +28,7 @@ _DEFAULT_MAX_FILENAME_LEN = 255
 class FileSanitizer(NameSanitizer):
     _INVALID_PATH_CHARS = "".join(unprintable_ascii_char_list)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
-    _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|'
+    _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
 
     _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
