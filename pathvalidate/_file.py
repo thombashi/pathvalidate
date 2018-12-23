@@ -345,14 +345,14 @@ def sanitize_filename(
     filename, replacement_text="", platform_name=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN
 ):
     """
-    Make a valid filename for both Windows/Linux/macOS.
+    Make a valid filename from a string.
 
-    To make a valid filename:
+    To make a valid filename the function does:
 
     - Replace invalid characters for a filename within the ``filename``
       with the ``replacement_text``.
       Invalid characters are as followings and unprintable characters:
-      |invalid_filename_chars|, |invalid_win_filename_chars|.
+      |invalid_filename_chars|, (for Windows: |invalid_win_filename_chars|).
     - Append underscore (``"_"``) at the tail of the name if sanitized name
       is one of the reserved names by the OS.
 
@@ -382,7 +382,8 @@ def sanitize_filename(
 
 def sanitize_filepath(file_path, replacement_text="", platform_name=None, max_path_len=None):
     """
-    Make a valid file path for both Windows and Linux.
+    Make a valid file path from a string.
+
     Replace invalid characters for a file path within the ``file_path``
     with the ``replacement_text``.
     Invalid characters are as followings and unprintable characters:
