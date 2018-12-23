@@ -33,7 +33,6 @@ Features
     - `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label
     - Elastic search index name
     - Excel sheet name
-    - SQLite table/attribute name
 
 Examples
 ==========
