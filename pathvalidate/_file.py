@@ -25,6 +25,16 @@ from .error import (
 _DEFAULT_MAX_FILENAME_LEN = 255
 
 
+class PlatformName(object):
+    """
+    Normalized platform names
+    """
+
+    LINUX = "linux"
+    WINDOWS = "windows"
+    MACOS = "macos"
+
+
 class FileSanitizer(NameSanitizer):
     _INVALID_PATH_CHARS = "".join(unprintable_ascii_char_list)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
@@ -46,19 +56,35 @@ class FileSanitizer(NameSanitizer):
 
         self._max_len = max_len
 
-        if platform_name is None:
-            platform_name = platform.system()
-
-        self.__platform_name = platform_name.lower()
+        self.__platform_name = self.__normalize_platform(platform_name)
 
     def _is_linux(self):
-        return self.platform_name in ["linux"]
+        return self.platform_name == PlatformName.LINUX
 
     def _is_windows(self):
-        return self.platform_name in ["windows", "win"]
+        return self.platform_name == PlatformName.WINDOWS
 
     def _is_macos(self):
-        return self.platform_name in ["mac", "macos", "darwin"]
+        return self.platform_name == PlatformName.MACOS
+
+    @staticmethod
+    def __normalize_platform(name):
+        if name:
+            name = name.lower()
+
+        if name == "auto" or name is None:
+            name = platform.system().lower()
+
+        if name in ["linux"]:
+            return PlatformName.LINUX
+
+        if name in ["windows", "win"]:
+            return PlatformName.WINDOWS
+
+        if name in ["mac", "macos", "darwin"]:
+            return PlatformName.MACOS
+
+        raise ValueError()
 
 
 class FileNameSanitizer(FileSanitizer):
