@@ -3,7 +3,8 @@ BUILD_DIR := _build
 
 .PHONY: build
 build:
-	@python setup.py build && rm -rf build/
+	@python setup.py build
+	@rm -rf build/
 
 .PHONY: clean
 clean:
@@ -21,3 +22,8 @@ fmt:
 .PHONY: readme
 readme:
 	@cd $(DOCS_DIR); python make_readme.py
+
+.PHONY: release
+release:
+	@python setup.py release
+	@rm -rf dist/
