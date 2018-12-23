@@ -283,7 +283,7 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-rst_prolog = u"""
+rst_prolog = ur"""
 .. |None| replace:: :py:obj:`None`
 
 .. |invalid_file_path_chars| replace::
@@ -296,7 +296,8 @@ rst_prolog = u"""
     ``/``, ``\\0``
 
 .. |invalid_win_filename_chars| replace::
-    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``
+    ``\``, ``:``, ``*``, ``?``, ``"``, ``<``, ``>``, ``|``,
+    ``\t``, ``\n``, ``\r``, ``\x0b``, ``\x0c``
 
 .. |invalid_excel_sheet_chars| replace::
     ``[``, ``]``, ``:``, ``*``, ``?``, ``/``, ``\``
