@@ -29,11 +29,14 @@ def is_pathlike_obj(value):
         return False
 
 
-def _validate_null_string(text, error_msg="null name"):
+def _validate_null_string(text, error_msg=None):
     if is_not_null_string(text) or is_pathlike_obj(text):
         return
 
     if is_null_string(text):
+        if not error_msg:
+            error_msg = "null name"
+
         raise NullNameError(error_msg)
 
     raise TypeError("text must be a string: actual={}".format(type(text)))
