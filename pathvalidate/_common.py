@@ -64,7 +64,6 @@ def is_not_null_string(value):
 
 
 def get_unprintable_ascii_char_list():
-
     return [unichr(c) for c in range(128) if chr(c) not in string.printable]
 
 
