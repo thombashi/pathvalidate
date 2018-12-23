@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _preprocess, ascii_symbol_list, unprintable_ascii_char_list
+from ._common import ascii_symbol_list, preprocess, unprintable_ascii_char_list
 from .error import InvalidCharError
 
 
@@ -21,14 +21,14 @@ __RE_SYMBOL = re.compile(
 
 
 def validate_unprintable(text):
-    match_list = __RE_UNPRINTABLE.findall(_preprocess(text))
+    match_list = __RE_UNPRINTABLE.findall(preprocess(text))
     if match_list:
         raise InvalidCharError("unprintable character found: {}".format(match_list))
 
 
 def replace_unprintable(text, replacement_text=""):
     try:
-        return __RE_UNPRINTABLE.sub(replacement_text, _preprocess(text))
+        return __RE_UNPRINTABLE.sub(replacement_text, preprocess(text))
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
 
@@ -42,7 +42,7 @@ def validate_symbol(text):
         If symbol(s) included in the ``text``.
     """
 
-    match_list = __RE_SYMBOL.findall(_preprocess(text))
+    match_list = __RE_SYMBOL.findall(preprocess(text))
     if match_list:
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
@@ -62,7 +62,7 @@ def replace_symbol(text, replacement_text="", is_replace_consecutive_chars=False
     """
 
     try:
-        new_text = __RE_SYMBOL.sub(replacement_text, _preprocess(text))
+        new_text = __RE_SYMBOL.sub(replacement_text, preprocess(text))
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
 

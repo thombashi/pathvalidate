@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _preprocess, _validate_null_string
+from ._common import preprocess, validate_null_string
 from .error import InvalidCharError, InvalidLengthError
 
 
@@ -32,7 +32,7 @@ def validate_excel_sheet_name(sheet_name):
         If the ``sheet_name`` is longer than 31 characters.
     """
 
-    _validate_null_string(sheet_name)
+    validate_null_string(sheet_name)
 
     if len(sheet_name) > __MAX_SHEET_NAME_LEN:
         raise InvalidLengthError(
@@ -41,7 +41,7 @@ def validate_excel_sheet_name(sheet_name):
             )
         )
 
-    unicode_sheet_name = _preprocess(sheet_name)
+    unicode_sheet_name = preprocess(sheet_name)
     match = __RE_INVALID_EXCEL_SHEET_NAME.search(unicode_sheet_name)
     if match is not None:
         raise InvalidCharError(
@@ -67,7 +67,7 @@ def sanitize_excel_sheet_name(sheet_name, replacement_text=""):
     """
 
     try:
-        unicode_sheet_name = _preprocess(sheet_name)
+        unicode_sheet_name = preprocess(sheet_name)
     except AttributeError as e:
         raise ValueError(e)
 

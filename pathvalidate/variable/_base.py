@@ -9,7 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import abc
 import re
 
-from .._common import _preprocess, is_null_string
+from .._common import is_null_string, preprocess
 from .._interface import NameSanitizer
 from ..error import InvalidCharError, InvalidReservedNameError, NullNameError
 
@@ -58,7 +58,7 @@ class VarNameSanitizer(NameSanitizer):
     def _validate(self, value):
         self._validate_null_string(value)
 
-        unicode_var_name = _preprocess(value)
+        unicode_var_name = preprocess(value)
 
         if self._is_reserved_keyword(unicode_var_name):
             raise InvalidReservedNameError(

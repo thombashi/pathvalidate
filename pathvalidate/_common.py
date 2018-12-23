@@ -29,11 +29,11 @@ def is_pathlike_obj(value):
         return False
 
 
-def _validate_null_string(text, error_msg=None):
+def validate_null_string(text, error_msg=None):
     if _is_not_null_string(text) or is_pathlike_obj(text):
         return
 
-    if _is_null_string(text):
+    if is_null_string(text):
         if not error_msg:
             error_msg = "null name"
 
@@ -42,14 +42,14 @@ def _validate_null_string(text, error_msg=None):
     raise TypeError("text must be a string: actual={}".format(type(text)))
 
 
-def _preprocess(name):
+def preprocess(name):
     if is_pathlike_obj(name):
         return text_type(name)
 
     return name.strip()
 
 
-def _is_null_string(value):
+def is_null_string(value):
     if value is None:
         return True
 

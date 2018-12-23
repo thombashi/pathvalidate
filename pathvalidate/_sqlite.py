@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _validate_null_string, unprintable_ascii_char_list
+from ._common import unprintable_ascii_char_list, validate_null_string
 from .error import InvalidCharError, InvalidReservedNameError, ValidReservedNameError
 
 
@@ -165,7 +165,7 @@ def validate_sqlite_table_name(name):
         However, valid as a table name.
     """
 
-    _validate_null_string(name)
+    validate_null_string(name)
 
     if __RE_INVALID_CHARS.search(name):
         raise InvalidCharError("unprintable character found")
@@ -191,7 +191,7 @@ def validate_sqlite_attr_name(name):
         However, valid as an attribute name.
     """
 
-    _validate_null_string(name)
+    validate_null_string(name)
 
     if __RE_INVALID_CHARS.search(name):
         raise InvalidCharError("unprintable character found")

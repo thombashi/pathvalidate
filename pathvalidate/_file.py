@@ -11,7 +11,7 @@ import os.path
 import platform
 import re
 
-from ._common import _preprocess, unprintable_ascii_char_list
+from ._common import preprocess, unprintable_ascii_char_list
 from ._interface import NameSanitizer
 from ._six import text_type
 from .error import (
@@ -147,7 +147,7 @@ class FileNameSanitizer(FileSanitizer):
                 )
             )
 
-        unicode_filename = _preprocess(value)
+        unicode_filename = preprocess(value)
 
         if self._is_universal():
             self.__validate_unix_filename(unicode_filename)
@@ -205,7 +205,7 @@ class FilePathSanitizer(FileSanitizer):
         is_pathlike_obj = self._is_pathlike_obj()
 
         try:
-            unicode_file_path = _preprocess(self._value)
+            unicode_file_path = preprocess(self._value)
         except AttributeError as e:
             raise ValueError(e)
 
@@ -225,7 +225,7 @@ class FilePathSanitizer(FileSanitizer):
         self._validate_null_string(value)
 
         file_path = os.path.normpath(os.path.splitdrive(value)[1])
-        unicode_file_path = _preprocess(file_path)
+        unicode_file_path = preprocess(file_path)
 
         if self._is_universal():
             self.__validate_unix_file_path(unicode_file_path)

@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import _preprocess, _validate_null_string
+from ._common import preprocess, validate_null_string
 from .error import InvalidCharError
 
 
@@ -26,9 +26,9 @@ def validate_ltsv_label(label):
         If invalid character(s) found in the ``label`` for a LTSV format label.
     """
 
-    _validate_null_string(label, error_msg="label is empty")
+    validate_null_string(label, error_msg="label is empty")
 
-    match_list = __RE_INVALID_LTSV_LABEL.findall(_preprocess(label))
+    match_list = __RE_INVALID_LTSV_LABEL.findall(preprocess(label))
     if match_list:
         raise InvalidCharError(
             "invalid character found for a LTSV format label: {}".format(match_list)
@@ -45,6 +45,6 @@ def sanitize_ltsv_label(label, replacement_text=""):
     :rtype: str
     """
 
-    _validate_null_string(label, error_msg="label is empty")
+    validate_null_string(label, error_msg="label is empty")
 
-    return __RE_INVALID_LTSV_LABEL.sub(replacement_text, _preprocess(label))
+    return __RE_INVALID_LTSV_LABEL.sub(replacement_text, preprocess(label))

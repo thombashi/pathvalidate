@@ -8,7 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import abc
 
-from ._common import _validate_null_string, is_pathlike_obj
+from ._common import is_pathlike_obj, validate_null_string
 from ._six import add_metaclass, text_type
 
 
@@ -46,4 +46,4 @@ class NameSanitizer(object):
 
     @staticmethod
     def _validate_null_string(text):
-        _validate_null_string(text, error_msg="null name")
+        validate_null_string(text, error_msg="null name")
