@@ -6,10 +6,10 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import itertools
 import platform  # noqa: W0611
 import random
 import sys  # noqa: W0611
+from itertools import chain, product
 
 import pytest
 import six
@@ -53,7 +53,7 @@ VALID_PLATFORM_NAME_LIST = ["linux", "windows"]
 
 WIN_RESERVED_FILE_NAME_LIST = ["CON", "con", "PRN", "prn", "AUX", "aux", "NUL", "nul"] + [
     "{:s}{:d}".format(name, num)
-    for name, num in itertools.product(["COM", "com", "LPT", "lpt"], range(1, 10))
+    for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
 
 VALID_MULTIBYTE_NAME_LIST = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
@@ -65,11 +65,11 @@ class Test_validate_filename(object):
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
-        itertools.chain.from_iterable(
+        chain.from_iterable(
             [
                 [
                     arg_list
-                    for arg_list in itertools.product(
+                    for arg_list in product(
                         [make_random_str(64) + valid_char + make_random_str(64)],
                         VALID_PLATFORM_NAME_LIST,
                     )
@@ -83,12 +83,9 @@ class Test_validate_filename(object):
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
-        itertools.chain.from_iterable(
+        chain.from_iterable(
             [
-                [
-                    arg_list
-                    for arg_list in itertools.product([multibyte_name], VALID_PLATFORM_NAME_LIST)
-                ]
+                [arg_list for arg_list in product([multibyte_name], VALID_PLATFORM_NAME_LIST)]
                 for multibyte_name in VALID_MULTIBYTE_NAME_LIST
             ]
         ),
@@ -113,11 +110,11 @@ class Test_validate_filename(object):
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
-        itertools.chain.from_iterable(
+        chain.from_iterable(
             [
                 [
                     arg_list
-                    for arg_list in itertools.product(
+                    for arg_list in product(
                         [make_random_str(64) + invalid_c + make_random_str(64)],
                         VALID_PLATFORM_NAME_LIST,
                     )
@@ -188,11 +185,11 @@ class Test_validate_filepath(object):
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
-        itertools.chain.from_iterable(
+        chain.from_iterable(
             [
                 [
                     arg_list
-                    for arg_list in itertools.product(
+                    for arg_list in product(
                         [make_random_str(64) + valid_char + make_random_str(64)],
                         VALID_PLATFORM_NAME_LIST,
                     )
@@ -206,9 +203,9 @@ class Test_validate_filepath(object):
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
-        itertools.chain.from_iterable(
+        chain.from_iterable(
             [
-                [arg_list for arg_list in itertools.product([valid_path], VALID_PLATFORM_NAME_LIST)]
+                [arg_list for arg_list in product([valid_path], VALID_PLATFORM_NAME_LIST)]
                 for valid_path in VALID_MULTIBYTE_PATH_LIST
             ]
         ),
@@ -307,11 +304,11 @@ class Test_sanitize_filename(object):
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal_str(self, value, replace_text, expected):
@@ -325,11 +322,11 @@ class Test_sanitize_filename(object):
         ["value", "replace_text", "expected"],
         [
             [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
-            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
             [Path("A" + c + "B"), rep, Path("A" + c + "B")]
-            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal_pathlike(self, value, replace_text, expected):
@@ -404,15 +401,15 @@ class Test_sanitize_filepath(object):
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
             ["あ" + c + "い", rep, "あ" + c + "い"]
-            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal_str(self, value, replace_text, expected):
@@ -426,15 +423,15 @@ class Test_sanitize_filepath(object):
         ["value", "replace_text", "expected"],
         [
             [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
-            for c, rep in itertools.product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
             [Path("A" + c + "B"), rep, Path("A" + c + "B")]
-            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
             [Path("あ" + c + "い"), rep, Path("あ" + c + "い")]
-            for c, rep in itertools.product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal_pathlike(self, value, replace_text, expected):
