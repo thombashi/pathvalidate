@@ -45,5 +45,5 @@ class NameSanitizer(object):
         return value in self.reserved_keywords
 
     @staticmethod
-    def _validate_null_string(text, error_msg="null name"):
-        _validate_null_string(text)
+    def _validate_null_string(text):
+        _validate_null_string(text, error_msg="null name")
