@@ -294,7 +294,7 @@ def validate_filepath(file_path, platform_name=None, max_path_len=None):
 
 
 def validate_file_path(file_path, platform_name=None, max_path_len=None):
-    # [Deprecated]
+    # Deprecated
     validate_filepath(file_path, platform_name, max_path_len)
 
 
@@ -371,5 +371,5 @@ def sanitize_filepath(file_path, replacement_text="", platform_name=None, max_pa
 
 
 def sanitize_file_path(file_path, replacement_text="", platform_name=None, max_path_len=None):
-    # [Deprecated]
+    # Deprecated
     return sanitize_filepath(file_path, platform_name, max_path_len)
