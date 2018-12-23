@@ -30,10 +30,10 @@ def is_pathlike_obj(value):
 
 
 def _validate_null_string(text, error_msg=None):
-    if is_not_null_string(text) or is_pathlike_obj(text):
+    if _is_not_null_string(text) or is_pathlike_obj(text):
         return
 
-    if is_null_string(text):
+    if _is_null_string(text):
         if not error_msg:
             error_msg = "null name"
 
@@ -49,7 +49,7 @@ def _preprocess(name):
     return name.strip()
 
 
-def is_null_string(value):
+def _is_null_string(value):
     if value is None:
         return True
 
@@ -59,18 +59,18 @@ def is_null_string(value):
         return False
 
 
-def is_not_null_string(value):
+def _is_not_null_string(value):
     try:
         return len(value.strip()) > 0
     except AttributeError:
         return False
 
 
-def get_unprintable_ascii_char_list():
+def _get_unprintable_ascii_char_list():
     return [unichr(c) for c in range(128) if chr(c) not in string.printable]
 
 
-def get_ascii_symbol_list():
+def _get_ascii_symbol_list():
     symbol_list = []
 
     for c in range(128):
@@ -84,8 +84,8 @@ def get_ascii_symbol_list():
     return symbol_list
 
 
-unprintable_ascii_char_list = get_unprintable_ascii_char_list()
-ascii_symbol_list = get_ascii_symbol_list()
+unprintable_ascii_char_list = _get_unprintable_ascii_char_list()
+ascii_symbol_list = _get_ascii_symbol_list()
 
 __RE_UNPRINTABLE_CHARS = re.compile(
     "[{}]".format(re.escape("".join(unprintable_ascii_char_list))), re.UNICODE
