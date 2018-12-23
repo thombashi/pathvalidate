@@ -30,6 +30,7 @@ class PlatformName(object):
     Normalized platform names
     """
 
+    UNIVERSAL = "universal"
     LINUX = "linux"
     WINDOWS = "windows"
     MACOS = "macos"
@@ -58,6 +59,9 @@ class FileSanitizer(NameSanitizer):
 
         self.__platform_name = self.__normalize_platform(platform_name)
 
+    def _is_universal(self):
+        return self.platform_name == PlatformName.UNIVERSAL
+
     def _is_linux(self):
         return self.platform_name == PlatformName.LINUX
 
@@ -72,7 +76,7 @@ class FileSanitizer(NameSanitizer):
         if name:
             name = name.lower()
 
-        if name == "auto" or name is None:
+        if name == "auto":
             name = platform.system().lower()
 
         if name in ["linux"]:
@@ -84,7 +88,7 @@ class FileSanitizer(NameSanitizer):
         if name in ["mac", "macos", "darwin"]:
             return PlatformName.MACOS
 
-        raise ValueError()
+        return PlatformName.UNIVERSAL
 
 
 class FileNameSanitizer(FileSanitizer):
@@ -145,7 +149,10 @@ class FileNameSanitizer(FileSanitizer):
 
         unicode_filename = _preprocess(value)
 
-        if self._is_windows():
+        if self._is_universal():
+            self.__validate_unix_filename(unicode_filename)
+            self.__validate_win_filename(unicode_filename)
+        elif self._is_windows():
             self.__validate_win_filename(unicode_filename)
         else:
             self.__validate_unix_filename(unicode_filename)
@@ -220,7 +227,10 @@ class FilePathSanitizer(FileSanitizer):
         file_path = os.path.normpath(os.path.splitdrive(value)[1])
         unicode_file_path = _preprocess(file_path)
 
-        if self._is_windows():
+        if self._is_universal():
+            self.__validate_unix_file_path(unicode_file_path)
+            self.__validate_win_file_path(unicode_file_path)
+        elif self._is_windows():
             self.__validate_win_file_path(unicode_file_path)
         else:
             self.__validate_unix_file_path(unicode_file_path)

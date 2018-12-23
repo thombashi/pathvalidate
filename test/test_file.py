@@ -49,7 +49,7 @@ inf = float("inf")
 
 random.seed(0)
 
-VALID_PLATFORM_NAME_LIST = ["linux", "windows"]
+VALID_PLATFORM_NAME_LIST = ["universal", "linux", "windows", "macos"]
 
 WIN_RESERVED_FILE_NAME_LIST = ["CON", "con", "PRN", "prn", "AUX", "aux", "NUL", "nul"] + [
     "{:s}{:d}".format(name, num)
@@ -128,28 +128,33 @@ class Test_validate_filename(object):
             validate_filename(value, platform_name)
 
     @pytest.mark.parametrize(
-        ["value"],
+        ["value", "platform_name"],
         [
-            [make_random_str(64) + invalid_c + make_random_str(64)]
-            for invalid_c in set(INVALID_WIN_PATH_CHARS).difference(
-                set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_ascii_char_list)
+            [make_random_str(64) + invalid_c + make_random_str(64), platform_name]
+            for invalid_c, platform_name in product(
+                set(INVALID_WIN_PATH_CHARS).difference(
+                    set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_ascii_char_list)
+                ),
+                ["windows", "universal"],
             )
         ],
     )
-    def test_exception_win_invalid_char(self, value):
+    def test_exception_win_invalid_char(self, value, platform_name):
         with pytest.raises(InvalidCharWindowsError):
-            validate_filename(value, platform_name="windows")
+            validate_filename(value, platform_name=platform_name)
 
     @pytest.mark.parametrize(
-        ["value", "expected"],
+        ["value", "platform_name", "expected"],
         [
-            [reserved_keyword, InvalidReservedNameError]
-            for reserved_keyword in WIN_RESERVED_FILE_NAME_LIST
+            [reserved_keyword, platform_name, InvalidReservedNameError]
+            for reserved_keyword, platform_name in product(
+                WIN_RESERVED_FILE_NAME_LIST, ["windows", "universal"]
+            )
         ],
     )
-    def test_exception_win_reserved_name(self, value, expected):
+    def test_exception_win_reserved_name(self, value, platform_name, expected):
         with pytest.raises(expected):
-            validate_filename(value, platform_name="windows")
+            validate_filename(value, platform_name=platform_name)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -225,6 +230,8 @@ class Test_validate_filepath(object):
             ["a" * 255, "linux", 100, InvalidLengthError],
             ["a" * 260, "windows", None, None],
             ["a" * 261, "windows", None, InvalidLengthError],
+            ["a" * 260, "universal", None, None],
+            ["a" * 261, "universal", None, InvalidLengthError],
         ],
     )
     def test_normal_max_path_len(self, value, platform_name, max_path_len, expected):
@@ -246,17 +253,20 @@ class Test_validate_filepath(object):
             validate_filepath(value)
 
     @pytest.mark.parametrize(
-        ["value"],
+        ["value", "platform_name"],
         [
-            [make_random_str(64) + invalid_c + make_random_str(64)]
-            for invalid_c in set(INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list).difference(
-                set(INVALID_PATH_CHARS)
+            ["{}_{}_{}".format(make_random_str(64), invalid_c, make_random_str(64)), platform_name]
+            for invalid_c, platform_name in product(
+                set(INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list).difference(
+                    set(INVALID_PATH_CHARS)
+                ),
+                ["windows", "universal"],
             )
         ],
     )
-    def test_exception_invalid_win_char(self, value):
-        with pytest.raises(InvalidCharWindowsError):
-            validate_filepath(value, platform_name="windows")
+    def test_exception_invalid_win_char(self, value, platform_name):
+        with pytest.raises(InvalidCharError):
+            validate_filepath(value, platform_name=platform_name)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
