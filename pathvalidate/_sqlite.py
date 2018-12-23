@@ -152,6 +152,7 @@ __RE_INVALID_CHARS = re.compile(
 
 
 def validate_sqlite_table_name(name):
+    # deprecated
     """
     :param str name: Name to validate.
     :raises pathvalidate.NullNameError: If the ``name`` is empty.
@@ -178,6 +179,7 @@ def validate_sqlite_table_name(name):
 
 
 def validate_sqlite_attr_name(name):
+    # deprecated
     """
     :param str name: Name to validate.
     :raises pathvalidate.NullNameError: If the ``name`` is empty.
