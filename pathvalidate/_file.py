@@ -143,15 +143,19 @@ class FileNameSanitizer(FileSanitizer):
                 )
             )
 
-        error_message_template = "invalid char found in the filename: '{:s}'"
         unicode_filename = _preprocess(value)
 
         if self._is_windows():
             self.__validate_win_filename(unicode_filename)
         else:
-            match = self.__RE_INVALID_FILENAME.search(unicode_filename)
-            if match is not None:
-                raise InvalidCharError(error_message_template.format(re.escape(match.group())))
+            self.__validate_unix_filename(unicode_filename)
+
+    def __validate_unix_filename(self, unicode_filename):
+        match = self.__RE_INVALID_FILENAME.search(unicode_filename)
+        if match is not None:
+            raise InvalidCharError(
+                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group()))
+            )
 
     def __validate_win_filename(self, unicode_filename):
         match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
@@ -219,11 +223,7 @@ class FilePathSanitizer(FileSanitizer):
         if self._is_windows():
             self.__validate_win_file_path(unicode_file_path)
         else:
-            match = self.__RE_INVALID_PATH.search(unicode_file_path)
-            if match is not None:
-                raise InvalidCharError(
-                    self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path)
-                )
+            self.__validate_unix_file_path(unicode_file_path)
 
         if len(unicode_file_path) > self.max_len:
             raise InvalidLengthError(
@@ -243,6 +243,13 @@ class FilePathSanitizer(FileSanitizer):
             return 1024
 
         return 260
+
+    def __validate_unix_file_path(self, unicode_file_path):
+        match = self.__RE_INVALID_PATH.search(unicode_file_path)
+        if match is not None:
+            raise InvalidCharError(
+                self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path)
+            )
 
     def __validate_win_file_path(self, unicode_file_path):
         match = self.__RE_INVALID_WIN_PATH.search(unicode_file_path)
