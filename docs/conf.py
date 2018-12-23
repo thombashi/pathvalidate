@@ -306,9 +306,11 @@ rst_prolog = u"""
     `SQLite Keywords <https://www.sqlite.org/lang_keywords.html>`__.
 
 .. |platform_name| replace::
-    Execution platform name.
-    Available platforms are ``"Linux"``, ``"Windows"`` or ``"macOS"``.
-    Automatically detect the platform if the value is |None|.
+    Execution platform name (case-insensitive).
+    Valid platform specific values are: ``"Linux"``/``"Windows"``/``"macOS"``.
+    Valid special values are: 
+    (a) ``"auto"``: automatically detect the execution platform.
+    (b) ``"universal"``/|None|: platform independent.
     Defaults to |None|.
 
 """
