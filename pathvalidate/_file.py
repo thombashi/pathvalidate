@@ -49,6 +49,10 @@ class FileSanitizer(NameSanitizer):
         return self.__platform_name
 
     @property
+    def reserved_keywords(self):
+        return (".", "..")
+
+    @property
     def max_len(self):
         return self._max_len
 
@@ -107,7 +111,9 @@ class FileNameSanitizer(FileSanitizer):
 
     @property
     def reserved_keywords(self):
-        return self.__WINDOWS_RESERVED_FILE_NAME_LIST
+        return super(FileNameSanitizer, self).reserved_keywords + tuple(
+            self.__WINDOWS_RESERVED_FILE_NAME_LIST
+        )
 
     def __init__(self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN, platform_name=None):
         super(FileNameSanitizer, self).__init__(
@@ -185,10 +191,6 @@ class FilePathSanitizer(FileSanitizer):
     __RE_INVALID_WIN_PATH = re.compile(
         "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE
     )
-
-    @property
-    def reserved_keywords(self):
-        return []
 
     def __init__(self, filename, platform_name=None, max_path_len=None):
         super(FilePathSanitizer, self).__init__(
