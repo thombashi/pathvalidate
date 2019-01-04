@@ -173,7 +173,7 @@ class FileNameSanitizer(FileSanitizer):
 
         if self._is_reserved_keyword(unicode_filename.upper()):
             raise InvalidReservedNameError(
-                "{} is a reserved name by Windows".format(unicode_filename)
+                "'{}' is a reserved name for {}".format(unicode_filename, self.platform_name)
             )
 
 
