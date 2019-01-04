@@ -74,7 +74,7 @@ class FileSanitizer(NameSanitizer):
     @staticmethod
     def __normalize_platform(name):
         if name:
-            name = name.lower()
+            name = name.strip().lower()
 
         if name == "auto":
             name = platform.system().lower()
