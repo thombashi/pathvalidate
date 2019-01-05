@@ -87,7 +87,7 @@ class Test_FileSanitizer(object):
 
         monkeypatch.setattr(m_platform, "system", patch)
 
-        assert FileNameSanitizer("value", 255, platform_name="auto").platform_name == expected
+        assert FileNameSanitizer("value", 255, platform_name="auto").platform == expected
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],

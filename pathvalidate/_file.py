@@ -38,8 +38,13 @@ class FileSanitizer(NameSanitizer):
     _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
 
     @property
-    def platform_name(self):
+    def platform(self):
         return self.__platform
+
+    @property
+    def platform_name(self):
+        # Deprecated
+        return self.platform
 
     @property
     def reserved_keywords(self):
@@ -57,16 +62,16 @@ class FileSanitizer(NameSanitizer):
         self.__platform = self.__normalize_platform(platform_name)
 
     def _is_universal(self):
-        return self.platform_name == Platform.UNIVERSAL
+        return self.platform == Platform.UNIVERSAL
 
     def _is_linux(self):
-        return self.platform_name == Platform.LINUX
+        return self.platform == Platform.LINUX
 
     def _is_windows(self):
-        return self.platform_name == Platform.WINDOWS
+        return self.platform == Platform.WINDOWS
 
     def _is_macos(self):
-        return self.platform_name == Platform.MACOS
+        return self.platform == Platform.MACOS
 
     def _validate_max_len(self):
         if self.max_len < 1:
@@ -75,7 +80,7 @@ class FileSanitizer(NameSanitizer):
     def _validate_reserved_keywords(self, name):
         if self._is_reserved_keyword(name.upper()):
             raise ReservedNameError(
-                "'{}' is a reserved name for {}".format(name, self.platform_name),
+                "'{}' is a reserved name for {}".format(name, self.platform),
                 reusable_name=False,
             )
 
