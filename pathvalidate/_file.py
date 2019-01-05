@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
+import enum
 import itertools
 import os.path
 import platform
@@ -25,11 +26,8 @@ from .error import (
 _DEFAULT_MAX_FILENAME_LEN = 255
 
 
-class PlatformName(object):
-    """
-    Normalized platform names
-    """
-
+@enum.unique
+class Platform(enum.Enum):
     UNIVERSAL = "universal"
     LINUX = "linux"
     WINDOWS = "windows"
@@ -64,16 +62,16 @@ class FileSanitizer(NameSanitizer):
         self.__platform_name = self.__normalize_platform(platform_name)
 
     def _is_universal(self):
-        return self.platform_name == PlatformName.UNIVERSAL
+        return self.platform_name == Platform.UNIVERSAL
 
     def _is_linux(self):
-        return self.platform_name == PlatformName.LINUX
+        return self.platform_name == Platform.LINUX
 
     def _is_windows(self):
-        return self.platform_name == PlatformName.WINDOWS
+        return self.platform_name == Platform.WINDOWS
 
     def _is_macos(self):
-        return self.platform_name == PlatformName.MACOS
+        return self.platform_name == Platform.MACOS
 
     def _validate_reserved_keywords(self, name):
         if self._is_reserved_keyword(name.upper()):
@@ -90,15 +88,16 @@ class FileSanitizer(NameSanitizer):
             name = platform.system().lower()
 
         if name in ["linux"]:
-            return PlatformName.LINUX
+            return Platform.LINUX
 
         if name in ["windows", "win"]:
-            return PlatformName.WINDOWS
+            return Platform.WINDOWS
 
         if name in ["mac", "macos", "darwin"]:
-            return PlatformName.MACOS
+            return Platform.MACOS
 
-        return PlatformName.UNIVERSAL
+        return Platform.UNIVERSAL
+
 
 
 class FileNameSanitizer(FileSanitizer):

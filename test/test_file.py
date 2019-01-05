@@ -19,7 +19,7 @@ from pathvalidate import (
     InvalidLengthError,
     InvalidReservedNameError,
     NullNameError,
-    PlatformName,
+    Platform,
     sanitize_filename,
     sanitize_filepath,
     validate_filename,
@@ -72,37 +72,21 @@ VALID_MULTIBYTE_NAME_LIST = ["新しいテキスト ドキュメント.txt", "�
 
 
 class Test_FileSanitizer(object):
-    @property
-    def platform_win(self):
-        return "windows"
-
-    @property
-    def platform_linux(self):
-        return "linux"
-
-    @property
-    def platform_macos(self):
-        return "macos"
-
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [
-            ["windows", PlatformName.WINDOWS],
-            ["linux", PlatformName.LINUX],
-            ["macos", PlatformName.MACOS],
-        ],
+        [["windows", Platform.WINDOWS], ["linux", Platform.LINUX], ["macos", Platform.MACOS]],
     )
     def test_normal_platform_auto(self, monkeypatch, test_platform, expected):
         if test_platform == "windows":
-            patch = self.platform_win
+            patch = lambda: "windows"
         elif test_platform == "linux":
-            patch = self.platform_linux
+            patch = lambda: "linux"
         elif test_platform == "macos":
-            patch = self.platform_macos
+            patch = lambda: "macos"
         else:
             raise ValueError("unexpected test platform: {}".format(test_platform))
 
-        monkeypatch.setattr(FileSanitizer, "platform_name", patch)
+        monkeypatch.setattr(m_platform, "system", patch)
 
         assert FileNameSanitizer("value", 255, platform_name="auto").platform_name == expected
 
@@ -143,18 +127,10 @@ class Test_FileSanitizer(object):
         ],
     )
     def test_normal_reserved_keywords(self, monkeypatch, test_platform, expected):
-        if test_platform == "windows":
-            patch = self.platform_win
-        elif test_platform == "linux":
-            patch = self.platform_linux
-        elif test_platform == "macos":
-            patch = self.platform_macos
-        else:
-            raise ValueError("unexpected test platform: {}".format(test_platform))
-
-        monkeypatch.setattr(FileSanitizer, "platform_name", patch)
-
-        assert FileNameSanitizer("value", 255, platform_name="auto").reserved_keywords == expected
+        assert (
+            FileNameSanitizer("v", 255, platform_name=test_platform).reserved_keywords
+            == expected
+        )
 
 
 class Test_validate_filename(object):

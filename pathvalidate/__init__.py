@@ -10,7 +10,7 @@ from .__version__ import __author__, __copyright__, __email__, __license__, __ve
 from ._app import sanitize_excel_sheet_name, validate_excel_sheet_name
 from ._common import ascii_symbol_list, replace_unprintable_char, unprintable_ascii_char_list
 from ._file import (
-    PlatformName,
+    Platform,
     sanitize_file_path,
     sanitize_filepath,
     sanitize_filename,
