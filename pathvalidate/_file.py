@@ -39,7 +39,7 @@ class FileSanitizer(NameSanitizer):
 
     @property
     def platform_name(self):
-        return self.__platform_name
+        return self.__platform
 
     @property
     def reserved_keywords(self):
@@ -54,7 +54,7 @@ class FileSanitizer(NameSanitizer):
 
         self._max_len = max_len
 
-        self.__platform_name = self.__normalize_platform(platform_name)
+        self.__platform = self.__normalize_platform(platform_name)
 
     def _is_universal(self):
         return self.platform_name == Platform.UNIVERSAL
