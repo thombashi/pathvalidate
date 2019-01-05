@@ -87,7 +87,7 @@ class Test_FileSanitizer(object):
 
         monkeypatch.setattr(m_platform, "system", patch)
 
-        assert FileNameSanitizer("value", 255, platform_name="auto").platform == expected
+        assert FileNameSanitizer("value", 255, platform="auto").platform == expected
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
@@ -126,9 +126,7 @@ class Test_FileSanitizer(object):
         ],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
-        assert (
-            FileNameSanitizer("v", 255, platform_name=test_platform).reserved_keywords == expected
-        )
+        assert FileNameSanitizer("v", 255, platform=test_platform).reserved_keywords == expected
 
 
 class Test_validate_filename(object):
@@ -136,7 +134,7 @@ class Test_validate_filename(object):
     INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         chain.from_iterable(
             [
                 [
@@ -150,11 +148,11 @@ class Test_validate_filename(object):
             ]
         ),
     )
-    def test_normal(self, value, platform_name):
-        validate_filename(value, platform_name)
+    def test_normal(self, value, platform):
+        validate_filename(value, platform)
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         chain.from_iterable(
             [
                 [arg_list for arg_list in product([multibyte_name], VALID_PLATFORM_NAME_LIST)]
@@ -162,8 +160,8 @@ class Test_validate_filename(object):
             ]
         ),
     )
-    def test_normal_multibyte(self, value, platform_name):
-        validate_filename(value, platform_name)
+    def test_normal_multibyte(self, value, platform):
+        validate_filename(value, platform)
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
@@ -178,13 +176,13 @@ class Test_validate_filename(object):
     )
     def test_max_filename_len(self, value, platform, max_len, expected):
         if expected is None:
-            validate_filename(value, platform_name=platform, max_filename_len=max_len)
+            validate_filename(value, platform=platform, max_filename_len=max_len)
         else:
             with pytest.raises(expected):
-                validate_filename(value, platform_name=platform, max_filename_len=max_len)
+                validate_filename(value, platform=platform, max_filename_len=max_len)
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         chain.from_iterable(
             [
                 [
@@ -198,15 +196,15 @@ class Test_validate_filename(object):
             ]
         ),
     )
-    def test_exception_invalid_char(self, value, platform_name):
+    def test_exception_invalid_char(self, value, platform):
         with pytest.raises(InvalidCharError):
-            validate_filename(value, platform_name)
+            validate_filename(value, platform)
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         [
-            [make_random_str(64) + invalid_c + make_random_str(64), platform_name]
-            for invalid_c, platform_name in product(
+            [make_random_str(64) + invalid_c + make_random_str(64), platform]
+            for invalid_c, platform in product(
                 set(INVALID_WIN_PATH_CHARS).difference(
                     set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_ascii_char_list)
                 ),
@@ -214,26 +212,26 @@ class Test_validate_filename(object):
             )
         ],
     )
-    def test_exception_win_invalid_char(self, value, platform_name):
+    def test_exception_win_invalid_char(self, value, platform):
         with pytest.raises(InvalidCharError):
-            validate_filename(value, platform_name=platform_name)
+            validate_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
-        ["value", "platform_name", "expected"],
+        ["value", "platform", "expected"],
         [
-            [reserved_keyword, platform_name, ReservedNameError]
-            for reserved_keyword, platform_name in product(
+            [reserved_keyword, platform, ReservedNameError]
+            for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAME_LIST, ["windows", "universal"]
             )
         ]
         + [
-            [reserved_keyword, platform_name, ReservedNameError]
-            for reserved_keyword, platform_name in product([".", ".."], ["linux", "macos"])
+            [reserved_keyword, platform, ReservedNameError]
+            for reserved_keyword, platform in product([".", ".."], ["linux", "macos"])
         ],
     )
-    def test_exception_reserved_name(self, value, platform_name, expected):
+    def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:
-            validate_filename(value, platform_name=platform_name)
+            validate_filename(value, platform=platform)
         assert e.value.reusable_name is False
 
     @pytest.mark.parametrize(
@@ -269,7 +267,7 @@ class Test_validate_filepath(object):
     ]
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         chain.from_iterable(
             [
                 [
@@ -283,11 +281,11 @@ class Test_validate_filepath(object):
             ]
         ),
     )
-    def test_normal(self, value, platform_name):
-        validate_filepath(value, platform_name)
+    def test_normal(self, value, platform):
+        validate_filepath(value, platform)
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         chain.from_iterable(
             [
                 [arg_list for arg_list in product([valid_path], VALID_PLATFORM_NAME_LIST)]
@@ -295,15 +293,15 @@ class Test_validate_filepath(object):
             ]
         ),
     )
-    def test_normal_multibyte(self, value, platform_name):
-        validate_filepath(value, platform_name)
+    def test_normal_multibyte(self, value, platform):
+        validate_filepath(value, platform)
 
     @pytest.mark.parametrize(["value"], [[valid_path] for valid_path in WIN_VALID_PATH_LIST])
     def test_normal_win(self, value):
         validate_filepath(value, "windows")
 
     @pytest.mark.parametrize(
-        ["value", "platform_name", "max_len", "expected"],
+        ["value", "platform", "max_len", "expected"],
         [
             ["a" * 4096, "linux", None, None],
             ["a" * 4097, "linux", None, InvalidLengthError],
@@ -317,12 +315,12 @@ class Test_validate_filepath(object):
             ["a" * 261, Platform.UNIVERSAL, None, InvalidLengthError],
         ],
     )
-    def test_normal_max_path_len(self, value, platform_name, max_len, expected):
+    def test_normal_max_path_len(self, value, platform, max_len, expected):
         if expected is None:
-            validate_filepath(value, platform_name=platform_name, max_path_len=max_len)
+            validate_filepath(value, platform=platform, max_path_len=max_len)
         else:
             with pytest.raises(expected):
-                validate_filepath(value, platform_name=platform_name, max_path_len=max_len)
+                validate_filepath(value, platform=platform, max_path_len=max_len)
 
     @pytest.mark.parametrize(
         ["value"],
@@ -336,10 +334,10 @@ class Test_validate_filepath(object):
             validate_filepath(value)
 
     @pytest.mark.parametrize(
-        ["value", "platform_name"],
+        ["value", "platform"],
         [
-            ["{}_{}_{}".format(make_random_str(64), invalid_c, make_random_str(64)), platform_name]
-            for invalid_c, platform_name in product(
+            ["{}_{}_{}".format(make_random_str(64), invalid_c, make_random_str(64)), platform]
+            for invalid_c, platform in product(
                 set(INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list).difference(
                     set(INVALID_PATH_CHARS)
                 ),
@@ -347,9 +345,9 @@ class Test_validate_filepath(object):
             )
         ],
     )
-    def test_exception_invalid_win_char(self, value, platform_name):
+    def test_exception_invalid_win_char(self, value, platform):
         with pytest.raises(InvalidCharError):
-            validate_filepath(value, platform_name=platform_name)
+            validate_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -466,7 +464,7 @@ class Test_sanitize_filename(object):
         + [[reserved, "linux", reserved + "_"] for reserved in (".", "..")],
     )
     def test_normal_reserved_name(self, monkeypatch, value, test_platform, expected):
-        assert sanitize_filename(value, platform_name=test_platform) == expected
+        assert sanitize_filename(value, platform=test_platform) == expected
 
     @pytest.mark.parametrize(
         ["value", "expected"], [[None, ValueError], [1, TypeError], [True, TypeError]]
