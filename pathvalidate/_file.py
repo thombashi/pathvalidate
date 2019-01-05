@@ -114,7 +114,6 @@ class FileSanitizer(NameSanitizer):
         return Platform.UNIVERSAL
 
 
-
 class FileNameSanitizer(FileSanitizer):
 
     __WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "NUL") + tuple(
@@ -296,32 +295,40 @@ class FilePathSanitizer(FileSanitizer):
 
 
 def validate_filename(filename, platform_name=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
-    """
-    Verifying whether the ``filename`` is a valid file name or not.
+    """Verifying whether the ``filename`` is a valid file name or not.
 
-    :param str filename: Filename to validate.
-    :param str platform_name: |platform_name|
-    :param int max_filename_len:
-        Upper limit of the ``filename`` length. Defaults to 255.
-    :raises pathvalidate.NullNameError: If the ``filename`` is empty.
-    :raises pathvalidate.InvalidLengthError:
-        If the ``filename`` is longer than ``max_filename_len`` characters.
-    :raises pathvalidate.InvalidCharError:
-        If the ``filename`` includes invalid character(s) for a filename:
-        |invalid_filename_chars|.
-    :raises pathvalidate.InvalidCharWindowsError:
-        If the ``filename`` includes invalid character(s) for a Windows
-        filename: |invalid_win_filename_chars|.
-    :raises pathvalidate.InvalidReservedNameError:
-        If the ``filename`` equals reserved name by OS.
-        Windows reserved name is as follows:
-        ``"CON"``, ``"PRN"``, ``"AUX"``, ``"NUL"``,
-        ``"COM[1-9]"``, ``"LPT[1-9]"``
+    Args:
+        filename (str):
+            Filename to validate.
+        platform_name (str/pathvalidate.Platform, optional):
+            |platform_name|
+        max_filename_len (int, optional):
+            Length limit of the ``filename``. The value must be lower than:
 
-    :Example:
+                - ``Linux``: 4096
+                - ``macOS``: 1024
+                - ``Windows``: 260
+                - ``Universal``: 260
+
+            Defaults to 255.
+
+    Raises:
+        InvalidLengthError:
+            If the ``filename`` is longer than ``max_filename_len`` characters.
+        InvalidCharError:
+            If the ``filename`` includes invalid character(s) for a filename:
+            |invalid_filename_chars|.
+            The following characters are also invalid for Windows platform:
+            |invalid_win_filename_chars|.
+        ReservedNameError:
+            If the ``filename`` equals reserved name by OS.
+            Windows reserved name is as follows:
+            ``"CON"``, ``"PRN"``, ``"AUX"``, ``"NUL"``, ``"COM[1-9]"``, ``"LPT[1-9]"``.
+
+    Example:
         :ref:`example-validate-filename`
 
-    .. seealso::
+    See Also:
         `Naming Files, Paths, and Namespaces (Windows)
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
@@ -332,29 +339,36 @@ def validate_filename(filename, platform_name=None, max_filename_len=_DEFAULT_MA
 
 
 def validate_filepath(file_path, platform_name=None, max_path_len=None):
-    """
-    Verifying whether the ``file_path`` is a valid file path or not.
+    """Verifying whether the ``file_path`` is a valid file path or not.
+    
+    Args:
+        file_path (str):
+            File path to validate.
+        platform_name (str/pathvalidate.Platform, optional):
+            |platform_name|
+        max_path_len (int, optional):
+            The upper limit of the ``file_path`` length. If the value is |None|,
+            in the default, automatically determined by the ``platform_name``:
 
-    :param str file_path: File path to validate.
-    :param str platform_name: |platform_name|
-    :param int max_filename_len:
-        The upper limit of the ``file_path`` length. If the value is |None|,
-        the default value automatically determined by the execution
-        environment: **(1)** 4096 (``Linux``) **(2)** 260 (``Windows``).
-    :raises pathvalidate.NullNameError: If the ``file_path`` is empty.
-    :raises pathvalidate.InvalidCharError:
-        If the ``file_path`` includes invalid char(s):
-        |invalid_file_path_chars|.
-    :raises pathvalidate.InvalidCharWindowsError:
-        If the ``file_path`` includes invalid character(s) for a Windows
-        file path: |invalid_win_file_path_chars|
-    :raises pathvalidate.InvalidLengthError:
-        If the ``file_path`` is longer than 1024 characters.
+                - ``Linux``: 4096
+                - ``macOS``: 1024
+                - ``Windows``: 260
 
-    :Example:
+    Raises:
+        NullNameError:
+            If the ``file_path`` is empty.
+        InvalidCharError:
+            If the ``file_path`` includes invalid char(s):
+            |invalid_file_path_chars|.
+            The following characters are also invalid for Windows platform:
+            |invalid_win_file_path_chars|
+        InvalidLengthError:
+            If the ``file_path`` is longer than ``max_path_len`` characters.
+
+    Example:
         :ref:`example-validate-file-path`
 
-    .. seealso::
+    See Also:
         `Naming Files, Paths, and Namespaces (Windows)
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
@@ -407,31 +421,39 @@ def sanitize_filename(
 
 
 def sanitize_filepath(file_path, replacement_text="", platform_name=None, max_path_len=None):
-    """
-    Make a valid file path from a string.
+    """Make a valid file path from a string.
 
     Replace invalid characters for a file path within the ``file_path``
     with the ``replacement_text``.
-    Invalid characters are as followings and unprintable characters:
-    |invalid_file_path_chars|, |invalid_win_file_path_chars|.
+    Invalid characters are as followings:
+    |invalid_file_path_chars|, |invalid_win_file_path_chars| (and non printable characters).
 
-    :param file_path: File path to sanitize.
-    :type file_path: str or PathLike object
-    :param str replacement_text: Replacement text.
-    :param str platform_name: |platform_name|
-    :param int max_path_len:
-        The upper limit of the ``file_path`` length. Truncate the name length
-        if the ``file_path`` length exceedd this value.
-        If the value is |None|, the default value automatically
-        determined by the execution environment:
-        **(1)** 4096 (``Linux``)
-        **(2)** 260 (``Windows``)
-        **(3)** 1024 (``macOS``)
-    :return: Sanitized filepath.
-    :rtype: Same type as the argument (str or PathLike object)
-    :raises ValueError: If the ``file_path`` is an invalid file path.
+    Args:
+        file_path (str or PathLike object):
+            File path to sanitize.
+        replacement_text (str, optional):
+            Replacement text for invalid characters.
+            Defaults to ``""``.
+        platform_name (str/pathvalidate.Platform, optional):
+            |platform_name|
+        max_path_len (int, optional):
+            The upper limit of the ``file_path`` length. Truncate the name if the ``file_path``
+            length exceedd this value. If the value is |None|, the default value automatically
+            determined by the execution platform:
 
-    :Example:
+                - ``Linux``: 4096
+                - ``macOS``: 1024
+                - ``Windows``: 260
+
+    Returns:
+        Same type as the argument (str or PathLike object):
+            Sanitized filepath.
+
+    Raises:
+        ValueError:
+            If the ``file_path`` is an invalid file path.
+
+    Example:
         :ref:`example-sanitize-file-path`
     """
 
