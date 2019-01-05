@@ -23,7 +23,6 @@ from ._sqlite import validate_sqlite_attr_name, validate_sqlite_table_name
 from ._symbol import replace_symbol, validate_symbol
 from .error import (
     InvalidCharError,
-    InvalidCharWindowsError,
     InvalidLengthError,
     InvalidReservedNameError,
     NullNameError,

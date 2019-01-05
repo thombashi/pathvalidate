@@ -15,7 +15,6 @@ import pytest
 import six
 from pathvalidate import (
     InvalidCharError,
-    InvalidCharWindowsError,
     InvalidLengthError,
     InvalidReservedNameError,
     NullNameError,
@@ -128,8 +127,7 @@ class Test_FileSanitizer(object):
     )
     def test_normal_reserved_keywords(self, monkeypatch, test_platform, expected):
         assert (
-            FileNameSanitizer("v", 255, platform_name=test_platform).reserved_keywords
-            == expected
+            FileNameSanitizer("v", 255, platform_name=test_platform).reserved_keywords == expected
         )
 
 
@@ -214,7 +212,7 @@ class Test_validate_filename(object):
         ],
     )
     def test_exception_win_invalid_char(self, value, platform_name):
-        with pytest.raises(InvalidCharWindowsError):
+        with pytest.raises(InvalidCharError):
             validate_filename(value, platform_name=platform_name)
 
     @pytest.mark.parametrize(

@@ -23,6 +23,10 @@ class ValidationError(ValueError):
     """
 
     @property
+    def platform(self):
+        return self.__platform
+
+    @property
     def reason(self):
         return self.__reason
 
@@ -31,6 +35,7 @@ class ValidationError(ValueError):
         return self.__description
 
     def __init__(self, *args, **kwargs):
+        self.__platform = kwargs.pop("platform", None)
         self.__reason = kwargs.pop("reason", None)
         self.__description = kwargs.pop("description", None)
 
@@ -57,13 +62,6 @@ class InvalidCharError(ValidationError):
         kwargs["reason"] = ErrorReason.INVALID_CHARACTER
 
         super(InvalidCharError, self).__init__(args, kwargs)
-
-
-class InvalidCharWindowsError(InvalidCharError):
-    """
-    Exception raised when includes Windows specific invalid character(s)
-    within a string.
-    """
 
 
 class InvalidLengthError(ValidationError):

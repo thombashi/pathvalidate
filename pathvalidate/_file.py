@@ -15,12 +15,7 @@ import re
 from ._common import preprocess, unprintable_ascii_char_list
 from ._interface import NameSanitizer
 from ._six import text_type
-from .error import (
-    InvalidCharError,
-    InvalidCharWindowsError,
-    InvalidLengthError,
-    InvalidReservedNameError,
-)
+from .error import InvalidCharError, InvalidLengthError, InvalidReservedNameError
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -183,8 +178,9 @@ class FileNameSanitizer(FileSanitizer):
     def __validate_win_filename(self, unicode_filename):
         match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
         if match is not None:
-            raise InvalidCharWindowsError(
-                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group()))
+            raise InvalidCharError(
+                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group())),
+                platform=Platform.WINDOWS,
             )
 
 
@@ -273,8 +269,9 @@ class FilePathSanitizer(FileSanitizer):
     def __validate_win_file_path(self, unicode_file_path):
         match = self.__RE_INVALID_WIN_PATH.search(unicode_file_path)
         if match is not None:
-            raise InvalidCharWindowsError(
-                self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path)
+            raise InvalidCharError(
+                self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path),
+                platform=Platform.WINDOWS,
             )
 
 
