@@ -129,24 +129,24 @@ class FileNameSanitizer(FileSanitizer):
 
     def sanitize(self, replacement_text=""):
         is_pathlike_obj = self._is_pathlike_obj()
-        sanitize_file_name = self.__RE_INVALID_WIN_FILENAME.sub(replacement_text, self._str)
-        sanitize_file_name = sanitize_file_name[: self.max_len]
+        sanitized_filename = self.__RE_INVALID_WIN_FILENAME.sub(replacement_text, self._str)
+        sanitized_filename = sanitized_filename[: self.max_len]
 
         try:
-            self._validate(sanitize_file_name)
+            self._validate(sanitized_filename)
         except ReservedNameError as e:
             if e.reusable_name is False:
-                sanitize_file_name += "_"
+                sanitized_filename += "_"
 
         if is_pathlike_obj:
             try:
                 from pathlib import Path
 
-                return Path(sanitize_file_name)
+                return Path(sanitized_filename)
             except ImportError:
                 pass
 
-        return sanitize_file_name
+        return sanitized_filename
 
     def _validate(self, value):
         self._validate_null_string(value)
