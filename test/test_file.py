@@ -304,11 +304,14 @@ class Test_validate_filepath(object):
         [
             ["a" * 4096, "linux", None, None],
             ["a" * 4097, "linux", None, InvalidLengthError],
+            ["a" * 4097, Platform.LINUX, None, InvalidLengthError],
             ["a" * 255, "linux", 100, InvalidLengthError],
             ["a" * 260, "windows", None, None],
+            ["a" * 261, Platform.WINDOWS, None, InvalidLengthError],
             ["a" * 261, "windows", None, InvalidLengthError],
             ["a" * 260, "universal", None, None],
             ["a" * 261, "universal", None, InvalidLengthError],
+            ["a" * 261, Platform.UNIVERSAL, None, InvalidLengthError],
         ],
     )
     def test_normal_max_path_len(self, value, platform_name, max_path_len, expected):

@@ -77,6 +77,9 @@ class FileSanitizer(NameSanitizer):
 
     @staticmethod
     def __normalize_platform(name):
+        if name in Platform:
+            return name
+
         if name:
             name = name.strip().lower()
 
