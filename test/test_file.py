@@ -16,9 +16,9 @@ import six
 from pathvalidate import (
     InvalidCharError,
     InvalidLengthError,
-    InvalidReservedNameError,
     NullNameError,
     Platform,
+    ReservedNameError,
     sanitize_filename,
     sanitize_filepath,
     validate_filename,
@@ -218,19 +218,20 @@ class Test_validate_filename(object):
     @pytest.mark.parametrize(
         ["value", "platform_name", "expected"],
         [
-            [reserved_keyword, platform_name, InvalidReservedNameError]
+            [reserved_keyword, platform_name, ReservedNameError]
             for reserved_keyword, platform_name in product(
                 WIN_RESERVED_FILE_NAME_LIST, ["windows", "universal"]
             )
         ]
         + [
-            [reserved_keyword, platform_name, InvalidReservedNameError]
+            [reserved_keyword, platform_name, ReservedNameError]
             for reserved_keyword, platform_name in product([".", ".."], ["linux", "macos"])
         ],
     )
     def test_exception_reserved_name(self, value, platform_name, expected):
-        with pytest.raises(expected):
+        with pytest.raises(expected) as e:
             validate_filename(value, platform_name=platform_name)
+        assert e.value.reusable_name is False
 
     @pytest.mark.parametrize(
         ["value", "expected"],

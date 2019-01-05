@@ -11,7 +11,7 @@ import re
 
 from .._common import is_null_string, preprocess
 from .._interface import NameSanitizer
-from ..error import InvalidCharError, InvalidReservedNameError, NullNameError
+from ..error import InvalidCharError, InvalidReservedNameError, NullNameError, ReservedNameError
 
 
 class VarNameSanitizer(NameSanitizer):
@@ -48,8 +48,9 @@ class VarNameSanitizer(NameSanitizer):
 
         try:
             self._validate(sanitize_var_name)
-        except InvalidReservedNameError:
-            sanitize_var_name += "_"
+        except ReservedNameError as e:
+            if e.reusable_name is False:
+                sanitize_var_name += "_"
         except NullNameError:
             pass
 

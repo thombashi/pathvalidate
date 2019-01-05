@@ -15,7 +15,7 @@ import re
 from ._common import preprocess, unprintable_ascii_char_list
 from ._interface import NameSanitizer
 from ._six import text_type
-from .error import InvalidCharError, InvalidLengthError, InvalidReservedNameError
+from .error import InvalidCharError, InvalidLengthError, ReservedNameError
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -70,8 +70,9 @@ class FileSanitizer(NameSanitizer):
 
     def _validate_reserved_keywords(self, name):
         if self._is_reserved_keyword(name.upper()):
-            raise InvalidReservedNameError(
-                "'{}' is a reserved name for {}".format(name, self.platform_name)
+            raise ReservedNameError(
+                "'{}' is a reserved name for {}".format(name, self.platform_name),
+                reusable_name=False,
             )
 
     @staticmethod
@@ -133,8 +134,9 @@ class FileNameSanitizer(FileSanitizer):
 
         try:
             self._validate(sanitize_file_name)
-        except InvalidReservedNameError:
-            sanitize_file_name += "_"
+        except ReservedNameError as e:
+            if e.reusable_name is False:
+                sanitize_file_name += "_"
 
         if is_pathlike_obj:
             try:
