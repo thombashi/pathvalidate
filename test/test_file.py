@@ -170,6 +170,7 @@ class Test_validate_filename(object):
         [
             ["a" * 255, None, None, None],
             ["a" * 5000, None, 10000, InvalidLengthError],
+            ["invalid_max_len", None, 0, ValueError],
             ["valid_length", "universal", 255, None],
             ["valid_length", Platform.UNIVERSAL, 255, None],
             ["invalid_length", None, 2, InvalidLengthError],

@@ -68,6 +68,10 @@ class FileSanitizer(NameSanitizer):
     def _is_macos(self):
         return self.platform_name == Platform.MACOS
 
+    def _validate_max_len(self):
+        if self.max_len < 1:
+            raise ValueError("max_len must be greater or equals to one")
+
     def _validate_reserved_keywords(self, name):
         if self._is_reserved_keyword(name.upper()):
             raise ReservedNameError(
@@ -145,6 +149,8 @@ class FileNameSanitizer(FileSanitizer):
 
         if self.max_len > self._get_default_max_path_len():
             self._max_len = self._get_default_max_path_len()
+
+        self._validate_max_len()
 
     def validate(self):
         self._validate(self._value)
@@ -224,6 +230,8 @@ class FilePathSanitizer(FileSanitizer):
 
         if self.max_len is None:
             self._max_len = self._get_default_max_path_len()
+
+        self._validate_max_len()
 
     def validate(self):
         self._validate(self._value)
