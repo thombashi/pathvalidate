@@ -2,6 +2,8 @@
 
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
+
+Deprecated
 """
 
 from __future__ import absolute_import, unicode_literals
