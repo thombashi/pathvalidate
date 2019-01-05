@@ -125,7 +125,7 @@ class Test_FileSanitizer(object):
             ["macos", (".", "..")],
         ],
     )
-    def test_normal_reserved_keywords(self, monkeypatch, test_platform, expected):
+    def test_normal_reserved_keywords(self, test_platform, expected):
         assert (
             FileNameSanitizer("v", 255, platform_name=test_platform).reserved_keywords == expected
         )
@@ -175,7 +175,7 @@ class Test_validate_filename(object):
             ["invalid_length", None, 2, InvalidLengthError],
         ],
     )
-    def test_normal_max_filename_len(self, value, platform, max_len, expected):
+    def test_max_filename_len(self, value, platform, max_len, expected):
         if expected is None:
             validate_filename(value, platform_name=platform, max_filename_len=max_len)
         else:
@@ -302,7 +302,7 @@ class Test_validate_filepath(object):
         validate_filepath(value, "windows")
 
     @pytest.mark.parametrize(
-        ["value", "platform_name", "max_path_len", "expected"],
+        ["value", "platform_name", "max_len", "expected"],
         [
             ["a" * 4096, "linux", None, None],
             ["a" * 4097, "linux", None, InvalidLengthError],
@@ -316,12 +316,12 @@ class Test_validate_filepath(object):
             ["a" * 261, Platform.UNIVERSAL, None, InvalidLengthError],
         ],
     )
-    def test_normal_max_path_len(self, value, platform_name, max_path_len, expected):
+    def test_normal_max_path_len(self, value, platform_name, max_len, expected):
         if expected is None:
-            validate_filepath(value, platform_name=platform_name, max_path_len=max_path_len)
+            validate_filepath(value, platform_name=platform_name, max_path_len=max_len)
         else:
             with pytest.raises(expected):
-                validate_filepath(value, platform_name=platform_name, max_path_len=max_path_len)
+                validate_filepath(value, platform_name=platform_name, max_path_len=max_len)
 
     @pytest.mark.parametrize(
         ["value"],
