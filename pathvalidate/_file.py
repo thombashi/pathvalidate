@@ -98,7 +98,7 @@ class FileSanitizer(NameSanitizer):
 
 class FileNameSanitizer(FileSanitizer):
 
-    __WINDOWS_RESERVED_FILE_NAME_LIST = ("CON", "PRN", "AUX", "NUL") + tuple(
+    __WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "NUL") + tuple(
         "{:s}{:d}".format(name, num)
         for name, num in itertools.product(("COM", "LPT"), range(1, 10))
     )
@@ -115,7 +115,7 @@ class FileNameSanitizer(FileSanitizer):
         common_keywords = super(FileNameSanitizer, self).reserved_keywords
 
         if self._is_universal() or self._is_windows():
-            return common_keywords + self.__WINDOWS_RESERVED_FILE_NAME_LIST
+            return common_keywords + self.__WINDOWS_RESERVED_FILE_NAMES
 
         return common_keywords
 
