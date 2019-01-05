@@ -75,6 +75,12 @@ class FileSanitizer(NameSanitizer):
     def _is_macos(self):
         return self.platform_name == PlatformName.MACOS
 
+    def _validate_reserved_keywords(self, name):
+        if self._is_reserved_keyword(name.upper()):
+            raise InvalidReservedNameError(
+                "'{}' is a reserved name for {}".format(name, self.platform_name)
+            )
+
     @staticmethod
     def __normalize_platform(name):
         if name:
@@ -111,9 +117,12 @@ class FileNameSanitizer(FileSanitizer):
 
     @property
     def reserved_keywords(self):
-        return super(FileNameSanitizer, self).reserved_keywords + tuple(
-            self.__WINDOWS_RESERVED_FILE_NAME_LIST
-        )
+        common_keywords = super(FileNameSanitizer, self).reserved_keywords
+
+        if self._is_universal() or self._is_windows():
+            return common_keywords + tuple(self.__WINDOWS_RESERVED_FILE_NAME_LIST)
+
+        return common_keywords
 
     def __init__(self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN, platform_name=None):
         super(FileNameSanitizer, self).__init__(
@@ -155,6 +164,8 @@ class FileNameSanitizer(FileSanitizer):
 
         unicode_filename = preprocess(value)
 
+        self._validate_reserved_keywords(unicode_filename)
+
         if self._is_universal():
             self.__validate_unix_filename(unicode_filename)
             self.__validate_win_filename(unicode_filename)
@@ -175,11 +186,6 @@ class FileNameSanitizer(FileSanitizer):
         if match is not None:
             raise InvalidCharWindowsError(
                 self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group()))
-            )
-
-        if self._is_reserved_keyword(unicode_filename.upper()):
-            raise InvalidReservedNameError(
-                "'{}' is a reserved name for {}".format(unicode_filename, self.platform_name)
             )
 
 
@@ -228,6 +234,8 @@ class FilePathSanitizer(FileSanitizer):
 
         file_path = os.path.normpath(os.path.splitdrive(value)[1])
         unicode_file_path = preprocess(file_path)
+
+        self._validate_reserved_keywords(unicode_file_path)
 
         if self._is_universal():
             self.__validate_unix_file_path(unicode_file_path)

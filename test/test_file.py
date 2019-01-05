@@ -19,13 +19,14 @@ from pathvalidate import (
     InvalidLengthError,
     InvalidReservedNameError,
     NullNameError,
+    PlatformName,
     sanitize_filename,
     sanitize_filepath,
     validate_filename,
     validate_filepath,
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_char_list
-from pathvalidate._file import FileSanitizer
+from pathvalidate._file import FileNameSanitizer, FileSanitizer
 
 from ._common import (
     INVALID_FILENAME_CHARS,
@@ -51,12 +52,109 @@ random.seed(0)
 
 VALID_PLATFORM_NAME_LIST = ["universal", "linux", "windows", "macos"]
 
-WIN_RESERVED_FILE_NAME_LIST = ["CON", "con", "PRN", "prn", "AUX", "aux", "NUL", "nul"] + [
+WIN_RESERVED_FILE_NAME_LIST = [
+    ".",
+    "..",
+    "CON",
+    "con",
+    "PRN",
+    "prn",
+    "AUX",
+    "aux",
+    "NUL",
+    "nul",
+] + [
     "{:s}{:d}".format(name, num)
     for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
 
 VALID_MULTIBYTE_NAME_LIST = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
+
+
+class Test_FileSanitizer(object):
+    @property
+    def platform_win(self):
+        return "windows"
+
+    @property
+    def platform_linux(self):
+        return "linux"
+
+    @property
+    def platform_macos(self):
+        return "macos"
+
+    @pytest.mark.parametrize(
+        ["test_platform", "expected"],
+        [
+            ["windows", PlatformName.WINDOWS],
+            ["linux", PlatformName.LINUX],
+            ["macos", PlatformName.MACOS],
+        ],
+    )
+    def test_normal_platform_auto(self, monkeypatch, test_platform, expected):
+        if test_platform == "windows":
+            patch = self.platform_win
+        elif test_platform == "linux":
+            patch = self.platform_linux
+        elif test_platform == "macos":
+            patch = self.platform_macos
+        else:
+            raise ValueError("unexpected test platform: {}".format(test_platform))
+
+        monkeypatch.setattr(FileSanitizer, "platform_name", patch)
+
+        assert FileNameSanitizer("value", 255, platform_name="auto").platform_name == expected
+
+    @pytest.mark.parametrize(
+        ["test_platform", "expected"],
+        [
+            [
+                "windows",
+                (
+                    ".",
+                    "..",
+                    "CON",
+                    "PRN",
+                    "AUX",
+                    "NUL",
+                    "COM1",
+                    "COM2",
+                    "COM3",
+                    "COM4",
+                    "COM5",
+                    "COM6",
+                    "COM7",
+                    "COM8",
+                    "COM9",
+                    "LPT1",
+                    "LPT2",
+                    "LPT3",
+                    "LPT4",
+                    "LPT5",
+                    "LPT6",
+                    "LPT7",
+                    "LPT8",
+                    "LPT9",
+                ),
+            ],
+            ["linux", (".", "..")],
+            ["macos", (".", "..")],
+        ],
+    )
+    def test_normal_reserved_keywords(self, monkeypatch, test_platform, expected):
+        if test_platform == "windows":
+            patch = self.platform_win
+        elif test_platform == "linux":
+            patch = self.platform_linux
+        elif test_platform == "macos":
+            patch = self.platform_macos
+        else:
+            raise ValueError("unexpected test platform: {}".format(test_platform))
+
+        monkeypatch.setattr(FileSanitizer, "platform_name", patch)
+
+        assert FileNameSanitizer("value", 255, platform_name="auto").reserved_keywords == expected
 
 
 class Test_validate_filename(object):
@@ -150,9 +248,13 @@ class Test_validate_filename(object):
             for reserved_keyword, platform_name in product(
                 WIN_RESERVED_FILE_NAME_LIST, ["windows", "universal"]
             )
+        ]
+        + [
+            [reserved_keyword, platform_name, InvalidReservedNameError]
+            for reserved_keyword, platform_name in product([".", ".."], ["linux", "macos"])
         ],
     )
-    def test_exception_win_reserved_name(self, value, platform_name, expected):
+    def test_exception_reserved_name(self, value, platform_name, expected):
         with pytest.raises(expected):
             validate_filename(value, platform_name=platform_name)
 
@@ -380,19 +482,10 @@ class Test_sanitize_filename(object):
             [reserved.upper(), "windows", reserved.upper() + "_"]
             for reserved in WIN_RESERVED_FILE_NAME_LIST
         ]
-        + [[reserved, "linux", reserved] for reserved in WIN_RESERVED_FILE_NAME_LIST],
+        + [[reserved, "linux", reserved + "_"] for reserved in (".", "..")],
     )
-    def test_normal_win_reserved_name(self, monkeypatch, value, test_platform, expected):
-        if test_platform == "windows":
-            patch = self.platform_win
-        elif test_platform == "linux":
-            patch = self.platform_linux
-        else:
-            raise ValueError("unexpected test platform: {}".format(test_platform))
-
-        monkeypatch.setattr(FileSanitizer, "platform_name", patch)
-
-        assert sanitize_filename(value) == expected
+    def test_normal_reserved_name(self, monkeypatch, value, test_platform, expected):
+        assert sanitize_filename(value, platform_name=test_platform) == expected
 
     @pytest.mark.parametrize(
         ["value", "expected"], [[None, ValueError], [1, TypeError], [True, TypeError]]
