@@ -253,16 +253,16 @@ class Test_validate_filename(object):
 class Test_validate_filepath(object):
     VALID_CHAR_LIST = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
-        "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
-        "\\\\localhost\\新しいフォルダー\\ユーザ属性.txt",
+        r"\\localhost\Users\新しいフォルダー\あいうえお.txt",
+        r"\\localhost\新しいフォルダー\ユーザ属性.txt",
     ]
     WIN_VALID_PATH_LIST = [
-        "\\\\localhost\\Users\\test\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\test_exception__hoge_csv_heade1\\hoge.csv",
-        "\\\\localhost/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv",
-        "\\\\localhost\\Users\\test\\AppData/Local\\Temp/pytest-of-test\\pytest-0/test_exception__hoge_csv_heade1\\hoge.csv",
-        "\\\\localhost\\Users",
+        r"\\\localhost\Users\test\AppData\Local\Temp\pytest-of-test\pytest-0\test_exception__hoge_csv_heade1\hoge.csv",
+        r"\\localhost/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv",
+        r"\\localhost\Users\test\AppData/Local\Temp/pytest-of-test\pytest-0/test_exception__hoge_csv_heade1\hoge.csv",
+        r"\\localhost\Users",
         "\\\\localhost\\",
-        "\\Users",
+        r"\Users",
     ]
 
     @pytest.mark.parametrize(
@@ -362,20 +362,20 @@ class Test_validate_win_file_path(object):
         ["value"],
         [
             [
-                "C:\\Users\\test\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\test_exception__hoge_csv_heade1\\hoge.csv"
+                r"C:\Users\test\AppData\Local\Temp\pytest-of-test\pytest-0\test_exception__hoge_csv_heade1\hoge.csv"
             ],
             [
-                "Z:\\Users\\test\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\test_exception__hoge_csv_heade1\\hoge.csv"
+                r"Z:\Users\test\AppData\Local\Temp\pytest-of-test\pytest-0\test_exception__hoge_csv_heade1\hoge.csv"
             ],
             [
-                "C:/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv"
+                r"C:/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv"
             ],
             [
-                "C:\\Users/test\\AppData/Local\\Temp/pytest-of-test\\pytest-0/test_exception__hoge_csv_heade1\\hoge.csv"
+                r"C:\Users/test\AppData/Local\Temp/pytest-of-test\pytest-0/test_exception__hoge_csv_heade1\hoge.csv"
             ],
-            ["C:\\Users"],
+            [r"C:\Users"],
             ["C:\\"],
-            ["\\Users"],
+            [r"\Users"],
         ],
     )
     def test_normal(self, value):
