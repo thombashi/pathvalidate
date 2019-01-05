@@ -75,6 +75,18 @@ class FileSanitizer(NameSanitizer):
                 reusable_name=False,
             )
 
+    def _get_default_max_path_len(self):
+        if self._is_linux():
+            return 4096
+
+        if self._is_windows():
+            return 260
+
+        if self._is_macos():
+            return 1024
+
+        return 260  # universal
+
     @staticmethod
     def __normalize_platform(name):
         if isinstance(name, Platform):
@@ -124,8 +136,15 @@ class FileNameSanitizer(FileSanitizer):
 
     def __init__(self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN, platform_name=None):
         super(FileNameSanitizer, self).__init__(
-            filename, max_len=max_filename_len, platform_name=platform_name
+            filename,
+            max_len=(
+                max_filename_len if max_filename_len is not None else _DEFAULT_MAX_FILENAME_LEN
+            ),
+            platform_name=platform_name,
         )
+
+        if self.max_len > self._get_default_max_path_len():
+            self._max_len = self._get_default_max_path_len()
 
     def validate(self):
         self._validate(self._value)
@@ -204,7 +223,7 @@ class FilePathSanitizer(FileSanitizer):
         )
 
         if self.max_len is None:
-            self._max_len = self.__get_default_max_path_len()
+            self._max_len = self._get_default_max_path_len()
 
     def validate(self):
         self._validate(self._value)
@@ -251,18 +270,6 @@ class FilePathSanitizer(FileSanitizer):
                     self.max_len, len(unicode_file_path)
                 )
             )
-
-    def __get_default_max_path_len(self):
-        if self._is_linux():
-            return 4096
-
-        if self._is_windows():
-            return 260
-
-        if self._is_macos():
-            return 1024
-
-        return 260
 
     def __validate_unix_file_path(self, unicode_file_path):
         match = self.__RE_INVALID_PATH.search(unicode_file_path)

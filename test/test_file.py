@@ -166,19 +166,21 @@ class Test_validate_filename(object):
         validate_filename(value, platform_name)
 
     @pytest.mark.parametrize(
-        ["value", "max_filename_len", "expected"],
+        ["value", "platform", "max_len", "expected"],
         [
-            ["valid_length", 255, None],
-            ["invalid_length", 2, InvalidLengthError],
-            ["invalid_length" * 100, 255, InvalidLengthError],
+            ["a" * 255, None, None, None],
+            ["a" * 5000, None, 10000, InvalidLengthError],
+            ["valid_length", "universal", 255, None],
+            ["valid_length", Platform.UNIVERSAL, 255, None],
+            ["invalid_length", None, 2, InvalidLengthError],
         ],
     )
-    def test_normal_max_filename_len(self, value, max_filename_len, expected):
+    def test_normal_max_filename_len(self, value, platform, max_len, expected):
         if expected is None:
-            validate_filename(value, max_filename_len=max_filename_len)
+            validate_filename(value, platform_name=platform, max_filename_len=max_len)
         else:
             with pytest.raises(expected):
-                validate_filename(value, max_filename_len=max_filename_len)
+                validate_filename(value, platform_name=platform, max_filename_len=max_len)
 
     @pytest.mark.parametrize(
         ["value", "platform_name"],
