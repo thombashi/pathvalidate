@@ -65,10 +65,7 @@ setuptools.setup(
     author=pkg_info["__author__"],
     author_email=pkg_info["__email__"],
     description=summary,
-    keywords=[
-        "path", "validation", "validator", "sanitize", "file",
-        "Excel", "JavaScript", "LTSV", "SQLite",
-    ],
+    keywords=["file", "path", "validation", "validator", "sanitization", "sanitizer"],
     license=pkg_info["__license__"],
     long_description=long_description,
     include_package_data=True,
