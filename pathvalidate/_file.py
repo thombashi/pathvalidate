@@ -77,7 +77,7 @@ class FileSanitizer(NameSanitizer):
 
     @staticmethod
     def __normalize_platform(name):
-        if name in Platform:
+        if isinstance(name, Platform):
             return name
 
         if name:
