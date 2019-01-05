@@ -6,7 +6,7 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import platform  # noqa: W0611
+import platform as m_platform  # noqa: W0611
 import random
 import sys  # noqa: W0611
 from itertools import chain, product
@@ -277,7 +277,7 @@ class Test_validate_filepath(object):
             validate_filepath(value)
 
 
-@pytest.mark.skipif("platform.system() != 'Windows'")
+@pytest.mark.skipif("m_platform.system() != 'Windows'")
 class Test_validate_win_file_path(object):
     VALID_CHAR_LIST = VALID_PATH_CHARS
 
