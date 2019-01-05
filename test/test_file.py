@@ -25,7 +25,7 @@ from pathvalidate import (
     validate_filepath,
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_char_list
-from pathvalidate._file import FileNameSanitizer, FileSanitizer
+from pathvalidate._file import FileNameSanitizer
 
 from ._common import (
     INVALID_FILENAME_CHARS,
