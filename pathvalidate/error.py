@@ -34,10 +34,15 @@ class ValidationError(ValueError):
     def description(self):
         return self.__description
 
+    @property
+    def reusable_name(self):
+        return self.__reusable_name
+
     def __init__(self, *args, **kwargs):
         self.__platform = kwargs.pop("platform", None)
         self.__reason = kwargs.pop("reason", None)
         self.__description = kwargs.pop("description", None)
+        self.__reusable_name = kwargs.pop("reusable_name", None)
 
         super(ValidationError, self).__init__(*args, **kwargs)
 
@@ -50,7 +55,7 @@ class NullNameError(ValidationError):
     def __init__(self, *args, **kwargs):
         kwargs["reason"] = ErrorReason.NULL_NAME
 
-        super(NullNameError, self).__init__(args, kwargs)
+        super(NullNameError, self).__init__(args, **kwargs)
 
 
 class InvalidCharError(ValidationError):
@@ -61,7 +66,7 @@ class InvalidCharError(ValidationError):
     def __init__(self, *args, **kwargs):
         kwargs["reason"] = ErrorReason.INVALID_CHARACTER
 
-        super(InvalidCharError, self).__init__(args, kwargs)
+        super(InvalidCharError, self).__init__(args, **kwargs)
 
 
 class InvalidLengthError(ValidationError):
@@ -72,7 +77,7 @@ class InvalidLengthError(ValidationError):
     def __init__(self, *args, **kwargs):
         kwargs["reason"] = ErrorReason.INVALID_LENGTH
 
-        super(InvalidLengthError, self).__init__(args, kwargs)
+        super(InvalidLengthError, self).__init__(args, **kwargs)
 
 
 class ReservedNameError(ValidationError):
@@ -83,7 +88,7 @@ class ReservedNameError(ValidationError):
     def __init__(self, *args, **kwargs):
         kwargs["reason"] = ErrorReason.RESERVED_NAME
 
-        super(ReservedNameError, self).__init__(args, kwargs)
+        super(ReservedNameError, self).__init__(args, **kwargs)
 
 
 class ValidReservedNameError(ReservedNameError):
@@ -92,9 +97,19 @@ class ValidReservedNameError(ReservedNameError):
     However, it can be used as a name.
     """
 
+    def __init__(self, *args, **kwargs):
+        kwargs["reusable_name"] = True
+
+        super(ValidReservedNameError, self).__init__(args, **kwargs)
+
 
 class InvalidReservedNameError(ReservedNameError):
     """
     Exception raised when a string matched a reserved name.
     Moreover, the reserved name is invalid as a name.
     """
+
+    def __init__(self, *args, **kwargs):
+        kwargs["reusable_name"] = False
+
+        super(InvalidReservedNameError, self).__init__(args, **kwargs)
