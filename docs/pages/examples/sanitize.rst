@@ -15,7 +15,7 @@ Sanitize a filepath
 The :py:func:`.sanitize_filepath()` function returns a filepath which replaced invalid character(s)
 for a filepath within the argument.
 
-.. include:: sanitize_file_path_code.txt
+.. include:: sanitize_filepath_code.txt
 
 
 .. _example-sanitize-symbol:
