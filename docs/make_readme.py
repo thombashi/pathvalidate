@@ -46,7 +46,6 @@ def main():
 
     maker.write_introduction_file("badges.txt")
 
-    maker.inc_indent_level()
     maker.write_chapter("Summary")
     maker.write_introduction_file("summary.txt")
     maker.write_introduction_file("feature.txt")

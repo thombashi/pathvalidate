@@ -9,11 +9,11 @@
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.org/project/pathvalidate
 
-.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS
+.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS-CI
     :target: https://travis-ci.org/thombashi/pathvalidate
     :alt: Linux CI test status
 
-.. image:: https://img.shields.io/appveyor/ci/thombashi/pathvalidate/master.svg?label=Windows
+.. image:: https://img.shields.io/appveyor/ci/thombashi/pathvalidate/master.svg?label=Windows-CI
     :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
     :alt: Windows CI test status
 
@@ -24,7 +24,7 @@
    :target: https://github.com/thombashi/pathvalidate
 
 Summary
----------
+=========
 A Python library to sanitize/validate a string such as filenames/file-paths/etc.
 
 Features
