@@ -170,9 +170,9 @@ class FileNameSanitizer(FileSanitizer):
         except ReservedNameError as e:
             if e.reusable_name is False:
                 sanitized_filename += "_"
-
-        if self._is_windows():
-            sanitized_filename = sanitized_filename.rstrip(" .")
+        except InvalidCharError:
+            if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+                sanitized_filename = sanitized_filename.rstrip(" .")
 
         if is_pathlike_obj:
             try:
@@ -219,6 +219,13 @@ class FileNameSanitizer(FileSanitizer):
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group())),
                 platform=Platform.WINDOWS,
+            )
+
+        if unicode_filename[-1] in (" ", "."):
+            raise InvalidCharError(
+                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(unicode_filename[-1])),
+                platform=Platform.WINDOWS,
+                description="Do not end a file or directory name with a space or a period",
             )
 
     def _get_sanitize_regexp(self):

@@ -46,7 +46,7 @@ def preprocess(name):
     if is_pathlike_obj(name):
         return text_type(name)
 
-    return name.strip()
+    return name
 
 
 def is_null_string(value):

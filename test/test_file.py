@@ -323,6 +323,24 @@ class Test_validate_filepath(object):
                 validate_filepath(value, platform=platform, max_path_len=max_len)
 
     @pytest.mark.parametrize(
+        ["platform", "value"],
+        [
+            ["windows", "period."],
+            ["windows", "space "],
+            ["windows", "space_and_period ."],
+            ["windows", "space_and_period. "],
+            ["linux", "period."],
+            ["linux", "space "],
+            ["linux", "space_and_period. "],
+            ["universal", "period."],
+            ["universal", "space "],
+            ["universal", "space_and_period ."],
+        ],
+    )
+    def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value):
+        validate_filepath(value, platform=platform)
+
+    @pytest.mark.parametrize(
         ["value"],
         [
             [make_random_str(64) + invalid_c + make_random_str(64)]
@@ -469,6 +487,24 @@ class Test_sanitize_filename(object):
     )
     def test_normal_reserved_name(self, monkeypatch, value, test_platform, expected):
         assert sanitize_filename(value, platform=test_platform) == expected
+
+    @pytest.mark.parametrize(
+        ["platform", "value", "expected"],
+        [
+            ["windows", "period.", "period"],
+            ["windows", "space ", "space"],
+            ["windows", "space_and_period .", "space_and_period"],
+            ["windows", "space_and_period. ", "space_and_period"],
+            ["linux", "period.", "period."],
+            ["linux", "space ", "space "],
+            ["linux", "space_and_period. ", "space_and_period. "],
+            ["universal", "period.", "period"],
+            ["universal", "space ", "space"],
+            ["universal", "space_and_period .", "space_and_period"],
+        ],
+    )
+    def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value, expected):
+        assert sanitize_filename(value, platform=platform) == expected
 
     @pytest.mark.parametrize(
         ["value", "expected"], [[None, ValueError], [1, TypeError], [True, TypeError]]

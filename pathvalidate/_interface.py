@@ -33,10 +33,7 @@ class NameSanitizer(object):
     def __init__(self, value):
         self._validate_null_string(value)
 
-        if is_pathlike_obj(value):
-            self._value = value
-        else:
-            self._value = value.strip()
+        self._value = value
 
     def _is_pathlike_obj(self):
         return is_pathlike_obj(self._value)
