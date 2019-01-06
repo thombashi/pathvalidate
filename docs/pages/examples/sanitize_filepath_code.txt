@@ -1,13 +1,16 @@
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate as pv
+        from pathvalidate import sanitize_filepath
 
-        print(pv.sanitize_filepath("fi:l*e/p\"a?t>h|.t<xt"))
-        print(pv.sanitize_filepath("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        fpath = "fi:l*e/p\"a?t>h|.t<xt"
+        print("{} -> {}".format(fpath, sanitize_filepath(fpath)))
+
+        fpath = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
+        print("{} -> {}".format(fpath, sanitize_filepath(fpath)))
 
 :Output:
     .. code-block:: none
 
-        file/path.txt
-        _abcde%f/(g)h+i_0.txt
+        fi:l*e/p"a?t>h|.t<xt -> file/path.txt
+        _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f/(g)h+i_0.txt

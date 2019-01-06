@@ -1,10 +1,10 @@
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate as pv
+        from pathvalidate import validate_filepath
 
         try:
-            pv.validate_filepath("\0_a*b:c<d>e%f/(g)h+i_0.txt")
+            validate_filepath("\0_a*b:c<d>e%f/(g)h+i_0.txt")
         except ValueError:
             print("invalid file path!")
 

@@ -3,7 +3,4 @@ Features
 - Sanitize/Validate a string as a:
     - file name
     - file path
-    - variable name: ``Python``/``JavaScript``
-    - `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label
-    - Elastic search index name
-    - Excel sheet name
+- Multibyte character support

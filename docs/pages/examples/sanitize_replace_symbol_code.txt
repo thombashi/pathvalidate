@@ -1,11 +1,12 @@
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate
+        from pathvalidate import replace_symbol
 
-        print(pathvalidate.replace_symbol("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        name = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
+        print("{} -> {}".format(name, replace_symbol(name)))
 
 :Output:
     .. code-block:: none
 
-        abcdefghi0txt
+        _a*b:c<d>e%f/(g)h+i_0.txt -> abcdefghi0txt

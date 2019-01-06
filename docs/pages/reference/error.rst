@@ -13,10 +13,6 @@ Errors
     :undoc-members:
     :show-inheritance:
 
-.. autoexception:: pathvalidate.InvalidCharWindowsError
-    :undoc-members:
-    :show-inheritance:
-
 .. autoexception:: pathvalidate.InvalidLengthError
     :undoc-members:
     :show-inheritance:

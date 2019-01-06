@@ -18,16 +18,6 @@ for a filepath within the argument.
 .. include:: sanitize_file_path_code.txt
 
 
-.. _example-sanitize-var-name:
-
-Sanitize a variable name
-----------------------------
-The :py:func:`.sanitize_python_var_name()` function returns a Python variable name
-which replaced invalid character(s) for a python variable within the argument.
-
-.. include:: sanitize_var_name_code.txt
-
-
 .. _example-sanitize-symbol:
 
 Replace symbols
