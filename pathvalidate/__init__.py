@@ -23,7 +23,6 @@ from ._file import (
     validate_filepath,
     validate_filename,
 )
-from ._interface import NameSanitizer
 from ._ltsv import sanitize_ltsv_label, validate_ltsv_label
 from ._sqlite import validate_sqlite_attr_name, validate_sqlite_table_name
 from ._symbol import replace_symbol, validate_symbol
