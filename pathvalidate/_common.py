@@ -76,7 +76,7 @@ def _get_ascii_symbol_list():
     for c in range(128):
         c = unichr(c)
 
-        if c in unprintable_ascii_char_list or c in string.digits + string.ascii_letters:
+        if c in unprintable_ascii_chars or c in string.digits + string.ascii_letters:
             continue
 
         symbol_list.append(c)
@@ -84,11 +84,13 @@ def _get_ascii_symbol_list():
     return symbol_list
 
 
-unprintable_ascii_char_list = _get_unprintable_ascii_char_list()
-ascii_symbol_list = _get_ascii_symbol_list()
+unprintable_ascii_char_list = _get_unprintable_ascii_char_list()  # deprecated
+unprintable_ascii_chars = tuple(_get_unprintable_ascii_char_list())
+ascii_symbol_list = _get_ascii_symbol_list()  # deprecated
+ascii_symbols = tuple(_get_ascii_symbol_list())
 
 __RE_UNPRINTABLE_CHARS = re.compile(
-    "[{}]".format(re.escape("".join(unprintable_ascii_char_list))), re.UNICODE
+    "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
 )
 
 
