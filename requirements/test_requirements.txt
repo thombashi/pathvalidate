@@ -1,3 +1,4 @@
+faker
 pytest-cov
 pytest
 six

@@ -13,6 +13,7 @@ from itertools import chain, product
 
 import pytest
 import six
+from faker import Factory
 from pathvalidate import (
     InvalidCharError,
     InvalidLengthError,
@@ -181,6 +182,13 @@ class Test_validate_filename(object):
             with pytest.raises(expected):
                 validate_filename(value, platform=platform, max_filename_len=max_len)
 
+    @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
+    def test_faker(self, locale):
+        fake = Factory.create(locale=locale, seed=1)
+
+        for _ in range(100):
+            validate_filename(fake.file_name())
+
     @pytest.mark.parametrize(
         ["value", "platform"],
         chain.from_iterable(
@@ -339,6 +347,13 @@ class Test_validate_filepath(object):
     )
     def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value):
         validate_filepath(value, platform=platform)
+
+    @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
+    def test_faker(self, locale):
+        fake = Factory.create(locale=locale, seed=1)
+
+        for _ in range(100):
+            validate_filepath(fake.file_path())
 
     @pytest.mark.parametrize(
         ["value"],
