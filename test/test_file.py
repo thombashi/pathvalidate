@@ -455,14 +455,6 @@ class Test_sanitize_filename(object):
     def test_normal_max_filename_len(self, value, max_filename_len, expected):
         assert len(sanitize_filename(value, max_filename_len=max_filename_len)) == expected
 
-    @property
-    def platform_win(self):
-        return "windows"
-
-    @property
-    def platform_linux(self):
-        return "linux"
-
     @pytest.mark.parametrize(
         ["value", "test_platform", "expected"],
         [
