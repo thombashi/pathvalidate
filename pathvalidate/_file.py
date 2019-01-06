@@ -280,7 +280,11 @@ class FilePathSanitizer(FileSanitizer):
     def _validate(self, value):
         self._validate_null_string(value)
 
-        file_path = os.path.normpath(os.path.splitdrive(value)[1])
+        value = os.path.splitdrive(value)[1]
+        if not value:
+            return
+
+        file_path = os.path.normpath(value)
         unicode_file_path = preprocess(file_path)
 
         self._validate_reserved_keywords(unicode_file_path)
