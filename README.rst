@@ -1,5 +1,8 @@
-pathvalidate
-==============
+**pathvalidate**
+
+.. contents:: Table of Contents
+   :depth: 2
+
 .. image:: https://badge.fury.io/py/pathvalidate.svg
     :target: https://badge.fury.io/py/pathvalidate
 
@@ -22,17 +25,14 @@ pathvalidate
 
 Summary
 ---------
-A Python library to sanitize/validate a string such as filenames/file-paths/variable-names/etc.
+A Python library to sanitize/validate a string such as filenames/file-paths/etc.
 
 Features
 ---------
 - Sanitize/Validate a string as a:
     - file name
     - file path
-    - variable name: ``Python``/``JavaScript``
-    - `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label
-    - Elastic search index name
-    - Excel sheet name
+- Multibyte character support
 
 Examples
 ==========
@@ -41,10 +41,10 @@ Validate a filename
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate
+        from pathvalidate import validate_filename
 
         try:
-            pathvalidate.validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
+            validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
         except ValueError:
             print("invalid filename!")
 
@@ -58,45 +58,38 @@ Sanitize a filename
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate as pv
+        from pathvalidate import sanitize_filename
 
-        print(pv.sanitize_filename("f\\i:l*e?n\"a<m>e|.txt"))
-        print(pv.sanitize_filename("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        fname = "fi:l*e/p\"a?t>h|.t<xt"
+        print("{} -> {}".format(fname, sanitize_filename(fname)))
+
+        fname = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
+        print("{} -> {}".format(fname, sanitize_filename(fname)))
 
 :Output:
     .. code-block::
 
-        _abcde%f(g)h+i_0.txt
+        fi:l*e/p"a?t>h|.t<xt -> filepath.txt
+        _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f(g)h+i_0.txt
 
 Sanitize a filepath
 ---------------------
 :Sample Code:
     .. code-block:: python
 
-        import pathvalidate as pv
+        from pathvalidate import sanitize_filepath
 
-        print(pv.sanitize_filepath("fi:l*e/p\"a?t>h|.t<xt"))
-        print(pv.sanitize_filepath("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        fpath = "fi:l*e/p\"a?t>h|.t<xt"
+        print("{} -> {}".format(fpath, sanitize_filepath(fpath)))
 
-:Output:
-    .. code-block::
-
-        file/path.txt
-        _abcde%f/(g)h+i_0.txt
-
-Sanitize a variable name
---------------------------
-:Sample Code:
-    .. code-block:: python
-
-        import pathvalidate as pv
-
-        print(pv.sanitize_python_var_name("_a*b:c<d>e%f/(g)h+i_0.txt"))
+        fpath = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
+        print("{} -> {}".format(fpath, sanitize_filepath(fpath)))
 
 :Output:
     .. code-block::
 
-        abcdefghi_0txt
+        fi:l*e/p"a?t>h|.t<xt -> file/path.txt
+        _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f/(g)h+i_0.txt
 
 For more information
 ----------------------

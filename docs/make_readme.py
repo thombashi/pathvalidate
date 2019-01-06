@@ -32,9 +32,6 @@ def write_examples(maker):
     maker.write_chapter("Sanitize a filepath")
     maker.write_file(example_root.joinpath("sanitize_filepath_code.txt"))
 
-    maker.write_chapter("Sanitize a variable name")
-    maker.write_file(example_root.joinpath("sanitize_var_name_code.txt"))
-
     maker.write_chapter("For more information")
     maker.write_line_list(
         [
@@ -45,7 +42,7 @@ def write_examples(maker):
 
 
 def main():
-    maker = readmemaker.ReadmeMaker("pathvalidate", OUTPUT_DIR)
+    maker = readmemaker.ReadmeMaker("pathvalidate", OUTPUT_DIR, is_make_toc=True)
 
     maker.write_introduction_file("badges.txt")
 
