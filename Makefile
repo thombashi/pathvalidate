@@ -18,6 +18,11 @@ clean:
 docs:
 	@python setup.py build_sphinx --source-dir=$(DOCS_DIR)/ --build-dir=$(DOCS_BUILD_DIR) --all-files
 
+.PHONY: idocs
+idocs:
+	@pip install --upgrade .
+	@make docs
+
 .PHONY: fmt
 fmt:
 	@black $(CURDIR)
