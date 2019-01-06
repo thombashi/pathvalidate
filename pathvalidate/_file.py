@@ -155,12 +155,14 @@ class FileNameSanitizer(FileSanitizer):
 
         self._validate_max_len()
 
+        self._sanitize_regexp = self._get_sanitize_regexp()
+
     def validate(self):
         self._validate(self._value)
 
     def sanitize(self, replacement_text=""):
         is_pathlike_obj = self._is_pathlike_obj()
-        sanitized_filename = self.__RE_INVALID_WIN_FILENAME.sub(replacement_text, self._str)
+        sanitized_filename = self._sanitize_regexp.sub(replacement_text, self._str)
         sanitized_filename = sanitized_filename[: self.max_len]
 
         try:
@@ -168,6 +170,9 @@ class FileNameSanitizer(FileSanitizer):
         except ReservedNameError as e:
             if e.reusable_name is False:
                 sanitized_filename += "_"
+
+        if self._is_windows():
+            sanitized_filename = sanitized_filename.rstrip(" .")
 
         if is_pathlike_obj:
             try:
@@ -216,6 +221,12 @@ class FileNameSanitizer(FileSanitizer):
                 platform=Platform.WINDOWS,
             )
 
+    def _get_sanitize_regexp(self):
+        if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+            return self.__RE_INVALID_WIN_FILENAME
+
+        return self.__RE_INVALID_FILENAME
+
 
 class FilePathSanitizer(FileSanitizer):
 
@@ -234,6 +245,8 @@ class FilePathSanitizer(FileSanitizer):
 
         self._validate_max_len()
 
+        self._sanitize_regexp = self._get_sanitize_regexp()
+
     def validate(self):
         self._validate(self._value)
 
@@ -245,7 +258,7 @@ class FilePathSanitizer(FileSanitizer):
         except AttributeError as e:
             raise ValueError(e)
 
-        sanitized_path = self.__RE_INVALID_WIN_PATH.sub(replacement_text, unicode_file_path)
+        sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
 
         if is_pathlike_obj:
             try:
@@ -294,6 +307,12 @@ class FilePathSanitizer(FileSanitizer):
                 self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path),
                 platform=Platform.WINDOWS,
             )
+
+    def _get_sanitize_regexp(self):
+        if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+            return self.__RE_INVALID_WIN_PATH
+
+        return self.__RE_INVALID_PATH
 
 
 def validate_filename(filename, platform=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN):

@@ -392,21 +392,33 @@ class Test_sanitize_filename(object):
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
-        ["value", "replace_text", "expected"],
+        ["platform", "value", "replace_text", "expected"],
         [
-            ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            ["universal", "A" + c + "B", rep, "A" + rep + "B"]
+            for c, rep in product(
+                INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list, REPLACE_TEXT_LIST
+            )
         ]
         + [
-            ["A" + c + "B", rep, "A" + c + "B"]
+            ["universal", "A" + c + "B", rep, "A" + c + "B"]
             for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ]
+        + [
+            ["linux", "A" + c + "B", rep, "A" + rep + "B"]
+            for c, rep in product(
+                INVALID_FILENAME_CHARS + unprintable_ascii_char_list, REPLACE_TEXT_LIST
+            )
+        ]
+        + [
+            ["linux", "A" + c + "B", rep, "A" + c + "B"]
+            for c, rep in product([":", "*", "?", '"', "<", ">", "|"], REPLACE_TEXT_LIST)
         ],
     )
-    def test_normal_str(self, value, replace_text, expected):
-        sanitized_name = sanitize_filename(value, replace_text)
+    def test_normal_str(self, platform, value, replace_text, expected):
+        sanitized_name = sanitize_filename(value, platform=platform, replacement_text=replace_text)
         assert sanitized_name == expected
         assert isinstance(sanitized_name, six.text_type)
-        validate_filename(sanitized_name)
+        validate_filename(sanitized_name, platform=platform)
 
     @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
@@ -480,25 +492,35 @@ class Test_sanitize_filepath(object):
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
-        ["value", "replace_text", "expected"],
+        ["platform", "value", "replace_text", "expected"],
         [
-            ["A" + c + "B", rep, "A" + rep + "B"]
+            ["universal", "A" + c + "B", rep, "A" + rep + "B"]
             for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
-            ["A" + c + "B", rep, "A" + c + "B"]
+            ["universal", "A" + c + "B", rep, "A" + c + "B"]
             for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
         ]
         + [
-            ["あ" + c + "い", rep, "あ" + c + "い"]
+            ["universal", "あ" + c + "い", rep, "あ" + c + "い"]
             for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+        ]
+        + [
+            ["linux", "A" + c + "B", rep, "A" + rep + "B"]
+            for c, rep in product(
+                INVALID_PATH_CHARS + unprintable_ascii_char_list, REPLACE_TEXT_LIST
+            )
+        ]
+        + [
+            ["linux", "A" + c + "B", rep, "A" + c + "B"]
+            for c, rep in product([":", "*", "?", '"', "<", ">", "|"], REPLACE_TEXT_LIST)
         ],
     )
-    def test_normal_str(self, value, replace_text, expected):
-        sanitized_name = sanitize_filepath(value, replace_text)
+    def test_normal_str(self, platform, value, replace_text, expected):
+        sanitized_name = sanitize_filepath(value, platform=platform, replacement_text=replace_text)
         assert sanitized_name == expected
         assert isinstance(sanitized_name, six.text_type)
-        validate_filepath(sanitized_name)
+        validate_filepath(sanitized_name, platform=platform)
 
     @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
