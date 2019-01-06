@@ -11,11 +11,11 @@ import itertools
 import pytest
 from pathvalidate import InvalidCharError, NullNameError, sanitize_ltsv_label, validate_ltsv_label
 
-from ._common import INVALID_WIN_FILENAME_CHARS, alphanum_char_list
+from ._common import INVALID_WIN_FILENAME_CHARS, alphanum_chars
 
 
-VALID_LABEL_CHARS = alphanum_char_list + ["_", ".", "-"]
-INVALID_LABEL_CHARS = INVALID_WIN_FILENAME_CHARS + [
+VALID_LABEL_CHARS = alphanum_chars + ("_", ".", "-")
+INVALID_LABEL_CHARS = INVALID_WIN_FILENAME_CHARS + (
     "!",
     "#",
     "$",
@@ -42,11 +42,11 @@ INVALID_LABEL_CHARS = INVALID_WIN_FILENAME_CHARS + [
     "\r",
     "\f",
     "\v",
-]
+)
 
 
 class Test_validate_ltsv_label(object):
-    VALID_CHAR_LIST = alphanum_char_list
+    VALID_CHAR_LIST = alphanum_chars
     INVALID_CHAR_LIST = INVALID_LABEL_CHARS
 
     @pytest.mark.parametrize(
@@ -67,7 +67,7 @@ class Test_validate_ltsv_label(object):
 
 class Test_sanitize_ltsv_label(object):
     TARGET_CHAR_LIST = INVALID_LABEL_CHARS
-    NOT_TARGET_CHAR_LIST = alphanum_char_list
+    NOT_TARGET_CHAR_LIST = alphanum_chars
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(

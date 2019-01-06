@@ -8,15 +8,15 @@ from __future__ import absolute_import, unicode_literals
 
 import re
 
-from ._common import ascii_symbol_list, preprocess, unprintable_ascii_char_list
+from ._common import ascii_symbols, preprocess, unprintable_ascii_chars
 from .error import InvalidCharError
 
 
 __RE_UNPRINTABLE = re.compile(
-    "[{}]".format(re.escape("".join(unprintable_ascii_char_list))), re.UNICODE
+    "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
 )
 __RE_SYMBOL = re.compile(
-    "[{}]".format(re.escape("".join(ascii_symbol_list + unprintable_ascii_char_list))), re.UNICODE
+    "[{}]".format(re.escape("".join(ascii_symbols + unprintable_ascii_chars))), re.UNICODE
 )
 
 

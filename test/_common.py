@@ -10,15 +10,15 @@ import random
 import string
 
 
-alphanum_char_list = [x for x in string.digits + string.ascii_letters]
+alphanum_chars = tuple(x for x in string.digits + string.ascii_letters)
 
 
-INVALID_PATH_CHARS = ["\0"]
-INVALID_FILENAME_CHARS = ["/"]
-INVALID_WIN_PATH_CHARS = [":", "*", "?", '"', "<", ">", "|"] + INVALID_PATH_CHARS
-INVALID_WIN_FILENAME_CHARS = INVALID_WIN_PATH_CHARS + INVALID_FILENAME_CHARS + ["\\"]
+INVALID_PATH_CHARS = ("\0",)
+INVALID_FILENAME_CHARS = ("/",)
+INVALID_WIN_PATH_CHARS = (":", "*", "?", '"', "<", ">", "|") + INVALID_PATH_CHARS
+INVALID_WIN_FILENAME_CHARS = INVALID_WIN_PATH_CHARS + INVALID_FILENAME_CHARS + ("\\",)
 
-VALID_FILENAME_CHARS = [
+VALID_FILENAME_CHARS = (
     "!",
     "#",
     "$",
@@ -42,10 +42,10 @@ VALID_FILENAME_CHARS = [
     "(",
     ")",
     "%",
-]
-VALID_PATH_CHARS = VALID_FILENAME_CHARS + ["/"]
+)
+VALID_PATH_CHARS = VALID_FILENAME_CHARS + ("/",)
 
-INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + [
+INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + (
     "!",
     "#",
     "&",
@@ -73,9 +73,9 @@ INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + [
     "\r",
     "\f",
     "\v",
-]
-INVALID_PYTHON_VAR_CHARS = INVALID_JS_VAR_CHARS + ["$"]
+)
+INVALID_PYTHON_VAR_CHARS = INVALID_JS_VAR_CHARS + ("$",)
 
 
-def make_random_str(length, char_list=alphanum_char_list):
+def make_random_str(length, char_list=alphanum_chars):
     return "".join([random.choice(char_list) for _i in range(length)])

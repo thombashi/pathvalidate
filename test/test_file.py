@@ -24,7 +24,7 @@ from pathvalidate import (
     validate_filename,
     validate_filepath,
 )
-from pathvalidate._common import is_pathlike_obj, unprintable_ascii_char_list
+from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
 from pathvalidate._file import FileNameSanitizer
 
 from ._common import (
@@ -131,7 +131,7 @@ class Test_FileSanitizer(object):
 
 class Test_validate_filename(object):
     VALID_CHAR_LIST = VALID_FILENAME_CHARS
-    INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list
+    INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -206,7 +206,7 @@ class Test_validate_filename(object):
             [make_random_str(64) + invalid_c + make_random_str(64), platform]
             for invalid_c, platform in product(
                 set(INVALID_WIN_PATH_CHARS).difference(
-                    set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_ascii_char_list)
+                    set(INVALID_PATH_CHARS + INVALID_FILENAME_CHARS + unprintable_ascii_chars)
                 ),
                 ["windows", "universal"],
             )
@@ -356,7 +356,7 @@ class Test_validate_filepath(object):
         [
             ["{}_{}_{}".format(make_random_str(64), invalid_c, make_random_str(64)), platform]
             for invalid_c, platform in product(
-                set(INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list).difference(
+                set(INVALID_WIN_PATH_CHARS + unprintable_ascii_chars).difference(
                     set(INVALID_PATH_CHARS)
                 ),
                 ["windows", "universal"],
@@ -405,7 +405,7 @@ class Test_validate_win_file_path(object):
 
 
 class Test_sanitize_filename(object):
-    SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list
+    SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
     NOT_SANITIZE_CHAR_LIST = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
@@ -414,7 +414,7 @@ class Test_sanitize_filename(object):
         [
             ["universal", "A" + c + "B", rep, "A" + rep + "B"]
             for c, rep in product(
-                INVALID_WIN_FILENAME_CHARS + unprintable_ascii_char_list, REPLACE_TEXT_LIST
+                INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST
             )
         ]
         + [
@@ -424,7 +424,7 @@ class Test_sanitize_filename(object):
         + [
             ["linux", "A" + c + "B", rep, "A" + rep + "B"]
             for c, rep in product(
-                INVALID_FILENAME_CHARS + unprintable_ascii_char_list, REPLACE_TEXT_LIST
+                INVALID_FILENAME_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST
             )
         ]
         + [
@@ -515,7 +515,7 @@ class Test_sanitize_filename(object):
 
 
 class Test_sanitize_filepath(object):
-    SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS + unprintable_ascii_char_list
+    SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS + unprintable_ascii_chars
     NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
@@ -535,9 +535,7 @@ class Test_sanitize_filepath(object):
         ]
         + [
             ["linux", "A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in product(
-                INVALID_PATH_CHARS + unprintable_ascii_char_list, REPLACE_TEXT_LIST
-            )
+            for c, rep in product(INVALID_PATH_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST)
         ]
         + [
             ["linux", "A" + c + "B", rep, "A" + c + "B"]

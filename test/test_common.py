@@ -9,14 +9,14 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 
 import pytest
-from pathvalidate import ascii_symbol_list, replace_unprintable_char, unprintable_ascii_char_list
+from pathvalidate import ascii_symbols, replace_unprintable_char, unprintable_ascii_chars
 
-from ._common import alphanum_char_list
+from ._common import alphanum_chars
 
 
 class Test_replace_unprintable_char(object):
-    TARGET_CHAR_LIST = unprintable_ascii_char_list
-    NOT_TARGET_CHAR_LIST = alphanum_char_list + ascii_symbol_list
+    TARGET_CHAR_LIST = unprintable_ascii_chars
+    NOT_TARGET_CHAR_LIST = alphanum_chars + ascii_symbols
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(

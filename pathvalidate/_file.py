@@ -12,7 +12,7 @@ import os.path
 import platform
 import re
 
-from ._common import preprocess, unprintable_ascii_char_list
+from ._common import preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
 from ._six import text_type
 from .error import InvalidCharError, InvalidLengthError, ReservedNameError
@@ -30,7 +30,7 @@ class Platform(enum.Enum):
 
 
 class FileSanitizer(NameSanitizer):
-    _INVALID_PATH_CHARS = "".join(unprintable_ascii_char_list)
+    _INVALID_PATH_CHARS = "".join(unprintable_ascii_chars)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
