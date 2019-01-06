@@ -50,9 +50,9 @@ inf = float("inf")
 
 random.seed(0)
 
-VALID_PLATFORM_NAME_LIST = ["universal", "linux", "windows", "macos"]
+VALID_PLATFORM_NAMES = ["universal", "linux", "windows", "macos"]
 
-WIN_RESERVED_FILE_NAME_LIST = [
+WIN_RESERVED_FILE_NAMES = [
     ".",
     "..",
     "CON",
@@ -68,7 +68,7 @@ WIN_RESERVED_FILE_NAME_LIST = [
     for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
 
-VALID_MULTIBYTE_NAME_LIST = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
+VALID_MULTIBYTE_NAMES = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
 
 
 class Test_FileSanitizer(object):
@@ -131,8 +131,8 @@ class Test_FileSanitizer(object):
 
 
 class Test_validate_filename(object):
-    VALID_CHAR_LIST = VALID_FILENAME_CHARS
-    INVALID_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
+    VALID_CHARS = VALID_FILENAME_CHARS
+    INVALID_CHARS = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -142,10 +142,10 @@ class Test_validate_filename(object):
                     arg_list
                     for arg_list in product(
                         [make_random_str(64) + valid_char + make_random_str(64)],
-                        VALID_PLATFORM_NAME_LIST,
+                        VALID_PLATFORM_NAMES,
                     )
                 ]
-                for valid_char in VALID_CHAR_LIST
+                for valid_char in VALID_CHARS
             ]
         ),
     )
@@ -156,8 +156,8 @@ class Test_validate_filename(object):
         ["value", "platform"],
         chain.from_iterable(
             [
-                [arg_list for arg_list in product([multibyte_name], VALID_PLATFORM_NAME_LIST)]
-                for multibyte_name in VALID_MULTIBYTE_NAME_LIST
+                [arg_list for arg_list in product([multibyte_name], VALID_PLATFORM_NAMES)]
+                for multibyte_name in VALID_MULTIBYTE_NAMES
             ]
         ),
     )
@@ -197,7 +197,7 @@ class Test_validate_filename(object):
                     arg_list
                     for arg_list in product(
                         [make_random_str(64) + invalid_c + make_random_str(64)],
-                        VALID_PLATFORM_NAME_LIST,
+                        VALID_PLATFORM_NAMES,
                     )
                 ]
                 for invalid_c in INVALID_FILENAME_CHARS
@@ -229,7 +229,7 @@ class Test_validate_filename(object):
         [
             [reserved_keyword, platform, ReservedNameError]
             for reserved_keyword, platform in product(
-                WIN_RESERVED_FILE_NAME_LIST, ["windows", "universal"]
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
         ]
         + [
@@ -260,7 +260,7 @@ class Test_validate_filename(object):
 
 
 class Test_validate_filepath(object):
-    VALID_CHAR_LIST = VALID_PATH_CHARS
+    VALID_CHARS = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
         "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
         "\\\\localhost\\新しいフォルダー\\ユーザ属性.txt",
@@ -282,10 +282,10 @@ class Test_validate_filepath(object):
                     arg_list
                     for arg_list in product(
                         [make_random_str(64) + valid_char + make_random_str(64)],
-                        VALID_PLATFORM_NAME_LIST,
+                        VALID_PLATFORM_NAMES,
                     )
                 ]
-                for valid_char in VALID_CHAR_LIST
+                for valid_char in VALID_CHARS
             ]
         ),
     )
@@ -296,7 +296,7 @@ class Test_validate_filepath(object):
         ["value", "platform"],
         chain.from_iterable(
             [
-                [arg_list for arg_list in product([valid_path], VALID_PLATFORM_NAME_LIST)]
+                [arg_list for arg_list in product([valid_path], VALID_PLATFORM_NAMES)]
                 for valid_path in VALID_MULTIBYTE_PATH_LIST
             ]
         ),
@@ -393,7 +393,7 @@ class Test_validate_filepath(object):
 
 @pytest.mark.skipif("m_platform.system() != 'Windows'")
 class Test_validate_win_file_path(object):
-    VALID_CHAR_LIST = VALID_PATH_CHARS
+    VALID_CHARS = VALID_PATH_CHARS
 
     @pytest.mark.parametrize(
         ["value"],
@@ -414,8 +414,8 @@ class Test_validate_win_file_path(object):
 
 
 class Test_sanitize_filename(object):
-    SANITIZE_CHAR_LIST = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
-    NOT_SANITIZE_CHAR_LIST = VALID_FILENAME_CHARS
+    SANITIZE_CHARS = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
+    NOT_SANITIZE_CHARS = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
@@ -428,7 +428,7 @@ class Test_sanitize_filename(object):
         ]
         + [
             ["universal", "A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["linux", "A" + c + "B", rep, "A" + rep + "B"]
@@ -452,11 +452,11 @@ class Test_sanitize_filename(object):
         ["value", "replace_text", "expected"],
         [
             [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
-            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             [Path("A" + c + "B"), rep, Path("A" + c + "B")]
-            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal_pathlike(self, value, replace_text, expected):
@@ -486,11 +486,11 @@ class Test_sanitize_filename(object):
         ["value", "test_platform", "expected"],
         [
             [reserved.lower(), "windows", reserved.lower() + "_"]
-            for reserved in WIN_RESERVED_FILE_NAME_LIST
+            for reserved in WIN_RESERVED_FILE_NAMES
         ]
         + [
             [reserved.upper(), "windows", reserved.upper() + "_"]
-            for reserved in WIN_RESERVED_FILE_NAME_LIST
+            for reserved in WIN_RESERVED_FILE_NAMES
         ]
         + [[reserved, "linux", reserved + "_"] for reserved in (".", "..")],
     )
@@ -524,23 +524,23 @@ class Test_sanitize_filename(object):
 
 
 class Test_sanitize_filepath(object):
-    SANITIZE_CHAR_LIST = INVALID_WIN_PATH_CHARS + unprintable_ascii_chars
-    NOT_SANITIZE_CHAR_LIST = VALID_PATH_CHARS
+    SANITIZE_CHARS = INVALID_WIN_PATH_CHARS + unprintable_ascii_chars
+    NOT_SANITIZE_CHARS = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
         ["platform", "value", "replace_text", "expected"],
         [
             ["universal", "A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["universal", "A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["universal", "あ" + c + "い", rep, "あ" + c + "い"]
-            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["linux", "A" + c + "B", rep, "A" + rep + "B"]
@@ -562,15 +562,15 @@ class Test_sanitize_filepath(object):
         ["value", "replace_text", "expected"],
         [
             [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
-            for c, rep in product(SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             [Path("A" + c + "B"), rep, Path("A" + c + "B")]
-            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             [Path("あ" + c + "い"), rep, Path("あ" + c + "い")]
-            for c, rep in product(NOT_SANITIZE_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal_pathlike(self, value, replace_text, expected):

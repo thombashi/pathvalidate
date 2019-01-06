@@ -21,11 +21,11 @@ from ._common import alphanum_chars
 
 
 class Test_validate_symbol(object):
-    VALID_CHAR_LIST = alphanum_chars
-    INVALID_CHAR_LIST = ascii_symbols
+    VALID_CHARS = alphanum_chars
+    INVALID_CHARS = ascii_symbols
 
     @pytest.mark.parametrize(
-        ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST]
+        ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHARS]
     )
     def test_normal(self, value):
         validate_symbol(value)
@@ -40,7 +40,7 @@ class Test_validate_symbol(object):
         ["value"],
         [
             ["abc" + invalid_char + "hoge123"]
-            for invalid_char in INVALID_CHAR_LIST + unprintable_ascii_chars
+            for invalid_char in INVALID_CHARS + unprintable_ascii_chars
         ],
     )
     def test_exception_invalid_char(self, value):
@@ -49,19 +49,19 @@ class Test_validate_symbol(object):
 
 
 class Test_replace_symbol(object):
-    TARGET_CHAR_LIST = ascii_symbols
-    NOT_TARGET_CHAR_LIST = alphanum_chars
+    TARGET_CHARS = ascii_symbols
+    NOT_TARGET_CHARS = alphanum_chars
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(TARGET_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(NOT_TARGET_CHARS, REPLACE_TEXT_LIST)
         ]
         + [["", "", ""]],
     )

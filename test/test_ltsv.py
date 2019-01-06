@@ -46,18 +46,18 @@ INVALID_LABEL_CHARS = INVALID_WIN_FILENAME_CHARS + (
 
 
 class Test_validate_ltsv_label(object):
-    VALID_CHAR_LIST = alphanum_chars
-    INVALID_CHAR_LIST = INVALID_LABEL_CHARS
+    VALID_CHARS = alphanum_chars
+    INVALID_CHARS = INVALID_LABEL_CHARS
 
     @pytest.mark.parametrize(
-        ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHAR_LIST]
+        ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHARS]
     )
     def test_normal(self, value):
         validate_ltsv_label(value)
 
     @pytest.mark.parametrize(
         ["value"],
-        [["abc" + invalid_char + "hoge123"] for invalid_char in INVALID_CHAR_LIST]
+        [["abc" + invalid_char + "hoge123"] for invalid_char in INVALID_CHARS]
         + [["あいうえお"], ["ラベル"]],
     )
     def test_exception_invalid_char(self, value):
@@ -66,19 +66,19 @@ class Test_validate_ltsv_label(object):
 
 
 class Test_sanitize_ltsv_label(object):
-    TARGET_CHAR_LIST = INVALID_LABEL_CHARS
-    NOT_TARGET_CHAR_LIST = alphanum_chars
+    TARGET_CHARS = INVALID_LABEL_CHARS
+    NOT_TARGET_CHARS = alphanum_chars
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(TARGET_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(NOT_TARGET_CHARS, REPLACE_TEXT_LIST)
         ],
     )
     def test_normal(self, value, replace_text, expected):

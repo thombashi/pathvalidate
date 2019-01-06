@@ -15,19 +15,19 @@ from ._common import alphanum_chars
 
 
 class Test_replace_unprintable_char(object):
-    TARGET_CHAR_LIST = unprintable_ascii_chars
-    NOT_TARGET_CHAR_LIST = alphanum_chars + ascii_symbols
+    TARGET_CHARS = unprintable_ascii_chars
+    NOT_TARGET_CHARS = alphanum_chars + ascii_symbols
     REPLACE_TEXT_LIST = ["", "_"]
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
             ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(TARGET_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
             ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(NOT_TARGET_CHAR_LIST, REPLACE_TEXT_LIST)
+            for c, rep in itertools.product(NOT_TARGET_CHARS, REPLACE_TEXT_LIST)
         ]
         + [["", "", ""]],
     )
