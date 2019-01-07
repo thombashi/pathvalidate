@@ -11,19 +11,21 @@
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python versions
 
-.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS-CI
+.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS%20CI
     :target: https://travis-ci.org/thombashi/pathvalidate
     :alt: Linux/macOS CI status
 
-.. image:: https://img.shields.io/appveyor/ci/thombashi/pathvalidate/master.svg?label=Windows-CI
+.. image:: https://img.shields.io/appveyor/ci/thombashi/pathvalidate/master.svg?label=Windows%20CI
     :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
     :alt: Windows CI status
 
 .. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
+    :alt: Test coverage
 
 .. image:: https://img.shields.io/github/stars/thombashi/pathvalidate.svg?style=social&label=Star
-   :target: https://github.com/thombashi/pathvalidate
+    :target: https://github.com/thombashi/pathvalidate
+    :alt: GitHub stars
 
 Summary
 =========
