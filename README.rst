@@ -1,6 +1,4 @@
-**pathvalidate**
-
-.. contents:: Table of Contents
+.. contents:: **pathvalidate**
    :depth: 2
 
 .. image:: https://badge.fury.io/py/pathvalidate.svg
@@ -29,7 +27,7 @@
 
 Summary
 =========
-A Python library to sanitize/validate a string such as filenames/file-paths/etc.
+`pathvalidate <https://github.com/thombashi/pathvalidate>`__ is a Python library to sanitize/validate a string such as filenames/file-paths/etc.
 
 Features
 ---------

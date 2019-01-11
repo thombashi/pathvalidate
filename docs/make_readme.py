@@ -9,8 +9,8 @@ from __future__ import unicode_literals
 
 import sys
 
-import readmemaker
 from path import Path
+from readmemaker import ReadmeMaker
 
 
 OUTPUT_DIR = ".."
@@ -33,7 +33,7 @@ def write_examples(maker):
     maker.write_file(example_root.joinpath("sanitize_filepath_code.txt"))
 
     maker.write_chapter("For more information")
-    maker.write_line_list(
+    maker.write_lines(
         [
             "More examples are available at ",
             "https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html",
@@ -42,7 +42,12 @@ def write_examples(maker):
 
 
 def main():
-    maker = readmemaker.ReadmeMaker("pathvalidate", OUTPUT_DIR, is_make_toc=True)
+    maker = ReadmeMaker(
+        "pathvalidate",
+        OUTPUT_DIR,
+        is_make_toc=True,
+        project_url="https://github.com/thombashi/pathvalidate",
+    )
 
     maker.write_introduction_file("badges.txt")
 
@@ -56,7 +61,7 @@ def main():
 
     maker.set_indent_level(0)
     maker.write_chapter("Documentation")
-    maker.write_line_list(["https://pathvalidate.rtfd.io/"])
+    maker.write_lines(["https://pathvalidate.rtfd.io/"])
 
     return 0
 
