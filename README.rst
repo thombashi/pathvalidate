@@ -1,4 +1,5 @@
 .. contents:: **pathvalidate**
+   :backlinks: top
    :depth: 2
 
 .. image:: https://badge.fury.io/py/pathvalidate.svg
