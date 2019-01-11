@@ -52,18 +52,7 @@ random.seed(0)
 
 VALID_PLATFORM_NAMES = ["universal", "linux", "windows", "macos"]
 
-WIN_RESERVED_FILE_NAMES = [
-    ".",
-    "..",
-    "CON",
-    "con",
-    "PRN",
-    "prn",
-    "AUX",
-    "aux",
-    "NUL",
-    "nul",
-] + [
+WIN_RESERVED_FILE_NAMES = [".", "..", "CON", "con", "PRN", "prn", "AUX", "aux", "NUL", "nul"] + [
     "{:s}{:d}".format(name, num)
     for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
