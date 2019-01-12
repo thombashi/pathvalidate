@@ -414,35 +414,39 @@ def validate_file_path(file_path, platform=None, max_path_len=None):
 def sanitize_filename(
     filename, replacement_text="", platform=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN
 ):
-    """
-    Make a valid filename from a string.
+    """Make a valid filename from a string.
 
     To make a valid filename the function does:
 
-    - Replace invalid characters for a filename within the ``filename``
-      with the ``replacement_text``.
-      Invalid characters are as followings and unprintable characters:
-      |invalid_filename_chars|, (for Windows: |invalid_win_filename_chars|).
-    - Append underscore (``"_"``) at the tail of the name if sanitized name
-      is one of the reserved names by the OS.
+        - Replace invalid characters for a filename within the ``filename``
+          with the ``replacement_text``. Invalid characters are:
 
-    :param filename: Filename to sanitize.
-    :type filename: str or PathLike object
-    :param str replacement_text: Replacement text.
-    :param str platform: |platform_name|
-    :param int max_filename_len:
-        The upper limit of the ``filename`` length. Truncate the name length if
-        the ``filename`` length exceeds this value.
-        Defaults to 255.
-    :return: Sanitized filename.
-    :rtype: Same type as the argument (str or PathLike object)
-    :raises ValueError: If the ``filename`` is an invalid filename.
+            - unprintable characters
+            - |invalid_filename_chars|
+            - for Windows only: |invalid_win_filename_chars|
 
-    :Example:
+        - Append underscore (``"_"``) at the tail of the name if sanitized name
+          is one of the reserved names by the operating system.
+
+    Args:
+        filename (str or PathLike object): Filename to sanitize.
+        replacement_text (str, optional): Replacement text. Defaults to "". 
+        platform (str, optional): |platform_name| 
+        max_filename_len (int, optional):
+            The upper limit of the ``filename`` length. Truncate the name length if
+            the ``filename`` length exceeds this value.
+            Defaults to 255.
+    
+    Returns:
+        Same type as the ``filename`` (str or PathLike object):
+            Sanitized filename.
+
+    Raises:
+        ValueError:
+            If the ``filename`` is an invalid filename.
+
+    Example:
         :ref:`example-sanitize-filename`
-
-    .. note::
-        Reserved names by OS not be replaced.
     """
 
     return FileNameSanitizer(
