@@ -312,8 +312,8 @@ rst_prolog = ur"""
     Execution platform name (case-insensitive).
     Valid platform specific values are: ``"Linux"``/``"Windows"``/``"macOS"``.
     Valid special values are: 
-    (a) ``"auto"``: automatically detect the execution platform.
-    (b) ``"universal"``/|None|: platform independent.
+    **(a)** ``"auto"``: automatically detect the execution platform.
+    **(b)** ``"universal"``/|None|: platform independent.
     Defaults to |None|.
 
 """
