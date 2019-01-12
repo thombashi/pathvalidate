@@ -109,7 +109,7 @@ class FileSanitizer(NameSanitizer):
         if name in ["linux"]:
             return Platform.LINUX
 
-        if name in ["windows", "win"]:
+        if name and name.startswith("win"):
             return Platform.WINDOWS
 
         if name in ["mac", "macos", "darwin"]:
