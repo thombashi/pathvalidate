@@ -2,6 +2,10 @@
    :backlinks: top
    :depth: 2
 
+Summary
+=========
+`pathvalidate <https://github.com/thombashi/pathvalidate>`__ is a Python library to sanitize/validate a string such as filenames/file-paths/etc.
+
 .. image:: https://badge.fury.io/py/pathvalidate.svg
     :target: https://badge.fury.io/py/pathvalidate
     :alt: PyPI package version
@@ -25,10 +29,6 @@
 .. image:: https://img.shields.io/github/stars/thombashi/pathvalidate.svg?style=social&label=Star
     :target: https://github.com/thombashi/pathvalidate
     :alt: GitHub stars
-
-Summary
-=========
-`pathvalidate <https://github.com/thombashi/pathvalidate>`__ is a Python library to sanitize/validate a string such as filenames/file-paths/etc.
 
 Features
 ---------
