@@ -82,7 +82,7 @@ setuptools.setup(
     extras_require={
         "build": ["twine", "wheel"],
         "docs": DOCS_REQUIRES,
-        "release": ["releasecmd>=0.0.12,<0.1.0"],
+        "release": ["releasecmd>=0.0.18,<0.1.0"],
         "test": TESTS_REQUIRES,
     },
 
