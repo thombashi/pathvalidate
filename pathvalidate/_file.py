@@ -141,12 +141,10 @@ class FileNameSanitizer(FileSanitizer):
 
         return common_keywords
 
-    def __init__(self, filename, max_filename_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
+    def __init__(self, filename, max_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
         super(FileNameSanitizer, self).__init__(
             filename,
-            max_len=(
-                max_filename_len if max_filename_len is not None else _DEFAULT_MAX_FILENAME_LEN
-            ),
+            max_len=(max_len if max_len is not None else _DEFAULT_MAX_FILENAME_LEN),
             platform=platform,
         )
 
@@ -365,7 +363,7 @@ def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FileNameSanitizer(filename, platform=platform, max_filename_len=max_len).validate()
+    FileNameSanitizer(filename, platform=platform, max_len=max_len).validate()
 
 
 def validate_filepath(file_path, platform=None, max_len=None):
@@ -449,9 +447,9 @@ def sanitize_filename(
         :ref:`example-sanitize-filename`
     """
 
-    return FileNameSanitizer(
-        filename, platform=platform, max_filename_len=max_len
-    ).sanitize(replacement_text)
+    return FileNameSanitizer(filename, platform=platform, max_len=max_len).sanitize(
+        replacement_text
+    )
 
 
 def sanitize_filepath(file_path, replacement_text="", platform=None, max_len=None):
