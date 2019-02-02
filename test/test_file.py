@@ -312,12 +312,12 @@ class Test_validate_filepath(object):
             ["a" * 261, Platform.UNIVERSAL, None, InvalidLengthError],
         ],
     )
-    def test_normal_max_path_len(self, value, platform, max_len, expected):
+    def test_normal_max_len(self, value, platform, max_len, expected):
         if expected is None:
-            validate_filepath(value, platform=platform, max_path_len=max_len)
+            validate_filepath(value, platform=platform, max_len=max_len)
         else:
             with pytest.raises(expected):
-                validate_filepath(value, platform=platform, max_path_len=max_len)
+                validate_filepath(value, platform=platform, max_len=max_len)
 
     @pytest.mark.parametrize(
         ["platform", "value"],
