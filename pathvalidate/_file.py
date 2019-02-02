@@ -326,7 +326,7 @@ class FilePathSanitizer(FileSanitizer):
         return self.__RE_INVALID_PATH
 
 
-def validate_filename(filename, platform=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN):
+def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN):
     """Verifying whether the ``filename`` is a valid file name or not.
 
     Args:
@@ -334,7 +334,7 @@ def validate_filename(filename, platform=None, max_filename_len=_DEFAULT_MAX_FIL
             Filename to validate.
         platform (str/pathvalidate.Platform, optional):
             |platform_name|
-        max_filename_len (int, optional):
+        max_len (int, optional):
             Length limit of the ``filename``. The value must be lower than:
 
                 - ``Linux``: 4096
@@ -346,7 +346,7 @@ def validate_filename(filename, platform=None, max_filename_len=_DEFAULT_MAX_FIL
 
     Raises:
         InvalidLengthError:
-            If the ``filename`` is longer than ``max_filename_len`` characters.
+            If the ``filename`` is longer than ``max_len`` characters.
         InvalidCharError:
             If the ``filename`` includes invalid character(s) for a filename:
             |invalid_filename_chars|.
@@ -365,7 +365,7 @@ def validate_filename(filename, platform=None, max_filename_len=_DEFAULT_MAX_FIL
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FileNameSanitizer(filename, platform=platform, max_filename_len=max_filename_len).validate()
+    FileNameSanitizer(filename, platform=platform, max_filename_len=max_len).validate()
 
 
 def validate_filepath(file_path, platform=None, max_len=None):
@@ -412,7 +412,7 @@ def validate_file_path(file_path, platform=None, max_path_len=None):
 
 
 def sanitize_filename(
-    filename, replacement_text="", platform=None, max_filename_len=_DEFAULT_MAX_FILENAME_LEN
+    filename, replacement_text="", platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
 ):
     """Make a valid filename from a string.
 
@@ -432,7 +432,7 @@ def sanitize_filename(
         filename (str or PathLike object): Filename to sanitize.
         replacement_text (str, optional): Replacement text. Defaults to "". 
         platform (str, optional): |platform_name| 
-        max_filename_len (int, optional):
+        max_len (int, optional):
             The upper limit of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
             Defaults to 255.
@@ -450,7 +450,7 @@ def sanitize_filename(
     """
 
     return FileNameSanitizer(
-        filename, platform=platform, max_filename_len=max_filename_len
+        filename, platform=platform, max_filename_len=max_len
     ).sanitize(replacement_text)
 
 

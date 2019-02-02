@@ -164,12 +164,12 @@ class Test_validate_filename(object):
             ["invalid_length", None, 2, InvalidLengthError],
         ],
     )
-    def test_max_filename_len(self, value, platform, max_len, expected):
+    def test_max_len(self, value, platform, max_len, expected):
         if expected is None:
-            validate_filename(value, platform=platform, max_filename_len=max_len)
+            validate_filename(value, platform=platform, max_len=max_len)
         else:
             with pytest.raises(expected):
-                validate_filename(value, platform=platform, max_filename_len=max_len)
+                validate_filename(value, platform=platform, max_len=max_len)
 
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
     def test_faker(self, locale):
@@ -465,11 +465,11 @@ class Test_sanitize_filename(object):
         validate_filename(sanitized_name)
 
     @pytest.mark.parametrize(
-        ["value", "max_filename_len", "expected"],
+        ["value", "max_len", "expected"],
         [["a" * 10, 255, 10], ["invalid_length" * 100, 255, 255], ["invalid_length" * 100, 10, 10]],
     )
-    def test_normal_max_filename_len(self, value, max_filename_len, expected):
-        assert len(sanitize_filename(value, max_filename_len=max_filename_len)) == expected
+    def test_normal_max_len(self, value, max_len, expected):
+        assert len(sanitize_filename(value, max_len=max_len)) == expected
 
     @pytest.mark.parametrize(
         ["value", "test_platform", "expected"],
