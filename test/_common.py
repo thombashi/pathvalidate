@@ -44,6 +44,7 @@ VALID_FILENAME_CHARS = (
     "%",
 )
 VALID_PATH_CHARS = VALID_FILENAME_CHARS + ("/",)
+VALID_PLATFORM_NAMES = ["universal", "linux", "windows", "macos"]
 
 INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + (
     "!",
