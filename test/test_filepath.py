@@ -20,6 +20,7 @@ from pathvalidate import (
     InvalidLengthError,
     NullNameError,
     Platform,
+    is_valid_filepath,
     sanitize_filepath,
     validate_filepath,
 )
@@ -138,6 +139,7 @@ class Test_validate_filepath(object):
     )
     def test_normal(self, value, platform):
         validate_filepath(value, platform)
+        assert is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -150,10 +152,13 @@ class Test_validate_filepath(object):
     )
     def test_normal_multibyte(self, value, platform):
         validate_filepath(value, platform)
+        assert is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(["value"], [[valid_path] for valid_path in WIN_VALID_PATH_LIST])
     def test_normal_win(self, value):
-        validate_filepath(value, platform="windows")
+        platform = "windows"
+        validate_filepath(value, platform=platform)
+        assert is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
@@ -173,6 +178,7 @@ class Test_validate_filepath(object):
     def test_normal_max_len(self, value, platform, max_len, expected):
         if expected is None:
             validate_filepath(value, platform=platform, max_len=max_len)
+            assert is_valid_filepath(value, platform=platform, max_len=max_len)
         else:
             with pytest.raises(expected):
                 validate_filepath(value, platform=platform, max_len=max_len)
@@ -194,13 +200,16 @@ class Test_validate_filepath(object):
     )
     def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value):
         validate_filepath(value, platform=platform)
+        assert is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
     def test_locale_jp(self, locale):
         fake = Factory.create(locale=locale, seed=1)
 
         for _ in range(100):
-            validate_filepath(fake.file_path())
+            filepath = fake.file_path()
+            validate_filepath(filepath)
+            assert is_valid_filepath(filepath)
 
     @pytest.mark.parametrize(
         ["value"],
@@ -212,6 +221,7 @@ class Test_validate_filepath(object):
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):
             validate_filepath(value)
+        assert not is_valid_filepath(value)
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -228,6 +238,7 @@ class Test_validate_filepath(object):
     def test_exception_invalid_win_char(self, value, platform):
         with pytest.raises(InvalidCharError):
             validate_filepath(value, platform=platform)
+        assert not is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -236,6 +247,7 @@ class Test_validate_filepath(object):
     def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_filepath(value)
+        assert not is_valid_filepath(value)
 
 
 @pytest.mark.skipif("m_platform.system() != 'Windows'")
@@ -258,6 +270,7 @@ class Test_validate_win_file_path(object):
     )
     def test_normal(self, value):
         validate_filepath(value)
+        assert is_valid_filepath(value)
 
 
 class Test_sanitize_filepath(object):
@@ -293,6 +306,7 @@ class Test_sanitize_filepath(object):
         assert sanitized_name == expected
         assert isinstance(sanitized_name, six.text_type)
         validate_filepath(sanitized_name, platform=platform)
+        assert is_valid_filepath(sanitized_name, platform=platform)
 
     @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
@@ -316,6 +330,7 @@ class Test_sanitize_filepath(object):
         assert is_pathlike_obj(sanitized_name)
 
         validate_filepath(sanitized_name)
+        assert is_valid_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
@@ -325,6 +340,7 @@ class Test_sanitize_filepath(object):
         sanitized_name = sanitize_filepath(value, replace_text)
         assert sanitized_name == expected
         validate_filepath(sanitized_name)
+        assert is_valid_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -333,3 +349,4 @@ class Test_sanitize_filepath(object):
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             sanitize_filepath(value)
+        assert not is_valid_filepath(value)

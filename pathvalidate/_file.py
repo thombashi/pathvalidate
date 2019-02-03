@@ -405,6 +405,10 @@ def is_valid_filename(filename, platform=None, max_len=None):
     return FileNameSanitizer(platform=platform, max_len=max_len).is_valid(filename)
 
 
+def is_valid_filepath(file_path, platform=None, max_len=None):
+    return FilePathSanitizer(platform=platform, max_len=max_len).is_valid(file_path)
+
+
 def sanitize_filename(
     filename, replacement_text="", platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
 ):
