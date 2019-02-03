@@ -85,7 +85,6 @@ def _get_ascii_symbol_list():
 
 
 unprintable_ascii_chars = tuple(_get_unprintable_ascii_char_list())
-ascii_symbol_list = _get_ascii_symbol_list()  # deprecated
 ascii_symbols = tuple(_get_ascii_symbol_list())
 
 __RE_UNPRINTABLE_CHARS = re.compile(
