@@ -168,7 +168,7 @@ class Test_validate_filename(object):
                 validate_filename(value, platform=platform, max_len=max_len)
 
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
-    def test_faker(self, locale):
+    def test_locale_ja(self, locale):
         fake = Factory.create(locale=locale, seed=1)
 
         for _ in range(100):
