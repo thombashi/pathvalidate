@@ -360,7 +360,7 @@ def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
 
 def validate_filepath(file_path, platform=None, max_len=None):
     """Verifying whether the ``file_path`` is a valid file path or not.
-    
+
     Args:
         file_path (str):
             File path to validate.
@@ -420,13 +420,13 @@ def sanitize_filename(
 
     Args:
         filename (str or PathLike object): Filename to sanitize.
-        replacement_text (str, optional): Replacement text. Defaults to "". 
-        platform (str, optional): |platform_name| 
+        replacement_text (str, optional): Replacement text. Defaults to "".
+        platform (str, optional): |platform_name|
         max_len (int, optional):
             The upper limit of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
             Defaults to 255.
-    
+
     Returns:
         Same type as the ``filename`` (str or PathLike object):
             Sanitized filename.
