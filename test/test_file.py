@@ -77,7 +77,7 @@ class Test_FileSanitizer(object):
 
         monkeypatch.setattr(m_platform, "system", patch)
 
-        assert FileNameSanitizer("value", 255, platform="auto").platform == expected
+        assert FileNameSanitizer(255, platform="auto").platform == expected
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
@@ -116,7 +116,7 @@ class Test_FileSanitizer(object):
         ],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
-        assert FileNameSanitizer("v", 255, platform=test_platform).reserved_keywords == expected
+        assert FileNameSanitizer(255, platform=test_platform).reserved_keywords == expected
 
 
 class Test_validate_filename(object):

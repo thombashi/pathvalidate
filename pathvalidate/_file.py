@@ -12,7 +12,7 @@ import os.path
 import platform
 import re
 
-from ._common import preprocess, unprintable_ascii_chars
+from ._common import is_pathlike_obj, preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
 from ._six import text_type
 from .error import InvalidCharError, InvalidLengthError, ReservedNameError
@@ -54,9 +54,7 @@ class FileSanitizer(NameSanitizer):
     def max_len(self):
         return self._max_len
 
-    def __init__(self, filename, max_len, platform=None):
-        super(FileSanitizer, self).__init__(filename)
-
+    def __init__(self, max_len, platform=None):
         self._max_len = max_len
 
         self.__platform = self.__normalize_platform(platform)
@@ -141,9 +139,8 @@ class FileNameSanitizer(FileSanitizer):
 
         return common_keywords
 
-    def __init__(self, filename, max_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
+    def __init__(self, max_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
         super(FileNameSanitizer, self).__init__(
-            filename,
             max_len=(max_len if max_len is not None else _DEFAULT_MAX_FILENAME_LEN),
             platform=platform,
         )
@@ -155,16 +152,14 @@ class FileNameSanitizer(FileSanitizer):
 
         self._sanitize_regexp = self._get_sanitize_regexp()
 
-    def validate(self):
-        self._validate(self._value)
+    def sanitize(self, value, replacement_text=""):
+        self._validate_null_string(value)
 
-    def sanitize(self, replacement_text=""):
-        is_pathlike_obj = self._is_pathlike_obj()
-        sanitized_filename = self._sanitize_regexp.sub(replacement_text, self._str)
+        sanitized_filename = self._sanitize_regexp.sub(replacement_text, text_type(value))
         sanitized_filename = sanitized_filename[: self.max_len]
 
         try:
-            self._validate(sanitized_filename)
+            self.validate(sanitized_filename)
         except ReservedNameError as e:
             if e.reusable_name is False:
                 sanitized_filename += "_"
@@ -172,7 +167,7 @@ class FileNameSanitizer(FileSanitizer):
             if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
                 sanitized_filename = sanitized_filename.rstrip(" .")
 
-        if is_pathlike_obj:
+        if is_pathlike_obj(value):
             try:
                 from pathlib import Path
 
@@ -182,7 +177,7 @@ class FileNameSanitizer(FileSanitizer):
 
         return sanitized_filename
 
-    def _validate(self, value):
+    def validate(self, value):
         self._validate_null_string(value)
 
         if len(text_type(value)) > self.max_len:
@@ -242,8 +237,8 @@ class FilePathSanitizer(FileSanitizer):
         "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE
     )
 
-    def __init__(self, filename, platform=None, max_len=None):
-        super(FilePathSanitizer, self).__init__(filename, max_len=max_len, platform=platform)
+    def __init__(self, platform=None, max_len=None):
+        super(FilePathSanitizer, self).__init__(max_len=max_len, platform=platform)
 
         if self.max_len is None:
             self._max_len = self._get_default_max_path_len()
@@ -252,20 +247,17 @@ class FilePathSanitizer(FileSanitizer):
 
         self._sanitize_regexp = self._get_sanitize_regexp()
 
-    def validate(self):
-        self._validate(self._value)
-
-    def sanitize(self, replacement_text=""):
-        is_pathlike_obj = self._is_pathlike_obj()
+    def sanitize(self, value, replacement_text=""):
+        self._validate_null_string(value)
 
         try:
-            unicode_file_path = preprocess(self._value)
+            unicode_file_path = preprocess(value)
         except AttributeError as e:
             raise ValueError(e)
 
         sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
 
-        if is_pathlike_obj:
+        if is_pathlike_obj(value):
             try:
                 from pathlib import Path
 
@@ -275,7 +267,7 @@ class FilePathSanitizer(FileSanitizer):
 
         return sanitized_path
 
-    def _validate(self, value):
+    def validate(self, value):
         self._validate_null_string(value)
 
         value = os.path.splitdrive(value)[1]
@@ -363,7 +355,7 @@ def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FileNameSanitizer(filename, platform=platform, max_len=max_len).validate()
+    FileNameSanitizer(platform=platform, max_len=max_len).validate(filename)
 
 
 def validate_filepath(file_path, platform=None, max_len=None):
@@ -401,7 +393,7 @@ def validate_filepath(file_path, platform=None, max_len=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FilePathSanitizer(file_path, platform=platform, max_len=max_len).validate()
+    FilePathSanitizer(platform=platform, max_len=max_len).validate(file_path)
 
 
 def validate_file_path(file_path, platform=None, max_path_len=None):
@@ -447,8 +439,8 @@ def sanitize_filename(
         :ref:`example-sanitize-filename`
     """
 
-    return FileNameSanitizer(filename, platform=platform, max_len=max_len).sanitize(
-        replacement_text
+    return FileNameSanitizer(platform=platform, max_len=max_len).sanitize(
+        filename, replacement_text
     )
 
 
@@ -489,8 +481,8 @@ def sanitize_filepath(file_path, replacement_text="", platform=None, max_len=Non
         :ref:`example-sanitize-file-path`
     """
 
-    return FilePathSanitizer(file_path, platform=platform, max_len=max_len).sanitize(
-        replacement_text
+    return FilePathSanitizer(platform=platform, max_len=max_len).sanitize(
+        file_path, replacement_text
     )
 
 

@@ -8,8 +8,8 @@ from __future__ import absolute_import, unicode_literals
 
 import abc
 
-from ._common import is_pathlike_obj, validate_null_string
-from ._six import add_metaclass, text_type
+from ._common import validate_null_string
+from ._six import add_metaclass
 
 
 @add_metaclass(abc.ABCMeta)
@@ -19,24 +19,12 @@ class NameSanitizer(object):
         pass
 
     @abc.abstractmethod
-    def validate(self):  # pragma: no cover
+    def validate(self, value):  # pragma: no cover
         pass
 
     @abc.abstractmethod
-    def sanitize(self, replacement_text=""):  # pragma: no cover
+    def sanitize(self, value, replacement_text=""):  # pragma: no cover
         pass
-
-    @property
-    def _str(self):
-        return text_type(self._value)
-
-    def __init__(self, value):
-        self._validate_null_string(value)
-
-        self._value = value
-
-    def _is_pathlike_obj(self):
-        return is_pathlike_obj(self._value)
 
     def _is_reserved_keyword(self, value):
         return value in self.reserved_keywords
