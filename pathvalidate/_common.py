@@ -20,13 +20,20 @@ else:
     unichr = unichr
 
 
-def is_pathlike_obj(value):
-    try:
-        from pathlib import Path
+def _is_pathlike_obj_py3(value):
+    return isinstance(value, Path)
 
-        return isinstance(value, Path)
-    except ImportError:
-        return False
+
+def _is_pathlike_obj_py2(value):
+    return False
+
+
+try:
+    from pathlib import Path
+
+    is_pathlike_obj = _is_pathlike_obj_py3
+except ImportError:
+    is_pathlike_obj = _is_pathlike_obj_py2
 
 
 def validate_null_string(text, error_msg=None):
