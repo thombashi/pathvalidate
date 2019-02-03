@@ -196,7 +196,7 @@ class Test_validate_filepath(object):
         validate_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
-    def test_faker(self, locale):
+    def test_locale_jp(self, locale):
         fake = Factory.create(locale=locale, seed=1)
 
         for _ in range(100):
