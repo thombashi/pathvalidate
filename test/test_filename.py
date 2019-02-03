@@ -153,6 +153,22 @@ class Test_validate_filename(object):
         assert is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
+        ["value", "min_len", "expected"],
+        [
+            ["lower than one", -1, None],
+            ["valid", 5, None],
+            ["invalid_length", 200, InvalidLengthError],
+        ],
+    )
+    def test_min_len(self, value, min_len, expected):
+        if expected is None:
+            validate_filename(value, min_len=min_len)
+            assert is_valid_filename(value, min_len=min_len)
+        else:
+            with pytest.raises(expected):
+                validate_filename(value, min_len=min_len)
+
+    @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
         [
             ["a" * 255, None, None, None],
@@ -170,6 +186,22 @@ class Test_validate_filename(object):
         else:
             with pytest.raises(expected):
                 validate_filename(value, platform=platform, max_len=max_len)
+
+    @pytest.mark.parametrize(
+        ["value", "min_len", "max_len", "expected"],
+        [
+            ["valid length", 1, 255, None],
+            ["eq min max", 10, 10, None],
+            ["inversion", 100, 1, ValueError],
+        ],
+    )
+    def test_minmax_len(self, value, min_len, max_len, expected):
+        if expected is None:
+            validate_filename(value, min_len=min_len, max_len=max_len)
+            assert is_valid_filename(value, min_len=min_len, max_len=max_len)
+        else:
+            with pytest.raises(expected):
+                validate_filename(value, min_len=min_len, max_len=max_len)
 
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
     def test_locale_ja(self, locale):

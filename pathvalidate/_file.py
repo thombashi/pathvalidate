@@ -51,10 +51,18 @@ class FileSanitizer(NameSanitizer):
         return (".", "..")
 
     @property
+    def min_len(self):
+        return self._min_len
+
+    @property
     def max_len(self):
         return self._max_len
 
-    def __init__(self, max_len, platform=None):
+    def __init__(self, min_len, max_len, platform=None):
+        if min_len is None:
+            min_len = 1
+        self._min_len = max(min_len, 1)
+
         self._max_len = max_len
 
         self.__platform = self.__normalize_platform(platform)
@@ -74,6 +82,9 @@ class FileSanitizer(NameSanitizer):
     def _validate_max_len(self):
         if self.max_len < 1:
             raise ValueError("max_len must be greater or equals to one")
+
+        if self.min_len > self.max_len:
+            raise ValueError("min_len must be lower than max_len")
 
     def _validate_reserved_keywords(self, name):
         if self._is_reserved_keyword(name.upper()):
@@ -139,8 +150,9 @@ class FileNameSanitizer(FileSanitizer):
 
         return common_keywords
 
-    def __init__(self, max_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
+    def __init__(self, min_len=1, max_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
         super(FileNameSanitizer, self).__init__(
+            min_len=min_len,
             max_len=(max_len if max_len is not None else _DEFAULT_MAX_FILENAME_LEN),
             platform=platform,
         )
@@ -180,14 +192,17 @@ class FileNameSanitizer(FileSanitizer):
     def validate(self, value):
         self._validate_null_string(value)
 
-        if len(text_type(value)) > self.max_len:
-            raise InvalidLengthError(
-                "filename is too long: expected<={:d}, actual={:d}".format(
-                    self.max_len, len(text_type(value))
-                )
-            )
-
         unicode_filename = preprocess(value)
+        value_len = len(unicode_filename)
+
+        if value_len > self.max_len:
+            raise InvalidLengthError(
+                "filename is too long: expected<={:d}, actual={:d}".format(self.max_len, value_len)
+            )
+        if value_len < self.min_len:
+            raise InvalidLengthError(
+                "filename is too short: expected>={:d}, actual={:d}".format(self.min_len, value_len)
+            )
 
         self._validate_reserved_keywords(unicode_filename)
 
@@ -237,8 +252,8 @@ class FilePathSanitizer(FileSanitizer):
         "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE
     )
 
-    def __init__(self, platform=None, max_len=None):
-        super(FilePathSanitizer, self).__init__(max_len=max_len, platform=platform)
+    def __init__(self, min_len=1, platform=None, max_len=None):
+        super(FilePathSanitizer, self).__init__(min_len=min_len, max_len=max_len, platform=platform)
 
         if self.max_len is None:
             self._max_len = self._get_default_max_path_len()
@@ -276,6 +291,18 @@ class FilePathSanitizer(FileSanitizer):
 
         file_path = os.path.normpath(value)
         unicode_file_path = preprocess(file_path)
+        value_len = len(unicode_file_path)
+
+        if value_len > self.max_len:
+            raise InvalidLengthError(
+                "file path is too long: expected<={:d}, actual={:d}".format(self.max_len, value_len)
+            )
+        if value_len < self.min_len:
+            raise InvalidLengthError(
+                "file path is too short: expected>={:d}, actual={:d}".format(
+                    self.min_len, value_len
+                )
+            )
 
         self._validate_reserved_keywords(unicode_file_path)
 
@@ -286,13 +313,6 @@ class FilePathSanitizer(FileSanitizer):
             self.__validate_win_file_path(unicode_file_path)
         else:
             self.__validate_unix_file_path(unicode_file_path)
-
-        if len(unicode_file_path) > self.max_len:
-            raise InvalidLengthError(
-                "file path is too long: expected<={:d}, actual={:d}".format(
-                    self.max_len, len(unicode_file_path)
-                )
-            )
 
     def __validate_unix_file_path(self, unicode_file_path):
         match = self.__RE_INVALID_PATH.search(unicode_file_path)
@@ -316,7 +336,7 @@ class FilePathSanitizer(FileSanitizer):
         return self.__RE_INVALID_PATH
 
 
-def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN):
+def validate_filename(filename, platform=None, min_len=1, max_len=_DEFAULT_MAX_FILENAME_LEN):
     """Verifying whether the ``filename`` is a valid file name or not.
 
     Args:
@@ -324,15 +344,18 @@ def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
             Filename to validate.
         platform (str/pathvalidate.Platform, optional):
             |platform_name|
+        min_len (int, optional):
+            Minimum length of the ``filename``. The value must be greater or equal to one.
+            Defaults to ``1``.
         max_len (int, optional):
-            Length limit of the ``filename``. The value must be lower than:
+            Maximum length the ``filename``. The value must be lower than:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
                 - ``Windows``: 260
                 - ``Universal``: 260
 
-            Defaults to 255.
+            Defaults to ``255``.
 
     Raises:
         InvalidLengthError:
@@ -355,10 +378,10 @@ def validate_filename(filename, platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FileNameSanitizer(platform=platform, max_len=max_len).validate(filename)
+    FileNameSanitizer(platform=platform, min_len=min_len, max_len=max_len).validate(filename)
 
 
-def validate_filepath(file_path, platform=None, max_len=None):
+def validate_filepath(file_path, platform=None, min_len=1, max_len=None):
     """Verifying whether the ``file_path`` is a valid file path or not.
 
     Args:
@@ -366,8 +389,11 @@ def validate_filepath(file_path, platform=None, max_len=None):
             File path to validate.
         platform (str/pathvalidate.Platform, optional):
             |platform_name|
+        min_len (int, optional):
+            Minimum length of the ``file_path``. The value must be greater or equal to one.
+            Defaults to ``1``.
         max_len (int, optional):
-            The upper limit of the ``file_path`` length. If the value is |None|,
+            Maximum length of the ``file_path`` length. If the value is |None|,
             in the default, automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
@@ -393,7 +419,7 @@ def validate_filepath(file_path, platform=None, max_len=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FilePathSanitizer(platform=platform, max_len=max_len).validate(file_path)
+    FilePathSanitizer(platform=platform, min_len=min_len, max_len=max_len).validate(file_path)
 
 
 def validate_file_path(file_path, platform=None, max_path_len=None):
@@ -401,12 +427,14 @@ def validate_file_path(file_path, platform=None, max_path_len=None):
     validate_filepath(file_path, platform, max_path_len)
 
 
-def is_valid_filename(filename, platform=None, max_len=None):
-    return FileNameSanitizer(platform=platform, max_len=max_len).is_valid(filename)
+def is_valid_filename(filename, platform=None, min_len=1, max_len=None):
+    return FileNameSanitizer(platform=platform, min_len=min_len, max_len=max_len).is_valid(filename)
 
 
-def is_valid_filepath(file_path, platform=None, max_len=None):
-    return FilePathSanitizer(platform=platform, max_len=max_len).is_valid(file_path)
+def is_valid_filepath(file_path, platform=None, min_len=1, max_len=None):
+    return FilePathSanitizer(platform=platform, min_len=min_len, max_len=max_len).is_valid(
+        file_path
+    )
 
 
 def sanitize_filename(
@@ -428,12 +456,12 @@ def sanitize_filename(
 
     Args:
         filename (str or PathLike object): Filename to sanitize.
-        replacement_text (str, optional): Replacement text. Defaults to "".
+        replacement_text (str, optional): Replacement text. Defaults to ``""``.
         platform (str, optional): |platform_name|
         max_len (int, optional):
             The upper limit of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
-            Defaults to 255.
+            Defaults to ``255``.
 
     Returns:
         Same type as the ``filename`` (str or PathLike object):
