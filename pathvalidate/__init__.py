@@ -7,7 +7,6 @@
 from __future__ import absolute_import
 
 from .__version__ import __author__, __copyright__, __email__, __license__, __version__
-from ._app import sanitize_excel_sheet_name, validate_excel_sheet_name
 from ._common import (
     ascii_symbols,
     replace_unprintable_char,
