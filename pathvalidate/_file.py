@@ -242,8 +242,8 @@ class FilePathSanitizer(FileSanitizer):
         "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE
     )
 
-    def __init__(self, filename, platform=None, max_path_len=None):
-        super(FilePathSanitizer, self).__init__(filename, max_len=max_path_len, platform=platform)
+    def __init__(self, filename, platform=None, max_len=None):
+        super(FilePathSanitizer, self).__init__(filename, max_len=max_len, platform=platform)
 
         if self.max_len is None:
             self._max_len = self._get_default_max_path_len()
@@ -401,7 +401,7 @@ def validate_filepath(file_path, platform=None, max_len=None):
         <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
     """
 
-    FilePathSanitizer(file_path, platform=platform, max_path_len=max_len).validate()
+    FilePathSanitizer(file_path, platform=platform, max_len=max_len).validate()
 
 
 def validate_file_path(file_path, platform=None, max_path_len=None):
@@ -489,7 +489,7 @@ def sanitize_filepath(file_path, replacement_text="", platform=None, max_len=Non
         :ref:`example-sanitize-file-path`
     """
 
-    return FilePathSanitizer(file_path, platform=platform, max_path_len=max_len).sanitize(
+    return FilePathSanitizer(file_path, platform=platform, max_len=max_len).sanitize(
         replacement_text
     )
 
