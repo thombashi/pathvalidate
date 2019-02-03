@@ -10,6 +10,7 @@ import abc
 
 from ._common import validate_null_string
 from ._six import add_metaclass
+from .error import ValidationError
 
 
 @add_metaclass(abc.ABCMeta)
@@ -21,6 +22,14 @@ class NameSanitizer(object):
     @abc.abstractmethod
     def validate(self, value):  # pragma: no cover
         pass
+
+    def is_valid(self, value):
+        try:
+            self.validate(value)
+        except (TypeError, ValidationError):
+            return False
+
+        return True
 
     @abc.abstractmethod
     def sanitize(self, value, replacement_text=""):  # pragma: no cover
