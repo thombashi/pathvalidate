@@ -39,23 +39,6 @@ Features
 
 Examples
 ==========
-Validate a filename
----------------------
-:Sample Code:
-    .. code-block:: python
-
-        from pathvalidate import validate_filename
-
-        try:
-            validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
-        except ValueError:
-            print("invalid filename!")
-
-:Output:
-    .. code-block::
-
-        invalid filename!
-
 Sanitize a filename
 ---------------------
 :Sample Code:
@@ -94,9 +77,26 @@ Sanitize a filepath
         fi:l*e/p"a?t>h|.t<xt -> file/path.txt
         _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f/(g)h+i_0.txt
 
+Validate a filename
+---------------------
+:Sample Code:
+    .. code-block:: python
+
+        from pathvalidate import validate_filename
+
+        try:
+            validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
+        except ValueError:
+            print("invalid filename!")
+
+:Output:
+    .. code-block::
+
+        invalid filename!
+
 For more information
 ----------------------
-More examples are available at 
+More More examples can be found at 
 https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
 
 Installation

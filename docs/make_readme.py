@@ -22,10 +22,7 @@ def write_examples(maker):
     maker.write_chapter("Examples")
 
     example_root = Path("pages").joinpath("examples")
-
     maker.inc_indent_level()
-    maker.write_chapter("Validate a filename")
-    maker.write_file(example_root.joinpath("validate_filename_code.txt"))
 
     maker.write_chapter("Sanitize a filename")
     maker.write_file(example_root.joinpath("sanitize_filename_code.txt"))
@@ -33,10 +30,13 @@ def write_examples(maker):
     maker.write_chapter("Sanitize a filepath")
     maker.write_file(example_root.joinpath("sanitize_filepath_code.txt"))
 
+    maker.write_chapter("Validate a filename")
+    maker.write_file(example_root.joinpath("validate_filename_code.txt"))
+
     maker.write_chapter("For more information")
     maker.write_lines(
         [
-            "More examples are available at ",
+            "More More examples can be found at ",
             "https://{}.rtfd.io/en/latest/pages/examples/index.html".format(PROJECT_NAME),
         ]
     )
