@@ -38,12 +38,3 @@ from .error import (
     ValidationError,
     ValidReservedNameError,
 )
-from .variable import (
-    ElasticsearchIndexNameSanitizer,
-    JavaScriptVarNameSanitizer,
-    PythonVarNameSanitizer,
-    sanitize_js_var_name,
-    sanitize_python_var_name,
-    validate_js_var_name,
-    validate_python_var_name,
-)
