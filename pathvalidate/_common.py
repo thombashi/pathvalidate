@@ -84,7 +84,6 @@ def _get_ascii_symbol_list():
     return symbol_list
 
 
-unprintable_ascii_char_list = _get_unprintable_ascii_char_list()  # deprecated
 unprintable_ascii_chars = tuple(_get_unprintable_ascii_char_list())
 ascii_symbol_list = _get_ascii_symbol_list()  # deprecated
 ascii_symbols = tuple(_get_ascii_symbol_list())

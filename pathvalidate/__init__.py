@@ -12,7 +12,6 @@ from ._common import (
     ascii_symbol_list,
     ascii_symbols,
     replace_unprintable_char,
-    unprintable_ascii_char_list,
     unprintable_ascii_chars,
     validate_null_string,
 )
