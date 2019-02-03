@@ -14,6 +14,8 @@ from ._common import (
     validate_null_string,
 )
 from ._file import (
+    FileNameSanitizer,
+    FilePathSanitizer,
     Platform,
     sanitize_file_path,
     sanitize_filepath,
