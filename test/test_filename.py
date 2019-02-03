@@ -21,6 +21,7 @@ from pathvalidate import (
     NullNameError,
     Platform,
     ReservedNameError,
+    is_valid_filename,
     sanitize_filename,
     validate_filename,
 )
@@ -136,6 +137,7 @@ class Test_validate_filename(object):
     )
     def test_normal(self, value, platform):
         validate_filename(value, platform)
+        assert is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -148,6 +150,7 @@ class Test_validate_filename(object):
     )
     def test_normal_multibyte(self, value, platform):
         validate_filename(value, platform)
+        assert is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
@@ -163,6 +166,7 @@ class Test_validate_filename(object):
     def test_max_len(self, value, platform, max_len, expected):
         if expected is None:
             validate_filename(value, platform=platform, max_len=max_len)
+            assert is_valid_filename(value, platform=platform, max_len=max_len)
         else:
             with pytest.raises(expected):
                 validate_filename(value, platform=platform, max_len=max_len)
@@ -172,7 +176,9 @@ class Test_validate_filename(object):
         fake = Factory.create(locale=locale, seed=1)
 
         for _ in range(100):
-            validate_filename(fake.file_name())
+            filename = fake.file_name()
+            validate_filename(filename)
+            assert is_valid_filename(filename)
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -192,6 +198,7 @@ class Test_validate_filename(object):
     def test_exception_invalid_char(self, value, platform):
         with pytest.raises(InvalidCharError):
             validate_filename(value, platform)
+        assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -208,6 +215,7 @@ class Test_validate_filename(object):
     def test_exception_win_invalid_char(self, value, platform):
         with pytest.raises(InvalidCharError):
             validate_filename(value, platform=platform)
+        assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
@@ -225,6 +233,7 @@ class Test_validate_filename(object):
     def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:
             validate_filename(value, platform=platform)
+            assert not is_valid_filename(value, platform=platform)
         assert e.value.reusable_name is False
 
     @pytest.mark.parametrize(
@@ -242,6 +251,7 @@ class Test_validate_filename(object):
     def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_filename(value)
+        assert not is_valid_filename(value)
 
 
 class Test_sanitize_filename(object):
@@ -277,6 +287,7 @@ class Test_sanitize_filename(object):
         assert sanitized_name == expected
         assert isinstance(sanitized_name, six.text_type)
         validate_filename(sanitized_name, platform=platform)
+        assert is_valid_filename(sanitized_name, platform=platform)
 
     @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
@@ -296,6 +307,7 @@ class Test_sanitize_filename(object):
         assert is_pathlike_obj(sanitized_name)
 
         validate_filename(sanitized_name)
+        assert is_valid_filename(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
@@ -305,13 +317,16 @@ class Test_sanitize_filename(object):
         sanitized_name = sanitize_filename(value, replace_text)
         assert sanitized_name == expected
         validate_filename(sanitized_name)
+        assert is_valid_filename(sanitized_name)
 
     @pytest.mark.parametrize(
         ["value", "max_len", "expected"],
         [["a" * 10, 255, 10], ["invalid_length" * 100, 255, 255], ["invalid_length" * 100, 10, 10]],
     )
     def test_normal_max_len(self, value, max_len, expected):
-        assert len(sanitize_filename(value, max_len=max_len)) == expected
+        filename = sanitize_filename(value, max_len=max_len)
+        assert len(filename) == expected
+        assert is_valid_filename(filename, max_len=max_len)
 
     @pytest.mark.parametrize(
         ["value", "test_platform", "expected"],
@@ -326,7 +341,9 @@ class Test_sanitize_filename(object):
         + [[reserved, "linux", reserved + "_"] for reserved in (".", "..")],
     )
     def test_normal_reserved_name(self, monkeypatch, value, test_platform, expected):
-        assert sanitize_filename(value, platform=test_platform) == expected
+        filename = sanitize_filename(value, platform=test_platform)
+        assert filename == expected
+        assert is_valid_filename(filename, platform=test_platform)
 
     @pytest.mark.parametrize(
         ["platform", "value", "expected"],
@@ -344,7 +361,9 @@ class Test_sanitize_filename(object):
         ],
     )
     def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value, expected):
-        assert sanitize_filename(value, platform=platform) == expected
+        filename = sanitize_filename(value, platform=platform)
+        assert filename == expected
+        assert is_valid_filename(filename, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "expected"], [[None, ValueError], [1, TypeError], [True, TypeError]]
@@ -352,3 +371,4 @@ class Test_sanitize_filename(object):
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             sanitize_filename(value)
+        assert not is_valid_filename(value)

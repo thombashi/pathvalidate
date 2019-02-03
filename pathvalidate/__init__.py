@@ -17,6 +17,7 @@ from ._file import (
     FileNameSanitizer,
     FilePathSanitizer,
     Platform,
+    is_valid_filename,
     sanitize_file_path,
     sanitize_filename,
     sanitize_filepath,
