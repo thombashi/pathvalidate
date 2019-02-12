@@ -44,7 +44,22 @@ class ValidationError(ValueError):
         self.__description = kwargs.pop("description", None)
         self.__reusable_name = kwargs.pop("reusable_name", None)
 
-        super(ValidationError, self).__init__(*args, **kwargs)
+        super(ValidationError, self).__init__(*args[0], **kwargs)
+
+    def __str__(self, *args, **kwargs):
+        item_list = [Exception.__str__(self, *args, **kwargs)]
+
+        if self.reason:
+            item_list.append("reason={}".format(self.reason))
+        if self.description:
+            item_list.append("description={}".format(self.description))
+        if self.reusable_name:
+            item_list.append("reusable_name={}".format(self.reusable_name))
+
+        return ", ".join(item_list).strip()
+
+    def __repr__(self, *args, **kwargs):
+        return self.__str__(*args, **kwargs)
 
 
 class NullNameError(ValidationError):
