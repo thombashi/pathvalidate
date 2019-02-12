@@ -33,10 +33,13 @@ def write_examples(maker):
     maker.write_chapter("Validate a filename")
     maker.write_file(example_root.joinpath("validate_filename_code.txt"))
 
+    maker.write_chapter("Check a filename")
+    maker.write_file(example_root.joinpath("is_valid_filename_code.txt"))
+
     maker.write_chapter("For more information")
     maker.write_lines(
         [
-            "More More examples can be found at ",
+            "More examples can be found at ",
             "https://{}.rtfd.io/en/latest/pages/examples/index.html".format(PROJECT_NAME),
         ]
     )

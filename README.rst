@@ -82,21 +82,41 @@ Validate a filename
 :Sample Code:
     .. code-block:: python
 
-        from pathvalidate import validate_filename
+        import sys
+        from pathvalidate import ValidationError, validate_filename
 
         try:
-            validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
-        except ValueError:
-            print("invalid filename!")
+            validate_filename("fi:l*e/p\"a?t>h|.t<xt")
+        except ValidationError as e:
+            print(e, file=sys.stderr)
 
 :Output:
     .. code-block::
 
-        invalid filename!
+        invalid char found: invalid-char=':, \*, /, ", \?, >, \|, <', value='fi:l*e/p"a?t>h|.t<xt', reason=ErrorReason.INVALID_CHARACTER
+
+Check a filename
+------------------
+:Sample Code:
+    .. code-block:: python
+
+        from pathvalidate import is_valid_filename, sanitize_filename
+
+        fname = "fi:l*e/p\"a?t>h|.t<xt"
+        print("is_valid_filename('{}') return {}".format(fname, is_valid_filename(fname)))
+
+        sanitized_fname = sanitize_filename(fname)
+        print("is_valid_filename('{}') return {}".format(sanitized_fname, is_valid_filename(sanitized_fname)))
+
+:Output:
+    .. code-block::
+
+        is_valid_filename('fi:l*e/p"a?t>h|.t<xt') return False
+        is_valid_filename('filepath.txt') return True
 
 For more information
 ----------------------
-More More examples can be found at 
+More examples can be found at 
 https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
 
 Installation
