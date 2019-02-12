@@ -6,3 +6,4 @@ Examples
 
    sanitize
    validate
+   is_valid

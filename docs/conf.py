@@ -285,6 +285,8 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 rst_prolog = ur"""
+.. |False| replace:: :py:obj:`False`
+.. |True| replace:: :py:obj:`True`
 .. |None| replace:: :py:obj:`None`
 
 .. |invalid_file_path_chars| replace::

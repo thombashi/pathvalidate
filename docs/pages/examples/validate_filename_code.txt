@@ -1,14 +1,15 @@
 :Sample Code:
     .. code-block:: python
 
-        from pathvalidate import validate_filename
+        import sys
+        from pathvalidate import ValidationError, validate_filename
 
         try:
-            validate_filename("\0_a*b:c<d>e%f/(g)h+i_0.txt")
-        except ValueError:
-            print("invalid filename!")
+            validate_filename("fi:l*e/p\"a?t>h|.t<xt")
+        except ValidationError as e:
+            print(e, file=sys.stderr)
 
 :Output:
     .. code-block:: none
 
-        invalid filename!
+        invalid char found: invalid-char=':, \*, /, ", \?, >, \|, <', value='fi:l*e/p"a?t>h|.t<xt', reason=ErrorReason.INVALID_CHARACTER

@@ -1,0 +1,16 @@
+:Sample Code:
+    .. code-block:: python
+
+        from pathvalidate import is_valid_filename, sanitize_filename
+
+        fname = "fi:l*e/p\"a?t>h|.t<xt"
+        print("is_valid_filename('{}') return {}".format(fname, is_valid_filename(fname)))
+
+        sanitized_fname = sanitize_filename(fname)
+        print("is_valid_filename('{}') return {}".format(sanitized_fname, is_valid_filename(sanitized_fname)))
+
+:Output:
+    .. code-block:: none
+
+        is_valid_filename('fi:l*e/p"a?t>h|.t<xt') return False
+        is_valid_filename('filepath.txt') return True
