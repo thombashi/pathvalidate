@@ -35,7 +35,7 @@ class FileSanitizer(NameSanitizer):
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
 
-    _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{}', value='{}'"
+    _ERROR_MSG_TEMPLATE = "invalid char found : invalid-char='{invalid}', value='{value}'"
 
     @property
     def platform(self):
@@ -218,20 +218,26 @@ class FileNameSanitizer(FileSanitizer):
         match = self.__RE_INVALID_FILENAME.search(unicode_filename)
         if match is not None:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group()))
+                self._ERROR_MSG_TEMPLATE.format(
+                    invalid=re.escape(match.group()), value=unicode_filename
+                )
             )
 
     def __validate_win_filename(self, unicode_filename):
         match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
         if match is not None:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(match.group())),
+                self._ERROR_MSG_TEMPLATE.format(
+                    invalid=re.escape(match.group()), value=unicode_filename
+                ),
                 platform=Platform.WINDOWS,
             )
 
         if unicode_filename[-1] in (" ", "."):
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(unicode_filename, re.escape(unicode_filename[-1])),
+                self._ERROR_MSG_TEMPLATE.format(
+                    invalid=re.escape(unicode_filename[-1]), value=unicode_filename
+                ),
                 platform=Platform.WINDOWS,
                 description="Do not end a file or directory name with a space or a period",
             )
@@ -318,14 +324,18 @@ class FilePathSanitizer(FileSanitizer):
         match = self.__RE_INVALID_PATH.search(unicode_file_path)
         if match is not None:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path)
+                self._ERROR_MSG_TEMPLATE.format(
+                    invalid=re.escape(match.group()), value=unicode_file_path
+                )
             )
 
     def __validate_win_file_path(self, unicode_file_path):
         match = self.__RE_INVALID_WIN_PATH.search(unicode_file_path)
         if match is not None:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(re.escape(match.group()), unicode_file_path),
+                self._ERROR_MSG_TEMPLATE.format(
+                    invalid=re.escape(match.group()), value=unicode_file_path
+                ),
                 platform=Platform.WINDOWS,
             )
 
