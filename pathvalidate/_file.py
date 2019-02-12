@@ -105,6 +105,10 @@ class FileSanitizer(NameSanitizer):
         return 260  # universal
 
     @staticmethod
+    def _findall_to_str(match):
+        return ", ".join([re.escape(text) for text in match])
+
+    @staticmethod
     def __normalize_platform(name):
         if isinstance(name, Platform):
             return name
@@ -206,29 +210,26 @@ class FileNameSanitizer(FileSanitizer):
 
         self._validate_reserved_keywords(unicode_filename)
 
-        if self._is_universal():
-            self.__validate_unix_filename(unicode_filename)
-            self.__validate_win_filename(unicode_filename)
-        elif self._is_windows():
+        if self._is_universal() or self._is_windows():
             self.__validate_win_filename(unicode_filename)
         else:
             self.__validate_unix_filename(unicode_filename)
 
     def __validate_unix_filename(self, unicode_filename):
-        match = self.__RE_INVALID_FILENAME.search(unicode_filename)
-        if match is not None:
+        match = self.__RE_INVALID_FILENAME.findall(unicode_filename)
+        if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=re.escape(match.group()), value=unicode_filename
+                    invalid=self._findall_to_str(match), value=unicode_filename
                 )
             )
 
     def __validate_win_filename(self, unicode_filename):
-        match = self.__RE_INVALID_WIN_FILENAME.search(unicode_filename)
-        if match is not None:
+        match = self.__RE_INVALID_WIN_FILENAME.findall(unicode_filename)
+        if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=re.escape(match.group()), value=unicode_filename
+                    invalid=self._findall_to_str(match), value=unicode_filename
                 ),
                 platform=Platform.WINDOWS,
             )
@@ -312,29 +313,26 @@ class FilePathSanitizer(FileSanitizer):
 
         self._validate_reserved_keywords(unicode_file_path)
 
-        if self._is_universal():
-            self.__validate_unix_file_path(unicode_file_path)
-            self.__validate_win_file_path(unicode_file_path)
-        elif self._is_windows():
+        if self._is_universal() or self._is_windows():
             self.__validate_win_file_path(unicode_file_path)
         else:
             self.__validate_unix_file_path(unicode_file_path)
 
     def __validate_unix_file_path(self, unicode_file_path):
-        match = self.__RE_INVALID_PATH.search(unicode_file_path)
-        if match is not None:
+        match = self.__RE_INVALID_PATH.findall(unicode_file_path)
+        if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=re.escape(match.group()), value=unicode_file_path
+                    invalid=self._findall_to_str(match), value=unicode_file_path
                 )
             )
 
     def __validate_win_file_path(self, unicode_file_path):
-        match = self.__RE_INVALID_WIN_PATH.search(unicode_file_path)
-        if match is not None:
+        match = self.__RE_INVALID_WIN_PATH.findall(unicode_file_path)
+        if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=re.escape(match.group()), value=unicode_file_path
+                    invalid=self._findall_to_str(match), value=unicode_file_path
                 ),
                 platform=Platform.WINDOWS,
             )
