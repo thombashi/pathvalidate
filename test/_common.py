@@ -78,5 +78,5 @@ INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + (
 INVALID_PYTHON_VAR_CHARS = INVALID_JS_VAR_CHARS + ("$",)
 
 
-def make_random_str(length, char_list=alphanum_chars):
+def randstr(length, char_list=alphanum_chars):
     return "".join([random.choice(char_list) for _i in range(length)])
