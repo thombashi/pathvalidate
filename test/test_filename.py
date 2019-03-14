@@ -373,7 +373,7 @@ class Test_sanitize_filename(object):
         ]
         + [[reserved, "linux", reserved + "_"] for reserved in (".", "..")],
     )
-    def test_normal_reserved_name(self, monkeypatch, value, test_platform, expected):
+    def test_normal_reserved_name(self, value, test_platform, expected):
         filename = sanitize_filename(value, platform=test_platform)
         assert filename == expected
         assert is_valid_filename(filename, platform=test_platform)
@@ -393,7 +393,7 @@ class Test_sanitize_filename(object):
             ["universal", "space_and_period .", "space_and_period"],
         ],
     )
-    def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value, expected):
+    def test_normal_space_or_period_at_tail(self, platform, value, expected):
         filename = sanitize_filename(value, platform=platform)
         assert filename == expected
         assert is_valid_filename(filename, platform=platform)

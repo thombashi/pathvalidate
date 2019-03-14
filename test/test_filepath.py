@@ -231,7 +231,7 @@ class Test_validate_filepath(object):
             ["universal", "space_and_period ."],
         ],
     )
-    def test_normal_space_or_period_at_tail(self, monkeypatch, platform, value):
+    def test_normal_space_or_period_at_tail(self, platform, value):
         validate_filepath(value, platform=platform)
         assert is_valid_filepath(value, platform=platform)
 
