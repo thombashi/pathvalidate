@@ -100,7 +100,13 @@ class ReservedNameError(ValidationError):
     Exception raised when a string matched a reserved name.
     """
 
+    @property
+    def reserved_name(self):
+        return self.__reserved_name
+
     def __init__(self, *args, **kwargs):
+        self.__reserved_name = kwargs.pop("reserved_name", None)
+
         kwargs["reason"] = ErrorReason.RESERVED_NAME
 
         super(ReservedNameError, self).__init__(args, **kwargs)
