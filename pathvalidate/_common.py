@@ -20,19 +20,18 @@ else:
     unichr = unichr
 
 
-def _is_pathlike_obj_py3(value):
-    return isinstance(value, Path)
-
-
-def _is_pathlike_obj_py2(value):
-    return False
-
-
 try:
     from pathlib import Path
 
+    def _is_pathlike_obj_py3(value):
+        return isinstance(value, Path)
+
     is_pathlike_obj = _is_pathlike_obj_py3
 except ImportError:
+
+    def _is_pathlike_obj_py2(value):
+        return False
+
     is_pathlike_obj = _is_pathlike_obj_py2
 
 
