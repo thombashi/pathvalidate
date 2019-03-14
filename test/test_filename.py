@@ -51,7 +51,20 @@ inf = float("inf")
 random.seed(0)
 
 VALID_MULTIBYTE_NAMES = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
-WIN_RESERVED_FILE_NAMES = [".", "..", "CON", "con", "PRN", "prn", "AUX", "aux", "NUL", "nul"] + [
+WIN_RESERVED_FILE_NAMES = [
+    ".",
+    "..",
+    "CON",
+    "con",
+    "PRN",
+    "prn",
+    "AUX",
+    "aux",
+    "CLOCK$",
+    "clock$",
+    "NUL",
+    "nul",
+] + [
     "{:s}{:d}".format(name, num)
     for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
