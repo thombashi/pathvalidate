@@ -254,6 +254,13 @@ class Test_validate_filename(object):
             )
         ]
         + [
+            ["{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
             [reserved_keyword, platform, ReservedNameError]
             for reserved_keyword, platform in product([".", ".."], ["linux", "macos"])
         ],
@@ -261,8 +268,10 @@ class Test_validate_filename(object):
     def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:
             validate_filename(value, platform=platform)
-            assert not is_valid_filename(value, platform=platform)
+        assert e.value.reserved_name
         assert e.value.reusable_name is False
+
+        assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -361,6 +370,13 @@ class Test_sanitize_filename(object):
         [
             [reserved.lower(), "windows", reserved.lower() + "_"]
             for reserved in WIN_RESERVED_FILE_NAMES
+        ]
+        + [
+            ["{}.txt".format(reserved_keyword), platform, "{}_.txt".format(reserved_keyword)]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+            if reserved_keyword not in [".", ".."]
         ]
         + [
             [reserved.upper(), "windows", reserved.upper() + "_"]
