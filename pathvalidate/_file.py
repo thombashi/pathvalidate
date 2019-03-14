@@ -21,6 +21,10 @@ from .error import InvalidCharError, InvalidLengthError, ReservedNameError
 _DEFAULT_MAX_FILENAME_LEN = 255
 
 
+def _extract_root_name(path):
+    return os.path.splitext(os.path.basename(path))[0]
+
+
 @enum.unique
 class Platform(enum.Enum):
     UNIVERSAL = "universal"
@@ -87,9 +91,12 @@ class FileSanitizer(NameSanitizer):
             raise ValueError("min_len must be lower than max_len")
 
     def _validate_reserved_keywords(self, name):
-        if self._is_reserved_keyword(name.upper()):
+        root_name = _extract_root_name(name)
+        if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(
-                "'{}' is a reserved name for {}".format(name, self.platform), reusable_name=False
+                "'{}' is a reserved name for {}".format(root_name, self.platform),
+                reusable_name=False,
+                reserved_name=root_name,
             )
 
     def _get_default_max_path_len(self):
@@ -178,7 +185,9 @@ class FileNameSanitizer(FileSanitizer):
             self.validate(sanitized_filename)
         except ReservedNameError as e:
             if e.reusable_name is False:
-                sanitized_filename += "_"
+                sanitized_filename = re.sub(
+                    re.escape(e.reserved_name), "{}_".format(e.reserved_name), sanitized_filename
+                )
         except InvalidCharError:
             if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
                 sanitized_filename = sanitized_filename.rstrip(" .")
