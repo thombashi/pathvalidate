@@ -15,7 +15,13 @@ import re
 from ._common import is_pathlike_obj, preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
 from ._six import text_type
-from .error import InvalidCharError, InvalidLengthError, ReservedNameError
+from .error import (
+    ErrorReason,
+    InvalidCharError,
+    InvalidLengthError,
+    ReservedNameError,
+    ValidationError,
+)
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -277,6 +283,9 @@ class FilePathSanitizer(FileSanitizer):
         self._validate_max_len()
 
         self._sanitize_regexp = self._get_sanitize_regexp()
+        self.__fname_sanitizer = FileNameSanitizer(
+            min_len=min_len, max_len=max_len, platform=platform
+        )
 
     def sanitize(self, value, replacement_text=""):
         self._validate_null_string(value)
@@ -287,6 +296,22 @@ class FilePathSanitizer(FileSanitizer):
             raise ValueError(e)
 
         sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
+
+        if len(sanitized_path.split("/")) > len(sanitized_path.split("\\")):
+            path_separator = "/"
+        else:
+            path_separator = "\\"
+
+        sanitized_entries = []
+        for entry in sanitized_path.replace("\\", "/").split("/"):
+            try:
+                sanitized_entries.append(self.__fname_sanitizer.sanitize(entry))
+            except ValidationError as e:
+                if e.reason == ErrorReason.NULL_NAME:
+                    sanitized_entries.append("")
+                else:
+                    raise
+        sanitized_path = path_separator.join(sanitized_entries)
 
         if is_pathlike_obj(value):
             try:
@@ -321,6 +346,11 @@ class FilePathSanitizer(FileSanitizer):
             )
 
         self._validate_reserved_keywords(unicode_file_path)
+        for entry in unicode_file_path.replace("\\", "/").split("/"):
+            if not entry:
+                continue
+
+            self.__fname_sanitizer._validate_reserved_keywords(entry)
 
         if self._is_universal() or self._is_windows():
             self.__validate_win_file_path(unicode_file_path)

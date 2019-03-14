@@ -20,6 +20,7 @@ from pathvalidate import (
     InvalidLengthError,
     NullNameError,
     Platform,
+    ReservedNameError,
     is_valid_filepath,
     sanitize_filepath,
     validate_filepath,
@@ -32,6 +33,7 @@ from ._common import (
     INVALID_WIN_PATH_CHARS,
     VALID_PATH_CHARS,
     VALID_PLATFORM_NAMES,
+    WIN_RESERVED_FILE_NAMES,
     randstr,
 )
 
@@ -270,6 +272,30 @@ class Test_validate_filepath(object):
         assert not is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
+        ["value", "platform", "expected"],
+        [
+            ["abc\\{}\\xyz".format(reserved_keyword), platform, ReservedNameError]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+        ]
+        + [
+            ["/foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+            if reserved_keyword not in [".", ".."]
+        ],
+    )
+    def test_exception_reserved_name(self, value, platform, expected):
+        with pytest.raises(expected) as e:
+            validate_filepath(value, platform=platform)
+        assert e.value.reusable_name is False
+        assert e.value.reserved_name
+
+        assert not is_valid_filepath(value, platform=platform)
+
+    @pytest.mark.parametrize(
         ["value", "expected"],
         [[None, ValueError], ["", NullNameError], [1, TypeError], [True, TypeError]],
     )
@@ -336,6 +362,36 @@ class Test_sanitize_filepath(object):
         assert isinstance(sanitized_name, six.text_type)
         validate_filepath(sanitized_name, platform=platform)
         assert is_valid_filepath(sanitized_name, platform=platform)
+
+    @pytest.mark.parametrize(
+        ["value", "test_platform", "expected"],
+        [
+            [
+                "/abc/{}/xyz".format(reserved_keyword),
+                platform,
+                "/abc/{}_/xyz".format(reserved_keyword),
+            ]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            [
+                "/abc/{}.txt".format(reserved_keyword),
+                platform,
+                "/abc/{}_.txt".format(reserved_keyword),
+            ]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+            if reserved_keyword not in [".", ".."]
+        ],
+    )
+    def test_normal_reserved_name(self, value, test_platform, expected):
+        filename = sanitize_filepath(value, platform=test_platform)
+        assert filename == expected
+        assert is_valid_filepath(filename, platform=test_platform)
 
     @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
