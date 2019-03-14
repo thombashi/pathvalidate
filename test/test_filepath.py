@@ -246,10 +246,7 @@ class Test_validate_filepath(object):
 
     @pytest.mark.parametrize(
         ["value"],
-        [
-            ["{0}{1}{0}".format(make_random_str(64), invalid_c)]
-            for invalid_c in INVALID_PATH_CHARS
-        ],
+        [["{0}{1}{0}".format(make_random_str(64), invalid_c)] for invalid_c in INVALID_PATH_CHARS],
     )
     def test_exception_invalid_char(self, value):
         with pytest.raises(InvalidCharError):

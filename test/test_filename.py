@@ -128,8 +128,7 @@ class Test_validate_filename(object):
                 [
                     arg_list
                     for arg_list in product(
-                        ["{0}{1}{0}".format(make_random_str(64), valid_char)],
-                        VALID_PLATFORM_NAMES,
+                        ["{0}{1}{0}".format(make_random_str(64), valid_char)], VALID_PLATFORM_NAMES
                     )
                 ]
                 for valid_char in VALID_CHARS
@@ -220,8 +219,7 @@ class Test_validate_filename(object):
                 [
                     arg_list
                     for arg_list in product(
-                        ["{0}{1}{0}".format(make_random_str(64), invalid_c)],
-                        VALID_PLATFORM_NAMES,
+                        ["{0}{1}{0}".format(make_random_str(64), invalid_c)], VALID_PLATFORM_NAMES
                     )
                 ]
                 for invalid_c in INVALID_FILENAME_CHARS
