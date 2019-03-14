@@ -278,6 +278,7 @@ class Test_validate_filepath(object):
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
+            if reserved_keyword not in [".", ".."]
         ]
         + [
             ["/foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
@@ -336,11 +337,11 @@ class Test_sanitize_filepath(object):
     @pytest.mark.parametrize(
         ["platform", "value", "replace_text", "expected"],
         [
-            ["universal", "A" + c + "B", rep, "A" + rep + "B"]
+            ["universal", "AA" + c + "B", rep, "AA" + rep + "B"]
             for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            ["universal", "A" + c + "B", rep, "A" + c + "B"]
+            ["universal", "AA" + c + "B", rep, "AA" + c + "B"]
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
@@ -348,11 +349,11 @@ class Test_sanitize_filepath(object):
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            ["linux", "A" + c + "B", rep, "A" + rep + "B"]
+            ["linux", "AA" + c + "B", rep, "AA" + rep + "B"]
             for c, rep in product(INVALID_PATH_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST)
         ]
         + [
-            ["linux", "A" + c + "B", rep, "A" + c + "B"]
+            ["linux", "AA" + c + "B", rep, "AA" + c + "B"]
             for c, rep in product([":", "*", "?", '"', "<", ">", "|"], REPLACE_TEXT_LIST)
         ],
     )
@@ -371,9 +372,16 @@ class Test_sanitize_filepath(object):
                 platform,
                 "/abc/{}_/xyz".format(reserved_keyword),
             ]
-            for reserved_keyword, platform in product(
-                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
-            )
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            [
+                "/abc/{}/xyz".format(reserved_keyword),
+                platform,
+                "/abc/{}/xyz".format(reserved_keyword),
+            ]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
             if reserved_keyword not in [".", ".."]
         ]
         + [
@@ -382,9 +390,34 @@ class Test_sanitize_filepath(object):
                 platform,
                 "/abc/{}_.txt".format(reserved_keyword),
             ]
-            for reserved_keyword, platform in product(
-                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
-            )
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            [
+                "/abc/{}.txt".format(reserved_keyword),
+                platform,
+                "/abc/{}.txt".format(reserved_keyword),
+            ]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            [
+                "C:\\abc\\{}.txt".format(reserved_keyword),
+                platform,
+                "C:/abc/{}_.txt".format(reserved_keyword),
+            ]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            [
+                "C:\\abc\\{}.txt".format(reserved_keyword),
+                platform,
+                "C:\\abc\\{}_.txt".format(reserved_keyword),
+            ]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["windows"])
             if reserved_keyword not in [".", ".."]
         ],
     )
@@ -397,11 +430,11 @@ class Test_sanitize_filepath(object):
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
-            [Path("A" + c + "B"), rep, Path("A" + rep + "B")]
+            [Path("AA" + c + "B"), rep, Path("AA" + rep + "B")]
             for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            [Path("A" + c + "B"), rep, Path("A" + c + "B")]
+            [Path("AA" + c + "B"), rep, Path("AA" + c + "B")]
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [

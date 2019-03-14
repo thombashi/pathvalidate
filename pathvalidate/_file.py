@@ -8,6 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import enum
 import itertools
+import ntpath
 import os.path
 import platform
 import re
@@ -295,20 +296,23 @@ class FilePathSanitizer(FileSanitizer):
         except AttributeError as e:
             raise ValueError(e)
 
+        drive, unicode_file_path = ntpath.splitdrive(unicode_file_path)
         sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
-
-        if len(sanitized_path.split("/")) > len(sanitized_path.split("\\")):
-            path_separator = "/"
-        else:
+        if self._is_windows():
             path_separator = "\\"
+        else:
+            path_separator = "/"
 
         sanitized_entries = []
+        if drive:
+            sanitized_entries.append(drive)
         for entry in sanitized_path.replace("\\", "/").split("/"):
             try:
                 sanitized_entries.append(self.__fname_sanitizer.sanitize(entry))
             except ValidationError as e:
                 if e.reason == ErrorReason.NULL_NAME:
-                    sanitized_entries.append("")
+                    if not sanitized_entries:
+                        sanitized_entries.append("")
                 else:
                     raise
         sanitized_path = path_separator.join(sanitized_entries)
@@ -326,7 +330,7 @@ class FilePathSanitizer(FileSanitizer):
     def validate(self, value):
         self._validate_null_string(value)
 
-        value = os.path.splitdrive(value)[1]
+        value = ntpath.splitdrive(value)[1]
         if not value:
             return
 

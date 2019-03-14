@@ -9,7 +9,6 @@ from __future__ import absolute_import, unicode_literals
 import re
 import string
 import sys
-from os.path import normpath
 
 from ._six import text_type
 from .error import NullNameError
@@ -53,7 +52,7 @@ def preprocess(name):
     if is_pathlike_obj(name):
         name = text_type(name)
 
-    return normpath(name)
+    return name
 
 
 def is_null_string(value):
