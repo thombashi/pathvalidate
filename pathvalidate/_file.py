@@ -133,7 +133,7 @@ class FileSanitizer(NameSanitizer):
 
 class FileNameSanitizer(FileSanitizer):
 
-    __WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "NUL") + tuple(
+    __WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "CLOCK$", "NUL") + tuple(
         "{:s}{:d}".format(name, num)
         for name, num in itertools.product(("COM", "LPT"), range(1, 10))
     )

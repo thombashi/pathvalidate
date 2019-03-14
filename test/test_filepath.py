@@ -78,6 +78,7 @@ class Test_FileSanitizer(object):
                     "CON",
                     "PRN",
                     "AUX",
+                    "CLOCK$",
                     "NUL",
                     "COM1",
                     "COM2",
