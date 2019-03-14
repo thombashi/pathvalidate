@@ -35,6 +35,7 @@ from ._common import (
     INVALID_WIN_PATH_CHARS,
     VALID_FILENAME_CHARS,
     VALID_PLATFORM_NAMES,
+    WIN_RESERVED_FILE_NAMES,
     randstr,
 )
 
@@ -51,23 +52,6 @@ inf = float("inf")
 random.seed(0)
 
 VALID_MULTIBYTE_NAMES = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
-WIN_RESERVED_FILE_NAMES = [
-    ".",
-    "..",
-    "CON",
-    "con",
-    "PRN",
-    "prn",
-    "AUX",
-    "aux",
-    "CLOCK$",
-    "clock$",
-    "NUL",
-    "nul",
-] + [
-    "{:s}{:d}".format(name, num)
-    for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
-]
 
 
 class Test_FileSanitizer(object):

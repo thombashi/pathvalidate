@@ -8,6 +8,7 @@ from __future__ import absolute_import, unicode_literals
 
 import random
 import string
+from itertools import product
 
 
 alphanum_chars = tuple(x for x in string.digits + string.ascii_letters)
@@ -76,6 +77,24 @@ INVALID_JS_VAR_CHARS = INVALID_WIN_FILENAME_CHARS + (
     "\v",
 )
 INVALID_PYTHON_VAR_CHARS = INVALID_JS_VAR_CHARS + ("$",)
+
+WIN_RESERVED_FILE_NAMES = [
+    ".",
+    "..",
+    "CON",
+    "con",
+    "PRN",
+    "prn",
+    "AUX",
+    "aux",
+    "CLOCK$",
+    "clock$",
+    "NUL",
+    "nul",
+] + [
+    "{:s}{:d}".format(name, num)
+    for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
+]
 
 
 def randstr(length, char_list=alphanum_chars):
