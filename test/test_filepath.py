@@ -130,11 +130,10 @@ class Test_validate_filepath(object):
                 [
                     arg_list
                     for arg_list in product(
-                        ["{0}{1}{0}".format(make_random_str(64), valid_char)],
-                        VALID_PLATFORM_NAMES,
+                        ["{0}{1}{0}".format(make_random_str(64), valid_c)], VALID_PLATFORM_NAMES
                     )
                 ]
-                for valid_char in VALID_CHARS
+                for valid_c in VALID_CHARS
             ]
         ),
     )
