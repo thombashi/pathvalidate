@@ -132,7 +132,7 @@ class Test_validate_filepath(object):
                 [
                     arg_list
                     for arg_list in product(
-                        ["{0}{1}{0}".format(randstr(64), valid_c)], VALID_PLATFORM_NAMES
+                        ["/{0}/{1}{0}".format(randstr(64), valid_c)], VALID_PLATFORM_NAMES
                     )
                 ]
                 for valid_c in VALID_CHARS
@@ -257,7 +257,7 @@ class Test_validate_filepath(object):
     @pytest.mark.parametrize(
         ["value", "platform"],
         [
-            ["{0}/{1}{0}".format(randstr(64), invalid_c), platform]
+            ["/{0}/{1}{0}".format(randstr(64), invalid_c), platform]
             for invalid_c, platform in product(
                 set(INVALID_WIN_PATH_CHARS + unprintable_ascii_chars).difference(
                     set(INVALID_PATH_CHARS)
