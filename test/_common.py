@@ -95,6 +95,22 @@ WIN_RESERVED_FILE_NAMES = [
     "{:s}{:d}".format(name, num)
     for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
 ]
+NTFS_RESERVED_FILE_NAMES = [
+    "$Mft",
+    "$MftMirr",
+    "$LogFile",
+    "$Volume",
+    "$AttrDef",
+    "$Bitmap",
+    "$Boot",
+    "$BadClus",
+    "$Secure",
+    "$Upcase",
+    "$Extend",
+    "$Quota",
+    "$ObjId",
+    "$Reparse",
+]
 
 
 def randstr(length, char_list=alphanum_chars):

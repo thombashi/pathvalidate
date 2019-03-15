@@ -33,6 +33,7 @@ from ._common import (
     INVALID_PATH_CHARS,
     INVALID_WIN_FILENAME_CHARS,
     INVALID_WIN_PATH_CHARS,
+    NTFS_RESERVED_FILE_NAMES,
     VALID_FILENAME_CHARS,
     VALID_PLATFORM_NAMES,
     WIN_RESERVED_FILE_NAMES,
@@ -123,12 +124,16 @@ class Test_validate_filename(object):
         chain.from_iterable(
             [
                 [
-                    arg_list
-                    for arg_list in product(
+                    args
+                    for args in product(
                         ["{0}{1}{0}".format(randstr(64), valid_c)], VALID_PLATFORM_NAMES
                     )
                 ]
                 for valid_c in VALID_CHARS
+            ]
+            + [
+                [args for args in product([filename], VALID_PLATFORM_NAMES)]
+                for filename in NTFS_RESERVED_FILE_NAMES
             ]
         ),
     )
@@ -140,7 +145,7 @@ class Test_validate_filename(object):
         ["value", "platform"],
         chain.from_iterable(
             [
-                [arg_list for arg_list in product([multibyte_name], VALID_PLATFORM_NAMES)]
+                [args for args in product([multibyte_name], VALID_PLATFORM_NAMES)]
                 for multibyte_name in VALID_MULTIBYTE_NAMES
             ]
         ),
@@ -214,8 +219,8 @@ class Test_validate_filename(object):
         chain.from_iterable(
             [
                 [
-                    arg_list
-                    for arg_list in product(
+                    args
+                    for args in product(
                         ["{0}{1}{0}".format(randstr(64), invalid_c)], VALID_PLATFORM_NAMES
                     )
                 ]

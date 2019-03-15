@@ -31,6 +31,7 @@ from pathvalidate._file import FileNameSanitizer
 from ._common import (
     INVALID_PATH_CHARS,
     INVALID_WIN_PATH_CHARS,
+    NTFS_RESERVED_FILE_NAMES,
     VALID_PATH_CHARS,
     VALID_PLATFORM_NAMES,
     WIN_RESERVED_FILE_NAMES,
@@ -130,8 +131,8 @@ class Test_validate_filepath(object):
         chain.from_iterable(
             [
                 [
-                    arg_list
-                    for arg_list in product(
+                    args
+                    for args in product(
                         ["/{0}/{1}{0}".format(randstr(64), valid_c)], VALID_PLATFORM_NAMES
                     )
                 ]
@@ -147,7 +148,7 @@ class Test_validate_filepath(object):
         ["value", "platform"],
         chain.from_iterable(
             [
-                [arg_list for arg_list in product([valid_path], VALID_PLATFORM_NAMES)]
+                [args for args in product([valid_path], VALID_PLATFORM_NAMES)]
                 for valid_path in VALID_MULTIBYTE_PATH_LIST
             ]
         ),
@@ -275,6 +276,35 @@ class Test_validate_filepath(object):
         ["value", "platform", "expected"],
         [
             ["abc\\{}\\xyz".format(reserved_keyword), platform, ReservedNameError]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux", "macos"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            ["/foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux", "macos"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            ["{}\\{}".format(drive, filename), platform, ReservedNameError]
+            for drive, platform, filename in product(
+                ["C:", "D:"], ["linux", "macos"], NTFS_RESERVED_FILE_NAMES
+            )
+        ]
+        + [
+            ["{}\\abc\\{}".format(drive, filename), platform, ReservedNameError]
+            for drive, platform, filename in product(
+                ["C:", "D:"], ["windows", "universal"], NTFS_RESERVED_FILE_NAMES
+            )
+        ],
+    )
+    def test_normal_reserved_name(self, value, platform, expected):
+        validate_filepath(value, platform=platform)
+        assert is_valid_filepath(value, platform=platform)
+
+    @pytest.mark.parametrize(
+        ["value", "platform", "expected"],
+        [
+            ["abc\\{}\\xyz".format(reserved_keyword), platform, ReservedNameError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
@@ -286,10 +316,17 @@ class Test_validate_filepath(object):
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
             if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            ["{}\\{}".format(drive, filename), platform, ReservedNameError]
+            for drive, platform, filename in product(
+                ["C:", "D:"], ["windows", "universal"], NTFS_RESERVED_FILE_NAMES
+            )
         ],
     )
     def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:
+            print(platform, value)
             validate_filepath(value, platform=platform)
         assert e.value.reusable_name is False
         assert e.value.reserved_name
@@ -419,6 +456,18 @@ class Test_sanitize_filepath(object):
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["windows"])
             if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            ["{}\\{}".format(drive, filename), platform, "{}/{}_".format(drive, filename)]
+            for drive, platform, filename in product(
+                ["C:", "D:"], ["universal"], NTFS_RESERVED_FILE_NAMES
+            )
+        ]
+        + [
+            ["{}\\{}".format(drive, filename), platform, "{}\\{}_".format(drive, filename)]
+            for drive, platform, filename in product(
+                ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
+            )
         ],
     )
     def test_normal_reserved_name(self, value, test_platform, expected):
