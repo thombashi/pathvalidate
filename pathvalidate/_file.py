@@ -11,6 +11,7 @@ import itertools
 import ntpath
 import os.path
 import platform
+import posixpath
 import re
 
 from ._common import is_pathlike_obj, preprocess, unprintable_ascii_chars
@@ -288,6 +289,11 @@ class FilePathSanitizer(FileSanitizer):
             min_len=min_len, max_len=max_len, platform=platform
         )
 
+        if self._is_universal() or self._is_windows():
+            self.__split_drive = ntpath.splitdrive
+        else:
+            self.__split_drive = posixpath.splitdrive
+
     def sanitize(self, value, replacement_text=""):
         self._validate_null_string(value)
 
@@ -296,7 +302,7 @@ class FilePathSanitizer(FileSanitizer):
         except AttributeError as e:
             raise ValueError(e)
 
-        drive, unicode_file_path = ntpath.splitdrive(unicode_file_path)
+        drive, unicode_file_path = self.__split_drive(unicode_file_path)
         sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
         if self._is_windows():
             path_separator = "\\"
@@ -330,7 +336,7 @@ class FilePathSanitizer(FileSanitizer):
     def validate(self, value):
         self._validate_null_string(value)
 
-        value = ntpath.splitdrive(value)[1]
+        value = self.__split_drive(value)[1]
         if not value:
             return
 

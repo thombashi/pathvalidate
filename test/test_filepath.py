@@ -341,7 +341,7 @@ class Test_sanitize_filepath(object):
             for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            ["universal", "AA" + c + "B", rep, "AA" + c + "B"]
+            ["universal", "A" + c + "B", rep, "A" + c + "B"]
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
@@ -349,11 +349,11 @@ class Test_sanitize_filepath(object):
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            ["linux", "AA" + c + "B", rep, "AA" + rep + "B"]
+            ["linux", "A" + c + "B", rep, "A" + rep + "B"]
             for c, rep in product(INVALID_PATH_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST)
         ]
         + [
-            ["linux", "AA" + c + "B", rep, "AA" + c + "B"]
+            ["linux", "A" + c + "B", rep, "A" + c + "B"]
             for c, rep in product([":", "*", "?", '"', "<", ">", "|"], REPLACE_TEXT_LIST)
         ],
     )
@@ -434,7 +434,7 @@ class Test_sanitize_filepath(object):
             for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            [Path("AA" + c + "B"), rep, Path("AA" + c + "B")]
+            [Path("A" + c + "B"), rep, Path("A" + c + "B")]
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
