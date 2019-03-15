@@ -27,6 +27,22 @@ from .error import (
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
+_NTFS_RESERVED_FILE_NAMES = (
+    "$Mft",
+    "$MftMirr",
+    "$LogFile",
+    "$Volume",
+    "$AttrDef",
+    "$Bitmap",
+    "$Boot",
+    "$BadClus",
+    "$Secure",
+    "$Upcase",
+    "$Extend",
+    "$Quota",
+    "$ObjId",
+    "$Reparse",
+)  # Only in root directory
 
 
 def _extract_root_name(path):
@@ -275,6 +291,10 @@ class FilePathSanitizer(FileSanitizer):
     __RE_INVALID_WIN_PATH = re.compile(
         "[{:s}]".format(re.escape(FileSanitizer._INVALID_WIN_PATH_CHARS)), re.UNICODE
     )
+    __RE_NTFS_RESERVED = re.compile(
+        "|".join("^/{}$".format(re.escape(pattern)) for pattern in _NTFS_RESERVED_FILE_NAMES),
+        re.IGNORECASE,
+    )
 
     def __init__(self, min_len=1, platform=None, max_len=None):
         super(FilePathSanitizer, self).__init__(min_len=min_len, max_len=max_len, platform=platform)
@@ -313,6 +333,10 @@ class FilePathSanitizer(FileSanitizer):
         if drive:
             sanitized_entries.append(drive)
         for entry in sanitized_path.replace("\\", "/").split("/"):
+            if entry in _NTFS_RESERVED_FILE_NAMES:
+                sanitized_entries.append("{}_".format(entry))
+                continue
+
             try:
                 sanitized_entries.append(self.__fname_sanitizer.sanitize(entry))
             except ValidationError as e:
@@ -356,7 +380,8 @@ class FilePathSanitizer(FileSanitizer):
             )
 
         self._validate_reserved_keywords(unicode_file_path)
-        for entry in unicode_file_path.replace("\\", "/").split("/"):
+        unicode_file_path = unicode_file_path.replace("\\", "/")
+        for entry in unicode_file_path.split("/"):
             if not entry:
                 continue
 
@@ -385,6 +410,17 @@ class FilePathSanitizer(FileSanitizer):
                 ),
                 platform=Platform.WINDOWS,
             )
+
+        value = self.__split_drive(unicode_file_path)[1]
+        if value:
+            match = self.__RE_NTFS_RESERVED.search(value)
+            if match:
+                reserved_name = match.group()
+                raise ReservedNameError(
+                    "'{}' is a reserved name for {}".format(reserved_name, self.platform),
+                    reusable_name=False,
+                    reserved_name=reserved_name,
+                )
 
     def _get_sanitize_regexp(self):
         if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
