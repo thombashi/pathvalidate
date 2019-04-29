@@ -52,9 +52,9 @@ def _extract_root_name(path):
 @enum.unique
 class Platform(enum.Enum):
     UNIVERSAL = "universal"
-    LINUX = "linux"
-    WINDOWS = "windows"
-    MACOS = "macos"
+    LINUX = "Linux"
+    WINDOWS = "Windows"
+    MACOS = "macOS"
 
 
 class FileSanitizer(NameSanitizer):
