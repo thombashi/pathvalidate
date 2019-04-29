@@ -57,6 +57,28 @@ class Platform(enum.Enum):
     MACOS = "macOS"
 
 
+def normalize_platform(name):
+    if isinstance(name, Platform):
+        return name
+
+    if name:
+        name = name.strip().lower()
+
+    if name == "auto":
+        name = platform.system().lower()
+
+    if name in ["linux"]:
+        return Platform.LINUX
+
+    if name and name.startswith("win"):
+        return Platform.WINDOWS
+
+    if name in ["mac", "macos", "darwin"]:
+        return Platform.MACOS
+
+    return Platform.UNIVERSAL
+
+
 class FileSanitizer(NameSanitizer):
     _INVALID_PATH_CHARS = "".join(unprintable_ascii_chars)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
@@ -93,7 +115,7 @@ class FileSanitizer(NameSanitizer):
 
         self._max_len = max_len
 
-        self.__platform = self.__normalize_platform(platform)
+        self.__platform = normalize_platform(platform)
 
     def _is_universal(self):
         return self.platform == Platform.UNIVERSAL
@@ -138,28 +160,6 @@ class FileSanitizer(NameSanitizer):
     @staticmethod
     def _findall_to_str(match):
         return ", ".join([re.escape(text) for text in match])
-
-    @staticmethod
-    def __normalize_platform(name):
-        if isinstance(name, Platform):
-            return name
-
-        if name:
-            name = name.strip().lower()
-
-        if name == "auto":
-            name = platform.system().lower()
-
-        if name in ["linux"]:
-            return Platform.LINUX
-
-        if name and name.startswith("win"):
-            return Platform.WINDOWS
-
-        if name in ["mac", "macos", "darwin"]:
-            return Platform.MACOS
-
-        return Platform.UNIVERSAL
 
 
 class FileNameSanitizer(FileSanitizer):

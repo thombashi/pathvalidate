@@ -19,6 +19,7 @@ from ._file import (
     Platform,
     is_valid_filename,
     is_valid_filepath,
+    normalize_platform,
     sanitize_file_path,
     sanitize_filename,
     sanitize_filepath,
