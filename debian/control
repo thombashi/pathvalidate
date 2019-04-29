@@ -17,8 +17,12 @@ X-Python3-Version: >= 3.4
 Package: python3-pathvalidate
 Architecture: all
 Depends: ${python3:Depends}, ${misc:Depends}
-Description: Python library to sanitize/validate file-paths (Python 3)
+Description: Python 3 library to sanitize/validate file-paths
  pathvalidate is a Python library to sanitize/validate a string such as 
  filenames/file-paths/etc.
+ .
+ - GitHub repository: https://github.com/thombashi/pathvalidate
+ - Issue tracker: https://github.com/thombashi/pathvalidate/issues
+ - Documentation: https://pathvalidate.rtfd.io/
  .
  This package installs the library for Python 3.
