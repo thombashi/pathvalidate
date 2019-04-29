@@ -1,5 +1,5 @@
-Platform specifiers (case-insensitive).
-Valid specifiers are:
+Platform specifiers to sanitize/validate.
+Valid specifiers are followings (case-insensitive):
 
     - ``"Linux"``
     - ``"Windows"``
