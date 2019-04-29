@@ -3,7 +3,7 @@
 set -eux
 
 PKG=pathvalidate
-VERSION=0.27.1
+VERSION=$(python -c "import pathvalidate as pv; print(pv.__version__)")
 TAG=v${VERSION}
 ARCHIVE=${TAG}.tar.gz
 WORK_DIR=ppa
