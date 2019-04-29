@@ -1,0 +1,5 @@
+pathvalidate (0.27.0-1ppa1) bionic; urgency=low
+
+  * Initial release
+
+ -- Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>  Sun, 29 Apr 2019 11:30:45 +0900

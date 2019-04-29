@@ -1,0 +1,24 @@
+Source: pathvalidate
+Section: python
+Priority: optional
+Maintainer: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
+Build-Depends:
+    debhelper (>= 10),
+    dh-python,
+    python3-all,
+    python3-pytest,
+    python3-setuptools,
+    python3-sphinx,
+    python3-wheel
+Standards-Version: 4.1.2
+Homepage: https://github.com/thombashi/pathvalidate
+X-Python3-Version: >= 3.4
+
+Package: python3-pathvalidate
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends}
+Description: Python library to sanitize/validate file-paths (Python 3)
+ pathvalidate is a Python library to sanitize/validate a string such as 
+ filenames/file-paths/etc.
+ .
+ This package installs the library for Python 3.
