@@ -121,10 +121,19 @@ https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
 
 Installation
 ============
-
+Install from PyPI
+------------------------------
 ::
 
     pip install pathvalidate
+
+Install from PPA (for Ubuntu)
+------------------------------
+::
+
+    sudo add-apt-repository ppa:thombashi/ppa
+    sudo apt update
+    sudo apt install python3-pathvalidate
 
 
 Dependencies
