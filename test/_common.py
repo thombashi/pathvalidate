@@ -115,7 +115,7 @@ NTFS_RESERVED_FILE_NAMES = [
 
 def is_faker_installed():
     try:
-        pass
+        import faker  # noqa
     except ImportError:
         return False
 
