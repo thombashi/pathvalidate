@@ -284,7 +284,7 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-rst_prolog = ur"""
+rst_prolog = r"""
 .. |False| replace:: :py:obj:`False`
 .. |True| replace:: :py:obj:`True`
 .. |None| replace:: :py:obj:`None`
@@ -309,13 +309,4 @@ rst_prolog = ur"""
 .. |raises_sqlite_keywords| replace::
     If the ``name`` is equals to
     `SQLite Keywords <https://www.sqlite.org/lang_keywords.html>`__.
-
-.. |platform_name| replace::
-    Execution platform name (case-insensitive).
-    Valid platform specific values are: ``"Linux"``/``"Windows"``/``"macOS"``.
-    Valid special values are: 
-    **(a)** ``"auto"``: automatically detect the execution platform.
-    **(b)** ``"universal"``/|None|: platform independent.
-    Defaults to |None|.
-
 """

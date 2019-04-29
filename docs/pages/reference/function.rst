@@ -3,7 +3,6 @@ Functions
 
 File name validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. autofunction:: pathvalidate.validate_filename
 
 .. autofunction:: pathvalidate.sanitize_filename
@@ -11,7 +10,6 @@ File name validate/sanitize
 
 File path validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. autofunction:: pathvalidate.validate_filepath
 
 .. autofunction:: pathvalidate.sanitize_filepath
@@ -19,7 +17,6 @@ File path validate/sanitize
 
 Symbol validate/sanitize
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. autofunction:: pathvalidate.validate_symbol
 
 .. autofunction:: pathvalidate.replace_symbol

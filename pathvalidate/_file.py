@@ -435,8 +435,8 @@ def validate_filename(filename, platform=None, min_len=1, max_len=_DEFAULT_MAX_F
     Args:
         filename (str):
             Filename to validate.
-        platform (str/pathvalidate.Platform, optional):
-            |platform_name|
+        platform (str, optional):
+            .. include:: platform.txt
         min_len (int, optional):
             Minimum length of the ``filename``. The value must be greater or equal to one.
             Defaults to ``1``.
@@ -480,8 +480,8 @@ def validate_filepath(file_path, platform=None, min_len=1, max_len=None):
     Args:
         file_path (str):
             File path to validate.
-        platform (str/pathvalidate.Platform, optional):
-            |platform_name|
+        platform (str, optional):
+            .. include:: platform.txt
         min_len (int, optional):
             Minimum length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
@@ -537,7 +537,7 @@ def sanitize_filename(
 
     To make a valid filename the function does:
 
-        - Replace invalid characters for a filename within the ``filename``
+        - Replace invalid characters as file names included in the ``filename``
           with the ``replacement_text``. Invalid characters are:
 
             - unprintable characters
@@ -549,8 +549,10 @@ def sanitize_filename(
 
     Args:
         filename (str or PathLike object): Filename to sanitize.
-        replacement_text (str, optional): Replacement text. Defaults to ``""``.
-        platform (str, optional): |platform_name|
+        replacement_text (str, optional):
+            Replacement text for invalid characters. Defaults to ``""``.
+        platform (str, optional):
+            .. include:: platform.txt
         max_len (int, optional):
             The upper limit of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
@@ -587,8 +589,8 @@ def sanitize_filepath(file_path, replacement_text="", platform=None, max_len=Non
         replacement_text (str, optional):
             Replacement text for invalid characters.
             Defaults to ``""``.
-        platform (str/pathvalidate.Platform, optional):
-            |platform_name|
+        platform (str, optional):
+            .. include:: platform.txt
         max_len (int, optional):
             The upper limit of the ``file_path`` length. Truncate the name if the ``file_path``
             length exceedd this value. If the value is |None|, the default value automatically

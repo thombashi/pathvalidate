@@ -1,0 +1,10 @@
+Platform specifiers (case-insensitive).
+Valid specifiers are:
+
+    - ``"Linux"``
+    - ``"Windows"``
+    - ``"macOS"``
+    - ``"auto"``: automatically detect the execution platform
+    - ``"universal"``/|None|: platform independent
+
+Defaults to |None|.
