@@ -63,7 +63,7 @@ class FileSanitizer(NameSanitizer):
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
 
-    _ERROR_MSG_TEMPLATE = "invalid char found: invalid-char='{invalid}', value='{value}'"
+    _ERROR_MSG_TEMPLATE = "invalid char found: invalid-chars=({invalid}), value='{value}'"
 
     @property
     def platform(self):
@@ -118,7 +118,7 @@ class FileSanitizer(NameSanitizer):
         root_name = _extract_root_name(name)
         if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(
-                "'{}' is a reserved name for {}".format(root_name, self.platform),
+                "'{}' is a reserved name for {}".format(root_name, self.platform.value),
                 reusable_name=False,
                 reserved_name=root_name,
             )
@@ -417,7 +417,7 @@ class FilePathSanitizer(FileSanitizer):
             if match:
                 reserved_name = match.group()
                 raise ReservedNameError(
-                    "'{}' is a reserved name for {}".format(reserved_name, self.platform),
+                    "'{}' is a reserved name for {}".format(reserved_name, self.platform.value),
                     reusable_name=False,
                     reserved_name=reserved_name,
                 )

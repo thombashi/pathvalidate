@@ -50,7 +50,7 @@ class ValidationError(ValueError):
         item_list = [Exception.__str__(self, *args, **kwargs)]
 
         if self.reason:
-            item_list.append("reason={}".format(self.reason))
+            item_list.append("reason={}".format(self.reason.value))
         if self.description:
             item_list.append("description={}".format(self.description))
         if self.reusable_name:
