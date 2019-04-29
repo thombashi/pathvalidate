@@ -113,5 +113,14 @@ NTFS_RESERVED_FILE_NAMES = [
 ]
 
 
+def is_faker_installed():
+    try:
+        pass
+    except ImportError:
+        return False
+
+    return True
+
+
 def randstr(length, char_list=alphanum_chars):
     return "".join([random.choice(char_list) for _i in range(length)])

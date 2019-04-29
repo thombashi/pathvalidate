@@ -14,7 +14,6 @@ from itertools import chain, product
 
 import pytest
 import six
-from faker import Factory
 from pathvalidate import (
     InvalidCharError,
     InvalidLengthError,
@@ -35,6 +34,7 @@ from ._common import (
     VALID_PATH_CHARS,
     VALID_PLATFORM_NAMES,
     WIN_RESERVED_FILE_NAMES,
+    is_faker_installed,
     randstr,
 )
 
@@ -237,8 +237,11 @@ class Test_validate_filepath(object):
         validate_filepath(value, platform=platform)
         assert is_valid_filepath(value, platform=platform)
 
+    @pytest.mark.skipif(not is_faker_installed(), reason="requires faker")
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
     def test_locale_jp(self, locale):
+        from faker import Factory
+
         fake = Factory.create(locale=locale, seed=1)
 
         for _ in range(100):
