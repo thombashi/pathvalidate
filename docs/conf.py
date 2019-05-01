@@ -8,9 +8,9 @@ from pathvalidate import __author__, __copyright__, __name__, __version__
 
 try:
     import sphinx_rtd_theme
-    RTD_THEME = True
+    RTD_THEME_INSTALLED = True
 except ImportError:
-    RTD_THEME = False
+    RTD_THEME_INSTALLED = False
 
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -121,7 +121,7 @@ html_theme = 'sphinx_rtd_theme'
 #html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-if RTD_THEME:
+if RTD_THEME_INSTALLED:
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.
