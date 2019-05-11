@@ -1,5 +1,3 @@
 faker
-pytest-cov
 pytest
 six
-tox
