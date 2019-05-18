@@ -159,7 +159,7 @@ class FileSanitizer(NameSanitizer):
 
     @staticmethod
     def _findall_to_str(match):
-        return ", ".join([re.escape(text) for text in match])
+        return ", ".join([repr(text) for text in match])
 
 
 class FileNameSanitizer(FileSanitizer):
@@ -253,7 +253,7 @@ class FileNameSanitizer(FileSanitizer):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=unicode_filename
+                    invalid=self._findall_to_str(match), value=repr(unicode_filename)
                 )
             )
 
@@ -262,7 +262,7 @@ class FileNameSanitizer(FileSanitizer):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=unicode_filename
+                    invalid=self._findall_to_str(match), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
             )
@@ -270,7 +270,7 @@ class FileNameSanitizer(FileSanitizer):
         if unicode_filename[-1] in (" ", "."):
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=re.escape(unicode_filename[-1]), value=unicode_filename
+                    invalid=re.escape(unicode_filename[-1]), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
                 description="Do not end a file or directory name with a space or a period",
@@ -397,7 +397,7 @@ class FilePathSanitizer(FileSanitizer):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=unicode_file_path
+                    invalid=self._findall_to_str(match), value=repr(unicode_file_path)
                 )
             )
 
@@ -406,7 +406,7 @@ class FilePathSanitizer(FileSanitizer):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=unicode_file_path
+                    invalid=self._findall_to_str(match), value=repr(unicode_file_path)
                 ),
                 platform=Platform.WINDOWS,
             )

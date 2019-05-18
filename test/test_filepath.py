@@ -336,6 +336,24 @@ class Test_validate_filepath(object):
 
         assert not is_valid_filepath(value, platform=platform)
 
+    @pytest.mark.skipif("sys.version_info[0] < 3")
+    @pytest.mark.parametrize(
+        ["value", "platform", "expected"],
+        [
+            [value, platform, InvalidCharError]
+            for value, platform in product(["asdf\rsdf"], ["windows", "universal"])
+        ],
+    )
+    def test_exception_escape_err_msg(self, value, platform, expected):
+        with pytest.raises(expected) as e:
+            print(platform, repr(value))
+            validate_filepath(value, platform=platform)
+
+        assert (
+            str(e.value)
+            == r"invalid char found: invalid-chars=('\r'), value=''asdf\rsdf'', reason=INVALID_CHARACTER"  # noqa
+        )
+
     @pytest.mark.parametrize(
         ["value", "expected"],
         [[None, ValueError], ["", NullNameError], [1, TypeError], [True, TypeError]],
