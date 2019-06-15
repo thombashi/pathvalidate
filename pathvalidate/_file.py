@@ -140,9 +140,10 @@ class FileSanitizer(NameSanitizer):
         root_name = _extract_root_name(name)
         if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(
-                "'{}' is a reserved name for {}".format(root_name, self.platform.value),
+                "'{}' is a reserved name".format(root_name),
                 reusable_name=False,
                 reserved_name=root_name,
+                platform=self.platform,
             )
 
     def _get_default_max_path_len(self):
@@ -417,9 +418,10 @@ class FilePathSanitizer(FileSanitizer):
             if match:
                 reserved_name = match.group()
                 raise ReservedNameError(
-                    "'{}' is a reserved name for {}".format(reserved_name, self.platform.value),
+                    "'{}' is a reserved name".format(reserved_name),
                     reusable_name=False,
                     reserved_name=reserved_name,
+                    platform=self.platform,
                 )
 
     def _get_sanitize_regexp(self):
