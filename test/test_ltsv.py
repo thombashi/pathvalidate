@@ -9,6 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 
 import pytest
+
 from pathvalidate import InvalidCharError, NullNameError, sanitize_ltsv_label, validate_ltsv_label
 
 from ._common import INVALID_WIN_FILENAME_CHARS, alphanum_chars

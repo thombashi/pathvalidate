@@ -9,6 +9,7 @@ from __future__ import absolute_import, unicode_literals
 import itertools
 
 import pytest
+
 from pathvalidate import ascii_symbols, replace_unprintable_char, unprintable_ascii_chars
 
 from ._common import alphanum_chars

@@ -14,6 +14,7 @@ from itertools import chain, product
 
 import pytest
 import six
+
 from pathvalidate import (
     InvalidCharError,
     InvalidLengthError,
