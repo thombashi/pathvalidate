@@ -350,10 +350,10 @@ class Test_validate_filepath(object):
             print(platform, repr(value))
             validate_filepath(value, platform=platform)
 
-        assert (
-            str(e.value)
-            == r"invalid char found: invalid-chars=('\r'), value=''asdf\rsdf'', reason=INVALID_CHARACTER"  # noqa
-        )
+        assert str(e.value) == (
+            r"invalid char found: invalids=('\r'), value='asdf\rsdf', "
+            "reason=INVALID_CHARACTER, target-platform=Windows"
+        )  # noqa
 
     @pytest.mark.parametrize(
         ["value", "expected"],

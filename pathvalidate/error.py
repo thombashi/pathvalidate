@@ -51,6 +51,8 @@ class ValidationError(ValueError):
 
         if self.reason:
             item_list.append("reason={}".format(self.reason.value))
+        if self.platform:
+            item_list.append("target-platform={}".format(self.platform.value))
         if self.description:
             item_list.append("description={}".format(self.description))
         if self.reusable_name:

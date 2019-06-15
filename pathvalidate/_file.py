@@ -85,7 +85,7 @@ class FileSanitizer(NameSanitizer):
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
 
-    _ERROR_MSG_TEMPLATE = "invalid char found: invalid-chars=({invalid}), value='{value}'"
+    _ERROR_MSG_TEMPLATE = "invalid char found: invalids=({invalid}), value={value}"
 
     @property
     def platform(self):
