@@ -2,6 +2,7 @@
 
 from __future__ import unicode_literals
 
+import sys
 from argparse import ArgumentError, ArgumentParser, ArgumentTypeError
 
 import pytest
@@ -23,15 +24,16 @@ class Test_argparse_filename_validator(object):
         parser = ArgumentParser()
         parser.add_argument("filename", type=filename)
 
-        try:
-            parser.parse_args([value])
-        except SystemExit as e:
-            assert isinstance(e.__context__, ArgumentError)
-        else:
-            raise RuntimeError()
+        if sys.version_info[0] >= 3:
+            try:
+                parser.parse_args([value])
+            except SystemExit as e:
+                assert isinstance(e.__context__, ArgumentError)
+            else:
+                raise RuntimeError()
 
-        with pytest.raises(ArgumentTypeError):
-            filename(value)
+            with pytest.raises(ArgumentTypeError):
+                filename(value)
 
 
 class Test_argparse_filepath_validator(object):
@@ -48,12 +50,13 @@ class Test_argparse_filepath_validator(object):
         parser = ArgumentParser()
         parser.add_argument("filepath", type=filepath)
 
-        try:
-            parser.parse_args([value])
-        except SystemExit as e:
-            assert isinstance(e.__context__, ArgumentError)
-        else:
-            raise RuntimeError()
+        if sys.version_info[0] >= 3:
+            try:
+                parser.parse_args([value])
+            except SystemExit as e:
+                assert isinstance(e.__context__, ArgumentError)
+            else:
+                raise RuntimeError()
 
         with pytest.raises(ArgumentTypeError):
             filepath(value)
