@@ -35,6 +35,7 @@ Features
 - Sanitize/Validate a string as a:
     - file name
     - file path
+- validafilename/filepath validator for ``argparse``/``click``
 - Multibyte character support
 
 Examples
@@ -88,12 +89,19 @@ Validate a filename
         try:
             validate_filename("fi:l*e/p\"a?t>h|.t<xt")
         except ValidationError as e:
-            print(e, file=sys.stderr)
+            print("{}\n".format(e), file=sys.stderr)
+
+        try:
+            validate_filename("COM1")
+        except ValidationError as e:
+            print("{}\n".format(e), file=sys.stderr)
 
 :Output:
     .. code-block::
 
-        invalid char found: invalid-char=':, \*, /, ", \?, >, \|, <', value='fi:l*e/p"a?t>h|.t<xt', reason=ErrorReason.INVALID_CHARACTER
+        invalid char found: invalids=(':', '*', '/', '"', '?', '>', '|', '<'), value='fi:l*e/p"a?t>h|.t<xt', reason=INVALID_CHARACTER, target-platform=Windows
+
+        'COM1' is a reserved name, reason=RESERVED_NAME, target-platform=universal
 
 Check a filename
 ------------------
@@ -113,6 +121,34 @@ Check a filename
 
         is_valid_filename('fi:l*e/p"a?t>h|.t<xt') return False
         is_valid_filename('filepath.txt') return True
+
+filename/filepath validator for argparse
+------------------------------------------
+:Sample Code:
+    .. code-block:: python
+
+        from argparse import ArgumentParser
+
+        from pathvalidate.argparse import filepath, filename
+
+        parser = ArgumentParser()
+        parser.add_argument("--filepath", type=filepath)
+        parser.add_argument("--filename", type=filename)
+
+filename/filepath validator for click
+---------------------------------------
+:Sample Code:
+    .. code-block:: python
+
+        import click
+
+        from pathvalidate.click import filename, filepath
+
+        @click.command()
+        @click.option("--filename", callback=filename)
+        @click.option("--filepath", callback=filepath)
+        def cli(filename, filepath):
+            # do something
 
 For more information
 ----------------------
