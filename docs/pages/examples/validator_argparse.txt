@@ -1,0 +1,10 @@
+:Sample Code:
+    .. code-block:: python
+
+        from argparse import ArgumentParser
+
+        from pathvalidate.argparse import filepath, filename
+
+        parser = ArgumentParser()
+        parser.add_argument("--filepath", type=filepath)
+        parser.add_argument("--filename", type=filename)

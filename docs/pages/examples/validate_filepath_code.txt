@@ -12,4 +12,4 @@
 :Output:
     .. code-block:: none
 
-        invalid char found: invalid-char=':, \*, ", \?, >, \|, <', value='fi:l*e/p"a?t>h|.t<xt', reason=ErrorReason.INVALID_CHARACTER
+        invalid char found: invalids=(':', '*', '"', '?', '>', '|', '<'), value='fi:l*e/p"a?t>h|.t<xt', reason=INVALID_CHARACTER, target-platform=Windows

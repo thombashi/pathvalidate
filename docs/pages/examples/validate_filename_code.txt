@@ -7,9 +7,16 @@
         try:
             validate_filename("fi:l*e/p\"a?t>h|.t<xt")
         except ValidationError as e:
-            print(e, file=sys.stderr)
+            print("{}\n".format(e), file=sys.stderr)
+
+        try:
+            validate_filename("COM1")
+        except ValidationError as e:
+            print("{}\n".format(e), file=sys.stderr)
 
 :Output:
     .. code-block:: none
 
-        invalid char found: invalid-char=':, \*, /, ", \?, >, \|, <', value='fi:l*e/p"a?t>h|.t<xt', reason=ErrorReason.INVALID_CHARACTER
+        invalid char found: invalids=(':', '*', '/', '"', '?', '>', '|', '<'), value='fi:l*e/p"a?t>h|.t<xt', reason=INVALID_CHARACTER, target-platform=Windows
+
+        'COM1' is a reserved name, reason=RESERVED_NAME, target-platform=universal
