@@ -46,8 +46,8 @@ class ValidationError(ValueError):
 
         super(ValidationError, self).__init__(*args[0], **kwargs)
 
-    def __str__(self, *args, **kwargs):
-        item_list = [Exception.__str__(self, *args, **kwargs)]
+    def __str__(self):
+        item_list = [Exception.__str__(self)]
 
         if self.reason:
             item_list.append("reason={}".format(self.reason.value))
