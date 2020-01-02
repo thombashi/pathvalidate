@@ -3,47 +3,47 @@ language: python
 cache: pip
 
 matrix:
-    include:
-        - os: linux
-          python: 2.7
-          env: TOXENV=py27
+  include:
+    - os: linux
+      python: 2.7
+      env: TOXENV=py27
 
-        - os: linux
-          python: 3.5
-          env: TOXENV=py35
+    - os: linux
+      python: 3.5
+      env: TOXENV=py35
 
-        - os: linux
-          python: 3.6
-          env: TOXENV=py36
+    - os: linux
+      python: 3.6
+      env: TOXENV=py36
 
-        - os: linux
-          dist: xenial
-          python: 3.7
-          env: TOXENV=py37
+    - os: linux
+      dist: xenial
+      python: 3.7
+      env: TOXENV=py37
 
-        - os: linux
-          dist: xenial
-          python: 3.8-dev
-          env: TOXENV=py38
+    - os: linux
+      dist: xenial
+      python: 3.8-dev
+      env: TOXENV=py38
 
-        - os: linux
-          python: 3.6
-          env: TOXENV=cov
-          after_success:
-              - travis_retry pip install pytest-cov coveralls --upgrade
-              - python setup.py test --addopts "-v --cov pathvalidate --cov-report term-missing"
-              - coveralls
+    - os: linux
+      python: 3.6
+      env: TOXENV=cov
+      after_success:
+        - travis_retry pip install pytest-cov coveralls[toml] --upgrade
+        - python setup.py test --addopts "-v --cov"
+        - coveralls
 
-        - os: osx
-          language: generic
-          env: TOXENV=py36
+    - os: osx
+      language: generic
+      env: TOXENV=py36
 
 install:
-    - travis_retry bash -x .travis/install.sh
+  - travis_retry bash -x .travis/install.sh
 
 script:
-    - bash -x .travis/run_test.sh
+  - bash -x .travis/run_test.sh
 
 notifications:
-    slack:
-        secure: Yb0f2Wa/DaKE0Z3XKrro63uXLZKJqiNdYAulbuQvBiHKRf5nAc4c+pHULc23Df7sF4ob4v4FDZFBHE3f36if++TnP94V+xsiCJeCMGLkOCx8BQXI2IPvpN2EYCfbj1iLUyH1xG5aK01V7ahjpcFbRT7dirs4SHprHkNKRukFoo7Vdgy7LO0/aBWbFAOdWLTbh0vI43JWWI4PBjrPfK9WOk9kRj7vz4akNaoP1PE6yYIJwjPdc/a4YQA83tZ9qbNcmI7BI0Q1xozVuELfDMTPyPDrA0iGCub/+8VJ4KxUiqCT8uTw16f8P+KV1AO56r3pcDuML104Zqg5KRp5DylQ1B72YcSnqgr2BCT0AoRbthnp/lMcPZfhJzeLABN/IaDDBXr2KdxHwtht6tp5UPeP+HpB0u4I+vDLEEf96YW81zCY8/XXJonFP7oLlXh1Bw6BUkbTDte0a4lOIeJo3qaIfoPhs0MZaOhkwPR7w42KQOURnsYHE4ag6D82NvViXpMAURxOmS9Bm01KpWzt6Ub0taysEjghcERW8Jeo+05auelgs2rC5wVquOrWf26AwvUllpuPaNCScPQlTwLPMGIKjexg+yiM5/nk31DVJgfl8z52+/CUYyIVHsE1+AKEIBwsGmRa38OgUEt+Z54kizrq44ERlt/X9aJ+LI/tWAwkeB4=
+  slack:
+    secure: Yb0f2Wa/DaKE0Z3XKrro63uXLZKJqiNdYAulbuQvBiHKRf5nAc4c+pHULc23Df7sF4ob4v4FDZFBHE3f36if++TnP94V+xsiCJeCMGLkOCx8BQXI2IPvpN2EYCfbj1iLUyH1xG5aK01V7ahjpcFbRT7dirs4SHprHkNKRukFoo7Vdgy7LO0/aBWbFAOdWLTbh0vI43JWWI4PBjrPfK9WOk9kRj7vz4akNaoP1PE6yYIJwjPdc/a4YQA83tZ9qbNcmI7BI0Q1xozVuELfDMTPyPDrA0iGCub/+8VJ4KxUiqCT8uTw16f8P+KV1AO56r3pcDuML104Zqg5KRp5DylQ1B72YcSnqgr2BCT0AoRbthnp/lMcPZfhJzeLABN/IaDDBXr2KdxHwtht6tp5UPeP+HpB0u4I+vDLEEf96YW81zCY8/XXJonFP7oLlXh1Bw6BUkbTDte0a4lOIeJo3qaIfoPhs0MZaOhkwPR7w42KQOURnsYHE4ag6D82NvViXpMAURxOmS9Bm01KpWzt6Ub0taysEjghcERW8Jeo+05auelgs2rC5wVquOrWf26AwvUllpuPaNCScPQlTwLPMGIKjexg+yiM5/nk31DVJgfl8z52+/CUYyIVHsE1+AKEIBwsGmRa38OgUEt+Z54kizrq44ERlt/X9aJ+LI/tWAwkeB4=

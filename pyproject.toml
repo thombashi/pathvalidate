@@ -29,3 +29,18 @@ skip_glob = [
     '*/.eggs/*',
     '*/.tox/*',
 ]
+
+[tool.coverage.run]
+source = ["pathvalidate"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+precision = 1
+
+# Regexes for lines to exclude from consideration
+exclude_lines = [
+    "except ImportError",
+    "raise NotImplementedError",
+    "pass",
+]
