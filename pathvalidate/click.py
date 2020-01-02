@@ -1,10 +1,7 @@
-# encoding: utf-8
-
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import, unicode_literals
 
 import click
 
@@ -19,7 +16,7 @@ def filename(ctx, param, value):
     try:
         validate_filename(value)
     except ValidationError as e:
-        raise click.BadParameter(e)
+        raise click.BadParameter from e
 
     return sanitize_filename(value)
 
@@ -31,6 +28,6 @@ def filepath(ctx, param, value):
     try:
         validate_filepath(value)
     except ValidationError as e:
-        raise click.BadParameter(e)
+        raise click.BadParameter from e
 
     return sanitize_filepath(value)

@@ -1,20 +1,15 @@
-# encoding: utf-8
-
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import, unicode_literals
 
 import abc
 
 from ._common import validate_null_string
-from ._six import add_metaclass
 from .error import ValidationError
 
 
-@add_metaclass(abc.ABCMeta)
-class NameSanitizer(object):
+class NameSanitizer(object, metaclass=abc.ABCMeta):
     @abc.abstractproperty
     def reserved_keywords(self):  # pragma: no cover
         pass

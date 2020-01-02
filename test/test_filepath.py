@@ -1,19 +1,15 @@
-# encoding: utf-8
-# encoding: utf-8
-
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import, unicode_literals
 
 import platform as m_platform  # noqa: W0611
 import random
 import sys  # noqa: W0611
 from itertools import chain, product
+from pathlib import Path
 
 import pytest
-import six
 
 from pathvalidate import (
     InvalidCharError,
@@ -39,12 +35,6 @@ from ._common import (
     is_faker_installed,
     randstr,
 )
-
-
-try:
-    from pathlib import Path
-except ImportError:
-    Path = six.text_type
 
 
 nan = float("nan")
@@ -427,7 +417,7 @@ class Test_sanitize_filepath(object):
     def test_normal_str(self, platform, value, replace_text, expected):
         sanitized_name = sanitize_filepath(value, platform=platform, replacement_text=replace_text)
         assert sanitized_name == expected
-        assert isinstance(sanitized_name, six.text_type)
+        assert isinstance(sanitized_name, str)
         validate_filepath(sanitized_name, platform=platform)
         assert is_valid_filepath(sanitized_name, platform=platform)
 

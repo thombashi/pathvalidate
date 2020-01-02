@@ -1,10 +1,7 @@
-# encoding: utf-8
-
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import, unicode_literals
 
 import enum
 import itertools
@@ -16,7 +13,6 @@ import re
 
 from ._common import is_pathlike_obj, preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
-from ._six import text_type
 from .error import (
     ErrorReason,
     InvalidCharError,
@@ -200,7 +196,7 @@ class FileNameSanitizer(FileSanitizer):
     def sanitize(self, value, replacement_text=""):
         self._validate_null_string(value)
 
-        sanitized_filename = self._sanitize_regexp.sub(replacement_text, text_type(value))
+        sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
         sanitized_filename = sanitized_filename[: self.max_len]
 
         try:

@@ -1,7 +1,3 @@
-# encoding: utf-8
-
-from __future__ import unicode_literals
-
 import sys
 from argparse import ArgumentError, ArgumentParser, ArgumentTypeError
 

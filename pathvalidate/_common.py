@@ -1,38 +1,17 @@
-# encoding: utf-8
-
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-from __future__ import absolute_import, unicode_literals
 
 import re
 import string
-import sys
+from pathlib import Path
 
-from ._six import text_type
 from .error import NullNameError
 
 
-if sys.version_info[0] == 3:
-    unichr = chr
-else:
-    unichr = unichr
-
-
-try:
-    from pathlib import Path
-
-    def _is_pathlike_obj_py3(value):
-        return isinstance(value, Path)
-
-    is_pathlike_obj = _is_pathlike_obj_py3
-except ImportError:
-
-    def _is_pathlike_obj_py2(value):
-        return False
-
-    is_pathlike_obj = _is_pathlike_obj_py2
+def is_pathlike_obj(value):
+    return isinstance(value, Path)
 
 
 def validate_null_string(text, error_msg=None):
@@ -50,7 +29,7 @@ def validate_null_string(text, error_msg=None):
 
 def preprocess(name):
     if is_pathlike_obj(name):
-        name = text_type(name)
+        name = str(name)
 
     return name
 
@@ -73,14 +52,14 @@ def _is_not_null_string(value):
 
 
 def _get_unprintable_ascii_char_list():
-    return [unichr(c) for c in range(128) if chr(c) not in string.printable]
+    return [chr(c) for c in range(128) if chr(c) not in string.printable]
 
 
 def _get_ascii_symbol_list():
     symbol_list = []
 
     for c in range(128):
-        c = unichr(c)
+        c = chr(c)
 
         if c in unprintable_ascii_chars or c in string.digits + string.ascii_letters:
             continue
