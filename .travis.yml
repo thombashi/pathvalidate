@@ -36,7 +36,7 @@ matrix:
 
     - os: osx
       language: generic
-      env: TOXENV=py36
+      env: TOXENV=py37
 
 install:
   - travis_retry bash -x .travis/install.sh
