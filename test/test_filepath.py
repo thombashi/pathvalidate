@@ -21,6 +21,7 @@ from pathvalidate import (
     NullNameError,
     Platform,
     ReservedNameError,
+    ValidationError,
     is_valid_filepath,
     sanitize_filepath,
     validate_filepath,
@@ -187,11 +188,14 @@ class Test_validate_filepath(object):
             ["a" * 4097, "linux", None, InvalidLengthError],
             ["a" * 4097, Platform.LINUX, None, InvalidLengthError],
             ["a" * 255, "linux", 100, InvalidLengthError],
+            ["a" * 5000, "windows", 10000, ValidationError],
             ["a" * 260, "windows", None, None],
+            ["a" * 300, "windows", 1024, ValidationError],
             ["a" * 261, Platform.WINDOWS, None, InvalidLengthError],
             ["a" * 261, "windows", None, InvalidLengthError],
             ["a" * 260, "universal", None, None],
             ["a" * 261, "universal", None, InvalidLengthError],
+            ["a" * 300, "universal", 1024, ValidationError],
             ["a" * 261, Platform.UNIVERSAL, None, InvalidLengthError],
         ],
     )
@@ -199,14 +203,18 @@ class Test_validate_filepath(object):
         if expected is None:
             validate_filepath(value, platform=platform, max_len=max_len)
             assert is_valid_filepath(value, platform=platform, max_len=max_len)
-        else:
-            with pytest.raises(expected):
-                validate_filepath(value, platform=platform, max_len=max_len)
+            return
+
+        with pytest.raises(expected):
+            validate_filepath(value, platform=platform, max_len=max_len)
 
     @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],
         [
             ["valid length", 1, 255, None],
+            ["minus min_len", -2, 100, None],
+            ["minus max_len", -2, -1, ValueError],
+            ["zero max_len", -2, 0, ValueError],
             ["eq min max", 10, 10, None],
             ["inversion", 100, 1, ValueError],
         ],

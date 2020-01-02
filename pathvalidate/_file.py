@@ -193,11 +193,8 @@ class FileNameSanitizer(FileSanitizer):
             platform=platform,
         )
 
-        if self.max_len > self._get_default_max_path_len():
-            self._max_len = self._get_default_max_path_len()
-
+        self._max_len = min(self._max_len, self._get_default_max_path_len())
         self._validate_max_len()
-
         self._sanitize_regexp = self._get_sanitize_regexp()
 
     def sanitize(self, value, replacement_text=""):
@@ -302,6 +299,7 @@ class FilePathSanitizer(FileSanitizer):
 
         if self.max_len is None:
             self._max_len = self._get_default_max_path_len()
+        self._max_len = min(self._max_len, self._get_default_max_path_len())
 
         self._validate_max_len()
 
