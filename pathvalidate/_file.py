@@ -88,11 +88,6 @@ class FileSanitizer(NameSanitizer):
         return self.__platform
 
     @property
-    def platform_name(self):
-        # Deprecated
-        return self.platform
-
-    @property
     def reserved_keywords(self):
         return (".", "..")
 
