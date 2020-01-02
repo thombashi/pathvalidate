@@ -10,6 +10,7 @@ import os.path
 import platform
 import posixpath
 import re
+from pathlib import Path
 
 from ._common import is_pathlike_obj, preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
@@ -206,12 +207,7 @@ class FileNameSanitizer(FileSanitizer):
                 sanitized_filename = sanitized_filename.rstrip(" .")
 
         if is_pathlike_obj(value):
-            try:
-                from pathlib import Path
-
-                return Path(sanitized_filename)
-            except ImportError:
-                pass
+            return Path(sanitized_filename)
 
         return sanitized_filename
 
@@ -338,12 +334,7 @@ class FilePathSanitizer(FileSanitizer):
         sanitized_path = path_separator.join(sanitized_entries)
 
         if is_pathlike_obj(value):
-            try:
-                from pathlib import Path
-
-                return Path(sanitized_path)
-            except ImportError:
-                pass
+            return Path(sanitized_path)
 
         return sanitized_path
 
