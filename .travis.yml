@@ -27,10 +27,6 @@ matrix:
     - os: linux
       python: 3.6
       env: TOXENV=cov
-      after_success:
-        - travis_retry pip install pytest-cov coveralls[toml] --upgrade
-        - python setup.py test --addopts "-v --cov"
-        - coveralls
 
     - os: osx
       language: generic
