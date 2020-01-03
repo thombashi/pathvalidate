@@ -135,6 +135,13 @@ filename/filepath validator for argparse
         parser.add_argument("--filepath", type=filepath)
         parser.add_argument("--filename", type=filename)
 
+:Output:
+    .. code-block::
+
+        $ ./examples/argparse_validate.py --filepath e?g
+        usage: argparse_validate.py [-h] [--filepath FILEPATH] [--filename FILENAME]
+        argparse_validate.py: error: argument --filepath: invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
+
 filename/filepath validator for click
 ---------------------------------------
 :Sample Code:
@@ -144,11 +151,24 @@ filename/filepath validator for click
 
         from pathvalidate.click import filename, filepath
 
+
         @click.command()
         @click.option("--filename", callback=filename)
         @click.option("--filepath", callback=filepath)
         def cli(filename, filepath):
-            # do something
+            click.echo(filename, filepath)
+
+
+        if __name__ == "__main__":
+            cli()
+
+:Output:
+    .. code-block::
+
+        $ ./examples/click_validate.py --filepath e?g
+        Usage: click_validate.py [OPTIONS]
+
+        Error: Invalid value for "--filepath": invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
 
 For more information
 ----------------------
