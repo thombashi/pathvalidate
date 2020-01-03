@@ -17,24 +17,24 @@ __RE_SYMBOL = re.compile(
 )
 
 
-def validate_unprintable(text):
+def validate_unprintable(text: str) -> None:
     match_list = __RE_UNPRINTABLE.findall(preprocess(text))
     if match_list:
         raise InvalidCharError("unprintable character found: {}".format(match_list))
 
 
-def replace_unprintable(text, replacement_text=""):
+def replace_unprintable(text: str, replacement_text: str = "") -> str:
     try:
         return __RE_UNPRINTABLE.sub(replacement_text, preprocess(text))
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
 
 
-def validate_symbol(text):
+def validate_symbol(text: str) -> None:
     """
     Verifying whether symbol(s) included in the ``text`` or not.
 
-    :param str text: Input text.
+    :param text: Input text.
     :raises pathvalidate.InvalidCharError:
         If symbol(s) included in the ``text``.
     """
@@ -44,12 +44,17 @@ def validate_symbol(text):
         raise InvalidCharError("invalid symbols found: {}".format(match_list))
 
 
-def replace_symbol(text, replacement_text="", is_replace_consecutive_chars=False, is_strip=False):
+def replace_symbol(
+    text: str,
+    replacement_text: str = "",
+    is_replace_consecutive_chars: bool = False,
+    is_strip: bool = False,
+) -> str:
     """
     Replace all of the symbols in the ``text``.
 
-    :param str text: Input text.
-    :param str replacement_text: Replacement text.
+    :param text: Input text.
+    :param replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
 

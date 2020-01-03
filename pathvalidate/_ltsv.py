@@ -12,12 +12,12 @@ from .error import InvalidCharError
 __RE_INVALID_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)
 
 
-def validate_ltsv_label(label):
+def validate_ltsv_label(label: str) -> None:
     """
     Verifying whether ``label`` is a valid
     `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label or not.
 
-    :param str label: Label to validate.
+    :param label: Label to validate.
     :raises pathvalidate.NullNameError: If the ``label`` is empty.
     :raises pathvalidate.InvalidCharError:
         If invalid character(s) found in the ``label`` for a LTSV format label.
@@ -32,12 +32,12 @@ def validate_ltsv_label(label):
         )
 
 
-def sanitize_ltsv_label(label, replacement_text=""):
+def sanitize_ltsv_label(label: str, replacement_text: str = "") -> str:
     """
     Replace all of the symbols in text.
 
-    :param str label: Input text.
-    :param str replacement_text: Replacement text.
+    :param label: Input text.
+    :param replacement_text: Replacement text.
     :return: A replacement string.
     :rtype: str
     """

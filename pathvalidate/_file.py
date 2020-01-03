@@ -11,8 +11,9 @@ import platform
 import posixpath
 import re
 from pathlib import Path
+from typing import Any, List, Optional, Pattern, Tuple, Union, cast
 
-from ._common import is_pathlike_obj, preprocess, unprintable_ascii_chars
+from ._common import PathType, is_pathlike_obj, preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
 from .error import (
     ErrorReason,
@@ -42,7 +43,7 @@ _NTFS_RESERVED_FILE_NAMES = (
 )  # Only in root directory
 
 
-def _extract_root_name(path):
+def _extract_root_name(path: str) -> str:
     return os.path.splitext(os.path.basename(path))[0]
 
 
@@ -54,7 +55,10 @@ class Platform(enum.Enum):
     MACOS = "macOS"
 
 
-def normalize_platform(name):
+PlatformType = Union[str, Platform, None]
+
+
+def normalize_platform(name: PlatformType) -> Platform:
     if isinstance(name, Platform):
         return name
 
@@ -85,50 +89,55 @@ class FileSanitizer(NameSanitizer):
     _ERROR_MSG_TEMPLATE = "invalid char found: invalids=({invalid}), value={value}"
 
     @property
-    def platform(self):
+    def platform(self) -> Platform:
         return self.__platform
 
     @property
-    def reserved_keywords(self):
+    def reserved_keywords(self) -> Tuple[str, ...]:
         return (".", "..")
 
     @property
-    def min_len(self):
+    def min_len(self) -> int:
         return self._min_len
 
     @property
-    def max_len(self):
+    def max_len(self) -> int:
         return self._max_len
 
-    def __init__(self, min_len, max_len, platform=None):
+    def __init__(
+        self, min_len: Optional[int], max_len: Optional[int], platform: PlatformType = None
+    ) -> None:
+        self.__platform = normalize_platform(platform)
+
         if min_len is None:
             min_len = 1
         self._min_len = max(min_len, 1)
 
-        self._max_len = max_len
+        if max_len in [None, -1]:
+            self._max_len = self._get_default_max_path_len()
+        else:
+            self._max_len = cast(int, max_len)
 
-        self.__platform = normalize_platform(platform)
-
-    def _is_universal(self):
+    def _is_universal(self) -> bool:
         return self.platform == Platform.UNIVERSAL
 
-    def _is_linux(self):
+    def _is_linux(self) -> bool:
         return self.platform == Platform.LINUX
 
-    def _is_windows(self):
+    def _is_windows(self) -> bool:
         return self.platform == Platform.WINDOWS
 
-    def _is_macos(self):
+    def _is_macos(self) -> bool:
         return self.platform == Platform.MACOS
 
-    def _validate_max_len(self):
+    def _validate_max_len(self) -> None:
         if self.max_len < 1:
             raise ValueError("max_len must be greater or equals to one")
 
         if self.min_len > self.max_len:
             raise ValueError("min_len must be lower than max_len")
 
-    def _validate_reserved_keywords(self, name):
+    def _validate_reserved_keywords(self, name: str) -> None:
         root_name = _extract_root_name(name)
         if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(
@@ -138,7 +147,7 @@ class FileSanitizer(NameSanitizer):
                 platform=self.platform,
             )
 
-    def _get_default_max_path_len(self):
+    def _get_default_max_path_len(self) -> int:
         if self._is_linux():
             return 4096
 
@@ -151,7 +160,7 @@ class FileSanitizer(NameSanitizer):
         return 260  # universal
 
     @staticmethod
-    def _findall_to_str(match):
+    def _findall_to_str(match: List[Any]) -> str:
         return ", ".join([repr(text) for text in match])
 
 
@@ -170,7 +179,7 @@ class FileNameSanitizer(FileSanitizer):
     )
 
     @property
-    def reserved_keywords(self):
+    def reserved_keywords(self) -> Tuple[str, ...]:
         common_keywords = super(FileNameSanitizer, self).reserved_keywords
 
         if self._is_universal() or self._is_windows():
@@ -178,10 +187,17 @@ class FileNameSanitizer(FileSanitizer):
 
         return common_keywords
 
-    def __init__(self, min_len=1, max_len=_DEFAULT_MAX_FILENAME_LEN, platform=None):
+    def __init__(
+        self,
+        min_len: Optional[int] = 1,
+        max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
+        platform: PlatformType = None,
+    ) -> None:
         super(FileNameSanitizer, self).__init__(
             min_len=min_len,
-            max_len=(max_len if max_len is not None else _DEFAULT_MAX_FILENAME_LEN),
+            max_len=(
+                cast(int, max_len) if max_len not in [None, -1] else _DEFAULT_MAX_FILENAME_LEN
+            ),
             platform=platform,
         )
 
@@ -189,7 +205,7 @@ class FileNameSanitizer(FileSanitizer):
         self._validate_max_len()
         self._sanitize_regexp = self._get_sanitize_regexp()
 
-    def sanitize(self, value, replacement_text=""):
+    def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         self._validate_null_string(value)
 
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
@@ -211,7 +227,7 @@ class FileNameSanitizer(FileSanitizer):
 
         return sanitized_filename
 
-    def validate(self, value):
+    def validate(self, value: PathType) -> None:
         self._validate_null_string(value)
 
         unicode_filename = preprocess(value)
@@ -233,7 +249,7 @@ class FileNameSanitizer(FileSanitizer):
         else:
             self.__validate_unix_filename(unicode_filename)
 
-    def __validate_unix_filename(self, unicode_filename):
+    def __validate_unix_filename(self, unicode_filename: str) -> None:
         match = self.__RE_INVALID_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
@@ -242,7 +258,7 @@ class FileNameSanitizer(FileSanitizer):
                 )
             )
 
-    def __validate_win_filename(self, unicode_filename):
+    def __validate_win_filename(self, unicode_filename: str) -> None:
         match = self.__RE_INVALID_WIN_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
@@ -261,7 +277,7 @@ class FileNameSanitizer(FileSanitizer):
                 description="Do not end a file or directory name with a space or a period",
             )
 
-    def _get_sanitize_regexp(self):
+    def _get_sanitize_regexp(self) -> Pattern:
         if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
             return self.__RE_INVALID_WIN_FILENAME
 
@@ -281,11 +297,16 @@ class FilePathSanitizer(FileSanitizer):
         re.IGNORECASE,
     )
 
-    def __init__(self, min_len=1, platform=None, max_len=None):
-        super(FilePathSanitizer, self).__init__(min_len=min_len, max_len=max_len, platform=platform)
+    def __init__(
+        self,
+        min_len: Optional[int] = 1,
+        max_len: Optional[int] = None,
+        platform: PlatformType = None,
+    ) -> None:
+        super(FilePathSanitizer, self).__init__(
+            min_len=min_len, max_len=max_len, platform=platform,
+        )
 
-        if self.max_len is None:
-            self._max_len = self._get_default_max_path_len()
         self._max_len = min(self._max_len, self._get_default_max_path_len())
 
         self._validate_max_len()
@@ -300,7 +321,7 @@ class FilePathSanitizer(FileSanitizer):
         else:
             self.__split_drive = posixpath.splitdrive
 
-    def sanitize(self, value, replacement_text=""):
+    def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         self._validate_null_string(value)
 
         try:
@@ -315,7 +336,7 @@ class FilePathSanitizer(FileSanitizer):
         else:
             path_separator = "/"
 
-        sanitized_entries = []
+        sanitized_entries = []  # type: List[str]
         if drive:
             sanitized_entries.append(drive)
         for entry in sanitized_path.replace("\\", "/").split("/"):
@@ -324,7 +345,7 @@ class FilePathSanitizer(FileSanitizer):
                 continue
 
             try:
-                sanitized_entries.append(self.__fname_sanitizer.sanitize(entry))
+                sanitized_entries.append(str(self.__fname_sanitizer.sanitize(entry)))
             except ValidationError as e:
                 if e.reason == ErrorReason.NULL_NAME:
                     if not sanitized_entries:
@@ -338,10 +359,10 @@ class FilePathSanitizer(FileSanitizer):
 
         return sanitized_path
 
-    def validate(self, value):
+    def validate(self, value: PathType) -> None:
         self._validate_null_string(value)
 
-        value = self.__split_drive(value)[1]
+        value = self.__split_drive(str(value))[1]
         if not value:
             return
 
@@ -373,7 +394,7 @@ class FilePathSanitizer(FileSanitizer):
         else:
             self.__validate_unix_file_path(unicode_file_path)
 
-    def __validate_unix_file_path(self, unicode_file_path):
+    def __validate_unix_file_path(self, unicode_file_path: str) -> None:
         match = self.__RE_INVALID_PATH.findall(unicode_file_path)
         if match:
             raise InvalidCharError(
@@ -382,7 +403,7 @@ class FilePathSanitizer(FileSanitizer):
                 )
             )
 
-    def __validate_win_file_path(self, unicode_file_path):
+    def __validate_win_file_path(self, unicode_file_path: str) -> None:
         match = self.__RE_INVALID_WIN_PATH.findall(unicode_file_path)
         if match:
             raise InvalidCharError(
@@ -394,9 +415,9 @@ class FilePathSanitizer(FileSanitizer):
 
         value = self.__split_drive(unicode_file_path)[1]
         if value:
-            match = self.__RE_NTFS_RESERVED.search(value)
-            if match:
-                reserved_name = match.group()
+            match_reserved = self.__RE_NTFS_RESERVED.search(value)
+            if match_reserved:
+                reserved_name = match_reserved.group()
                 raise ReservedNameError(
                     "'{}' is a reserved name".format(reserved_name),
                     reusable_name=False,
@@ -404,25 +425,30 @@ class FilePathSanitizer(FileSanitizer):
                     platform=self.platform,
                 )
 
-    def _get_sanitize_regexp(self):
+    def _get_sanitize_regexp(self) -> Pattern:
         if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
             return self.__RE_INVALID_WIN_PATH
 
         return self.__RE_INVALID_PATH
 
 
-def validate_filename(filename, platform=None, min_len=1, max_len=_DEFAULT_MAX_FILENAME_LEN):
+def validate_filename(
+    filename: PathType,
+    platform: Optional[str] = None,
+    min_len: int = 1,
+    max_len: int = _DEFAULT_MAX_FILENAME_LEN,
+) -> None:
     """Verifying whether the ``filename`` is a valid file name or not.
 
     Args:
-        filename (str):
+        filename:
             Filename to validate.
-        platform (str, optional):
+        platform:
             .. include:: platform.txt
-        min_len (int, optional):
+        min_len:
             Minimum length of the ``filename``. The value must be greater or equal to one.
             Defaults to ``1``.
-        max_len (int, optional):
+        max_len:
             Maximum length the ``filename``. The value must be lower than:
 
                 - ``Linux``: 4096
@@ -456,18 +482,23 @@ def validate_filename(filename, platform=None, min_len=1, max_len=_DEFAULT_MAX_F
     FileNameSanitizer(platform=platform, min_len=min_len, max_len=max_len).validate(filename)
 
 
-def validate_filepath(file_path, platform=None, min_len=1, max_len=None):
+def validate_filepath(
+    file_path: PathType,
+    platform: Optional[str] = None,
+    min_len: int = 1,
+    max_len: Optional[int] = None,
+) -> None:
     """Verifying whether the ``file_path`` is a valid file path or not.
 
     Args:
-        file_path (str):
+        file_path:
             File path to validate.
-        platform (str, optional):
+        platform:
             .. include:: platform.txt
-        min_len (int, optional):
+        min_len:
             Minimum length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
-        max_len (int, optional):
+        max_len:
             Maximum length of the ``file_path`` length. If the value is |None|,
             in the default, automatically determined by the ``platform``:
 
@@ -502,19 +533,32 @@ def validate_file_path(file_path, platform=None, max_path_len=None):
     validate_filepath(file_path, platform, max_path_len)
 
 
-def is_valid_filename(filename, platform=None, min_len=1, max_len=None):
+def is_valid_filename(
+    filename: PathType,
+    platform: Optional[str] = None,
+    min_len: int = 1,
+    max_len: Optional[int] = None,
+) -> bool:
     return FileNameSanitizer(platform=platform, min_len=min_len, max_len=max_len).is_valid(filename)
 
 
-def is_valid_filepath(file_path, platform=None, min_len=1, max_len=None):
+def is_valid_filepath(
+    file_path: PathType,
+    platform: Optional[str] = None,
+    min_len: int = 1,
+    max_len: Optional[int] = None,
+) -> bool:
     return FilePathSanitizer(platform=platform, min_len=min_len, max_len=max_len).is_valid(
         file_path
     )
 
 
 def sanitize_filename(
-    filename, replacement_text="", platform=None, max_len=_DEFAULT_MAX_FILENAME_LEN
-):
+    filename: PathType,
+    replacement_text: str = "",
+    platform: Optional[str] = None,
+    max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
+) -> PathType:
     """Make a valid filename from a string.
 
     To make a valid filename the function does:
@@ -530,12 +574,12 @@ def sanitize_filename(
           is one of the reserved names by the operating system.
 
     Args:
-        filename (str or PathLike object): Filename to sanitize.
-        replacement_text (str, optional):
+        filename: Filename to sanitize.
+        replacement_text:
             Replacement text for invalid characters. Defaults to ``""``.
-        platform (str, optional):
+        platform:
             .. include:: platform.txt
-        max_len (int, optional):
+        max_len:
             The upper limit of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
             Defaults to ``255``.
@@ -557,7 +601,12 @@ def sanitize_filename(
     )
 
 
-def sanitize_filepath(file_path, replacement_text="", platform=None, max_len=None):
+def sanitize_filepath(
+    file_path: PathType,
+    replacement_text: str = "",
+    platform: Optional[str] = None,
+    max_len: Optional[int] = None,
+) -> PathType:
     """Make a valid file path from a string.
 
     Replace invalid characters for a file path within the ``file_path``
@@ -566,14 +615,14 @@ def sanitize_filepath(file_path, replacement_text="", platform=None, max_len=Non
     |invalid_file_path_chars|, |invalid_win_file_path_chars| (and non printable characters).
 
     Args:
-        file_path (str or PathLike object):
+        file_path:
             File path to sanitize.
-        replacement_text (str, optional):
+        replacement_text:
             Replacement text for invalid characters.
             Defaults to ``""``.
-        platform (str, optional):
+        platform:
             .. include:: platform.txt
-        max_len (int, optional):
+        max_len:
             The upper limit of the ``file_path`` length. Truncate the name if the ``file_path``
             length exceedd this value. If the value is |None|, the default value automatically
             determined by the execution platform:
