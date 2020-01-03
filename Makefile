@@ -20,7 +20,7 @@ check:
 .PHONY: clean
 clean:
 	@rm -rf $(PACKAGE)-*.*.*/ \
-		$(BUILD_WORK_DIR) \
+		build/ \
 		$(DOCS_BUILD_DIR) \
 		dist/ \
 		pip-wheel-metadata/ \
