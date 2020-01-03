@@ -50,8 +50,6 @@ with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
 
 SETUPTOOLS_REQUIRES = ["setuptools>=38.3.0"]
 PYTEST_RUNNER_REQUIRES = ["pytest-runner"] if need_pytest() else []
-cmdclass = {}
-cmdclass.update(get_release_command_class())
 
 setuptools.setup(
     name=MODULE_NAME,
@@ -98,4 +96,4 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing",
     ],
-    cmdclass=cmdclass)
+    cmdclass=get_release_command_class())
