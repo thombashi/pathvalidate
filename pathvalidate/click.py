@@ -16,7 +16,7 @@ def filename(ctx, param, value):
     try:
         validate_filename(value)
     except ValidationError as e:
-        raise click.BadParameter from e
+        raise click.BadParameter(e)
 
     return sanitize_filename(value)
 
@@ -28,6 +28,6 @@ def filepath(ctx, param, value):
     try:
         validate_filepath(value)
     except ValidationError as e:
-        raise click.BadParameter from e
+        raise click.BadParameter(e)
 
     return sanitize_filepath(value)
