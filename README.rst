@@ -35,7 +35,7 @@ Features
 - Sanitize/Validate a string as a:
     - file name
     - file path
-- validafilename/filepath validator for ``argparse``/``click``
+- filename/filepath validator for ``argparse``/``click``
 - Multibyte character support
 
 Examples
