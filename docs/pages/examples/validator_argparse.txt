@@ -8,3 +8,10 @@
         parser = ArgumentParser()
         parser.add_argument("--filepath", type=filepath)
         parser.add_argument("--filename", type=filename)
+
+:Output:
+    .. code-block:: none
+
+        $ ./examples/argparse_validate.py --filepath e?g
+        usage: argparse_validate.py [-h] [--filepath FILEPATH] [--filename FILENAME]
+        argparse_validate.py: error: argument --filepath: invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
