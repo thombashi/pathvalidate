@@ -14,8 +14,8 @@ build:
 .PHONY: check
 check:
 	python setup.py check
-	pylama
 	mypy pathvalidate/ --show-error-context --show-error-codes --python-version 3.5
+	pylama
 
 .PHONY: clean
 clean:
