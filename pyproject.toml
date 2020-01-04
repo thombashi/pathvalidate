@@ -36,10 +36,13 @@ branch = true
 [tool.coverage.report]
 show_missing = true
 precision = 1
-
-# Regexes for lines to exclude from consideration
 exclude_lines = [
-    "except ImportError",
-    "raise NotImplementedError",
-    "pass",
+    'except ImportError',
+    'raise NotImplementedError',
+    'pass',
+    'ABCmeta',
+    'abstractmethod',
+    'abstractproperty',
+    'abstractclassmethod',
+    'warnings.warn',
 ]
