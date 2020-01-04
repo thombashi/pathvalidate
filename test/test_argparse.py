@@ -15,7 +15,8 @@ class Test_validate_filename_arg:
     def test_normal(self, value):
         parser = ArgumentParser()
         parser.add_argument("filename", type=validate_filename_arg)
-        parser.parse_args([value])
+
+        assert parser.parse_args([value]).filename == value
 
     @pytest.mark.parametrize(["value"], [["foo/abc"], ["a?c"], ["COM1"], ["a" * 8000]])
     def test_exception(self, value):
@@ -35,7 +36,8 @@ class Test_validate_filepath_arg:
     def test_normal(self, value):
         parser = ArgumentParser()
         parser.add_argument("filepath", type=validate_filepath_arg)
-        parser.parse_args([value])
+
+        assert parser.parse_args([value]).filepath == value
 
     @pytest.mark.parametrize(["value"], [["foo/a?c"], ["COM1"], ["a" * 8000]])
     def test_exception(self, value):

@@ -10,18 +10,22 @@ from ._file import sanitize_filename, sanitize_filepath, validate_filename, vali
 from .error import ValidationError
 
 
-def validate_filename_arg(value: str) -> None:
+def validate_filename_arg(value: str) -> str:
     try:
         validate_filename(value)
     except ValidationError as e:
         raise ArgumentTypeError(e)
 
+    return value
 
-def validate_filepath_arg(value: str) -> None:
+
+def validate_filepath_arg(value: str) -> str:
     try:
         validate_filepath(value)
     except ValidationError as e:
         raise ArgumentTypeError(e)
+
+    return value
 
 
 def sanitize_filename_arg(value: str) -> PathType:
