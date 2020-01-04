@@ -76,7 +76,7 @@ setuptools.setup(
     setup_requires=SETUPTOOLS_REQUIRES + PYTEST_RUNNER_REQUIRES,
     tests_require=TESTS_REQUIRES,
     extras_require={
-        "dev": ["mypy>=0.761", "releasecmd>=0.1.0,<1", "twine", "wheel"] + DOCS_REQUIRES,
+        "dev": ["codespell", "mypy>=0.761", "releasecmd>=0.1.0,<1", "twine", "wheel"] + DOCS_REQUIRES + TESTS_REQUIRES,
         "test": TESTS_REQUIRES,
     },
 
