@@ -129,18 +129,54 @@ filename/filepath validator for argparse
 
         from argparse import ArgumentParser
 
-        from pathvalidate.argparse import filepath, filename
+        from pathvalidate.argparse import validate_filename_arg, validate_filepath_arg
 
         parser = ArgumentParser()
-        parser.add_argument("--filepath", type=filepath)
-        parser.add_argument("--filename", type=filename)
+        parser.add_argument("--filepath", type=validate_filepath_arg)
+        parser.add_argument("--filename", type=validate_filename_arg)
+        options = parser.parse_args()
+
+        if options.filename:
+            print("filename: {}".format(options.filename))
+
+        if options.filepath:
+            print("filepath: {}".format(options.filepath))
 
 :Output:
     .. code-block::
 
+        $ ./examples/argparse_validate.py --filename eg
+        filename: eg
         $ ./examples/argparse_validate.py --filepath e?g
         usage: argparse_validate.py [-h] [--filepath FILEPATH] [--filename FILENAME]
         argparse_validate.py: error: argument --filepath: invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
+
+filename/filepath sanitizer for argparse
+------------------------------------------
+:Sample Code:
+    .. code-block:: python
+
+        from argparse import ArgumentParser
+
+        from pathvalidate.argparse import sanitize_filename_arg, sanitize_filepath_arg
+
+
+        parser = ArgumentParser()
+        parser.add_argument("--filename", type=sanitize_filename_arg)
+        parser.add_argument("--filepath", type=sanitize_filepath_arg)
+        options = parser.parse_args()
+
+        if options.filename:
+            print("filename: {}".format(options.filename))
+
+        if options.filepath:
+            print("filepath: {}".format(options.filepath))
+
+:Output:
+    .. code-block::
+
+        $ ./examples/argparse_sanitize.py --filename e/g
+        filename: eg
 
 filename/filepath validator for click
 ---------------------------------------
@@ -149,14 +185,17 @@ filename/filepath validator for click
 
         import click
 
-        from pathvalidate.click import filename, filepath
+        from pathvalidate.click import validate_filename_arg, validate_filepath_arg
 
 
         @click.command()
-        @click.option("--filename", callback=filename)
-        @click.option("--filepath", callback=filepath)
+        @click.option("--filename", callback=validate_filename_arg)
+        @click.option("--filepath", callback=validate_filepath_arg)
         def cli(filename, filepath):
-            click.echo(filename, filepath)
+            if filename:
+                click.echo("filename: {}".format(filename))
+            if filepath:
+                click.echo("filepath: {}".format(filepath))
 
 
         if __name__ == "__main__":
@@ -165,10 +204,41 @@ filename/filepath validator for click
 :Output:
     .. code-block::
 
+        $ ./examples/click_validate.py --filename ab
+        filename: ab
         $ ./examples/click_validate.py --filepath e?g
         Usage: click_validate.py [OPTIONS]
 
         Error: Invalid value for "--filepath": invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
+
+filename/filepath sanitizer for click
+---------------------------------------
+:Sample Code:
+    .. code-block:: python
+
+        import click
+
+        from pathvalidate.click import sanitize_filename_arg, sanitize_filepath_arg
+
+
+        @click.command()
+        @click.option("--filename", callback=sanitize_filename_arg)
+        @click.option("--filepath", callback=sanitize_filepath_arg)
+        def cli(filename, filepath):
+            if filename:
+                click.echo("filename: {}".format(filename))
+            if filepath:
+                click.echo("filepath: {}".format(filepath))
+
+
+        if __name__ == "__main__":
+            cli()
+
+:Output:
+    .. code-block::
+
+        $ ./examples/click_sanitize.py --filename a/b
+        filename: ab
 
 For more information
 ----------------------
