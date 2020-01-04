@@ -1,0 +1,24 @@
+:Sample Code:
+    .. code-block:: python
+
+        from argparse import ArgumentParser
+
+        from pathvalidate.argparse import sanitize_filename_arg, sanitize_filepath_arg
+
+
+        parser = ArgumentParser()
+        parser.add_argument("--filename", type=sanitize_filename_arg)
+        parser.add_argument("--filepath", type=sanitize_filepath_arg)
+        options = parser.parse_args()
+
+        if options.filename:
+            print("filename: {}".format(options.filename))
+
+        if options.filepath:
+            print("filepath: {}".format(options.filepath))
+
+:Output:
+    .. code-block:: none
+
+        $ ./examples/argparse_sanitize.py --filename e/g
+        filename: eg
