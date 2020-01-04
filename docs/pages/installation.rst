@@ -17,7 +17,7 @@ Install from PPA (for Ubuntu)
 
 Dependencies
 ============
-Python 3.5+ or `PyPy <https://pypy.org/>`__.
+Python 3.5+
 No external dependencies.
 
 
