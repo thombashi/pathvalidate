@@ -15,7 +15,7 @@ build:
 check:
 	python setup.py check
 	mypy pathvalidate/ --show-error-context --show-error-codes --python-version 3.5
-	codespell pathvalidate docs examples test --check-filenames --ignore-words-list followings
+	codespell $(PACKAGE) docs examples test --check-filenames --ignore-words-list followings
 	pylama
 
 .PHONY: clean
