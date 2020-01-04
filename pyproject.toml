@@ -12,7 +12,6 @@ exclude = '''
     | build
     | dist
 )/
-| setup.py
 | docs/conf.py
 '''
 

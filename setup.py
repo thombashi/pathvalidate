@@ -55,7 +55,6 @@ setuptools.setup(
     name=MODULE_NAME,
     version=pkg_info["__version__"],
     url=REPOSITORY_URL,
-
     author=pkg_info["__author__"],
     author_email=pkg_info["__email__"],
     description=summary,
@@ -63,23 +62,22 @@ setuptools.setup(
     license=pkg_info["__license__"],
     long_description=long_description,
     include_package_data=True,
-
     packages=setuptools.find_packages(exclude=["test*"]),
     project_urls={
         "Documentation": "https://{:s}.rtfd.io/".format(MODULE_NAME),
         "Source": REPOSITORY_URL,
         "Tracker": "{:s}/issues".format(REPOSITORY_URL),
     },
-
     python_requires=">=3.5",
     install_requires=SETUPTOOLS_REQUIRES + install_requires,
     setup_requires=SETUPTOOLS_REQUIRES + PYTEST_RUNNER_REQUIRES,
     tests_require=TESTS_REQUIRES,
     extras_require={
-        "dev": ["codespell", "mypy>=0.761", "releasecmd>=0.1.0,<1", "twine", "wheel"] + DOCS_REQUIRES + TESTS_REQUIRES,
+        "dev": ["codespell", "mypy>=0.761", "releasecmd>=0.1.0,<1", "twine", "wheel"]
+        + DOCS_REQUIRES
+        + TESTS_REQUIRES,
         "test": TESTS_REQUIRES,
     },
-
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
@@ -96,4 +94,5 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Text Processing",
     ],
-    cmdclass=get_release_command_class())
+    cmdclass=get_release_command_class(),
+)
