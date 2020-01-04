@@ -272,7 +272,6 @@ class Test_validate_filename(object):
 
         assert not is_valid_filename(value, platform=platform)
 
-    @pytest.mark.skipif("sys.version_info[0] < 3")
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
@@ -343,7 +342,6 @@ class Test_sanitize_filename(object):
         validate_filename(sanitized_name, platform=platform)
         assert is_valid_filename(sanitized_name, platform=platform)
 
-    @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [

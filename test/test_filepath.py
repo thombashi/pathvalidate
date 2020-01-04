@@ -335,7 +335,6 @@ class Test_validate_filepath(object):
 
         assert not is_valid_filepath(value, platform=platform)
 
-    @pytest.mark.skipif("sys.version_info[0] < 3")
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
@@ -495,7 +494,6 @@ class Test_sanitize_filepath(object):
         assert filename == expected
         assert is_valid_filepath(filename, platform=test_platform)
 
-    @pytest.mark.skipif("sys.version_info[0:2] <= (3, 5)")
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
