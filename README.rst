@@ -14,6 +14,10 @@ Summary
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python versions
 
+.. image:: https://img.shields.io/pypi/implementation/pathvalidate.svg
+    :target: https://pypi.org/project/pathvalidate
+    :alt: Supported Python implementations
+
 .. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS%20CI
     :target: https://travis-ci.org/thombashi/pathvalidate
     :alt: Linux/macOS CI status
@@ -264,7 +268,7 @@ Install from PPA (for Ubuntu)
 
 Dependencies
 ============
-Python 3.5+ or `PyPy <https://pypy.org/>`__.
+Python 3.5+
 No external dependencies.
 
 
