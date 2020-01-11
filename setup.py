@@ -76,7 +76,6 @@ setuptools.setup(
     extras_require={
         "dev": ["releasecmd>=0.1.0,<1", "twine", "wheel"]
         + ["autoflake", "black", "isort"]
-        + ["codespell", "mypy>=0.761", "pylama"]
         + DOCS_REQUIRES
         + TESTS_REQUIRES,
         "test": TESTS_REQUIRES,

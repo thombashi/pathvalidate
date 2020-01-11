@@ -13,10 +13,7 @@ build:
 
 .PHONY: check
 check:
-	python setup.py check
-	mypy pathvalidate/ --show-error-context --show-error-codes --python-version 3.5
-	codespell $(PACKAGE) docs examples test --check-filenames --ignore-words-list followings
-	pylama
+	tox -e lint
 
 .PHONY: clean
 clean:
