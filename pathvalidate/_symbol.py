@@ -2,7 +2,6 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-
 import re
 
 from ._common import ascii_symbols, preprocess, unprintable_ascii_chars

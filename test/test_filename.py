@@ -2,7 +2,6 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-
 import platform as m_platform  # noqa: W0611
 import random
 import sys  # noqa: W0611
