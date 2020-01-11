@@ -2,7 +2,6 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-import io
 import os.path
 import sys
 from typing import Dict, List  # noqa
@@ -37,10 +36,10 @@ def get_release_command_class():
 with open(os.path.join(MODULE_NAME, "__version__.py")) as f:
     exec(f.read(), pkg_info)
 
-with io.open("README.rst", encoding=ENCODING) as fp:
+with open("README.rst", encoding=ENCODING) as fp:
     long_description = fp.read()
 
-with io.open(os.path.join("docs", "pages", "introduction", "summary.txt"), encoding=ENCODING) as f:
+with open(os.path.join("docs", "pages", "introduction", "summary.txt"), encoding=ENCODING) as f:
     summary = f.read().strip()
 
 with open(os.path.join(REQUIREMENT_DIR, "requirements.txt")) as f:
