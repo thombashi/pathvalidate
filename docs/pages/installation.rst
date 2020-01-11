@@ -1,12 +1,18 @@
 Installation
 ============
-Install from PyPI
+Installation: pip
 ------------------------------
 ::
 
     pip install pathvalidate
 
-Install from PPA (for Ubuntu)
+Installation: conda
+------------------------------
+::
+
+    conda install -c thombashi pathvalidate
+
+Installation: apt
 ------------------------------
 ::
 

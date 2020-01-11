@@ -2,6 +2,10 @@
     :target: https://badge.fury.io/py/pathvalidate
     :alt: PyPI package version
 
+.. image:: https://anaconda.org/thombashi/pathvalidate/badges/version.svg
+    :target: https://anaconda.org/thombashi/pathvalidate
+    :alt: conda package version
+
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python versions
