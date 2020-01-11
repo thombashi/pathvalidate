@@ -1,4 +1,5 @@
 import click
+import pytest
 from click.testing import CliRunner
 
 from pathvalidate.click import (
@@ -30,24 +31,32 @@ def cli_sanitize(filename, filepath):
 
 
 class Test_validate:
-    def test_normal_filename(self):
+    @pytest.mark.parametrize(["value", "expected"], [["ab", 0], ["", 0], ["a/b", 2], ["a/?b", 2]])
+    def test_normal_filename(self, value, expected):
         runner = CliRunner()
-        result = runner.invoke(cli_validate, ["--filename", "a/b"])
-        assert result.exit_code
+        result = runner.invoke(cli_validate, ["--filename", value])
+        assert result.exit_code == expected
 
-    def test_normal_filepath(self):
+    @pytest.mark.parametrize(["value", "expected"], [["ab", 0], ["", 0], ["a/b", 0], ["a/?b", 2]])
+    def test_normal_filepath(self, value, expected):
         runner = CliRunner()
-        result = runner.invoke(cli_validate, ["--filepath", "a/?b"])
-        assert result.exit_code
+        result = runner.invoke(cli_validate, ["--filepath", value])
+        assert result.exit_code == expected
 
 
 class Test_sanitize:
-    def test_normal_filename(self):
+    @pytest.mark.parametrize(
+        ["value", "expected"], [["ab", "ab"], ["", ""], ["a/b", "ab"], ["a/?b", "ab"]]
+    )
+    def test_normal_filename(self, value, expected):
         runner = CliRunner()
-        result = runner.invoke(cli_sanitize, ["--filename", "a/b"])
-        assert result.output.strip() == "ab"
+        result = runner.invoke(cli_sanitize, ["--filename", value])
+        assert result.output.strip() == expected
 
-    def test_normal_filepath(self):
+    @pytest.mark.parametrize(
+        ["value", "expected"], [["ab", "ab"], ["", ""], ["a/b", "a/b"], ["a/?b", "a/b"]]
+    )
+    def test_normal_filepath(self, value, expected):
         runner = CliRunner()
-        result = runner.invoke(cli_sanitize, ["--filepath", "a/?b"])
-        assert result.output.strip() == "a/b"
+        result = runner.invoke(cli_sanitize, ["--filepath", value])
+        assert result.output.strip() == expected
