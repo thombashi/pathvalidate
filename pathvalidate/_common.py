@@ -2,16 +2,22 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-
+import enum
 import re
 import string
 from pathlib import Path
 from typing import Any, List, Optional, Union, cast
 
-from .error import NullNameError
-
 
 PathType = Union[str, Path]
+
+
+@enum.unique
+class Platform(enum.Enum):
+    UNIVERSAL = "universal"
+    LINUX = "Linux"
+    WINDOWS = "Windows"
+    MACOS = "macOS"
 
 
 def is_pathlike_obj(value: PathType) -> bool:
@@ -19,6 +25,8 @@ def is_pathlike_obj(value: PathType) -> bool:
 
 
 def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
+    from .error import NullNameError
+
     if _is_not_null_string(text) or is_pathlike_obj(text):
         return
 
@@ -59,6 +67,9 @@ def _get_unprintable_ascii_char_list() -> List[str]:
     return [chr(c) for c in range(128) if chr(c) not in string.printable]
 
 
+unprintable_ascii_chars = tuple(_get_unprintable_ascii_char_list())
+
+
 def _get_ascii_symbol_list() -> List[str]:
     symbol_list = []  # type: List[str]
 
@@ -73,7 +84,6 @@ def _get_ascii_symbol_list() -> List[str]:
     return symbol_list
 
 
-unprintable_ascii_chars = tuple(_get_unprintable_ascii_char_list())
 ascii_symbols = tuple(_get_ascii_symbol_list())
 
 __RE_UNPRINTABLE_CHARS = re.compile(

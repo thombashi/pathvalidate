@@ -2,8 +2,6 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-
-import enum
 import itertools
 import ntpath
 import os.path
@@ -13,7 +11,7 @@ import re
 from pathlib import Path
 from typing import Any, List, Optional, Pattern, Tuple, Union, cast
 
-from ._common import PathType, is_pathlike_obj, preprocess, unprintable_ascii_chars
+from ._common import PathType, Platform, is_pathlike_obj, preprocess, unprintable_ascii_chars
 from ._interface import NameSanitizer
 from .error import (
     ErrorReason,
@@ -45,14 +43,6 @@ _NTFS_RESERVED_FILE_NAMES = (
 
 def _extract_root_name(path: str) -> str:
     return os.path.splitext(os.path.basename(path))[0]
-
-
-@enum.unique
-class Platform(enum.Enum):
-    UNIVERSAL = "universal"
-    LINUX = "Linux"
-    WINDOWS = "Windows"
-    MACOS = "macOS"
 
 
 PlatformType = Union[str, Platform, None]
