@@ -2,8 +2,10 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-
 import enum
+from typing import Optional, cast
+
+from ._common import Platform
 
 
 @enum.unique
@@ -20,11 +22,11 @@ class ValidationError(ValueError):
     """
 
     @property
-    def platform(self) -> str:
+    def platform(self) -> Platform:
         return self.__platform
 
     @property
-    def reason(self) -> str:
+    def reason(self) -> Optional[ErrorReason]:
         return self.__reason
 
     @property
@@ -47,7 +49,7 @@ class ValidationError(ValueError):
         item_list = [Exception.__str__(self)]
 
         if self.reason:
-            item_list.append("reason={}".format(self.reason.value))
+            item_list.append("reason={}".format(cast(ErrorReason, self.reason).value))
         if self.platform:
             item_list.append("target-platform={}".format(self.platform.value))
         if self.description:
