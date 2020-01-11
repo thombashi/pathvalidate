@@ -11,7 +11,7 @@ from pathvalidate.argparse import (
 
 
 class Test_validate_filename_arg:
-    @pytest.mark.parametrize(["value"], [["abc"], ["abc.txt"]])
+    @pytest.mark.parametrize(["value"], [["abc"], ["abc.txt"], [""]])
     def test_normal(self, value):
         parser = ArgumentParser()
         parser.add_argument("filename", type=validate_filename_arg)
@@ -32,7 +32,7 @@ class Test_validate_filename_arg:
 
 
 class Test_validate_filepath_arg:
-    @pytest.mark.parametrize(["value"], [["foo/abc"], ["foo/abc.txt"]])
+    @pytest.mark.parametrize(["value"], [["foo/abc"], ["foo/abc.txt"], [""]])
     def test_normal(self, value):
         parser = ArgumentParser()
         parser.add_argument("filepath", type=validate_filepath_arg)
@@ -56,6 +56,7 @@ class Test_sanitize_filename_arg:
     @pytest.mark.parametrize(
         ["value", "expected"],
         [
+            ["", ""],
             ["abc", "abc"],
             ["abc.txt", "abc.txt"],
             ["foo/abc", "fooabc"],
@@ -73,6 +74,7 @@ class Test_sanitize_filepath_arg:
     @pytest.mark.parametrize(
         ["value", "expected"],
         [
+            ["", ""],
             ["abc", "abc"],
             ["abc.txt", "abc.txt"],
             ["foo/abc", "foo/abc"],

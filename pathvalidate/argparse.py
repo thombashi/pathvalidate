@@ -11,6 +11,9 @@ from .error import ValidationError
 
 
 def validate_filename_arg(value: str) -> str:
+    if not value:
+        return ""
+
     try:
         validate_filename(value)
     except ValidationError as e:
@@ -20,6 +23,9 @@ def validate_filename_arg(value: str) -> str:
 
 
 def validate_filepath_arg(value: str) -> str:
+    if not value:
+        return ""
+
     try:
         validate_filepath(value)
     except ValidationError as e:
@@ -29,10 +35,16 @@ def validate_filepath_arg(value: str) -> str:
 
 
 def sanitize_filename_arg(value: str) -> PathType:
+    if not value:
+        return ""
+
     return sanitize_filename(value)
 
 
 def sanitize_filepath_arg(value: str) -> PathType:
+    if not value:
+        return ""
+
     return sanitize_filepath(value)
 
 
