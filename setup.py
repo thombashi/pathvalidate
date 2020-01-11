@@ -5,7 +5,7 @@
 import io
 import os.path
 import sys
-from typing import Dict, List
+from typing import Dict, List  # noqa
 
 import setuptools
 
@@ -15,7 +15,7 @@ REPOSITORY_URL = "https://github.com/thombashi/{:s}".format(MODULE_NAME)
 REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
 
-pkg_info: Dict[str, str] = {}
+pkg_info = {}  # type: Dict[str, str]
 
 
 def pytest_runner_requires() -> List[str]:
@@ -23,6 +23,7 @@ def pytest_runner_requires() -> List[str]:
         return ["pytest-runner"]
 
     return []
+
 
 def get_release_command_class():
     try:
