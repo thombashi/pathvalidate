@@ -314,11 +314,7 @@ class FilePathSanitizer(FileSanitizer):
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         self._validate_null_string(value)
 
-        try:
-            unicode_file_path = preprocess(value)
-        except AttributeError as e:
-            raise ValueError(e)
-
+        unicode_file_path = preprocess(value)
         drive, unicode_file_path = self.__split_drive(unicode_file_path)
         sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
         if self._is_windows():

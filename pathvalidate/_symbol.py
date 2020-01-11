@@ -65,7 +65,7 @@ def replace_symbol(
 
     try:
         new_text = __RE_SYMBOL.sub(replacement_text, preprocess(text))
-    except (TypeError, AttributeError):
+    except TypeError:
         raise TypeError("text must be a string")
 
     if not replacement_text:
