@@ -10,6 +10,10 @@ Summary
     :target: https://badge.fury.io/py/pathvalidate
     :alt: PyPI package version
 
+.. image:: https://anaconda.org/thombashi/pathvalidate/badges/version.svg
+    :target: https://anaconda.org/thombashi/pathvalidate
+    :alt: conda package version
+
 .. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python versions
@@ -251,13 +255,19 @@ https://pathvalidate.rtfd.io/en/latest/pages/examples/index.html
 
 Installation
 ============
-Install from PyPI
+Installation: pip
 ------------------------------
 ::
 
     pip install pathvalidate
 
-Install from PPA (for Ubuntu)
+Installation: conda
+------------------------------
+::
+
+    conda install -c thombashi pathvalidate
+
+Installation: apt
 ------------------------------
 ::
 
