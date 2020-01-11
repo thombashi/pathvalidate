@@ -5,6 +5,7 @@
 import io
 import os.path
 import sys
+from typing import Dict, List
 
 import setuptools
 
@@ -14,7 +15,7 @@ REPOSITORY_URL = "https://github.com/thombashi/{:s}".format(MODULE_NAME)
 REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
 
-pkg_info = {}
+pkg_info: Dict[str, str] = {}
 
 
 def need_pytest():
