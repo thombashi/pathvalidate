@@ -61,6 +61,7 @@ setuptools.setup(
     keywords=["file", "path", "validation", "validator", "sanitization", "sanitizer"],
     license=pkg_info["__license__"],
     long_description=long_description,
+    long_description_content_type="text/x-rst",
     include_package_data=True,
     packages=setuptools.find_packages(exclude=["test*"]),
     project_urls={
