@@ -12,7 +12,7 @@ from pathvalidate import ascii_symbols, replace_unprintable_char, unprintable_as
 from ._common import alphanum_chars
 
 
-class Test_replace_unprintable_char(object):
+class Test_replace_unprintable_char:
     TARGET_CHARS = unprintable_ascii_chars
     NOT_TARGET_CHARS = alphanum_chars + ascii_symbols
     REPLACE_TEXT_LIST = ["", "_"]

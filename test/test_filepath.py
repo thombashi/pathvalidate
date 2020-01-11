@@ -43,7 +43,7 @@ inf = float("inf")
 random.seed(0)
 
 
-class Test_FileSanitizer(object):
+class Test_FileSanitizer:
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
         [["windows", Platform.WINDOWS], ["linux", Platform.LINUX], ["macos", Platform.MACOS]],
@@ -103,7 +103,7 @@ class Test_FileSanitizer(object):
         assert FileNameSanitizer(255, platform=test_platform).reserved_keywords == expected
 
 
-class Test_validate_filepath(object):
+class Test_validate_filepath:
     VALID_CHARS = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
         "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
@@ -363,7 +363,7 @@ class Test_validate_filepath(object):
 
 
 @pytest.mark.skipif("m_platform.system() != 'Windows'")
-class Test_validate_win_file_path(object):
+class Test_validate_win_file_path:
     VALID_CHARS = VALID_PATH_CHARS
 
     @pytest.mark.parametrize(
@@ -385,7 +385,7 @@ class Test_validate_win_file_path(object):
         assert is_valid_filepath(value)
 
 
-class Test_sanitize_filepath(object):
+class Test_sanitize_filepath:
     SANITIZE_CHARS = INVALID_WIN_PATH_CHARS + unprintable_ascii_chars
     NOT_SANITIZE_CHARS = VALID_PATH_CHARS
     REPLACE_TEXT_LIST = ["", "_"]

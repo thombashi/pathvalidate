@@ -46,7 +46,7 @@ random.seed(0)
 VALID_MULTIBYTE_NAMES = ["新しいテキスト ドキュメント.txt", "新規 Microsoft Excel Worksheet.xlsx"]
 
 
-class Test_FileSanitizer(object):
+class Test_FileSanitizer:
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
         [["windows", Platform.WINDOWS], ["linux", Platform.LINUX], ["macos", Platform.MACOS]],
@@ -106,7 +106,7 @@ class Test_FileSanitizer(object):
         assert FileNameSanitizer(255, platform=test_platform).reserved_keywords == expected
 
 
-class Test_validate_filename(object):
+class Test_validate_filename:
     VALID_CHARS = VALID_FILENAME_CHARS
     INVALID_CHARS = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
 
@@ -307,7 +307,7 @@ class Test_validate_filename(object):
         assert not is_valid_filename(value)
 
 
-class Test_sanitize_filename(object):
+class Test_sanitize_filename:
     SANITIZE_CHARS = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
     NOT_SANITIZE_CHARS = VALID_FILENAME_CHARS
     REPLACE_TEXT_LIST = ["", "_"]

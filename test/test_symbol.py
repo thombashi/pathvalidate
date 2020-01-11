@@ -18,7 +18,7 @@ from pathvalidate import (
 from ._common import alphanum_chars
 
 
-class Test_validate_symbol(object):
+class Test_validate_symbol:
     VALID_CHARS = alphanum_chars
     INVALID_CHARS = ascii_symbols
 
@@ -46,7 +46,7 @@ class Test_validate_symbol(object):
             validate_symbol(value)
 
 
-class Test_replace_symbol(object):
+class Test_replace_symbol:
     TARGET_CHARS = ascii_symbols
     NOT_TARGET_CHARS = alphanum_chars
     REPLACE_TEXT_LIST = ["", "_"]
