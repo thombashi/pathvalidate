@@ -13,6 +13,7 @@ from pathvalidate import (
     unprintable_ascii_chars,
     validate_symbol,
 )
+from pathvalidate._symbol import replace_unprintable, validate_unprintable
 
 from ._common import alphanum_chars
 
@@ -87,3 +88,59 @@ class Test_replace_symbol:
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):
             replace_symbol(value)
+
+
+class Test_validate_unprintable:
+    VALID_CHARS = alphanum_chars
+    INVALID_CHARS = unprintable_ascii_chars
+
+    @pytest.mark.parametrize(
+        ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHARS]
+    )
+    def test_normal(self, value):
+        validate_unprintable(value)
+
+    @pytest.mark.parametrize(["value"], [["あいうえお"], ["シート"]])
+    def test_normal_multibyte(self, value):
+        pytest.skip("TODO")
+
+        validate_unprintable(value)
+
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["abc" + invalid_char + "hoge123"]
+            for invalid_char in INVALID_CHARS + unprintable_ascii_chars
+        ],
+    )
+    def test_exception_invalid_char(self, value):
+        with pytest.raises(InvalidCharError):
+            validate_unprintable(value)
+
+
+class Test_replace_unprintable:
+    TARGET_CHARS = unprintable_ascii_chars
+    NOT_TARGET_CHARS = alphanum_chars
+    REPLACE_TEXT_LIST = ["", "_"]
+
+    @pytest.mark.parametrize(
+        ["value", "replace_text", "expected"],
+        [
+            ["A" + c + "B", rep, "A" + rep + "B"]
+            for c, rep in itertools.product(TARGET_CHARS, REPLACE_TEXT_LIST)
+        ]
+        + [
+            ["A" + c + "B", rep, "A" + c + "B"]
+            for c, rep in itertools.product(NOT_TARGET_CHARS, REPLACE_TEXT_LIST)
+        ]
+        + [["", "", ""]],
+    )
+    def test_normal(self, value, replace_text, expected):
+        assert replace_unprintable(value, replace_text) == expected
+
+    @pytest.mark.parametrize(
+        ["value", "expected"], [[None, TypeError], [1, TypeError], [True, TypeError]]
+    )
+    def test_abnormal(self, value, expected):
+        with pytest.raises(expected):
+            replace_unprintable(value)
