@@ -36,7 +36,7 @@ def sanitize_filepath_arg(value: str) -> PathType:
     return sanitize_filepath(value)
 
 
-def filename(value: PathType) -> PathType:
+def filename(value: PathType) -> PathType:  # pragma: no cover
     # Deprecated
     try:
         validate_filename(value)
@@ -46,7 +46,7 @@ def filename(value: PathType) -> PathType:
     return sanitize_filename(value)
 
 
-def filepath(value: PathType) -> PathType:
+def filepath(value: PathType) -> PathType:  # pragma: no cover
     # Deprecated
     try:
         validate_filepath(value)

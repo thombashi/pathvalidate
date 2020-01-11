@@ -48,7 +48,7 @@ def sanitize_filepath_arg(ctx, param, value) -> PathType:
     return sanitize_filepath(value)
 
 
-def filename(ctx, param, value):
+def filename(ctx, param, value):  # pragma: no cover
     # Deprecated
     if not value:
         return None
@@ -61,7 +61,7 @@ def filename(ctx, param, value):
     return sanitize_filename(value)
 
 
-def filepath(ctx, param, value):
+def filepath(ctx, param, value):  # pragma: no cover
     # Deprecated
     if not value:
         return None
