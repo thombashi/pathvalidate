@@ -461,8 +461,8 @@ def validate_filename(
         :ref:`example-validate-filename`
 
     See Also:
-        `Naming Files, Paths, and Namespaces (Windows)
-        <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
+        `Naming Files, Paths, and Namespaces - Win32 apps | Microsoft Docs
+        <https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file>`__
     """
 
     FileNameSanitizer(platform=platform, min_len=min_len, max_len=max_len).validate(filename)
@@ -507,8 +507,8 @@ def validate_filepath(
         :ref:`example-validate-file-path`
 
     See Also:
-        `Naming Files, Paths, and Namespaces (Windows)
-        <https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx>`__
+        `Naming Files, Paths, and Namespaces - Win32 apps | Microsoft Docs
+        <https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file>`__
     """
 
     FilePathSanitizer(platform=platform, min_len=min_len, max_len=max_len).validate(file_path)
