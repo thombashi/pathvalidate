@@ -348,7 +348,7 @@ class FilePathSanitizer(FileSanitizer):
     def validate(self, value: PathType) -> None:
         self._validate_null_string(value)
 
-        value = self.__split_drive(str(value))[1]
+        _drive, value = self.__split_drive(str(value))
         if not value:
             return
 
@@ -399,7 +399,7 @@ class FilePathSanitizer(FileSanitizer):
                 platform=Platform.WINDOWS,
             )
 
-        value = self.__split_drive(unicode_file_path)[1]
+        _drive, value = self.__split_drive(unicode_file_path)
         if value:
             match_reserved = self.__RE_NTFS_RESERVED.search(value)
             if match_reserved:
