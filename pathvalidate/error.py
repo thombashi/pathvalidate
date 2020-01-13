@@ -44,10 +44,16 @@ class ValidationError(ValueError):
         self.__description = kwargs.pop("description", None)
         self.__reusable_name = kwargs.pop("reusable_name", None)
 
+        try:
         super(ValidationError, self).__init__(*args[0], **kwargs)
+        except IndexError:
+            super(ValidationError, self).__init__(*args, **kwargs)
 
     def __str__(self):
-        item_list = [Exception.__str__(self)]
+        item_list = []
+
+        if Exception.__str__(self):
+            item_list.append(Exception.__str__(self))
 
         if self.reason:
             item_list.append("reason={}".format(cast(ErrorReason, self.reason).value))
