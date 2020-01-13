@@ -223,6 +223,8 @@ class FileNameSanitizer(FileSanitizer):
         unicode_filename = preprocess(value)
         value_len = len(unicode_filename)
 
+        self.__validate_abspath(unicode_filename)
+
         if value_len > self.max_len:
             raise InvalidLengthError(
                 "filename is too long: expected<={:d}, actual={:d}".format(self.max_len, value_len)
@@ -238,6 +240,14 @@ class FileNameSanitizer(FileSanitizer):
             self.__validate_win_filename(unicode_filename)
         else:
             self.__validate_unix_filename(unicode_filename)
+
+    def __validate_abspath(self, value: str) -> None:
+        if any([ntpath.isabs(value), posixpath.isabs(value)]):
+            raise ValidationError(
+                description="found an absolute path ({}), expected a filename".format(value),
+                platform=self.platform,
+                reason=ErrorReason.FOUND_ABS_PATH,
+            )
 
     def __validate_unix_filename(self, unicode_filename: str) -> None:
         match = self.__RE_INVALID_FILENAME.findall(unicode_filename)

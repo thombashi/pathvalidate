@@ -11,11 +11,13 @@ from pathlib import Path
 import pytest
 
 from pathvalidate import (
+    ErrorReason,
     InvalidCharError,
     InvalidLengthError,
     NullNameError,
     Platform,
     ReservedNameError,
+    ValidationError,
     is_valid_filename,
     sanitize_filename,
     validate_filename,
@@ -281,8 +283,9 @@ class Test_validate_filename:
         ],
     )
     def test_exception_filepath(self, value, platform):
-        with pytest.raises(InvalidCharError):
+        with pytest.raises(ValidationError) as e:
             validate_filename(value, platform=platform)
+        assert e.value.reason in [ErrorReason.FOUND_ABS_PATH, ErrorReason.INVALID_CHARACTER]
         assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
