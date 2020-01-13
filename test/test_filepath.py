@@ -235,7 +235,7 @@ class Test_validate_filepath:
             with pytest.raises(expected):
                 validate_filepath(value, platform=test_platform)
 
-    @pytest.mark.skipif("platform.system() != 'Windows'")
+    @pytest.mark.skipif("m_platform.system() != 'Windows'")
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b/c.txt", ValidationError], ["C:\\a\\b\\c.txt", None],],
     )
@@ -247,7 +247,7 @@ class Test_validate_filepath:
             with pytest.raises(expected):
                 validate_filepath(value, platform="auto")
 
-    @pytest.mark.skipif("platform.system() != 'Linux'")
+    @pytest.mark.skipif("m_platform.system() != 'Linux'")
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b/c.txt", None], ["C:\\a\\b\\c.txt", ValidationError],],
     )
