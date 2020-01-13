@@ -272,6 +272,20 @@ class Test_validate_filename:
         assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
+        ["value", "platform"],
+        [
+            [value, platform]
+            for value, platform in product(
+                ["a/b.txt", "/a/b.txt", "c:\\Users"], ["windows", "universal"]
+            )
+        ],
+    )
+    def test_exception_filepath(self, value, platform):
+        with pytest.raises(InvalidCharError):
+            validate_filename(value, platform=platform)
+        assert not is_valid_filename(value, platform=platform)
+
+    @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
             [value, platform, InvalidCharError]
