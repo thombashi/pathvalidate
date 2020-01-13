@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 
 from pathvalidate import (
+    ErrorReason,
     InvalidCharError,
     InvalidLengthError,
     NullNameError,
@@ -398,7 +399,6 @@ class Test_validate_filepath:
         assert not is_valid_filepath(value)
 
 
-@pytest.mark.skipif("m_platform.system() != 'Windows'")
 class Test_validate_win_file_path:
     VALID_CHARS = VALID_PATH_CHARS
 
@@ -413,19 +413,20 @@ class Test_validate_win_file_path:
             ["C:\\Users/est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/hoge.csv"],
             ["C:\\Users"],
             ["C:\\"],
-            ["\\Users"],
         ],
     )
     def test_normal(self, value):
-        validate_filepath(value)
-        assert is_valid_filepath(value)
+        validate_filepath(value, platform="windows")
+        assert is_valid_filepath(value, platform="windows")
 
     @pytest.mark.parametrize(
-        ["value"], [["C:\\Users\\" + "a" * 1024]],
+        ["value", "expected"],
+        [["C:\\Users\\" + "a" * 1024, InvalidCharError], ["\\Users", InvalidCharError]],
     )
     def test_exception(self, value, expected):
-        with pytest.raises(expected):
+        with pytest.raises(ValidationError) as e:
             validate_filepath(value)
+        assert e.value.reason == ErrorReason.MALFORMED_ABS_PATH
         assert not is_valid_filepath(value)
 
 
