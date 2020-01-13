@@ -467,6 +467,8 @@ def validate_filename(
         filename:
             Filename to validate.
         platform:
+            Target platform name of the filename.
+
             .. include:: platform.txt
         min_len:
             Minimum length of the ``filename``. The value must be greater or equal to one.
@@ -517,6 +519,8 @@ def validate_filepath(
         file_path:
             File path to validate.
         platform:
+            Target platform name of the file path.
+
             .. include:: platform.txt
         min_len:
             Minimum length of the ``file_path``. The value must be greater or equal to one.
@@ -601,6 +605,8 @@ def sanitize_filename(
         replacement_text:
             Replacement text for invalid characters. Defaults to ``""``.
         platform:
+            Target platform name of the filename.
+
             .. include:: platform.txt
         max_len:
             The upper limit of the ``filename`` length. Truncate the name length if
@@ -644,6 +650,8 @@ def sanitize_filepath(
             Replacement text for invalid characters.
             Defaults to ``""``.
         platform:
+            Target platform name of the file path.
+
             .. include:: platform.txt
         max_len:
             The upper limit of the ``file_path`` length. Truncate the name if the ``file_path``
