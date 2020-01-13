@@ -397,7 +397,12 @@ class FilePathSanitizer(FileSanitizer):
         is_posix_abs = posixpath.isabs(value)
         is_nt_abs = ntpath.isabs(value)
         err_object = ValidationError(
-            description="invalid absolute file path ({}) for the platform".format(value),
+            description=(
+                "an invalid absolute file path ({}) for the platform ({}).".format(
+                    value, self.platform.value
+                )
+                + " specify an appropriate platform or 'auto'."
+            ),
             platform=self.platform,
             reason=ErrorReason.MALFORMED_ABS_PATH,
         )
