@@ -10,6 +10,7 @@ from ._common import Platform
 
 @enum.unique
 class ErrorReason(enum.Enum):
+    FOUND_ABS_PATH = "FOUND_ABS_PATH"
     NULL_NAME = "NULL_NAME"
     INVALID_CHARACTER = "INVALID_CHARACTER"
     INVALID_LENGTH = "INVALID_LENGTH"
@@ -45,11 +46,11 @@ class ValidationError(ValueError):
         self.__reusable_name = kwargs.pop("reusable_name", None)
 
         try:
-        super(ValidationError, self).__init__(*args[0], **kwargs)
+            super(ValidationError, self).__init__(*args[0], **kwargs)
         except IndexError:
             super(ValidationError, self).__init__(*args, **kwargs)
 
-    def __str__(self):
+    def __str__(self) -> str:
         item_list = []
 
         if Exception.__str__(self):
@@ -86,7 +87,7 @@ class InvalidCharError(ValidationError):
     Exception raised when includes invalid character(s) within a string.
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         kwargs["reason"] = ErrorReason.INVALID_CHARACTER
 
         super(InvalidCharError, self).__init__(args, **kwargs)
