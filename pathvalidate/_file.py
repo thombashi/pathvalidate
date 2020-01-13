@@ -313,6 +313,7 @@ class FilePathSanitizer(FileSanitizer):
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         self._validate_null_string(value)
+        self.__validate_abspath(value)
 
         unicode_file_path = preprocess(value)
         drive, unicode_file_path = self.__split_drive(unicode_file_path)
@@ -347,6 +348,7 @@ class FilePathSanitizer(FileSanitizer):
 
     def validate(self, value: PathType) -> None:
         self._validate_null_string(value)
+        self.__validate_abspath(value)
 
         _drive, value = self.__split_drive(str(value))
         if not value:
@@ -379,6 +381,17 @@ class FilePathSanitizer(FileSanitizer):
             self.__validate_win_file_path(unicode_file_path)
         else:
             self.__validate_unix_file_path(unicode_file_path)
+
+    def __validate_abspath(self, value: PathType) -> None:
+        value = str(value)
+        err_msg_template = "invalid absolute file path for a platform {}"
+
+        if any([self._is_windows(), self._is_universal()]) and posixpath.isabs(value):
+            raise ValidationError([err_msg_template.format(self.platform)])
+
+        drive, _tail = ntpath.splitdrive(value)
+        if not self._is_windows() and drive and ntpath.isabs(value):
+            raise ValidationError([err_msg_template.format(self.platform)])
 
     def __validate_unix_file_path(self, unicode_file_path: str) -> None:
         match = self.__RE_INVALID_PATH.findall(unicode_file_path)

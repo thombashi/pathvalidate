@@ -29,7 +29,6 @@ from ._common import (
     INVALID_WIN_PATH_CHARS,
     NTFS_RESERVED_FILE_NAMES,
     VALID_PATH_CHARS,
-    VALID_PLATFORM_NAMES,
     WIN_RESERVED_FILE_NAMES,
     is_faker_installed,
     randstr,
@@ -105,15 +104,15 @@ class Test_FileSanitizer:
 class Test_validate_filepath:
     VALID_CHARS = VALID_PATH_CHARS
     VALID_MULTIBYTE_PATH_LIST = [
-        "\\\\localhost\\Users\\新しいフォルダー\\あいうえお.txt",
-        "\\\\localhost\\新しいフォルダー\\ユーザ属性.txt",
+        "c:\\Users\\新しいフォルダー\\あいうえお.txt",
+        "D:\\新しいフォルダー\\ユーザ属性.txt",
     ]
     WIN_VALID_PATH_LIST = [
-        "\\\\localhost\\Users\\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\hoge.csv",
-        "\\\\localhost/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv",  # noqa
-        "\\\\localhost\\Users\\est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/\hoge.csv",
-        "\\\\localhost\\Users",
-        "\\\\localhost\\",
+        "D:\\Users\\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\hoge.csv",
+        "D:/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv",  # noqa
+        "C:\\Users\\est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/\hoge.csv",
+        "C:\\Users",
+        "C:\\",
         "\\Users",
     ]
 
@@ -124,7 +123,7 @@ class Test_validate_filepath:
                 [
                     args
                     for args in product(
-                        ["/{0}/{1}{0}".format(randstr(64), valid_c)], VALID_PLATFORM_NAMES
+                        ["/{0}/{1}{0}".format(randstr(64), valid_c)], ["linux", "macos"]
                     )
                 ]
                 for valid_c in VALID_CHARS
@@ -139,7 +138,7 @@ class Test_validate_filepath:
         ["value", "platform"],
         chain.from_iterable(
             [
-                [args for args in product([valid_path], VALID_PLATFORM_NAMES)]
+                [args for args in product([valid_path], ["windows"])]
                 for valid_path in VALID_MULTIBYTE_PATH_LIST
             ]
         ),
@@ -217,6 +216,44 @@ class Test_validate_filepath:
                 validate_filepath(value, min_len=min_len, max_len=max_len)
 
     @pytest.mark.parametrize(
+        ["test_platform", "value", "expected"],
+        [
+            ["linux", "/a/b/c.txt", None],
+            ["linux", "C:\\a\\b\\c.txt", ValidationError],
+            ["windows", "/a/b/c.txt", ValidationError],
+            ["windows", "C:\\a\\b\\c.txt", None],
+            ["universal", "/a/b/c.txt", ValidationError],
+            ["universal", "C:\\a\\b\\c.txt", ValidationError],
+        ],
+    )
+    def test_normal_abs_path(self, test_platform, value, expected):
+        if expected is None:
+            validate_filepath(value, platform=test_platform)
+            assert is_valid_filepath(value, platform=test_platform)
+        else:
+            with pytest.raises(expected):
+                validate_filepath(value, platform=test_platform)
+
+    @pytest.mark.parametrize(
+        ["test_platform", "value", "expected"],
+        [
+            ["linux", "a/b/c.txt", None],
+            ["linux", "a/b?/c.txt", None],
+            ["windows", "a/b/c.txt", None],
+            ["windows", "a/b?/c.txt", ValidationError],
+            ["universal", "a/b/c.txt", None],
+            ["universal", "a/b?/c.txt", ValidationError],
+        ],
+    )
+    def test_normal_rel_path(self, test_platform, value, expected):
+        if expected is None:
+            validate_filepath(value, platform=test_platform)
+            assert is_valid_filepath(value, platform=test_platform)
+        else:
+            with pytest.raises(expected):
+                validate_filepath(value, platform=test_platform)
+
+    @pytest.mark.parametrize(
         ["platform", "value"],
         [
             ["windows", "period."],
@@ -244,8 +281,8 @@ class Test_validate_filepath:
 
         for _ in range(100):
             filepath = fake.file_path()
-            validate_filepath(filepath)
-            assert is_valid_filepath(filepath)
+            validate_filepath(filepath, platform="linux")
+            assert is_valid_filepath(filepath, platform="linux")
 
     @pytest.mark.parametrize(
         ["value"],
@@ -259,7 +296,7 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["value", "platform"],
         [
-            ["/{0}/{1}{0}".format(randstr(64), invalid_c), platform]
+            ["{0}/{1}{0}".format(randstr(64), invalid_c), platform]
             for invalid_c, platform in product(
                 set(INVALID_WIN_PATH_CHARS + unprintable_ascii_chars).difference(
                     set(INVALID_PATH_CHARS)
@@ -274,31 +311,26 @@ class Test_validate_filepath:
         assert not is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
-        ["value", "platform", "expected"],
+        ["value", "platform"],
         [
-            ["abc\\{}\\xyz".format(reserved_keyword), platform, ReservedNameError]
+            ["/foo/abc/{}.txt".format(reserved_keyword), platform]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux", "macos"])
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["/foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
-            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux", "macos"])
-            if reserved_keyword not in [".", ".."]
-        ]
-        + [
-            ["{}\\{}".format(drive, filename), platform, ReservedNameError]
+            ["{}\\{}_".format(drive, filename), platform]
             for drive, platform, filename in product(
-                ["C:", "D:"], ["linux", "macos"], NTFS_RESERVED_FILE_NAMES
+                ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
         ]
         + [
-            ["{}\\abc\\{}".format(drive, filename), platform, ReservedNameError]
+            ["{}\\abc\\{}".format(drive, filename), platform]
             for drive, platform, filename in product(
-                ["C:", "D:"], ["windows", "universal"], NTFS_RESERVED_FILE_NAMES
+                ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
         ],
     )
-    def test_normal_reserved_name(self, value, platform, expected):
+    def test_normal_reserved_name_used_valid_place(self, value, platform):
         validate_filepath(value, platform=platform)
         assert is_valid_filepath(value, platform=platform)
 
@@ -312,7 +344,12 @@ class Test_validate_filepath:
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["/foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            ["foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
+            if reserved_keyword not in [".", ".."]
+        ]
+        + [
+            ["{}".format(reserved_keyword), platform, ReservedNameError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
@@ -321,7 +358,7 @@ class Test_validate_filepath:
         + [
             ["{}\\{}".format(drive, filename), platform, ReservedNameError]
             for drive, platform, filename in product(
-                ["C:", "D:"], ["windows", "universal"], NTFS_RESERVED_FILE_NAMES
+                ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
         ],
     )
@@ -383,6 +420,14 @@ class Test_validate_win_file_path:
         validate_filepath(value)
         assert is_valid_filepath(value)
 
+    @pytest.mark.parametrize(
+        ["value"], [["C:\\Users\\" + "a" * 1024]],
+    )
+    def test_exception(self, value, expected):
+        with pytest.raises(expected):
+            validate_filepath(value)
+        assert not is_valid_filepath(value)
+
 
 class Test_sanitize_filepath:
     SANITIZE_CHARS = INVALID_WIN_PATH_CHARS + unprintable_ascii_chars
@@ -423,9 +468,9 @@ class Test_sanitize_filepath:
         ["value", "test_platform", "expected"],
         [
             [
-                "/abc/{}/xyz".format(reserved_keyword),
+                "abc/{}/xyz".format(reserved_keyword),
                 platform,
-                "/abc/{}_/xyz".format(reserved_keyword),
+                "abc/{}_/xyz".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
             if reserved_keyword not in [".", ".."]
@@ -441,9 +486,9 @@ class Test_sanitize_filepath:
         ]
         + [
             [
-                "/abc/{}.txt".format(reserved_keyword),
+                "abc/{}.txt".format(reserved_keyword),
                 platform,
-                "/abc/{}_.txt".format(reserved_keyword),
+                "abc/{}_.txt".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
             if reserved_keyword not in [".", ".."]
@@ -455,15 +500,6 @@ class Test_sanitize_filepath:
                 "/abc/{}.txt".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
-            if reserved_keyword not in [".", ".."]
-        ]
-        + [
-            [
-                "C:\\abc\\{}.txt".format(reserved_keyword),
-                platform,
-                "C:/abc/{}_.txt".format(reserved_keyword),
-            ]
-            for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
             if reserved_keyword not in [".", ".."]
         ]
         + [
@@ -474,12 +510,6 @@ class Test_sanitize_filepath:
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["windows"])
             if reserved_keyword not in [".", ".."]
-        ]
-        + [
-            ["{}\\{}".format(drive, filename), platform, "{}/{}_".format(drive, filename)]
-            for drive, platform, filename in product(
-                ["C:", "D:"], ["universal"], NTFS_RESERVED_FILE_NAMES
-            )
         ]
         + [
             ["{}\\{}".format(drive, filename), platform, "{}\\{}_".format(drive, filename)]
@@ -517,14 +547,19 @@ class Test_sanitize_filepath:
         assert is_valid_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
-        ["value", "replace_text", "expected"],
-        [["/tmp/あいう\0えお.txt", "", "/tmp/あいうえお.txt"], ["/tmp/属\0性.txt", "-", "/tmp/属-性.txt"]],
+        ["test_platform", "value", "replace_text", "expected"],
+        [
+            ["linux", "/tmp/あいう\0えお.txt", "", "/tmp/あいうえお.txt"],
+            ["linux", "/tmp/属\0性.txt", "-", "/tmp/属-性.txt"],
+            ["universal", "tmp/あいう\0えお.txt", "", "tmp/あいうえお.txt"],
+            ["universal", "tmp/属\0性.txt", "-", "tmp/属-性.txt"],
+        ],
     )
-    def test_normal_multibyte(self, value, replace_text, expected):
-        sanitized_name = sanitize_filepath(value, replace_text)
+    def test_normal_multibyte(self, test_platform, value, replace_text, expected):
+        sanitized_name = sanitize_filepath(value, replace_text, platform=test_platform)
         assert sanitized_name == expected
-        validate_filepath(sanitized_name)
-        assert is_valid_filepath(sanitized_name)
+        validate_filepath(sanitized_name, platform=test_platform)
+        assert is_valid_filepath(sanitized_name, platform=test_platform)
 
     @pytest.mark.parametrize(
         ["value", "expected"],
