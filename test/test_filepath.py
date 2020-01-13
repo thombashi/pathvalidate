@@ -586,12 +586,12 @@ class Test_sanitize_filepath:
         validate_filepath(sanitized_name, platform=test_platform)
         assert is_valid_filepath(sanitized_name, platform=test_platform)
 
-    @pytest.mark.skipif("platform.system() != 'Windows'")
+    @pytest.mark.skipif("m_platform.system() != 'Windows'")
     @pytest.mark.parametrize(
         ["value", "expected"],
         [["/a/b/c.txt", ValidationError], ["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],],
     )
-    def test_normal_auto_platform_win(self, test_platform, value, expected):
+    def test_normal_auto_platform_win(self, value, expected):
         if isinstance(expected, str):
             sanitized = sanitize_filepath(value, platform="auto")
             assert is_valid_filepath(sanitized, platform="auto")
@@ -599,7 +599,7 @@ class Test_sanitize_filepath:
             with pytest.raises(expected):
                 sanitize_filepath(value, platform="auto")
 
-    @pytest.mark.skipif("platform.system() != 'Linux'")
+    @pytest.mark.skipif("m_platform.system() != 'Linux'")
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b:c.txt", "/a/bc.txt"], ["C:\\a\\b\\c.txt", ValidationError],],
     )
