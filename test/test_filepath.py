@@ -239,7 +239,7 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b/c.txt", ValidationError], ["C:\\a\\b\\c.txt", None],],
     )
-    def test_normal_auto_platform_win(self, test_platform, value, expected):
+    def test_normal_auto_platform_win(self, value, expected):
         if expected is None:
             validate_filepath(value, platform="auto")
             assert is_valid_filepath(value, platform="auto")
