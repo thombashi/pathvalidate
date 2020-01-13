@@ -384,14 +384,23 @@ class FilePathSanitizer(FileSanitizer):
 
     def __validate_abspath(self, value: PathType) -> None:
         value = str(value)
-        err_msg_template = "invalid absolute file path for a platform {}"
+        is_posix_abs = posixpath.isabs(value)
+        is_nt_abs = ntpath.isabs(value)
+        err_object = ValidationError(
+            description="invalid absolute file path ({}) for the platform".format(value),
+            platform=self.platform,
+            reason=ErrorReason.MALFORMED_ABS_PATH,
+        )
+
+        if self._is_universal() and any([is_posix_abs, is_nt_abs]):
+            raise err_object
 
         if any([self._is_windows(), self._is_universal()]) and posixpath.isabs(value):
-            raise ValidationError([err_msg_template.format(self.platform)])
+            raise err_object
 
         drive, _tail = ntpath.splitdrive(value)
         if not self._is_windows() and drive and ntpath.isabs(value):
-            raise ValidationError([err_msg_template.format(self.platform)])
+            raise err_object
 
     def __validate_unix_file_path(self, unicode_file_path: str) -> None:
         match = self.__RE_INVALID_PATH.findall(unicode_file_path)
