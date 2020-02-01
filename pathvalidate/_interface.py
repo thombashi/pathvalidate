@@ -8,16 +8,7 @@ import os
 import re
 from typing import Any, List, Optional, Tuple, cast
 
-from ._common import (
-    PathType,
-    Platform,
-    PlatformType,
-    is_pathlike_obj,
-    normalize_platform,
-    preprocess,
-    unprintable_ascii_chars,
-    validate_pathtype,
-)
+from ._common import PathType, Platform, PlatformType, normalize_platform, unprintable_ascii_chars
 from ._const import _NTFS_RESERVED_FILE_NAMES
 from .error import ReservedNameError, ValidationError
 

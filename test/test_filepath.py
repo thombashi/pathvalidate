@@ -14,7 +14,6 @@ from pathvalidate import (
     ErrorReason,
     InvalidCharError,
     InvalidLengthError,
-    NullNameError,
     Platform,
     ReservedNameError,
     ValidationError,

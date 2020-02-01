@@ -6,7 +6,7 @@ import ntpath
 import os.path
 import posixpath
 from pathlib import Path
-from typing import List, Optional, Pattern, Tuple
+from typing import List, Optional, Pattern, Tuple  # noqa
 
 from ._common import (
     PathType,
@@ -14,7 +14,6 @@ from ._common import (
     PlatformType,
     is_pathlike_obj,
     preprocess,
-    unprintable_ascii_chars,
     validate_pathtype,
 )
 from ._const import _NTFS_RESERVED_FILE_NAMES

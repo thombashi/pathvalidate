@@ -14,7 +14,6 @@ from ._common import (
     PlatformType,
     is_pathlike_obj,
     preprocess,
-    unprintable_ascii_chars,
     validate_pathtype,
 )
 from ._interface import AbstractSanitizer, BaseValidator
