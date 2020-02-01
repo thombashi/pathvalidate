@@ -32,13 +32,9 @@ from .error import (
 _DEFAULT_MAX_FILENAME_LEN = 255
 
 
-def _extract_root_name(path: str) -> str:
-    return os.path.splitext(os.path.basename(path))[0]
-
-
 class BaseValidator(AbstractValidator):
     def _validate_reserved_keywords(self, name: str) -> None:
-        root_name = _extract_root_name(name)
+        root_name = self.__extract_root_name(name)
         if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(
                 "'{}' is a reserved name".format(root_name),
@@ -46,6 +42,10 @@ class BaseValidator(AbstractValidator):
                 reserved_name=root_name,
                 platform=self.platform,
             )
+
+    @staticmethod
+    def __extract_root_name(path: str) -> str:
+        return os.path.splitext(os.path.basename(path))[0]
 
 
 class FileNameSanitizer(AbstractSanitizer):
