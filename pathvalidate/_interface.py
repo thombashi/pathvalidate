@@ -4,6 +4,7 @@
 
 import abc
 import itertools
+import os
 import re
 from typing import Any, List, Optional, Tuple, cast
 
@@ -18,7 +19,7 @@ from ._common import (
     validate_pathtype,
 )
 from ._const import _NTFS_RESERVED_FILE_NAMES
-from .error import ValidationError
+from .error import ReservedNameError, ValidationError
 
 
 class Base:
@@ -137,3 +138,19 @@ class AbstractSanitizer(Base, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:  # pragma: no cover
         pass
+
+
+class BaseValidator(AbstractValidator):
+    def _validate_reserved_keywords(self, name: str) -> None:
+        root_name = self.__extract_root_name(name)
+        if self._is_reserved_keyword(root_name.upper()):
+            raise ReservedNameError(
+                "'{}' is a reserved name".format(root_name),
+                reusable_name=False,
+                reserved_name=root_name,
+                platform=self.platform,
+            )
+
+    @staticmethod
+    def __extract_root_name(path: str) -> str:
+        return os.path.splitext(os.path.basename(path))[0]

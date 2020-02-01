@@ -5,7 +5,8 @@
 import click
 
 from ._common import PathType
-from ._file import sanitize_filename, sanitize_filepath, validate_filename, validate_filepath
+from ._filename import sanitize_filename, validate_filename
+from ._filepath import sanitize_filepath, validate_filepath
 from .error import ValidationError
 
 

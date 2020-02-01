@@ -23,7 +23,7 @@ from pathvalidate import (
     validate_filepath,
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
-from pathvalidate._file import FilePathSanitizer, FilePathValidator
+from pathvalidate._filepath import FilePathSanitizer, FilePathValidator
 
 from ._common import (
     INVALID_PATH_CHARS,
