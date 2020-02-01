@@ -59,7 +59,11 @@ class BaseFile:
         return self._max_len
 
     def __init__(
-        self, min_len: Optional[int], max_len: Optional[int], platform: PlatformType = None
+        self,
+        min_len: Optional[int],
+        max_len: Optional[int],
+        platform_max_len: Optional[int] = None,
+        platform: PlatformType = None,
     ) -> None:
         self.__platform = normalize_platform(platform)
 
@@ -67,10 +71,16 @@ class BaseFile:
             min_len = 1
         self._min_len = max(min_len, 1)
 
+        if platform_max_len is None:
+            platform_max_len = self._get_default_max_path_len()
+
         if max_len in [None, -1]:
-            self._max_len = self._get_default_max_path_len()
+            self._max_len = platform_max_len
         else:
             self._max_len = cast(int, max_len)
+
+        self._max_len = min(self._max_len, platform_max_len)
+        self._validate_max_len()
 
     def _is_universal(self) -> bool:
         return self.platform == Platform.UNIVERSAL

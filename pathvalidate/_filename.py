@@ -6,7 +6,7 @@ import ntpath
 import posixpath
 import re
 from pathlib import Path
-from typing import Optional, Pattern, Tuple, cast
+from typing import Optional, Pattern, Tuple
 
 from ._base import AbstractSanitizer, BaseValidator
 from ._common import (
@@ -38,14 +38,10 @@ class FileNameSanitizer(AbstractSanitizer):
     ) -> None:
         super(FileNameSanitizer, self).__init__(
             min_len=min_len,
-            max_len=(
-                cast(int, max_len) if max_len not in [None, -1] else _DEFAULT_MAX_FILENAME_LEN
-            ),
+            max_len=max_len,
+            platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
-
-        self._max_len = min(self._max_len, self._get_default_max_path_len())
-        self._validate_max_len()
 
         self._sanitize_regexp = self._get_sanitize_regexp()
         self.__validator = FileNameValidator(
@@ -104,14 +100,10 @@ class FileNameValidator(BaseValidator):
     ) -> None:
         super(FileNameValidator, self).__init__(
             min_len=min_len,
-            max_len=(
-                cast(int, max_len) if max_len not in [None, -1] else _DEFAULT_MAX_FILENAME_LEN
-            ),
+            max_len=max_len,
+            platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
-
-        self._max_len = min(self._max_len, self._get_default_max_path_len())
-        self._validate_max_len()
 
     def validate(self, value: PathType) -> None:
         validate_pathtype(value)

@@ -39,9 +39,6 @@ class FilePathSanitizer(AbstractSanitizer):
             min_len=min_len, max_len=max_len, platform=platform,
         )
 
-        self._max_len = min(self._max_len, self._get_default_max_path_len())
-        self._validate_max_len()
-
         self._sanitize_regexp = self._get_sanitize_regexp()
         self.__fpath_validator = FilePathValidator(
             min_len=self.min_len, max_len=self.max_len, platform=self.platform
@@ -118,9 +115,6 @@ class FilePathValidator(BaseValidator):
         super(FilePathValidator, self).__init__(
             min_len=min_len, max_len=max_len, platform=platform,
         )
-
-        self._max_len = min(self._max_len, self._get_default_max_path_len())
-        self._validate_max_len()
 
         self.__fname_validator = FileNameValidator(
             min_len=min_len, max_len=max_len, platform=platform
