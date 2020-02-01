@@ -35,4 +35,4 @@ class NameSanitizer(object, metaclass=abc.ABCMeta):
 
     @staticmethod
     def _validate_null_string(text: PathType) -> None:
-        validate_null_string(text, error_msg="null name")
+        validate_null_string(text)
