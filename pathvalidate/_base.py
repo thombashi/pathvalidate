@@ -51,10 +51,12 @@ class BaseFile:
         self,
         min_len: Optional[int],
         max_len: Optional[int],
+        check_reserved: bool,
         platform_max_len: Optional[int] = None,
         platform: PlatformType = None,
     ) -> None:
         self.__platform = normalize_platform(platform)
+        self._check_reserved = check_reserved
 
         if min_len is None:
             min_len = 1
@@ -132,6 +134,9 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
 
 class BaseValidator(AbstractValidator):
     def _validate_reserved_keywords(self, name: str) -> None:
+        if not self._check_reserved:
+            return
+
         root_name = self.__extract_root_name(name)
         if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(

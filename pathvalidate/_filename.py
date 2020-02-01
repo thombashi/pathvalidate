@@ -36,17 +36,22 @@ class FileNameSanitizer(AbstractSanitizer):
         min_len: Optional[int] = 1,
         max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
+        check_reserved: bool = True,
     ) -> None:
         super(FileNameSanitizer, self).__init__(
             min_len=min_len,
             max_len=max_len,
+            check_reserved=check_reserved,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
         self.__validator = FileNameValidator(
-            min_len=self.min_len, max_len=self.max_len, platform=self.platform
+            min_len=self.min_len,
+            max_len=self.max_len,
+            check_reserved=check_reserved,
+            platform=self.platform,
         )
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
@@ -103,10 +108,12 @@ class FileNameValidator(BaseValidator):
         min_len: Optional[int] = 1,
         max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
+        check_reserved: bool = True,
     ) -> None:
         super(FileNameValidator, self).__init__(
             min_len=min_len,
             max_len=max_len,
+            check_reserved=check_reserved,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
@@ -177,6 +184,7 @@ def validate_filename(
     platform: Optional[str] = None,
     min_len: int = 1,
     max_len: int = _DEFAULT_MAX_FILENAME_LEN,
+    check_reserved: bool = True,
 ) -> None:
     """Verifying whether the ``filename`` is a valid file name or not.
 
@@ -199,6 +207,8 @@ def validate_filename(
                 - ``universal``: 260
 
             Defaults to ``255``.
+        check_reserved:
+            If |True|, check reserved names of the ``platform``.
 
     Raises:
         InvalidLengthError:
@@ -221,7 +231,9 @@ def validate_filename(
         <https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file>`__
     """
 
-    FileNameValidator(platform=platform, min_len=min_len, max_len=max_len).validate(filename)
+    FileNameValidator(
+        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+    ).validate(filename)
 
 
 def is_valid_filename(
@@ -229,8 +241,11 @@ def is_valid_filename(
     platform: Optional[str] = None,
     min_len: int = 1,
     max_len: Optional[int] = None,
+    check_reserved: bool = True,
 ) -> bool:
-    return FileNameValidator(platform=platform, min_len=min_len, max_len=max_len).is_valid(filename)
+    return FileNameValidator(
+        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+    ).is_valid(filename)
 
 
 def sanitize_filename(
@@ -238,6 +253,7 @@ def sanitize_filename(
     replacement_text: str = "",
     platform: Optional[str] = None,
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
+    check_reserved: bool = True,
 ) -> PathType:
     """Make a valid filename from a string.
 
@@ -251,7 +267,8 @@ def sanitize_filename(
             - for Windows only: |invalid_win_filename_chars|
 
         - Append underscore (``"_"``) at the tail of the name if sanitized name
-          is one of the reserved names by the operating system.
+          is one of the reserved names by the operating system
+          (only when ``check_reserved`` is |True|).
 
     Args:
         filename: Filename to sanitize.
@@ -265,6 +282,8 @@ def sanitize_filename(
             Maximum length of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
             Defaults to ``255``.
+        check_reserved:
+            If |True|, sanitize reserved names of the ``platform``.
 
     Returns:
         Same type as the ``filename`` (str or PathLike object):
@@ -278,6 +297,6 @@ def sanitize_filename(
         :ref:`example-sanitize-filename`
     """
 
-    return FileNameSanitizer(platform=platform, max_len=max_len).sanitize(
-        filename, replacement_text
-    )
+    return FileNameSanitizer(
+        platform=platform, max_len=max_len, check_reserved=check_reserved
+    ).sanitize(filename, replacement_text)

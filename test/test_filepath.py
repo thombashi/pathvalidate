@@ -515,6 +515,14 @@ class Test_sanitize_filepath:
         assert is_valid_filepath(filename, platform=test_platform)
 
     @pytest.mark.parametrize(
+        ["value", "check_reserved", "expected"], [["CON", True, "CON_"], ["CON", False, "CON"],]
+    )
+    def test_normal_check_reserved(self, value, check_reserved, expected):
+        assert (
+            sanitize_filepath(value, platform="windows", check_reserved=check_reserved) == expected
+        )
+
+    @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [
             [Path("AA" + c + "B"), rep, Path("AA" + rep + "B")]

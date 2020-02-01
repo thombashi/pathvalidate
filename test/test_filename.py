@@ -426,6 +426,14 @@ class Test_sanitize_filename:
         assert is_valid_filename(filename, platform=test_platform)
 
     @pytest.mark.parametrize(
+        ["value", "check_reserved", "expected"], [["CON", True, "CON_"], ["CON", False, "CON"],]
+    )
+    def test_normal_check_reserved(self, value, check_reserved, expected):
+        assert (
+            sanitize_filename(value, platform="windows", check_reserved=check_reserved) == expected
+        )
+
+    @pytest.mark.parametrize(
         ["platform", "value", "expected"],
         [
             ["windows", "period.", "period"],

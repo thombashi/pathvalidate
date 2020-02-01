@@ -35,17 +35,24 @@ class FilePathSanitizer(AbstractSanitizer):
         min_len: Optional[int] = 1,
         max_len: Optional[int] = None,
         platform: PlatformType = None,
+        check_reserved: bool = True,
     ) -> None:
         super(FilePathSanitizer, self).__init__(
-            min_len=min_len, max_len=max_len, platform=platform,
+            min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
         self.__fpath_validator = FilePathValidator(
-            min_len=self.min_len, max_len=self.max_len, platform=self.platform
+            min_len=self.min_len,
+            max_len=self.max_len,
+            check_reserved=check_reserved,
+            platform=self.platform,
         )
         self.__fname_sanitizer = FileNameSanitizer(
-            min_len=self.min_len, max_len=self.max_len, platform=self.platform
+            min_len=self.min_len,
+            max_len=self.max_len,
+            check_reserved=check_reserved,
+            platform=self.platform,
         )
 
         if self._is_universal() or self._is_windows():
@@ -117,13 +124,14 @@ class FilePathValidator(BaseValidator):
         min_len: Optional[int] = 1,
         max_len: Optional[int] = None,
         platform: PlatformType = None,
+        check_reserved: bool = True,
     ) -> None:
         super(FilePathValidator, self).__init__(
-            min_len=min_len, max_len=max_len, platform=platform,
+            min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
         )
 
         self.__fname_validator = FileNameValidator(
-            min_len=min_len, max_len=max_len, platform=platform
+            min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform
         )
 
         if self._is_universal() or self._is_windows():
@@ -229,6 +237,7 @@ def validate_filepath(
     platform: Optional[str] = None,
     min_len: int = 1,
     max_len: Optional[int] = None,
+    check_reserved: bool = True,
 ) -> None:
     """Verifying whether the ``file_path`` is a valid file path or not.
 
@@ -250,6 +259,8 @@ def validate_filepath(
                 - ``macOS``: 1024
                 - ``Windows``: 260
                 - ``universal``: 260
+        check_reserved:
+            If |True|, check reserved names of the ``platform``.
 
     Raises:
         InvalidCharError:
@@ -270,7 +281,9 @@ def validate_filepath(
         <https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file>`__
     """
 
-    FilePathValidator(platform=platform, min_len=min_len, max_len=max_len).validate(file_path)
+    FilePathValidator(
+        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+    ).validate(file_path)
 
 
 def validate_file_path(file_path, platform=None, max_path_len=None):
@@ -283,10 +296,11 @@ def is_valid_filepath(
     platform: Optional[str] = None,
     min_len: int = 1,
     max_len: Optional[int] = None,
+    check_reserved: bool = True,
 ) -> bool:
-    return FilePathValidator(platform=platform, min_len=min_len, max_len=max_len).is_valid(
-        file_path
-    )
+    return FilePathValidator(
+        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+    ).is_valid(file_path)
 
 
 def sanitize_filepath(
@@ -294,13 +308,22 @@ def sanitize_filepath(
     replacement_text: str = "",
     platform: Optional[str] = None,
     max_len: Optional[int] = None,
+    check_reserved: bool = True,
 ) -> PathType:
     """Make a valid file path from a string.
 
-    Replace invalid characters for a file path within the ``file_path``
-    with the ``replacement_text``.
-    Invalid characters are as followings:
-    |invalid_file_path_chars|, |invalid_win_file_path_chars| (and non printable characters).
+    To make a valid file path the function does:
+
+        - replace invalid characters for a file path within the ``file_path``
+          with the ``replacement_text``. Invalid characters are as followings:
+
+            - unprintable characters
+            - |invalid_file_path_chars|
+            - for Windows only: |invalid_win_file_path_chars|
+
+        - Append underscore (``"_"``) at the tail of the name if sanitized name
+          is one of the reserved names by the operating system
+          (only when ``check_reserved`` is |True|).
 
     Args:
         file_path:
@@ -321,6 +344,8 @@ def sanitize_filepath(
                 - ``macOS``: 1024
                 - ``Windows``: 260
                 - ``universal``: 260
+        check_reserved:
+            If |True|, sanitize reserved names of the ``platform``.
 
     Returns:
         Same type as the argument (str or PathLike object):
@@ -334,9 +359,9 @@ def sanitize_filepath(
         :ref:`example-sanitize-file-path`
     """
 
-    return FilePathSanitizer(platform=platform, max_len=max_len).sanitize(
-        file_path, replacement_text
-    )
+    return FilePathSanitizer(
+        platform=platform, max_len=max_len, check_reserved=check_reserved
+    ).sanitize(file_path, replacement_text)
 
 
 def sanitize_file_path(file_path, replacement_text="", platform=None, max_path_len=None):
