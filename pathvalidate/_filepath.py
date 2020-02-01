@@ -319,7 +319,7 @@ def sanitize_filepath(
 
             - unprintable characters
             - |invalid_file_path_chars|
-            - for Windows only: |invalid_win_file_path_chars|
+            - for Windows (or universal) only: |invalid_win_file_path_chars|
 
         - Append underscore (``"_"``) at the tail of the name if sanitized name
           is one of the reserved names by the operating system

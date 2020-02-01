@@ -264,7 +264,7 @@ def sanitize_filename(
 
             - unprintable characters
             - |invalid_filename_chars|
-            - for Windows only: |invalid_win_filename_chars|
+            - for Windows (or universal) only: |invalid_win_filename_chars|
 
         - Append underscore (``"_"``) at the tail of the name if sanitized name
           is one of the reserved names by the operating system
