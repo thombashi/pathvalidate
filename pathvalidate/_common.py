@@ -24,7 +24,7 @@ def is_pathlike_obj(value: PathType) -> bool:
     return isinstance(value, Path)
 
 
-def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
+def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
     from .error import NullNameError
 
     if _is_not_null_string(text) or is_pathlike_obj(text):
@@ -37,6 +37,11 @@ def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> Non
         raise NullNameError(error_msg)
 
     raise TypeError("text must be a string: actual={}".format(type(text)))
+
+
+def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
+    # Deprecated: alias to validate_pathtype
+    validate_pathtype(text, error_msg)
 
 
 def preprocess(name: PathType) -> str:

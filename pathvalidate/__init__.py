@@ -8,6 +8,7 @@ from ._common import (
     replace_unprintable_char,
     unprintable_ascii_chars,
     validate_null_string,
+    validate_pathtype,
 )
 from ._file import (
     FileNameSanitizer,
