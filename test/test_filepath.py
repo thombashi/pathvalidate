@@ -23,7 +23,7 @@ from pathvalidate import (
     validate_filepath,
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
-from pathvalidate._file import FilePathSanitizer
+from pathvalidate._file import FilePathSanitizer, FilePathValidator
 
 from ._common import (
     INVALID_PATH_CHARS,
@@ -66,7 +66,7 @@ class Test_FileSanitizer:
         [["windows", (".", "..",),], ["linux", (".", "..", "/")], ["macos", (".", "..", "/")]],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
-        assert FilePathSanitizer(255, platform=test_platform).reserved_keywords == expected
+        assert FilePathValidator(255, platform=test_platform).reserved_keywords == expected
 
 
 class Test_validate_filepath:

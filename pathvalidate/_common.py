@@ -3,13 +3,11 @@
 """
 
 import enum
+import platform
 import re
 import string
 from pathlib import Path
 from typing import Any, List, Optional, Union, cast
-
-
-PathType = Union[str, Path]
 
 
 @enum.unique
@@ -18,6 +16,10 @@ class Platform(enum.Enum):
     LINUX = "Linux"
     WINDOWS = "Windows"
     MACOS = "macOS"
+
+
+PathType = Union[str, Path]
+PlatformType = Union[str, Platform, None]
 
 
 def is_pathlike_obj(value: PathType) -> bool:
@@ -101,3 +103,25 @@ def replace_unprintable_char(text: str, replacement_text: str = "") -> str:
         return __RE_UNPRINTABLE_CHARS.sub(replacement_text, text)
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
+
+
+def normalize_platform(name: PlatformType) -> Platform:
+    if isinstance(name, Platform):
+        return name
+
+    if name:
+        name = name.strip().lower()
+
+    if name == "auto":
+        name = platform.system().lower()
+
+    if name in ["linux"]:
+        return Platform.LINUX
+
+    if name and name.startswith("win"):
+        return Platform.WINDOWS
+
+    if name in ["mac", "macos", "darwin"]:
+        return Platform.MACOS
+
+    return Platform.UNIVERSAL

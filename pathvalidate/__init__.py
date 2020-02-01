@@ -5,6 +5,7 @@
 from .__version__ import __author__, __copyright__, __email__, __license__, __version__
 from ._common import (
     ascii_symbols,
+    normalize_platform,
     replace_unprintable_char,
     unprintable_ascii_chars,
     validate_null_string,
@@ -16,7 +17,6 @@ from ._file import (
     Platform,
     is_valid_filename,
     is_valid_filepath,
-    normalize_platform,
     sanitize_file_path,
     sanitize_filename,
     sanitize_filepath,
