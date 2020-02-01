@@ -29,9 +29,6 @@ from .error import (
 )
 
 
-_DEFAULT_MAX_FILENAME_LEN = 255
-
-
 class FilePathSanitizer(AbstractSanitizer):
     def __init__(
         self,
