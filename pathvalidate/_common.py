@@ -32,7 +32,7 @@ def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> Non
 
     if is_null_string(text):
         if not error_msg:
-            error_msg = "null name"
+            error_msg = "the value must be a not empty"
 
         raise NullNameError(error_msg)
 
