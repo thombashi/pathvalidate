@@ -297,6 +297,15 @@ class FilePathSanitizer(FileSanitizer):
         re.IGNORECASE,
     )
 
+    @property
+    def reserved_keywords(self) -> Tuple[str, ...]:
+        common_keywords = super(FilePathSanitizer, self).reserved_keywords
+
+        if any([self._is_universal(), self._is_linux(), self._is_macos()]):
+            return common_keywords + ("/",)
+
+        return common_keywords
+
     def __init__(
         self,
         min_len: Optional[int] = 1,
