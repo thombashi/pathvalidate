@@ -197,7 +197,7 @@ class FileNameSanitizer(FileSanitizer):
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         try:
-            self._validate_null_string(value)
+            self._validate_pathtype(value)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
                 return ""
@@ -223,7 +223,7 @@ class FileNameSanitizer(FileSanitizer):
         return sanitized_filename
 
     def validate(self, value: PathType) -> None:
-        self._validate_null_string(value)
+        self._validate_pathtype(value)
 
         unicode_filename = preprocess(value)
         value_len = len(unicode_filename)
@@ -373,7 +373,7 @@ class FilePathSanitizer(FileSanitizer):
         return sanitized_path
 
     def validate(self, value: PathType) -> None:
-        self._validate_null_string(value)
+        self._validate_pathtype(value)
         self.__validate_abspath(value)
 
         _drive, value = self.__split_drive(str(value))

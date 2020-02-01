@@ -34,5 +34,5 @@ class NameSanitizer(object, metaclass=abc.ABCMeta):
         return value in self.reserved_keywords
 
     @staticmethod
-    def _validate_null_string(text: PathType) -> None:
+    def _validate_pathtype(text: PathType) -> None:
         validate_pathtype(text)
