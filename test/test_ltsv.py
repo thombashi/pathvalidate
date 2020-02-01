@@ -6,7 +6,7 @@ import itertools
 
 import pytest
 
-from pathvalidate import InvalidCharError, NullNameError, sanitize_ltsv_label, validate_ltsv_label
+from pathvalidate import InvalidCharError, ValidationError, sanitize_ltsv_label, validate_ltsv_label
 
 from ._common import INVALID_WIN_FILENAME_CHARS, alphanum_chars
 
@@ -87,7 +87,7 @@ class Test_sanitize_ltsv_label:
 
     @pytest.mark.parametrize(
         ["value", "expected"],
-        [["", NullNameError], [None, NullNameError], [1, TypeError], [True, TypeError]],
+        [["", ValidationError], [None, ValidationError], [1, TypeError], [True, TypeError]],
     )
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):

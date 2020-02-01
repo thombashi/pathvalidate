@@ -309,7 +309,7 @@ class Test_validate_filename:
         ["value", "expected"],
         [
             [None, ValueError],
-            ["", NullNameError],
+            ["", ValidationError],
             ["a" * 256, InvalidLengthError],
             [1, TypeError],
             [True, TypeError],

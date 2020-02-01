@@ -550,8 +550,6 @@ def validate_filepath(
                 - ``Windows``: 260
 
     Raises:
-        NullNameError:
-            If the ``file_path`` is empty.
         InvalidCharError:
             If the ``file_path`` includes invalid char(s):
             |invalid_file_path_chars|.
@@ -559,6 +557,8 @@ def validate_filepath(
             |invalid_win_file_path_chars|
         InvalidLengthError:
             If the ``file_path`` is longer than ``max_len`` characters.
+        ValidationError:
+            If ``file_path`` include invalid values.
 
     Example:
         :ref:`example-validate-file-path`

@@ -382,7 +382,7 @@ class Test_validate_filepath:
 
     @pytest.mark.parametrize(
         ["value", "expected"],
-        [[None, ValueError], ["", NullNameError], [1, TypeError], [True, TypeError]],
+        [[None, ValueError], ["", ValidationError], [1, TypeError], [True, TypeError]],
     )
     def test_exception(self, value, expected):
         with pytest.raises(expected):
