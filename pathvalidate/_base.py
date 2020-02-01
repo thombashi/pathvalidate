@@ -13,7 +13,7 @@ from ._const import _NTFS_RESERVED_FILE_NAMES
 from .error import ReservedNameError, ValidationError
 
 
-class Base:
+class BaseFile:
     _INVALID_PATH_CHARS = "".join(unprintable_ascii_chars)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
@@ -108,7 +108,7 @@ class Base:
         return ", ".join([repr(text) for text in match])
 
 
-class AbstractValidator(Base, metaclass=abc.ABCMeta):
+class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def validate(self, value: PathType) -> None:  # pragma: no cover
         pass
@@ -125,7 +125,7 @@ class AbstractValidator(Base, metaclass=abc.ABCMeta):
         return value in self.reserved_keywords
 
 
-class AbstractSanitizer(Base, metaclass=abc.ABCMeta):
+class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:  # pragma: no cover
         pass
