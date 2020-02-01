@@ -23,7 +23,7 @@ from pathvalidate import (
     validate_filepath,
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
-from pathvalidate._file import FileNameSanitizer
+from pathvalidate._file import FilePathSanitizer
 
 from ._common import (
     INVALID_PATH_CHARS,
@@ -59,47 +59,14 @@ class Test_FileSanitizer:
 
         monkeypatch.setattr(m_platform, "system", patch)
 
-        assert FileNameSanitizer(255, platform="auto").platform == expected
+        assert FilePathSanitizer(255, platform="auto").platform == expected
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [
-            [
-                "windows",
-                (
-                    ".",
-                    "..",
-                    "CON",
-                    "PRN",
-                    "AUX",
-                    "CLOCK$",
-                    "NUL",
-                    "COM1",
-                    "COM2",
-                    "COM3",
-                    "COM4",
-                    "COM5",
-                    "COM6",
-                    "COM7",
-                    "COM8",
-                    "COM9",
-                    "LPT1",
-                    "LPT2",
-                    "LPT3",
-                    "LPT4",
-                    "LPT5",
-                    "LPT6",
-                    "LPT7",
-                    "LPT8",
-                    "LPT9",
-                ),
-            ],
-            ["linux", (".", "..")],
-            ["macos", (".", "..")],
-        ],
+        [["windows", (".", "..",),], ["linux", (".", "..")], ["macos", (".", "..")],],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
-        assert FileNameSanitizer(255, platform=test_platform).reserved_keywords == expected
+        assert FilePathSanitizer(255, platform=test_platform).reserved_keywords == expected
 
 
 class Test_validate_filepath:
