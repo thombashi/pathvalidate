@@ -194,12 +194,12 @@ def validate_filename(
             Minimum length of the ``filename``. The value must be greater or equal to one.
             Defaults to ``1``.
         max_len:
-            Maximum length the ``filename``. The value must be lower than:
+            Maximum length of the ``filename``. The value must be lower than:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
                 - ``Windows``: 260
-                - ``Universal``: 260
+                - ``universal``: 260
 
             Defaults to ``255``.
 
@@ -265,7 +265,7 @@ def sanitize_filename(
 
             .. include:: platform.txt
         max_len:
-            The upper limit of the ``filename`` length. Truncate the name length if
+            Maximum length of the ``filename`` length. Truncate the name length if
             the ``filename`` length exceeds this value.
             Defaults to ``255``.
 

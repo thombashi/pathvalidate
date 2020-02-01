@@ -247,10 +247,13 @@ def validate_filepath(
             Minimum length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
         max_len:
+            Maximum length of the ``file_path`` length. If the value is |None|,
+            automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
                 - ``Windows``: 260
+                - ``universal``: 260
 
     Raises:
         InvalidCharError:
@@ -314,13 +317,14 @@ def sanitize_filepath(
 
             .. include:: platform.txt
         max_len:
-            The upper limit of the ``file_path`` length. Truncate the name if the ``file_path``
-            length exceedd this value. If the value is |None|, the default value automatically
-            determined by the execution platform:
+            Maximum length of the ``file_path`` length. Truncate the name if the ``file_path``
+            length exceedd this value. If the value is |None|,
+            automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
                 - ``Windows``: 260
+                - ``universal``: 260
 
     Returns:
         Same type as the argument (str or PathLike object):
