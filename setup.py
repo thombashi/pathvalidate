@@ -48,9 +48,6 @@ with open(os.path.join(REQUIREMENT_DIR, "requirements.txt")) as f:
 with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     TESTS_REQUIRES = [line.strip() for line in f if line.strip()]
 
-with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
-    DOCS_REQUIRES = [line.strip() for line in f if line.strip()]
-
 SETUPTOOLS_REQUIRES = ["setuptools>=38.3.0"]
 
 setuptools.setup(
@@ -76,10 +73,6 @@ setuptools.setup(
     install_requires=SETUPTOOLS_REQUIRES + install_requires,
     setup_requires=SETUPTOOLS_REQUIRES + pytest_runner_requires(),
     tests_require=TESTS_REQUIRES,
-    extras_require={
-        "dev": ["releasecmd>=0.2.0,<1", "twine", "wheel"] + DOCS_REQUIRES + TESTS_REQUIRES,
-        "test": TESTS_REQUIRES,
-    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
