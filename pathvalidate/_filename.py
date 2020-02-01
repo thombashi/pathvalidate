@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 from typing import Optional, Pattern, Tuple, cast
 
+from ._base import AbstractSanitizer, BaseValidator
 from ._common import (
     PathType,
     Platform,
@@ -16,7 +17,6 @@ from ._common import (
     preprocess,
     validate_pathtype,
 )
-from ._interface import AbstractSanitizer, BaseValidator
 from .error import (
     ErrorReason,
     InvalidCharError,

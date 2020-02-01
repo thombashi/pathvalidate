@@ -8,6 +8,7 @@ import posixpath
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple  # noqa
 
+from ._base import AbstractSanitizer, BaseValidator
 from ._common import (
     PathType,
     Platform,
@@ -18,7 +19,6 @@ from ._common import (
 )
 from ._const import _NTFS_RESERVED_FILE_NAMES
 from ._filename import FileNameSanitizer, FileNameValidator
-from ._interface import AbstractSanitizer, BaseValidator
 from .error import (
     ErrorReason,
     InvalidCharError,
