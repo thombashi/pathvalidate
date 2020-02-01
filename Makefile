@@ -49,7 +49,7 @@ readme:
 
 .PHONY: release
 release:
-	@python setup.py release --sign
+	@tox -e release
 	@make clean
 
 .PHONY: setup
