@@ -196,7 +196,12 @@ class FileNameSanitizer(FileSanitizer):
         self._sanitize_regexp = self._get_sanitize_regexp()
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
-        self._validate_null_string(value)
+        try:
+            self._validate_null_string(value)
+        except ValidationError as e:
+            if e.reason == ErrorReason.NULL_NAME:
+                return ""
+            raise
 
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
         sanitized_filename = sanitized_filename[: self.max_len]
@@ -331,7 +336,9 @@ class FilePathSanitizer(FileSanitizer):
             self.__split_drive = posixpath.splitdrive
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
-        self._validate_null_string(value)
+        if not value:
+            return ""
+
         self.__validate_abspath(value)
 
         unicode_file_path = preprocess(value)
@@ -350,14 +357,14 @@ class FilePathSanitizer(FileSanitizer):
                 sanitized_entries.append("{}_".format(entry))
                 continue
 
-            try:
-                sanitized_entries.append(str(self.__fname_sanitizer.sanitize(entry)))
-            except ValidationError as e:
-                if e.reason == ErrorReason.NULL_NAME:
-                    if not sanitized_entries:
-                        sanitized_entries.append("")
-                else:
-                    raise
+            sanitized_entry = str(self.__fname_sanitizer.sanitize(entry))
+            if not sanitized_entry:
+                if not sanitized_entries:
+                    sanitized_entries.append("")
+                continue
+
+            sanitized_entries.append(sanitized_entry)
+
         sanitized_path = path_separator.join(sanitized_entries)
 
         if is_pathlike_obj(value):

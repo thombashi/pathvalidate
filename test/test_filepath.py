@@ -539,6 +539,12 @@ class Test_sanitize_filepath:
         assert is_valid_filepath(sanitized_name)
 
     @pytest.mark.parametrize(
+        ["value", "expected"], [["", ""], [None, ""],],
+    )
+    def test_normal_null_values(self, value, expected):
+        assert sanitize_filepath(value) == expected
+
+    @pytest.mark.parametrize(
         ["test_platform", "value", "replace_text", "expected"],
         [
             ["linux", "/tmp/あいう\0えお.txt", "", "/tmp/あいうえお.txt"],
@@ -580,7 +586,7 @@ class Test_sanitize_filepath:
 
     @pytest.mark.parametrize(
         ["value", "expected"],
-        [[None, ValueError], [1, TypeError], [True, TypeError], [nan, TypeError], [inf, TypeError]],
+        [[1, TypeError], [True, TypeError], [nan, TypeError], [inf, TypeError]],
     )
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):

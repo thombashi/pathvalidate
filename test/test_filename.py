@@ -378,6 +378,12 @@ class Test_sanitize_filename:
         assert is_valid_filename(sanitized_name)
 
     @pytest.mark.parametrize(
+        ["value", "expected"], [["", ""], [None, ""],],
+    )
+    def test_normal_null_values(self, value, expected):
+        assert sanitize_filename(value) == expected
+
+    @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
         [["あい/うえお.txt", "", "あいうえお.txt"], ["属/性.txt", "-", "属-性.txt"]],
     )
@@ -440,9 +446,7 @@ class Test_sanitize_filename:
         assert filename == expected
         assert is_valid_filename(filename, platform=platform)
 
-    @pytest.mark.parametrize(
-        ["value", "expected"], [[None, ValueError], [1, TypeError], [True, TypeError]]
-    )
+    @pytest.mark.parametrize(["value", "expected"], [[1, TypeError], [True, TypeError]])
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             sanitize_filename(value)
