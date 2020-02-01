@@ -5,6 +5,7 @@
 import ntpath
 import os.path
 import posixpath
+import re
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple  # noqa
 
@@ -97,6 +98,11 @@ class FilePathSanitizer(AbstractSanitizer):
 
 
 class FilePathValidator(BaseValidator):
+    _RE_NTFS_RESERVED = re.compile(
+        "|".join("^/{}$".format(re.escape(pattern)) for pattern in _NTFS_RESERVED_FILE_NAMES),
+        re.IGNORECASE,
+    )
+
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
         common_keywords = super(FilePathValidator, self).reserved_keywords

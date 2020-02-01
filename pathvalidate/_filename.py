@@ -2,6 +2,7 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
+import itertools
 import ntpath
 import posixpath
 import re
@@ -83,6 +84,11 @@ class FileNameSanitizer(AbstractSanitizer):
 
 
 class FileNameValidator(BaseValidator):
+    _WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "CLOCK$", "NUL") + tuple(
+        "{:s}{:d}".format(name, num)
+        for name, num in itertools.product(("COM", "LPT"), range(1, 10))
+    )
+
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
         common_keywords = super(FileNameValidator, self).reserved_keywords
