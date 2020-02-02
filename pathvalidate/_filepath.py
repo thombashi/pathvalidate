@@ -315,7 +315,7 @@ def sanitize_filepath(
     To make a valid file path the function does:
 
         - replace invalid characters for a file path within the ``file_path``
-          with the ``replacement_text``. Invalid characters are as followings:
+          with the ``replacement_text``. Invalid characters are as follows:
 
             - unprintable characters
             - |invalid_file_path_chars|

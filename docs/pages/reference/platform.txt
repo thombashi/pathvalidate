@@ -1,4 +1,4 @@
-Valid specifiers are followings (case-insensitive):
+Valid specifiers are follows (case-insensitive):
 
     - ``"Linux"``
     - ``"Windows"``
