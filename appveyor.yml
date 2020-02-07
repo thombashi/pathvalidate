@@ -18,7 +18,7 @@ install:
     - "%PYTHON%/Scripts/pip.exe install --upgrade .[test]"
 
 test_script:
-    - "%PYTHON%/python.exe setup.py test"
+    - "%PYTHON%/python.exe -m pytest"
 
 notifications:
     - provider: Slack
