@@ -37,7 +37,7 @@ class FilePathSanitizer(AbstractSanitizer):
         platform: PlatformType = None,
         check_reserved: bool = True,
     ) -> None:
-        super(FilePathSanitizer, self).__init__(
+        super().__init__(
             min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
         )
 
@@ -112,7 +112,7 @@ class FilePathValidator(BaseValidator):
 
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
-        common_keywords = super(FilePathValidator, self).reserved_keywords
+        common_keywords = super().reserved_keywords
 
         if any([self._is_universal(), self._is_linux(), self._is_macos()]):
             return common_keywords + ("/",)
@@ -126,7 +126,7 @@ class FilePathValidator(BaseValidator):
         platform: PlatformType = None,
         check_reserved: bool = True,
     ) -> None:
-        super(FilePathValidator, self).__init__(
+        super().__init__(
             min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
         )
 

@@ -38,7 +38,7 @@ class FileNameSanitizer(AbstractSanitizer):
         platform: PlatformType = None,
         check_reserved: bool = True,
     ) -> None:
-        super(FileNameSanitizer, self).__init__(
+        super().__init__(
             min_len=min_len,
             max_len=max_len,
             check_reserved=check_reserved,
@@ -96,7 +96,7 @@ class FileNameValidator(BaseValidator):
 
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
-        common_keywords = super(FileNameValidator, self).reserved_keywords
+        common_keywords = super().reserved_keywords
 
         if self._is_universal() or self._is_windows():
             return common_keywords + self._WINDOWS_RESERVED_FILE_NAMES
@@ -110,7 +110,7 @@ class FileNameValidator(BaseValidator):
         platform: PlatformType = None,
         check_reserved: bool = True,
     ) -> None:
-        super(FileNameValidator, self).__init__(
+        super().__init__(
             min_len=min_len,
             max_len=max_len,
             check_reserved=check_reserved,

@@ -46,9 +46,9 @@ class ValidationError(ValueError):
         self.__reusable_name = kwargs.pop("reusable_name", None)
 
         try:
-            super(ValidationError, self).__init__(*args[0], **kwargs)
+            super().__init__(*args[0], **kwargs)
         except IndexError:
-            super(ValidationError, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
 
     def __str__(self) -> str:
         item_list = []
@@ -79,7 +79,7 @@ class NullNameError(ValidationError):
     def __init__(self, *args, **kwargs) -> None:
         kwargs["reason"] = ErrorReason.NULL_NAME
 
-        super(NullNameError, self).__init__(args, **kwargs)
+        super().__init__(args, **kwargs)
 
 
 class InvalidCharError(ValidationError):
@@ -90,7 +90,7 @@ class InvalidCharError(ValidationError):
     def __init__(self, *args, **kwargs) -> None:
         kwargs["reason"] = ErrorReason.INVALID_CHARACTER
 
-        super(InvalidCharError, self).__init__(args, **kwargs)
+        super().__init__(args, **kwargs)
 
 
 class InvalidLengthError(ValidationError):
@@ -101,7 +101,7 @@ class InvalidLengthError(ValidationError):
     def __init__(self, *args, **kwargs) -> None:
         kwargs["reason"] = ErrorReason.INVALID_LENGTH
 
-        super(InvalidLengthError, self).__init__(args, **kwargs)
+        super().__init__(args, **kwargs)
 
 
 class ReservedNameError(ValidationError):
@@ -118,7 +118,7 @@ class ReservedNameError(ValidationError):
 
         kwargs["reason"] = ErrorReason.RESERVED_NAME
 
-        super(ReservedNameError, self).__init__(args, **kwargs)
+        super().__init__(args, **kwargs)
 
 
 class ValidReservedNameError(ReservedNameError):
@@ -130,7 +130,7 @@ class ValidReservedNameError(ReservedNameError):
     def __init__(self, *args, **kwargs) -> None:
         kwargs["reusable_name"] = True
 
-        super(ValidReservedNameError, self).__init__(args, **kwargs)
+        super().__init__(args, **kwargs)
 
 
 class InvalidReservedNameError(ReservedNameError):
@@ -142,4 +142,4 @@ class InvalidReservedNameError(ReservedNameError):
     def __init__(self, *args, **kwargs) -> None:
         kwargs["reusable_name"] = False
 
-        super(InvalidReservedNameError, self).__init__(args, **kwargs)
+        super().__init__(args, **kwargs)

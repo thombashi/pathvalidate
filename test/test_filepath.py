@@ -75,9 +75,9 @@ class Test_validate_filepath:
         "D:\\新しいフォルダー\\ユーザ属性.txt",
     ]
     WIN_VALID_PATH_LIST = [
-        "D:\\Users\\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\hoge.csv",
+        "D:\\Users\\\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\\hoge.csv",
         "D:/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv",  # noqa
-        "C:\\Users\\est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/\hoge.csv",
+        "C:\\Users\\est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/\\hoge.csv",
         "C:\\Users",
         "C:\\",
         "\\Users",
@@ -395,7 +395,7 @@ class Test_validate_win_file_path:
     @pytest.mark.parametrize(
         ["value"],
         [
-            ["C:\\Users\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\hoge.csv"],
+            ["C:\\Users\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\\hoge.csv"],
             ["Z:\\Users\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\hoge.csv"],
             [
                 "C:/Users/est/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv"  # noqa
