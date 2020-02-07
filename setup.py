@@ -17,12 +17,6 @@ ENCODING = "utf8"
 pkg_info = {}  # type: Dict[str, str]
 
 
-def pytest_runner_requires() -> List[str]:
-    if set(["pytest", "test", "ptr"]).intersection(sys.argv):
-        return ["pytest-runner"]
-
-    return []
-
 
 def get_release_command_class():
     try:
@@ -41,9 +35,6 @@ with open("README.rst", encoding=ENCODING) as fp:
 
 with open(os.path.join("docs", "pages", "introduction", "summary.txt"), encoding=ENCODING) as f:
     summary = f.read().strip()
-
-with open(os.path.join(REQUIREMENT_DIR, "requirements.txt")) as f:
-    install_requires = [line.strip() for line in f if line.strip()]
 
 with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     TESTS_REQUIRES = [line.strip() for line in f if line.strip()]
@@ -70,9 +61,7 @@ setuptools.setup(
         "Tracker": "{:s}/issues".format(REPOSITORY_URL),
     },
     python_requires=">=3.5",
-    install_requires=SETUPTOOLS_REQUIRES + install_requires,
-    setup_requires=SETUPTOOLS_REQUIRES + pytest_runner_requires(),
-    tests_require=TESTS_REQUIRES,
+    extras_require={"test": TESTS_REQUIRES},
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
