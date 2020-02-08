@@ -37,4 +37,4 @@ release:
 
 .PHONY: setup
 setup:
-	@pip install --upgrade -e . tox
+	@pip install --upgrade -e .[test] tox
