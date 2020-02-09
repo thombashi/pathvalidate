@@ -3,7 +3,6 @@
 """
 
 import os.path
-import sys
 from typing import Dict, List  # noqa
 
 import setuptools
@@ -15,7 +14,6 @@ REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
 
 pkg_info = {}  # type: Dict[str, str]
-
 
 
 def get_release_command_class():
