@@ -16,7 +16,7 @@ ENCODING = "utf8"
 pkg_info = {}  # type: Dict[str, str]
 
 
-def get_release_command_class():
+def get_release_command_class() -> Dict[str, setuptools.Command]:
     try:
         from releasecmd import ReleaseCommand
     except ImportError:
