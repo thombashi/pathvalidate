@@ -195,7 +195,8 @@ class FilePathValidator(BaseValidator):
                 "an invalid absolute file path ({}) for the platform ({}).".format(
                     value, self.platform.value
                 )
-                + " specify an appropriate platform or 'auto'."
+                + " to avoid the error, specify an appropriate platform correspond"
+                + " with the path format, or 'auto'."
             ),
             platform=self.platform,
             reason=ErrorReason.MALFORMED_ABS_PATH,
