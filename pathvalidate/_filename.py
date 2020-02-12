@@ -106,10 +106,17 @@ class FileNameValidator(BaseValidator):
     def reserved_keywords(self) -> Tuple[str, ...]:
         common_keywords = super().reserved_keywords
 
-        if self._is_universal() or self._is_windows():
+        if self._is_universal():
+            return (
+                common_keywords
+                + self._WINDOWS_RESERVED_FILE_NAMES
+                + self._MACOS_RESERVED_FILE_NAMES
+            )
+
+        if self._is_windows():
             return common_keywords + self._WINDOWS_RESERVED_FILE_NAMES
 
-        if self._is_macos():
+        if self._is_posix() or self._is_macos():
             return common_keywords + self._MACOS_RESERVED_FILE_NAMES
 
         return common_keywords

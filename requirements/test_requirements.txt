@@ -1,3 +1,4 @@
+allpairspy
 click
 faker
 pytest

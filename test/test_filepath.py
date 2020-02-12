@@ -5,10 +5,12 @@
 import platform as m_platform  # noqa: W0611
 import random
 import sys  # noqa: W0611
+from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
 
 import pytest
+from allpairspy import AllPairs
 
 from pathvalidate import (
     ErrorReason,
@@ -62,7 +64,12 @@ class Test_FileSanitizer:
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [["windows", (".", "..",),], ["linux", (".", "..", "/")], ["macos", (".", "..", "/", ":")]],
+        [
+            ["windows", (".", "..",),],
+            ["posix", (".", "..", "/", ":")],
+            ["linux", (".", "..", "/")],
+            ["macos", (".", "..", "/", ":")],
+        ],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
         assert FilePathValidator(255, platform=test_platform).reserved_keywords == expected
@@ -141,6 +148,8 @@ class Test_validate_filepath:
         [
             ["a" * 4096, "linux", None, None],
             ["a" * 4097, "linux", None, InvalidLengthError],
+            ["a" * 1024, "posix", None, None],
+            ["a" * 1025, "posix", None, InvalidLengthError],
             ["a" * 4097, Platform.LINUX, None, InvalidLengthError],
             ["a" * 255, "linux", 100, InvalidLengthError],
             ["a" * 5000, "windows", 10000, ValidationError],
@@ -440,12 +449,28 @@ class Test_sanitize_filepath:
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            ["linux", "A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in product(INVALID_PATH_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST)
+            [pair.platform, "A" + pair.c + "B", pair.repl, "A" + pair.repl + "B"]
+            for pair in AllPairs(
+                OrderedDict(
+                    {
+                        "platform": ["posix", "linux", "macos"],
+                        "c": INVALID_PATH_CHARS + unprintable_ascii_chars,
+                        "repl": REPLACE_TEXT_LIST,
+                    }
+                )
+            )
         ]
         + [
-            ["linux", "A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in product([":", "*", "?", '"', "<", ">", "|"], REPLACE_TEXT_LIST)
+            [pair.platform, "A" + pair.c + "B", pair.repl, "A" + pair.c + "B"]
+            for pair in AllPairs(
+                OrderedDict(
+                    {
+                        "platform": ["posix", "linux", "macos"],
+                        "c": [":", "*", "?", '"', "<", ">", "|"],
+                        "repl": REPLACE_TEXT_LIST,
+                    }
+                )
+            )
         ],
     )
     def test_normal_str(self, platform, value, replace_text, expected):

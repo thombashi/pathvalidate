@@ -5,10 +5,12 @@
 import platform as m_platform  # noqa: W0611
 import random
 import sys  # noqa: W0611
+from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
 
 import pytest
+from allpairspy import AllPairs
 
 from pathvalidate import (
     ErrorReason,
@@ -261,9 +263,9 @@ class Test_validate_filename:
         ]
         + [
             [reserved_keyword, platform, ReservedNameError]
-            for reserved_keyword, platform in product([".", ".."], ["linux", "macos"])
+            for reserved_keyword, platform in product([".", ".."], ["posix", "linux", "macos"])
         ]
-        + [[":", "macos", ReservedNameError]],
+        + [[":", "posix", ReservedNameError], [":", "macos", ReservedNameError],],
     )
     def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:
@@ -341,14 +343,28 @@ class Test_sanitize_filename:
             for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
         ]
         + [
-            ["linux", "A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in product(
-                INVALID_FILENAME_CHARS + unprintable_ascii_chars, REPLACE_TEXT_LIST
+            [pair.platform, "A" + pair.c + "B", pair.repl, "A" + pair.repl + "B"]
+            for pair in AllPairs(
+                OrderedDict(
+                    {
+                        "platform": ["posix", "linux", "macos"],
+                        "c": INVALID_PATH_CHARS + unprintable_ascii_chars,
+                        "repl": REPLACE_TEXT_LIST,
+                    }
+                )
             )
         ]
         + [
-            ["linux", "A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in product([":", "*", "?", '"', "<", ">", "|"], REPLACE_TEXT_LIST)
+            [pair.platform, "A" + pair.c + "B", pair.repl, "A" + pair.c + "B"]
+            for pair in AllPairs(
+                OrderedDict(
+                    {
+                        "platform": ["posix", "linux", "macos"],
+                        "c": [":", "*", "?", '"', "<", ">", "|"],
+                        "repl": REPLACE_TEXT_LIST,
+                    }
+                )
+            )
         ],
     )
     def test_normal_str(self, platform, value, replace_text, expected):

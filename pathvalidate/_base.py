@@ -60,6 +60,9 @@ class BaseFile:
         self._max_len = min(self._max_len, platform_max_len)
         self._validate_max_len()
 
+    def _is_posix(self) -> bool:
+        return self.platform == Platform.POSIX
+
     def _is_universal(self) -> bool:
         return self.platform == Platform.UNIVERSAL
 
@@ -86,7 +89,7 @@ class BaseFile:
         if self._is_windows():
             return 260
 
-        if self._is_macos():
+        if self._is_posix() or self._is_macos():
             return 1024
 
         return 260  # universal

@@ -12,7 +12,9 @@ from typing import Any, List, Optional, Union, cast
 
 @enum.unique
 class Platform(enum.Enum):
+    POSIX = "POSIX"
     UNIVERSAL = "universal"
+
     LINUX = "Linux"
     WINDOWS = "Windows"
     MACOS = "macOS"
@@ -111,6 +113,9 @@ def normalize_platform(name: PlatformType) -> Platform:
 
     if name:
         name = name.strip().lower()
+
+    if name == "posix":
+        return Platform.POSIX
 
     if name == "auto":
         name = platform.system().lower()

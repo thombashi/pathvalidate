@@ -122,11 +122,11 @@ class FilePathValidator(BaseValidator):
     def reserved_keywords(self) -> Tuple[str, ...]:
         common_keywords = super().reserved_keywords
 
-        if any([self._is_universal(), self._is_linux()]):
-            return common_keywords + ("/",)
-
-        if self._is_macos():
+        if any([self._is_universal(), self._is_posix(), self._is_macos()]):
             return common_keywords + self._MACOS_RESERVED_FILE_PATHS
+
+        if self._is_linux():
+            return common_keywords + ("/",)
 
         return common_keywords
 

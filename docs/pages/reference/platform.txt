@@ -4,6 +4,7 @@ Valid specifiers are follows (case-insensitive):
     - ``"Windows"``
     - ``"macOS"``
     - ``"auto"``: automatically detect the execution platform
+    - ``"POSIX"``
     - ``"universal"``/|None|: platform independent. note that absolute paths cannot specify this.
 
 Defaults to |None|.
