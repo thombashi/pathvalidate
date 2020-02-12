@@ -14,6 +14,7 @@ from ._common import (
     PathType,
     Platform,
     PlatformType,
+    findall_to_str,
     is_pathlike_obj,
     preprocess,
     validate_pathtype,
@@ -211,7 +212,7 @@ class FilePathValidator(BaseValidator):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=repr(unicode_file_path)
+                    invalid=findall_to_str(match), value=repr(unicode_file_path)
                 )
             )
 
@@ -220,7 +221,7 @@ class FilePathValidator(BaseValidator):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=repr(unicode_file_path)
+                    invalid=findall_to_str(match), value=repr(unicode_file_path)
                 ),
                 platform=Platform.WINDOWS,
             )

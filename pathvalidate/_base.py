@@ -4,7 +4,7 @@
 
 import abc
 import os
-from typing import Any, List, Optional, Tuple, cast
+from typing import Optional, Tuple, cast
 
 from ._common import PathType, Platform, PlatformType, normalize_platform, unprintable_ascii_chars
 from .error import ReservedNameError, ValidationError
@@ -90,10 +90,6 @@ class BaseFile:
             return 1024
 
         return 260  # universal
-
-    @staticmethod
-    def _findall_to_str(match: List[Any]) -> str:
-        return ", ".join([repr(text) for text in match])
 
 
 class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):

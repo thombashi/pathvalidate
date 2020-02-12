@@ -125,3 +125,7 @@ def normalize_platform(name: PlatformType) -> Platform:
         return Platform.MACOS
 
     return Platform.UNIVERSAL
+
+
+def findall_to_str(match: List[Any]) -> str:
+    return ", ".join([repr(text) for text in match])

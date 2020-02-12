@@ -14,6 +14,7 @@ from ._common import (
     PathType,
     Platform,
     PlatformType,
+    findall_to_str,
     is_pathlike_obj,
     preprocess,
     validate_pathtype,
@@ -161,7 +162,7 @@ class FileNameValidator(BaseValidator):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=repr(unicode_filename)
+                    invalid=findall_to_str(match), value=repr(unicode_filename)
                 )
             )
 
@@ -170,7 +171,7 @@ class FileNameValidator(BaseValidator):
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=self._findall_to_str(match), value=repr(unicode_filename)
+                    invalid=findall_to_str(match), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
             )
