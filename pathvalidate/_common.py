@@ -74,9 +74,6 @@ def _get_unprintable_ascii_chars() -> List[str]:
     return [chr(c) for c in range(128) if chr(c) not in string.printable]
 
 
-unprintable_ascii_chars = tuple(_get_unprintable_ascii_chars())
-
-
 def _get_ascii_symbols() -> List[str]:
     symbol_list = []  # type: List[str]
 
@@ -92,6 +89,7 @@ def _get_ascii_symbols() -> List[str]:
 
 
 ascii_symbols = tuple(_get_ascii_symbols())
+unprintable_ascii_chars = tuple(_get_unprintable_ascii_chars())
 
 __RE_UNPRINTABLE_CHARS = re.compile(
     "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
