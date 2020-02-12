@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
-from ._base import AbstractSanitizer, BaseValidator
+from ._base import AbstractSanitizer, BaseFile, BaseValidator
 from ._common import (
     PathType,
     Platform,
@@ -28,6 +28,12 @@ from .error import (
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
+_RE_INVALID_FILENAME = re.compile(
+    "[{:s}]".format(re.escape(BaseFile._INVALID_FILENAME_CHARS)), re.UNICODE
+)
+_RE_INVALID_WIN_FILENAME = re.compile(
+    "[{:s}]".format(re.escape(BaseFile._INVALID_WIN_FILENAME_CHARS)), re.UNICODE
+)
 
 
 class FileNameSanitizer(AbstractSanitizer):
@@ -83,9 +89,9 @@ class FileNameSanitizer(AbstractSanitizer):
 
     def _get_sanitize_regexp(self) -> Pattern:
         if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
-            return self._RE_INVALID_WIN_FILENAME
+            return _RE_INVALID_WIN_FILENAME
 
-        return self._RE_INVALID_FILENAME
+        return _RE_INVALID_FILENAME
 
 
 class FileNameValidator(BaseValidator):
@@ -151,7 +157,7 @@ class FileNameValidator(BaseValidator):
             )
 
     def __validate_unix_filename(self, unicode_filename: str) -> None:
-        match = self._RE_INVALID_FILENAME.findall(unicode_filename)
+        match = _RE_INVALID_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
@@ -160,7 +166,7 @@ class FileNameValidator(BaseValidator):
             )
 
     def __validate_win_filename(self, unicode_filename: str) -> None:
-        match = self._RE_INVALID_WIN_FILENAME.findall(unicode_filename)
+        match = _RE_INVALID_WIN_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(

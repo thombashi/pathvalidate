@@ -4,7 +4,6 @@
 
 import abc
 import os
-import re
 from typing import Any, List, Optional, Tuple, cast
 
 from ._common import PathType, Platform, PlatformType, normalize_platform, unprintable_ascii_chars
@@ -16,18 +15,6 @@ class BaseFile:
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
     _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
     _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
-
-    _RE_INVALID_FILENAME = re.compile(
-        "[{:s}]".format(re.escape(_INVALID_FILENAME_CHARS)), re.UNICODE
-    )
-    _RE_INVALID_WIN_FILENAME = re.compile(
-        "[{:s}]".format(re.escape(_INVALID_WIN_FILENAME_CHARS)), re.UNICODE
-    )
-
-    _RE_INVALID_PATH = re.compile("[{:s}]".format(re.escape(_INVALID_PATH_CHARS)), re.UNICODE)
-    _RE_INVALID_WIN_PATH = re.compile(
-        "[{:s}]".format(re.escape(_INVALID_WIN_PATH_CHARS)), re.UNICODE
-    )
 
     _ERROR_MSG_TEMPLATE = "invalid char found: invalids=({invalid}), value={value}"
 

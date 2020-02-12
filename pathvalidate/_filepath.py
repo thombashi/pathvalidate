@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple  # noqa
 
-from ._base import AbstractSanitizer, BaseValidator
+from ._base import AbstractSanitizer, BaseFile, BaseValidator
 from ._common import (
     PathType,
     Platform,
@@ -26,6 +26,12 @@ from .error import (
     InvalidLengthError,
     ReservedNameError,
     ValidationError,
+)
+
+
+_RE_INVALID_PATH = re.compile("[{:s}]".format(re.escape(BaseFile._INVALID_PATH_CHARS)), re.UNICODE)
+_RE_INVALID_WIN_PATH = re.compile(
+    "[{:s}]".format(re.escape(BaseFile._INVALID_WIN_PATH_CHARS)), re.UNICODE
 )
 
 
@@ -99,9 +105,9 @@ class FilePathSanitizer(AbstractSanitizer):
 
     def _get_sanitize_regexp(self) -> Pattern:
         if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
-            return self._RE_INVALID_WIN_PATH
+            return _RE_INVALID_WIN_PATH
 
-        return self._RE_INVALID_PATH
+        return _RE_INVALID_PATH
 
 
 class FilePathValidator(BaseValidator):
@@ -201,7 +207,7 @@ class FilePathValidator(BaseValidator):
             raise err_object
 
     def __validate_unix_file_path(self, unicode_file_path: str) -> None:
-        match = self._RE_INVALID_PATH.findall(unicode_file_path)
+        match = _RE_INVALID_PATH.findall(unicode_file_path)
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
@@ -210,7 +216,7 @@ class FilePathValidator(BaseValidator):
             )
 
     def __validate_win_file_path(self, unicode_file_path: str) -> None:
-        match = self._RE_INVALID_WIN_PATH.findall(unicode_file_path)
+        match = _RE_INVALID_WIN_PATH.findall(unicode_file_path)
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
