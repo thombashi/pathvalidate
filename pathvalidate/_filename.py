@@ -100,6 +100,7 @@ class FileNameValidator(BaseValidator):
         "{:s}{:d}".format(name, num)
         for name, num in itertools.product(("COM", "LPT"), range(1, 10))
     )
+    _MACOS_RESERVED_FILE_NAMES = (":",)
 
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
@@ -107,6 +108,9 @@ class FileNameValidator(BaseValidator):
 
         if self._is_universal() or self._is_windows():
             return common_keywords + self._WINDOWS_RESERVED_FILE_NAMES
+
+        if self._is_macos():
+            return common_keywords + self._MACOS_RESERVED_FILE_NAMES
 
         return common_keywords
 

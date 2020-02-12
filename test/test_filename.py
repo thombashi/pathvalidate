@@ -99,7 +99,7 @@ class Test_FileSanitizer:
                 ),
             ],
             ["linux", (".", "..")],
-            ["macos", (".", "..")],
+            ["macos", (".", "..", ":")],
         ],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
@@ -262,7 +262,8 @@ class Test_validate_filename:
         + [
             [reserved_keyword, platform, ReservedNameError]
             for reserved_keyword, platform in product([".", ".."], ["linux", "macos"])
-        ],
+        ]
+        + [[":", "macos", ReservedNameError]],
     )
     def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:

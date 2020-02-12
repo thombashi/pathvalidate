@@ -62,7 +62,7 @@ class Test_FileSanitizer:
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [["windows", (".", "..",),], ["linux", (".", "..", "/")], ["macos", (".", "..", "/")]],
+        [["windows", (".", "..",),], ["linux", (".", "..", "/")], ["macos", (".", "..", "/", ":")]],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
         assert FilePathValidator(255, platform=test_platform).reserved_keywords == expected
