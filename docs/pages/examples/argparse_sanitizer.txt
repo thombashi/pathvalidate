@@ -22,3 +22,6 @@
 
         $ ./examples/argparse_sanitize.py --filename e/g
         filename: eg
+
+.. note::
+    ``sanitize_filepath_arg`` is set platform as ``"auto"``.

@@ -24,3 +24,6 @@
         $ ./examples/argparse_validate.py --filepath e?g
         usage: argparse_validate.py [-h] [--filepath FILEPATH] [--filename FILENAME]
         argparse_validate.py: error: argument --filepath: invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
+
+.. note::
+    ``validate_filepath_arg`` is set platform as ``"auto"``.

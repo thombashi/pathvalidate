@@ -27,7 +27,7 @@ def validate_filepath_arg(value: str) -> str:
         return ""
 
     try:
-        validate_filepath(value)
+        validate_filepath(value, platform="auto")
     except ValidationError as e:
         raise ArgumentTypeError(e)
 
@@ -45,7 +45,7 @@ def sanitize_filepath_arg(value: str) -> PathType:
     if not value:
         return ""
 
-    return sanitize_filepath(value)
+    return sanitize_filepath(value, platform="auto")
 
 
 def filename(value: PathType) -> PathType:  # pragma: no cover
