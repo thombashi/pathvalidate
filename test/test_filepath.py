@@ -2,9 +2,8 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-import platform as m_platform  # noqa: W0611
+import platform as m_platform
 import random
-import sys  # noqa: W0611
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
@@ -210,7 +209,7 @@ class Test_validate_filepath:
             with pytest.raises(expected):
                 validate_filepath(value, platform=test_platform)
 
-    @pytest.mark.skipif("m_platform.system() != 'Windows'")
+    @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b/c.txt", ValidationError], ["C:\\a\\b\\c.txt", None],],
     )
@@ -222,7 +221,7 @@ class Test_validate_filepath:
             with pytest.raises(expected):
                 validate_filepath(value, platform="auto")
 
-    @pytest.mark.skipif("m_platform.system() != 'Linux'")
+    @pytest.mark.skipif(m_platform.system() != "Linux", reason="platform dependent tests")
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b/c.txt", None], ["C:\\a\\b\\c.txt", ValidationError],],
     )
@@ -591,7 +590,7 @@ class Test_sanitize_filepath:
         validate_filepath(sanitized_name, platform=test_platform)
         assert is_valid_filepath(sanitized_name, platform=test_platform)
 
-    @pytest.mark.skipif("m_platform.system() != 'Windows'")
+    @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
         ["value", "expected"],
         [["/a/b/c.txt", ValidationError], ["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],],
@@ -604,7 +603,7 @@ class Test_sanitize_filepath:
             with pytest.raises(expected):
                 sanitize_filepath(value, platform="auto")
 
-    @pytest.mark.skipif("m_platform.system() != 'Linux'")
+    @pytest.mark.skipif(m_platform.system() != "Linux", reason="platform dependent tests")
     @pytest.mark.parametrize(
         ["value", "expected"], [["/a/b:c.txt", "/a/bc.txt"], ["C:\\a\\b\\c.txt", ValidationError],],
     )
