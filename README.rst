@@ -159,6 +159,9 @@ filename/filepath validator for argparse
         usage: argparse_validate.py [-h] [--filepath FILEPATH] [--filename FILENAME]
         argparse_validate.py: error: argument --filepath: invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
 
+.. note::
+    ``validate_filepath_arg`` is set platform as ``"auto"``.
+
 filename/filepath sanitizer for argparse
 ------------------------------------------
 :Sample Code:
@@ -185,6 +188,9 @@ filename/filepath sanitizer for argparse
 
         $ ./examples/argparse_sanitize.py --filename e/g
         filename: eg
+
+.. note::
+    ``sanitize_filepath_arg`` is set platform as ``"auto"``.
 
 filename/filepath validator for click
 ---------------------------------------
