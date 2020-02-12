@@ -17,12 +17,13 @@ exclude = '''
 '''
 
 [tool.isort]
-dont_skip = "*/**/__init__.py"
+dont_skip = '*/**/__init__.py'
 known_third_party = [
-    "path",
-    "pytest",
-    "readmemaker",
-    "sphinx_rtd_theme",
+    'allpairspy',
+    'path',
+    'pytest',
+    'readmemaker',
+    'sphinx_rtd_theme',
 ]
 include_trailing_comma = true
 line_length = 100
@@ -35,7 +36,7 @@ skip_glob = [
 ]
 
 [tool.coverage.run]
-source = ["pathvalidate"]
+source = ['pathvalidate']
 branch = true
 
 [tool.coverage.report]
