@@ -110,7 +110,7 @@ class Test_sanitize_filepath_arg:
             ["", ""],
             ["abc", "abc"],
             ["abc.txt", "abc.txt"],
-            ["foo/abc", "foo/abc"],
+            ["foo/abc", "foo\\abc"],
             ["a?c", "ac"],
             ["COM1", "COM1_"],
         ],
