@@ -70,14 +70,14 @@ def _is_not_null_string(value: Any) -> bool:
         return False
 
 
-def _get_unprintable_ascii_char_list() -> List[str]:
+def _get_unprintable_ascii_chars() -> List[str]:
     return [chr(c) for c in range(128) if chr(c) not in string.printable]
 
 
-unprintable_ascii_chars = tuple(_get_unprintable_ascii_char_list())
+unprintable_ascii_chars = tuple(_get_unprintable_ascii_chars())
 
 
-def _get_ascii_symbol_list() -> List[str]:
+def _get_ascii_symbols() -> List[str]:
     symbol_list = []  # type: List[str]
 
     for i in range(128):
@@ -91,7 +91,7 @@ def _get_ascii_symbol_list() -> List[str]:
     return symbol_list
 
 
-ascii_symbols = tuple(_get_ascii_symbol_list())
+ascii_symbols = tuple(_get_ascii_symbols())
 
 __RE_UNPRINTABLE_CHARS = re.compile(
     "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
