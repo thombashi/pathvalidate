@@ -56,15 +56,16 @@ Sanitize a filename
         from pathvalidate import sanitize_filename
 
         fname = "fi:l*e/p\"a?t>h|.t<xt"
-        print("{} -> {}".format(fname, sanitize_filename(fname)))
+        print(f"{fname} -> {sanitize_filename(fname)}\n")
 
         fname = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
-        print("{} -> {}".format(fname, sanitize_filename(fname)))
+        print(f"{fname} -> {sanitize_filename(fname)}\n")
 
 :Output:
     .. code-block::
 
         fi:l*e/p"a?t>h|.t<xt -> filepath.txt
+
         _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f(g)h+i_0.txt
 
 Sanitize a filepath
@@ -75,15 +76,16 @@ Sanitize a filepath
         from pathvalidate import sanitize_filepath
 
         fpath = "fi:l*e/p\"a?t>h|.t<xt"
-        print("{} -> {}".format(fpath, sanitize_filepath(fpath)))
+        print(f"{fpath} -> {sanitize_filepath(fpath)}\n")
 
         fpath = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
-        print("{} -> {}".format(fpath, sanitize_filepath(fpath)))
+        print(f"{fpath} -> {sanitize_filepath(fpath)}\n")
 
 :Output:
     .. code-block::
 
         fi:l*e/p"a?t>h|.t<xt -> file/path.txt
+
         _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f/(g)h+i_0.txt
 
 Validate a filename
@@ -97,12 +99,12 @@ Validate a filename
         try:
             validate_filename("fi:l*e/p\"a?t>h|.t<xt")
         except ValidationError as e:
-            print("{}\n".format(e), file=sys.stderr)
+            print(f"{e}\n", file=sys.stderr)
 
         try:
             validate_filename("COM1")
         except ValidationError as e:
-            print("{}\n".format(e), file=sys.stderr)
+            print(f"{e}\n", file=sys.stderr)
 
 :Output:
     .. code-block::
@@ -119,15 +121,16 @@ Check a filename
         from pathvalidate import is_valid_filename, sanitize_filename
 
         fname = "fi:l*e/p\"a?t>h|.t<xt"
-        print("is_valid_filename('{}') return {}".format(fname, is_valid_filename(fname)))
+        print(f"is_valid_filename('{fname}') return {is_valid_filename(fname)}\n")
 
         sanitized_fname = sanitize_filename(fname)
-        print("is_valid_filename('{}') return {}".format(sanitized_fname, is_valid_filename(sanitized_fname)))
+        print(f"is_valid_filename('{sanitized_fname}') return {is_valid_filename(sanitized_fname)}\n")
 
 :Output:
     .. code-block::
 
         is_valid_filename('fi:l*e/p"a?t>h|.t<xt') return False
+
         is_valid_filename('filepath.txt') return True
 
 filename/filepath validator for argparse
