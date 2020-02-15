@@ -4,7 +4,7 @@
         from pathvalidate import replace_symbol
 
         name = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
-        print("{} -> {}".format(name, replace_symbol(name)))
+        print(f"{name} -> {replace_symbol(name)}")
 
 :Output:
     .. code-block:: none

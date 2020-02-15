@@ -4,13 +4,14 @@
         from pathvalidate import sanitize_filename
 
         fname = "fi:l*e/p\"a?t>h|.t<xt"
-        print("{} -> {}".format(fname, sanitize_filename(fname)))
+        print(f"{fname} -> {sanitize_filename(fname)}\n")
 
         fname = "\0_a*b:c<d>e%f/(g)h+i_0.txt"
-        print("{} -> {}".format(fname, sanitize_filename(fname)))
+        print(f"{fname} -> {sanitize_filename(fname)}\n")
 
 :Output:
     .. code-block:: none
 
         fi:l*e/p"a?t>h|.t<xt -> filepath.txt
+
         _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f(g)h+i_0.txt

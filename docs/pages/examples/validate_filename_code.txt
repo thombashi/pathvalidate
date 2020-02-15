@@ -7,12 +7,12 @@
         try:
             validate_filename("fi:l*e/p\"a?t>h|.t<xt")
         except ValidationError as e:
-            print("{}\n".format(e), file=sys.stderr)
+            print(f"{e}\n", file=sys.stderr)
 
         try:
             validate_filename("COM1")
         except ValidationError as e:
-            print("{}\n".format(e), file=sys.stderr)
+            print(f"{e}\n", file=sys.stderr)
 
 :Output:
     .. code-block:: none
