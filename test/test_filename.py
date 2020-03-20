@@ -4,7 +4,6 @@
 
 import platform as m_platform
 import random
-import sys  # noqa: W0611
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
