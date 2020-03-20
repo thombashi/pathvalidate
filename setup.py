@@ -52,7 +52,7 @@ setuptools.setup(
     long_description_content_type="text/x-rst",
     include_package_data=True,
     packages=setuptools.find_packages(exclude=["test*"]),
-    package_data={"pathvalidate": ["py.typed"]},
+    package_data={MODULE_NAME: ["py.typed"]},
     project_urls={
         "Documentation": "https://{:s}.rtfd.io/".format(MODULE_NAME),
         "Source": REPOSITORY_URL,
