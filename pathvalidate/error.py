@@ -62,7 +62,7 @@ class ValidationError(ValueError):
             item_list.append("target-platform={}".format(self.platform.value))
         if self.description:
             item_list.append("description={}".format(self.description))
-        if self.reusable_name:
+        if self.__reusable_name is not None:
             item_list.append("reusable_name={}".format(self.reusable_name))
 
         return ", ".join(item_list).strip()
