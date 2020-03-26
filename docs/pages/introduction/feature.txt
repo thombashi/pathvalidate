@@ -3,5 +3,7 @@ Features
 - Sanitize/Validate a string as a:
     - file name
     - file path
-- filename/filepath validator/sanitizer for ``argparse``/``click``
+- file name/path argument validator/sanitizer for ``argparse`` and ``click``
+- Multi platform support:
+    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``Posix``) or ``universal`` (platform independent)
 - Multibyte character support
