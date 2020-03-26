@@ -43,7 +43,9 @@ Features
 - Sanitize/Validate a string as a:
     - file name
     - file path
-- filename/filepath validator/sanitizer for ``argparse``/``click``
+- file name/path argument validator/sanitizer for ``argparse`` and ``click``
+- Multi platform support:
+    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``Posix``) or ``universal`` (platform independent)
 - Multibyte character support
 
 Examples
@@ -67,6 +69,9 @@ Sanitize a filename
         fi:l*e/p"a?t>h|.t<xt -> filepath.txt
 
         _a*b:c<d>e%f/(g)h+i_0.txt -> _abcde%f(g)h+i_0.txt
+
+The default target ``platform`` is ``universal``.
+i.e. the sanitized file name is valid for any platform.
 
 Sanitize a filepath
 ---------------------
