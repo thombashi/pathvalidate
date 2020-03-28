@@ -29,7 +29,7 @@ def is_pathlike_obj(value: PathType) -> bool:
 
 
 def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
-    from .error import NullNameError
+    from .error import ValidationError, ErrorReason
 
     if _is_not_null_string(text) or is_pathlike_obj(text):
         return
@@ -38,7 +38,9 @@ def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
         if not error_msg:
             error_msg = "the value must be a not empty"
 
-        raise NullNameError(error_msg)
+        raise ValidationError(
+            description=error_msg, reason=ErrorReason.NULL_NAME,
+        )
 
     raise TypeError("text must be a string: actual={}".format(type(text)))
 
