@@ -206,7 +206,17 @@ class FilePathValidator(BaseValidator):
             return
 
         if self._is_universal() and any([is_posix_abs, is_nt_abs]):
-            raise err_object
+            ValidationError(
+                description=(
+                    "{}. expected a platform independent file path".format(
+                        "POSIX absolute file path found"
+                        if is_posix_abs
+                        else "NT absolute file path found"
+                    )
+                ),
+                platform=self.platform,
+                reason=ErrorReason.MALFORMED_ABS_PATH,
+            )
 
         if any([self._is_windows(), self._is_universal()]) and is_posix_abs:
             raise err_object
