@@ -19,13 +19,7 @@ from ._common import (
     preprocess,
     validate_pathtype,
 )
-from .error import (
-    ErrorReason,
-    InvalidCharError,
-    InvalidLengthError,
-    ReservedNameError,
-    ValidationError,
-)
+from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -74,14 +68,14 @@ class FileNameSanitizer(AbstractSanitizer):
 
         try:
             self.__validator.validate(sanitized_filename)
-        except ReservedNameError as e:
-            if e.reusable_name is False:
+        except ValidationError as e:
+            if e.reason == ErrorReason.RESERVED_NAME and e.reusable_name is False:
                 sanitized_filename = re.sub(
                     re.escape(e.reserved_name), "{}_".format(e.reserved_name), sanitized_filename
                 )
-        except InvalidCharError:
-            if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
-                sanitized_filename = sanitized_filename.rstrip(" .")
+            elif e.reason == ErrorReason.INVALID_CHARACTER:
+                if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+                    sanitized_filename = sanitized_filename.rstrip(" .")
 
         if is_pathlike_obj(value):
             return Path(sanitized_filename)
