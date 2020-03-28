@@ -229,14 +229,14 @@ def validate_filename(
             If |True|, check reserved names of the ``platform``.
 
     Raises:
-        InvalidLengthError:
+        ValidationError (ErrorReason.INVALID_LENGTH):
             If the ``filename`` is longer than ``max_len`` characters.
-        InvalidCharError:
+        ValidationError (ErrorReason.INVALID_CHARACTER):
             If the ``filename`` includes invalid character(s) for a filename:
             |invalid_filename_chars|.
             The following characters are also invalid for Windows platform:
             |invalid_win_filename_chars|.
-        ReservedNameError:
+        ValidationError (ErrorReason.RESERVED_NAME):
             If the ``filename`` equals reserved name by OS.
             Windows reserved name is as follows:
             ``"CON"``, ``"PRN"``, ``"AUX"``, ``"NUL"``, ``"COM[1-9]"``, ``"LPT[1-9]"``.

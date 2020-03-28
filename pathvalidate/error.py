@@ -10,12 +10,16 @@ from ._common import Platform
 
 @enum.unique
 class ErrorReason(enum.Enum):
-    FOUND_ABS_PATH = "FOUND_ABS_PATH"
-    NULL_NAME = "NULL_NAME"
-    INVALID_CHARACTER = "INVALID_CHARACTER"
-    INVALID_LENGTH = "INVALID_LENGTH"
-    MALFORMED_ABS_PATH = "MALFORMED_ABS_PATH"
-    RESERVED_NAME = "RESERVED_NAME"
+    """
+    Validation error reasons.
+    """
+
+    FOUND_ABS_PATH = "FOUND_ABS_PATH"  #: found an absolute path when expecting a file name
+    NULL_NAME = "NULL_NAME"  #: empty value
+    INVALID_CHARACTER = "INVALID_CHARACTER"  #: found invalid characters(s) in a value
+    INVALID_LENGTH = "INVALID_LENGTH"  #: found invalid string length
+    MALFORMED_ABS_PATH = "MALFORMED_ABS_PATH"  #: found invalid absolute path format
+    RESERVED_NAME = "RESERVED_NAME"  #: found a reserved name by a platform
 
 
 class ValidationError(ValueError):

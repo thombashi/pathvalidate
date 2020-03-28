@@ -17,7 +17,7 @@ def validate_ltsv_label(label: str) -> None:
     `Labeled Tab-separated Values (LTSV) <http://ltsv.org/>`__ label or not.
 
     :param label: Label to validate.
-    :raises pathvalidate.InvalidCharError:
+    :raises pathvalidate.ValidationError:
         If invalid character(s) found in the ``label`` for a LTSV format label.
     """
 

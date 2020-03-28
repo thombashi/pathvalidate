@@ -288,12 +288,12 @@ def validate_filepath(
             If |True|, check reserved names of the ``platform``.
 
     Raises:
-        InvalidCharError:
+        ValidationError (ErrorReason.INVALID_CHARACTER):
             If the ``file_path`` includes invalid char(s):
             |invalid_file_path_chars|.
             The following characters are also invalid for Windows platform:
             |invalid_win_file_path_chars|
-        InvalidLengthError:
+        ValidationError (ErrorReason.INVALID_LENGTH):
             If the ``file_path`` is longer than ``max_len`` characters.
         ValidationError:
             If ``file_path`` include invalid values.

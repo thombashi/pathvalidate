@@ -33,9 +33,13 @@ def validate_symbol(text: str) -> None:
     """
     Verifying whether symbol(s) included in the ``text`` or not.
 
-    :param text: Input text.
-    :raises pathvalidate.InvalidCharError:
-        If symbol(s) included in the ``text``.
+    Args:
+        text:
+            Input text to validate.
+
+    Raises:
+        ValidationError (ErrorReason.INVALID_CHARACTER):
+            If symbol(s) included in the ``text``.
     """
 
     match_list = __RE_SYMBOL.findall(preprocess(text))
