@@ -76,11 +76,11 @@ class Test_FileSanitizer:
 
 class Test_validate_filepath:
     VALID_CHARS = VALID_PATH_CHARS
-    VALID_MULTIBYTE_PATH_LIST = [
+    VALID_MULTIBYTE_PATHS = [
         "c:\\Users\\新しいフォルダー\\あいうえお.txt",
         "D:\\新しいフォルダー\\ユーザ属性.txt",
     ]
-    WIN_VALID_PATH_LIST = [
+    WIN_VALID_PATHS = [
         "D:\\Users\\\\est\\AppData\\Local\\Temp\\pytest-of-test\\pytest-0\\\\hoge.csv",
         "D:/Users/test/AppData/Local/Temp/pytest-of-test/pytest-0/test_exception__hoge_csv_heade1/hoge.csv",  # noqa
         "C:\\Users\\est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/\\hoge.csv",
@@ -112,7 +112,7 @@ class Test_validate_filepath:
         chain.from_iterable(
             [
                 [args for args in product([valid_path], ["windows"])]
-                for valid_path in VALID_MULTIBYTE_PATH_LIST
+                for valid_path in VALID_MULTIBYTE_PATHS
             ]
         ),
     )
@@ -120,7 +120,7 @@ class Test_validate_filepath:
         validate_filepath(value, platform)
         assert is_valid_filepath(value, platform=platform)
 
-    @pytest.mark.parametrize(["value"], [[valid_path] for valid_path in WIN_VALID_PATH_LIST])
+    @pytest.mark.parametrize(["value"], [[valid_path] for valid_path in WIN_VALID_PATHS])
     def test_normal_win(self, value):
         platform = "windows"
         validate_filepath(value, platform=platform)
@@ -431,21 +431,21 @@ class Test_validate_win_file_path:
 class Test_sanitize_filepath:
     SANITIZE_CHARS = INVALID_WIN_PATH_CHARS + unprintable_ascii_chars
     NOT_SANITIZE_CHARS = VALID_PATH_CHARS
-    REPLACE_TEXT_LIST = ["", "_"]
+    REPLACE_TEXTS = ["", "_"]
 
     @pytest.mark.parametrize(
         ["platform", "value", "replace_text", "expected"],
         [
             ["universal", "AA" + c + "B", rep, "AA" + rep + "B"]
-            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXTS)
         ]
         + [
             ["universal", "A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXTS)
         ]
         + [
             ["universal", "あ" + c + "い", rep, "あ" + c + "い"]
-            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXTS)
         ]
         + [
             [pair.platform, "A" + pair.c + "B", pair.repl, "A" + pair.repl + "B"]
@@ -454,7 +454,7 @@ class Test_sanitize_filepath:
                     {
                         "platform": ["posix", "linux", "macos"],
                         "c": INVALID_PATH_CHARS + unprintable_ascii_chars,
-                        "repl": REPLACE_TEXT_LIST,
+                        "repl": REPLACE_TEXTS,
                     }
                 )
             )
@@ -466,7 +466,7 @@ class Test_sanitize_filepath:
                     {
                         "platform": ["posix", "linux", "macos"],
                         "c": [":", "*", "?", '"', "<", ">", "|"],
-                        "repl": REPLACE_TEXT_LIST,
+                        "repl": REPLACE_TEXTS,
                     }
                 )
             )
@@ -550,15 +550,15 @@ class Test_sanitize_filepath:
         ["value", "replace_text", "expected"],
         [
             [Path("AA" + c + "B"), rep, Path("AA" + rep + "B")]
-            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXT_LIST)
+            for c, rep in product(SANITIZE_CHARS, REPLACE_TEXTS)
         ]
         + [
             [Path("A" + c + "B"), rep, Path("A" + c + "B")]
-            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXTS)
         ]
         + [
             [Path("あ" + c + "い"), rep, Path("あ" + c + "い")]
-            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXT_LIST)
+            for c, rep in product(NOT_SANITIZE_CHARS, REPLACE_TEXTS)
         ],
     )
     def test_normal_pathlike(self, value, replace_text, expected):
