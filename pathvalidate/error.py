@@ -31,7 +31,7 @@ class ValidationError(ValueError):
         The cause of the error.
 
         Returns:
-            :py:class:`~pathvalidate.error.ErrorReason`: 
+            :py:class:`~pathvalidate.error.ErrorReason`:
     """
 
     @property
