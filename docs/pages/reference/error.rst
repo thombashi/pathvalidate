@@ -1,30 +1,10 @@
 Errors
 ---------------
 
-.. autoexception:: pathvalidate.ValidationError
-    :undoc-members:
+.. autoexception:: pathvalidate.error.ErrorReason
+    :members:
     :show-inheritance:
 
-.. autoexception:: pathvalidate.NullNameError
-    :undoc-members:
-    :show-inheritance:
-
-.. autoexception:: pathvalidate.InvalidCharError
-    :undoc-members:
-    :show-inheritance:
-
-.. autoexception:: pathvalidate.InvalidLengthError
-    :undoc-members:
-    :show-inheritance:
-
-.. autoexception:: pathvalidate.ReservedNameError
-    :undoc-members:
-    :show-inheritance:
-
-.. autoexception:: pathvalidate.ValidReservedNameError
-    :undoc-members:
-    :show-inheritance:
-
-.. autoexception:: pathvalidate.InvalidReservedNameError
+.. autoexception:: pathvalidate.error.ValidationError
     :undoc-members:
     :show-inheritance:
