@@ -13,10 +13,7 @@ from allpairspy import AllPairs
 
 from pathvalidate import (
     ErrorReason,
-    InvalidCharError,
-    InvalidLengthError,
     Platform,
-    ReservedNameError,
     ValidationError,
     is_valid_filename,
     sanitize_filename,
@@ -151,7 +148,7 @@ class Test_validate_filename:
         [
             ["lower than one", -1, None],
             ["valid", 5, None],
-            ["invalid_length", 200, InvalidLengthError],
+            ["invalid_length", 200, ErrorReason.INVALID_LENGTH],
         ],
     )
     def test_min_len(self, value, min_len, expected):
@@ -159,27 +156,36 @@ class Test_validate_filename:
             validate_filename(value, min_len=min_len)
             assert is_valid_filename(value, min_len=min_len)
         else:
-            with pytest.raises(expected):
+            with pytest.raises(ValidationError) as e:
                 validate_filename(value, min_len=min_len)
+            assert e.value.reason == expected
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
         [
             ["a" * 255, None, None, None],
-            ["a" * 5000, None, 10000, InvalidLengthError],
-            ["invalid_max_len", None, 0, ValueError],
+            ["a" * 5000, None, 10000, ErrorReason.INVALID_LENGTH],
             ["valid_length", "universal", 255, None],
             ["valid_length", Platform.UNIVERSAL, 255, None],
-            ["invalid_length", None, 2, InvalidLengthError],
+            ["invalid_length", None, 2, ErrorReason.INVALID_LENGTH],
         ],
     )
     def test_max_len(self, value, platform, max_len, expected):
         if expected is None:
             validate_filename(value, platform=platform, max_len=max_len)
             assert is_valid_filename(value, platform=platform, max_len=max_len)
-        else:
-            with pytest.raises(expected):
-                validate_filename(value, platform=platform, max_len=max_len)
+            return
+
+        with pytest.raises(ValidationError) as e:
+            validate_filename(value, platform=platform, max_len=max_len)
+        assert e.value.reason == expected
+
+    @pytest.mark.parametrize(
+        ["value", "platform", "max_len", "expected"], [["invalid_max_len", None, 0, ValueError],],
+    )
+    def test_abnormal_max_len(self, value, platform, max_len, expected):
+        with pytest.raises(expected):
+            validate_filename(value, platform=platform, max_len=max_len)
 
     @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],
@@ -224,8 +230,9 @@ class Test_validate_filename:
         ),
     )
     def test_exception_invalid_char(self, value, platform):
-        with pytest.raises(InvalidCharError):
+        with pytest.raises(ValidationError) as e:
             validate_filename(value, platform)
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
         assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
@@ -241,34 +248,36 @@ class Test_validate_filename:
         ],
     )
     def test_exception_win_invalid_char(self, value, platform):
-        with pytest.raises(InvalidCharError):
+        with pytest.raises(ValidationError) as e:
             validate_filename(value, platform=platform)
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
         assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
-            [reserved_keyword, platform, ReservedNameError]
+            [reserved_keyword, platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
         ]
         + [
-            ["{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            ["{}.txt".format(reserved_keyword), platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            [reserved_keyword, platform, ReservedNameError]
+            [reserved_keyword, platform, ValidationError]
             for reserved_keyword, platform in product([".", ".."], ["posix", "linux", "macos"])
         ]
-        + [[":", "posix", ReservedNameError], [":", "macos", ReservedNameError],],
+        + [[":", "posix", ValidationError], [":", "macos", ValidationError],],
     )
     def test_exception_reserved_name(self, value, platform, expected):
         with pytest.raises(expected) as e:
             validate_filename(value, platform=platform)
+        assert e.value.reason == ErrorReason.RESERVED_NAME
         assert e.value.reserved_name
         assert e.value.reusable_name is False
 
@@ -292,15 +301,16 @@ class Test_validate_filename:
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
-            [value, platform, InvalidCharError]
+            [value, platform, ErrorReason.INVALID_CHARACTER]
             for value, platform in product(["asdf\rsdf"], ["windows", "universal"])
         ],
     )
     def test_exception_escape_err_msg(self, value, platform, expected):
-        with pytest.raises(expected) as e:
+        with pytest.raises(ValidationError) as e:
             print(platform, repr(value))
             validate_filename(value, platform=platform)
 
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
         assert str(e.value) == (
             r"invalid char found: invalids=('\r'), value='asdf\rsdf', "
             "reason=INVALID_CHARACTER, target-platform=Windows"
@@ -311,7 +321,7 @@ class Test_validate_filename:
         [
             [None, ValueError],
             ["", ValidationError],
-            ["a" * 256, InvalidLengthError],
+            ["a" * 256, ValidationError],
             [1, TypeError],
             [True, TypeError],
             [nan, TypeError],

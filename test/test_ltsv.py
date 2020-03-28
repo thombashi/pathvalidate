@@ -6,7 +6,8 @@ import itertools
 
 import pytest
 
-from pathvalidate import InvalidCharError, ValidationError, sanitize_ltsv_label, validate_ltsv_label
+from pathvalidate import sanitize_ltsv_label, validate_ltsv_label
+from pathvalidate.error import ErrorReason, ValidationError
 
 from ._common import INVALID_WIN_FILENAME_CHARS, alphanum_chars
 
@@ -58,8 +59,9 @@ class Test_validate_ltsv_label:
         + [["あいうえお"], ["ラベル"]],
     )
     def test_exception_invalid_char(self, value):
-        with pytest.raises(InvalidCharError):
+        with pytest.raises(ValidationError) as e:
             validate_ltsv_label(value)
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
 
 
 class Test_sanitize_ltsv_label:

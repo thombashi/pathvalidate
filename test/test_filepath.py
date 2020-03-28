@@ -13,10 +13,7 @@ from allpairspy import AllPairs
 
 from pathvalidate import (
     ErrorReason,
-    InvalidCharError,
-    InvalidLengthError,
     Platform,
-    ReservedNameError,
     ValidationError,
     is_valid_filepath,
     sanitize_filepath,
@@ -131,35 +128,37 @@ class Test_validate_filepath:
         [
             ["lower than one", -1, None],
             ["valid", 5, None],
-            ["invalid_length", 200, InvalidLengthError],
+            ["invalid_length", 200, ErrorReason.INVALID_LENGTH],
         ],
     )
     def test_normal_min_len(self, value, min_len, expected):
         if expected is None:
             validate_filepath(value, min_len=min_len)
             assert is_valid_filepath(value, min_len=min_len)
-        else:
-            with pytest.raises(expected):
-                validate_filepath(value, min_len=min_len)
+            return
+
+        with pytest.raises(ValidationError) as e:
+            validate_filepath(value, min_len=min_len)
+        assert e.value.reason == expected
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
         [
             ["a" * 4096, "linux", None, None],
-            ["a" * 4097, "linux", None, InvalidLengthError],
+            ["a" * 4097, "linux", None, ErrorReason.INVALID_LENGTH],
             ["a" * 1024, "posix", None, None],
-            ["a" * 1025, "posix", None, InvalidLengthError],
-            ["a" * 4097, Platform.LINUX, None, InvalidLengthError],
-            ["a" * 255, "linux", 100, InvalidLengthError],
-            ["a" * 5000, "windows", 10000, ValidationError],
+            ["a" * 1025, "posix", None, ErrorReason.INVALID_LENGTH],
+            ["a" * 4097, Platform.LINUX, None, ErrorReason.INVALID_LENGTH],
+            ["a" * 255, "linux", 100, ErrorReason.INVALID_LENGTH],
+            ["a" * 5000, "windows", 10000, ErrorReason.INVALID_LENGTH],
             ["a" * 260, "windows", None, None],
-            ["a" * 300, "windows", 1024, ValidationError],
-            ["a" * 261, Platform.WINDOWS, None, InvalidLengthError],
-            ["a" * 261, "windows", None, InvalidLengthError],
+            ["a" * 300, "windows", 1024, ErrorReason.INVALID_LENGTH],
+            ["a" * 261, Platform.WINDOWS, None, ErrorReason.INVALID_LENGTH],
+            ["a" * 261, "windows", None, ErrorReason.INVALID_LENGTH],
             ["a" * 260, "universal", None, None],
-            ["a" * 261, "universal", None, InvalidLengthError],
-            ["a" * 300, "universal", 1024, ValidationError],
-            ["a" * 261, Platform.UNIVERSAL, None, InvalidLengthError],
+            ["a" * 261, "universal", None, ErrorReason.INVALID_LENGTH],
+            ["a" * 300, "universal", 1024, ErrorReason.INVALID_LENGTH],
+            ["a" * 261, Platform.UNIVERSAL, None, ErrorReason.INVALID_LENGTH],
         ],
     )
     def test_normal_max_len(self, value, platform, max_len, expected):
@@ -168,8 +167,9 @@ class Test_validate_filepath:
             assert is_valid_filepath(value, platform=platform, max_len=max_len)
             return
 
-        with pytest.raises(expected):
+        with pytest.raises(ValidationError) as e:
             validate_filepath(value, platform=platform, max_len=max_len)
+        assert e.value.reason == ErrorReason.INVALID_LENGTH
 
     @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],
@@ -186,16 +186,17 @@ class Test_validate_filepath:
         if expected is None:
             validate_filepath(value, min_len=min_len, max_len=max_len)
             assert is_valid_filepath(value, min_len=min_len, max_len=max_len)
-        else:
-            with pytest.raises(expected):
-                validate_filepath(value, min_len=min_len, max_len=max_len)
+            return
+
+        with pytest.raises(expected):
+            validate_filepath(value, min_len=min_len, max_len=max_len)
 
     @pytest.mark.parametrize(
         ["test_platform", "value", "expected"],
         [
             ["linux", "/a/b/c.txt", None],
             ["linux", "C:\\a\\b\\c.txt", ValidationError],
-            ["windows", "/a/b/c.txt", ValidationError],
+            ["windows", "/a/b/c.txt", None],
             ["windows", "C:\\a\\b\\c.txt", None],
             ["universal", "/a/b/c.txt", ValidationError],
             ["universal", "C:\\a\\b\\c.txt", ValidationError],
@@ -205,9 +206,10 @@ class Test_validate_filepath:
         if expected is None:
             validate_filepath(value, platform=test_platform)
             assert is_valid_filepath(value, platform=test_platform)
-        else:
-            with pytest.raises(expected):
-                validate_filepath(value, platform=test_platform)
+            return
+
+        with pytest.raises(expected):
+            validate_filepath(value, platform=test_platform)
 
     @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
@@ -217,9 +219,10 @@ class Test_validate_filepath:
         if expected is None:
             validate_filepath(value, platform="auto")
             assert is_valid_filepath(value, platform="auto")
-        else:
-            with pytest.raises(expected):
-                validate_filepath(value, platform="auto")
+            return
+
+        with pytest.raises(expected):
+            validate_filepath(value, platform="auto")
 
     @pytest.mark.skipif(m_platform.system() != "Linux", reason="platform dependent tests")
     @pytest.mark.parametrize(
@@ -229,18 +232,23 @@ class Test_validate_filepath:
         if expected is None:
             validate_filepath(value, platform="auto")
             assert is_valid_filepath(value, platform="auto")
-        else:
-            with pytest.raises(expected):
-                validate_filepath(value, platform="auto")
+            return
+
+        with pytest.raises(expected):
+            validate_filepath(value, platform="auto")
 
     @pytest.mark.parametrize(
         ["test_platform", "value", "expected"],
         [
             ["linux", "a/b/c.txt", None],
             ["linux", "a/b?/c.txt", None],
+            ["linux", "../a/./../b/c.txt", None],
             ["windows", "a/b/c.txt", None],
             ["windows", "a/b?/c.txt", ValidationError],
+            ["windows", "../a/./../b/c.txt", None],
             ["universal", "a/b/c.txt", None],
+            ["universal", "./a/b/c.txt", None],
+            ["universal", "../a/./../b/c.txt", None],
             ["universal", "a/b?/c.txt", ValidationError],
         ],
     )
@@ -288,8 +296,9 @@ class Test_validate_filepath:
         [["{0}{1}{0}".format(randstr(64), invalid_c)] for invalid_c in INVALID_PATH_CHARS],
     )
     def test_exception_invalid_char(self, value):
-        with pytest.raises(InvalidCharError):
+        with pytest.raises(ValidationError) as e:
             validate_filepath(value)
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
         assert not is_valid_filepath(value)
 
     @pytest.mark.parametrize(
@@ -305,8 +314,9 @@ class Test_validate_filepath:
         ],
     )
     def test_exception_invalid_win_char(self, value, platform):
-        with pytest.raises(InvalidCharError):
+        with pytest.raises(ValidationError) as e:
             validate_filepath(value, platform=platform)
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
         assert not is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
@@ -336,26 +346,26 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
-            ["abc\\{}\\xyz".format(reserved_keyword), platform, ReservedNameError]
+            ["abc\\{}\\xyz".format(reserved_keyword), platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["foo/abc/{}.txt".format(reserved_keyword), platform, ReservedNameError]
+            ["foo/abc/{}.txt".format(reserved_keyword), platform, ValidationError]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["{}".format(reserved_keyword), platform, ReservedNameError]
+            ["{}".format(reserved_keyword), platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["{}\\{}".format(drive, filename), platform, ReservedNameError]
+            ["{}\\{}".format(drive, filename), platform, ValidationError]
             for drive, platform, filename in product(
                 ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
@@ -365,6 +375,7 @@ class Test_validate_filepath:
         with pytest.raises(expected) as e:
             print(platform, value)
             validate_filepath(value, platform=platform)
+        assert e.value.reason == ErrorReason.RESERVED_NAME
         assert e.value.reusable_name is False
         assert e.value.reserved_name
 
@@ -373,15 +384,16 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
-            [value, platform, InvalidCharError]
+            [value, platform, ErrorReason.INVALID_CHARACTER]
             for value, platform in product(["asdf\rsdf"], ["windows", "universal"])
         ],
     )
     def test_exception_escape_err_msg(self, value, platform, expected):
-        with pytest.raises(expected) as e:
+        with pytest.raises(ValidationError) as e:
             print(platform, repr(value))
             validate_filepath(value, platform=platform)
 
+        assert e.value.reason == expected
         assert str(e.value) == (
             r"invalid char found: invalids=('\r'), value='asdf\rsdf', "
             "reason=INVALID_CHARACTER, target-platform=Windows"
@@ -411,6 +423,7 @@ class Test_validate_win_file_path:
             ["C:\\Users/est\\AppData/Local\\Temp/pytest-of-test\\pytest-0/hoge.csv"],
             ["C:\\Users"],
             ["C:\\"],
+            ["\\Users"],
         ],
     )
     def test_normal(self, value):
@@ -418,14 +431,19 @@ class Test_validate_win_file_path:
         assert is_valid_filepath(value, platform="windows")
 
     @pytest.mark.parametrize(
-        ["value", "expected"],
-        [["C:\\Users\\" + "a" * 1024, InvalidCharError], ["\\Users", InvalidCharError]],
+        ["value", "platform", "expected"],
+        [
+            [r"C:\Users\a", "universal", ErrorReason.MALFORMED_ABS_PATH],
+            [r"C:\Users:a", "universal", ErrorReason.MALFORMED_ABS_PATH],
+            ["C:\\Users\\" + "a" * 1024, "windows", ErrorReason.INVALID_LENGTH],
+            [r"C:\Users:a", "windows", ErrorReason.INVALID_CHARACTER],
+        ],
     )
-    def test_exception(self, value, expected):
+    def test_exception(self, value, platform, expected):
         with pytest.raises(ValidationError) as e:
-            validate_filepath(value)
-        assert e.value.reason == ErrorReason.MALFORMED_ABS_PATH
-        assert not is_valid_filepath(value)
+            validate_filepath(value, platform=platform)
+        assert e.value.reason == expected
+        assert not is_valid_filepath(value, platform=platform)
 
 
 class Test_sanitize_filepath:
@@ -589,6 +607,27 @@ class Test_sanitize_filepath:
         assert sanitized_name == expected
         validate_filepath(sanitized_name, platform=test_platform)
         assert is_valid_filepath(sanitized_name, platform=test_platform)
+
+    @pytest.mark.parametrize(
+        ["platform", "value", "expected"],
+        [
+            ["windows", "a/b", "a\\b"],
+            ["windows", "a\\b", "a\\b"],
+            ["windows", "a\\\\b", "a\\b"],
+            ["linux", "a/b", "a/b"],
+            ["linux", "a//b", "a/b"],
+            ["linux", "a\\b", "a/b"],
+            ["linux", "a\\\\b", "a/b"],
+            ["universal", "a/b", "a/b"],
+            ["universal", "a//b", "a/b"],
+            ["universal", "a\\b", "a/b"],
+            ["universal", "a\\\\b", "a/b"],
+        ],
+    )
+    def test_normal_path_separator(self, platform, value, expected):
+        sanitized = sanitize_filepath(value, platform=platform)
+        assert sanitized == expected
+        assert is_valid_filepath(sanitized, platform=platform)
 
     @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
