@@ -205,11 +205,11 @@ class FilePathValidator(BaseValidator):
         if self._is_universal() and any([is_posix_abs, is_nt_abs]):
             raise err_object
 
-        if any([self._is_windows(), self._is_universal()]) and posixpath.isabs(value):
+        if any([self._is_windows(), self._is_universal()]) and is_posix_abs:
             raise err_object
 
         drive, _tail = ntpath.splitdrive(value)
-        if not self._is_windows() and drive and ntpath.isabs(value):
+        if not self._is_windows() and drive and is_nt_abs:
             raise err_object
 
     def __validate_unix_file_path(self, unicode_file_path: str) -> None:
