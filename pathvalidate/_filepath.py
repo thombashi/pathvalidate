@@ -176,7 +176,7 @@ class FilePathValidator(BaseValidator):
         self._validate_reserved_keywords(unicode_file_path)
         unicode_file_path = unicode_file_path.replace("\\", "/")
         for entry in unicode_file_path.split("/"):
-            if not entry:
+            if not entry or entry in (".", ".."):
                 continue
 
             self.__fname_validator._validate_reserved_keywords(entry)
