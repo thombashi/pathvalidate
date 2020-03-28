@@ -24,7 +24,14 @@ class ErrorReason(enum.Enum):
 
 class ValidationError(ValueError):
     """
-    Base exception class that indicates invalid name errors.
+    Exception class of validation errors.
+
+    .. py:attribute:: reason
+
+        The cause of the error.
+
+        Returns:
+            :py:class:`~pathvalidate.error.ErrorReason`: 
     """
 
     @property
