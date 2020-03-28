@@ -213,7 +213,7 @@ class Test_validate_filepath:
 
     @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
-        ["value", "expected"], [["/a/b/c.txt", ValidationError], ["C:\\a\\b\\c.txt", None],],
+        ["value", "expected"], [["C:\\a\\b\\c.txt", None],],
     )
     def test_normal_auto_platform_win(self, value, expected):
         if expected is None:
@@ -631,8 +631,7 @@ class Test_sanitize_filepath:
 
     @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
-        ["value", "expected"],
-        [["/a/b/c.txt", ValidationError], ["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],],
+        ["value", "expected"], [["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],],
     )
     def test_normal_auto_platform_win(self, value, expected):
         if isinstance(expected, str):
