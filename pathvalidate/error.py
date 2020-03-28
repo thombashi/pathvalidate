@@ -36,6 +36,10 @@ class ValidationError(ValueError):
         return self.__description
 
     @property
+    def reserved_name(self) -> str:
+        return self.__reserved_name
+
+    @property
     def reusable_name(self) -> bool:
         return self.__reusable_name
 
@@ -43,6 +47,7 @@ class ValidationError(ValueError):
         self.__platform = kwargs.pop("platform", None)
         self.__reason = kwargs.pop("reason", None)
         self.__description = kwargs.pop("description", None)
+        self.__reserved_name = kwargs.pop("reserved_name", None)
         self.__reusable_name = kwargs.pop("reusable_name", None)
 
         try:
@@ -109,13 +114,7 @@ class ReservedNameError(ValidationError):
     Exception raised when a string matched a reserved name.
     """
 
-    @property
-    def reserved_name(self) -> str:
-        return self.__reserved_name
-
     def __init__(self, *args, **kwargs) -> None:
-        self.__reserved_name = kwargs.pop("reserved_name", None)
-
         kwargs["reason"] = ErrorReason.RESERVED_NAME
 
         super().__init__(args, **kwargs)
