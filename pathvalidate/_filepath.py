@@ -202,6 +202,9 @@ class FilePathValidator(BaseValidator):
             reason=ErrorReason.MALFORMED_ABS_PATH,
         )
 
+        if any([self._is_windows() and is_nt_abs, self._is_linux() and is_posix_abs]):
+            return
+
         if self._is_universal() and any([is_posix_abs, is_nt_abs]):
             raise err_object
 
