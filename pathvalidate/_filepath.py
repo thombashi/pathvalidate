@@ -225,26 +225,26 @@ class FilePathValidator(BaseValidator):
         if not self._is_windows() and drive and is_nt_abs:
             raise err_object
 
-    def __validate_unix_filepath(self, unicode_file_path: str) -> None:
-        match = _RE_INVALID_PATH.findall(unicode_file_path)
+    def __validate_unix_filepath(self, unicode_filepath: str) -> None:
+        match = _RE_INVALID_PATH.findall(unicode_filepath)
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=findall_to_str(match), value=repr(unicode_file_path)
+                    invalid=findall_to_str(match), value=repr(unicode_filepath)
                 )
             )
 
-    def __validate_win_filepath(self, unicode_file_path: str) -> None:
-        match = _RE_INVALID_WIN_PATH.findall(unicode_file_path)
+    def __validate_win_filepath(self, unicode_filepath: str) -> None:
+        match = _RE_INVALID_WIN_PATH.findall(unicode_filepath)
         if match:
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
-                    invalid=findall_to_str(match), value=repr(unicode_file_path)
+                    invalid=findall_to_str(match), value=repr(unicode_filepath)
                 ),
                 platform=Platform.WINDOWS,
             )
 
-        _drive, value = self.__split_drive(unicode_file_path)
+        _drive, value = self.__split_drive(unicode_filepath)
         if value:
             match_reserved = self._RE_NTFS_RESERVED.search(value)
             if match_reserved:
