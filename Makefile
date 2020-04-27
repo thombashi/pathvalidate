@@ -32,9 +32,10 @@ readme:
 
 .PHONY: release
 release:
-	@tox -e release
+	@python setup.py release --sign
 	@make clean
 
 .PHONY: setup
 setup:
-	@pip install --upgrade -e .[test] tox
+	@pip install --upgrade -e .[test] releasecmd tox
+	pip check
