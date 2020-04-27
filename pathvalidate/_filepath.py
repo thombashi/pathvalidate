@@ -73,9 +73,9 @@ class FilePathSanitizer(AbstractSanitizer):
 
         self.__fpath_validator.validate_abspath(value)
 
-        unicode_file_path = preprocess(value)
-        drive, unicode_file_path = self.__split_drive(unicode_file_path)
-        sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_file_path)
+        unicode_filepath = preprocess(value)
+        drive, unicode_filepath = self.__split_drive(unicode_filepath)
+        sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
         if self._is_windows():
             path_separator = "\\"
         else:
@@ -158,9 +158,9 @@ class FilePathValidator(BaseValidator):
         if not value:
             return
 
-        file_path = os.path.normpath(value)
-        unicode_file_path = preprocess(file_path)
-        value_len = len(unicode_file_path)
+        filepath = os.path.normpath(value)
+        unicode_filepath = preprocess(filepath)
+        value_len = len(unicode_filepath)
 
         if value_len > self.max_len:
             raise InvalidLengthError(
@@ -173,18 +173,18 @@ class FilePathValidator(BaseValidator):
                 )
             )
 
-        self._validate_reserved_keywords(unicode_file_path)
-        unicode_file_path = unicode_file_path.replace("\\", "/")
-        for entry in unicode_file_path.split("/"):
+        self._validate_reserved_keywords(unicode_filepath)
+        unicode_filepath = unicode_filepath.replace("\\", "/")
+        for entry in unicode_filepath.split("/"):
             if not entry or entry in (".", ".."):
                 continue
 
             self.__fname_validator._validate_reserved_keywords(entry)
 
         if self._is_universal() or self._is_windows():
-            self.__validate_win_file_path(unicode_file_path)
+            self.__validate_win_file_path(unicode_filepath)
         else:
-            self.__validate_unix_file_path(unicode_file_path)
+            self.__validate_unix_file_path(unicode_filepath)
 
     def validate_abspath(self, value: PathType) -> None:
         value = str(value)
