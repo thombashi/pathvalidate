@@ -182,9 +182,9 @@ class FilePathValidator(BaseValidator):
             self.__fname_validator._validate_reserved_keywords(entry)
 
         if self._is_universal() or self._is_windows():
-            self.__validate_win_file_path(unicode_filepath)
+            self.__validate_win_filepath(unicode_filepath)
         else:
-            self.__validate_unix_file_path(unicode_filepath)
+            self.__validate_unix_filepath(unicode_filepath)
 
     def validate_abspath(self, value: PathType) -> None:
         value = str(value)
@@ -225,7 +225,7 @@ class FilePathValidator(BaseValidator):
         if not self._is_windows() and drive and is_nt_abs:
             raise err_object
 
-    def __validate_unix_file_path(self, unicode_file_path: str) -> None:
+    def __validate_unix_filepath(self, unicode_file_path: str) -> None:
         match = _RE_INVALID_PATH.findall(unicode_file_path)
         if match:
             raise InvalidCharError(
@@ -234,7 +234,7 @@ class FilePathValidator(BaseValidator):
                 )
             )
 
-    def __validate_win_file_path(self, unicode_file_path: str) -> None:
+    def __validate_win_filepath(self, unicode_file_path: str) -> None:
         match = _RE_INVALID_WIN_PATH.findall(unicode_file_path)
         if match:
             raise InvalidCharError(
