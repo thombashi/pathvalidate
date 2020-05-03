@@ -4,6 +4,7 @@
 
 import platform as m_platform
 import random
+import sys
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
@@ -681,6 +682,7 @@ class Test_sanitize_filepath:
             with pytest.raises(expected):
                 sanitize_filepath(value, platform="auto")
 
+    @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
     @pytest.mark.parametrize(
         ["value", "expected"],
         [[1, TypeError], [True, TypeError], [nan, TypeError], [inf, TypeError]],
