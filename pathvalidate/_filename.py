@@ -181,6 +181,9 @@ class FileNameValidator(BaseValidator):
                 platform=Platform.WINDOWS,
             )
 
+        if unicode_filename in (".", ".."):
+            return
+
         if unicode_filename[-1] in (" ", "."):
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(

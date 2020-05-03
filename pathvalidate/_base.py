@@ -24,7 +24,7 @@ class BaseFile:
 
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
-        return (".", "..")
+        return tuple()
 
     @property
     def min_len(self) -> int:

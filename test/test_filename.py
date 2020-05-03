@@ -69,8 +69,6 @@ class Test_FileSanitizer:
             [
                 "windows",
                 (
-                    ".",
-                    "..",
                     "CON",
                     "PRN",
                     "AUX",
@@ -96,8 +94,8 @@ class Test_FileSanitizer:
                     "LPT9",
                 ),
             ],
-            ["linux", (".", "..")],
-            ["macos", (".", "..", ":")],
+            ["linux", ()],
+            ["macos", (":",)],
         ],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
@@ -266,22 +264,24 @@ class Test_validate_filename:
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
-            if reserved_keyword not in [".", ".."]
         ]
         + [
-            [reserved_keyword, platform, ValidationError]
+            [reserved_keyword, platform, None]
             for reserved_keyword, platform in product([".", ".."], ["posix", "linux", "macos"])
         ]
         + [[":", "posix", ValidationError], [":", "macos", ValidationError],],
     )
     def test_exception_reserved_name(self, value, platform, expected):
-        with pytest.raises(expected) as e:
+        if expected is None:
             validate_filename(value, platform=platform)
-        assert e.value.reason == ErrorReason.RESERVED_NAME
-        assert e.value.reserved_name
-        assert e.value.reusable_name is False
+        else:
+            with pytest.raises(expected) as e:
+                validate_filename(value, platform=platform)
+            assert e.value.reason == ErrorReason.RESERVED_NAME
+            assert e.value.reserved_name
+            assert e.value.reusable_name is False
 
-        assert not is_valid_filename(value, platform=platform)
+            assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -444,7 +444,10 @@ class Test_sanitize_filename:
             [reserved.upper(), "windows", reserved.upper() + "_"]
             for reserved in WIN_RESERVED_FILE_NAMES
         ]
-        + [[reserved, "linux", reserved + "_"] for reserved in (".", "..")],
+        + [
+            [reserved_keyword, platform, reserved_keyword]
+            for reserved_keyword, platform in product([".", ".."], ["windows", "universal"])
+        ],
     )
     def test_normal_reserved_name(self, value, test_platform, expected):
         filename = sanitize_filename(value, platform=test_platform)

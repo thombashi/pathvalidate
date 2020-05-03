@@ -60,12 +60,7 @@ class Test_FileSanitizer:
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [
-            ["windows", (".", "..",),],
-            ["posix", (".", "..", "/", ":")],
-            ["linux", (".", "..", "/")],
-            ["macos", (".", "..", "/", ":")],
-        ],
+        [["windows", tuple()], ["posix", ("/", ":")], ["linux", ("/",)], ["macos", ("/", ":")],],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
         assert FilePathValidator(255, platform=test_platform).reserved_keywords == expected
@@ -241,15 +236,15 @@ class Test_validate_filepath:
         ["test_platform", "value", "expected"],
         [
             ["linux", "a/b/c.txt", None],
-            ["linux", "a/b?/c.txt", None],
+            ["linux", "a//b?/c.txt", None],
             ["linux", "../a/./../b/c.txt", None],
             ["windows", "a/b/c.txt", None],
-            ["windows", "a/b?/c.txt", ValidationError],
+            ["windows", "a//b?/c.txt", ValidationError],
             ["windows", "../a/./../b/c.txt", None],
             ["universal", "a/b/c.txt", None],
             ["universal", "./a/b/c.txt", None],
             ["universal", "../a/./../b/c.txt", None],
-            ["universal", "a/b?/c.txt", ValidationError],
+            ["universal", "a//b?/c.txt", ValidationError],
         ],
     )
     def test_normal_rel_path(self, test_platform, value, expected):
@@ -506,7 +501,6 @@ class Test_sanitize_filepath:
                 "abc/{}_/xyz".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
-            if reserved_keyword not in [".", ".."]
         ]
         + [
             [
@@ -515,7 +509,6 @@ class Test_sanitize_filepath:
                 "/abc/{}/xyz".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
-            if reserved_keyword not in [".", ".."]
         ]
         + [
             [
@@ -524,7 +517,6 @@ class Test_sanitize_filepath:
                 "abc/{}_.txt".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
-            if reserved_keyword not in [".", ".."]
         ]
         + [
             [
@@ -533,7 +525,6 @@ class Test_sanitize_filepath:
                 "/abc/{}.txt".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
-            if reserved_keyword not in [".", ".."]
         ]
         + [
             [
@@ -542,7 +533,6 @@ class Test_sanitize_filepath:
                 "C:\\abc\\{}_.txt".format(reserved_keyword),
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["windows"])
-            if reserved_keyword not in [".", ".."]
         ]
         + [
             ["{}\\{}".format(drive, filename), platform, "{}\\{}_".format(drive, filename)]
@@ -586,6 +576,25 @@ class Test_sanitize_filepath:
 
         validate_filepath(sanitized_name)
         assert is_valid_filepath(sanitized_name)
+
+    @pytest.mark.parametrize(
+        ["test_platform", "value", "expected"],
+        [
+            ["linux", "a/b/c.txt", "a/b/c.txt"],
+            ["linux", "a//b?/c.txt", "a/b?/c.txt"],
+            ["linux", "../a/./../b/c.txt", "../a/./../b/c.txt"],
+            ["windows", "a/b/c.txt", "a\\b\\c.txt"],
+            ["windows", "a//b?/c.txt", "a\\b\\c.txt"],
+            ["windows", "../a/./../b/c.txt", "..\\a\\.\\..\\b\\c.txt"],
+            ["universal", "a/b/c.txt", "a/b/c.txt"],
+            ["universal", "./", "."],
+            ["universal", "./a/b/c.txt", "./a/b/c.txt"],
+            ["universal", "../a/./../b/c.txt", "../a/./../b/c.txt"],
+            ["universal", "a//b?/c.txt", "a/b/c.txt"],
+        ],
+    )
+    def test_normal_rel_path(self, test_platform, value, expected):
+        assert sanitize_filepath(value, platform=test_platform) == expected
 
     @pytest.mark.parametrize(
         ["value", "expected"], [["", ""], [None, ""],],
