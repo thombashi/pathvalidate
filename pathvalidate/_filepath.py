@@ -363,7 +363,7 @@ def sanitize_filepath(
         max_len:
             Maximum length of the ``file_path`` length. Truncate the name if the ``file_path``
             length exceedd this value. If the value is |None|,
-            automatically determined by the ``platform``:
+            ``max_len`` will automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
