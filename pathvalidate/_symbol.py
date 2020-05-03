@@ -17,12 +17,14 @@ __RE_SYMBOL = re.compile(
 
 
 def validate_unprintable(text: str) -> None:
+    # deprecated
     match_list = __RE_UNPRINTABLE.findall(preprocess(text))
     if match_list:
         raise InvalidCharError("unprintable character found: {}".format(match_list))
 
 
 def replace_unprintable(text: str, replacement_text: str = "") -> str:
+    # deprecated
     try:
         return __RE_UNPRINTABLE.sub(replacement_text, preprocess(text))
     except (TypeError, AttributeError):
