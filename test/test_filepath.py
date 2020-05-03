@@ -582,6 +582,25 @@ class Test_sanitize_filepath:
         [
             ["linux", "a/b/c.txt", "a/b/c.txt"],
             ["linux", "a//b?/c.txt", "a/b?/c.txt"],
+            ["linux", "../a/./../b/c.txt", "../b/c.txt"],
+            ["windows", "a/b/c.txt", "a\\b\\c.txt"],
+            ["windows", "a//b?/c.txt", "a\\b\\c.txt"],
+            ["windows", "../a/./../b/c.txt", "..\\b\\c.txt"],
+            ["universal", "a/b/c.txt", "a/b/c.txt"],
+            ["universal", "./", "."],
+            ["universal", "./a/b/c.txt", "a/b/c.txt"],
+            ["universal", "../a/./../b/c.txt", "../b/c.txt"],
+            ["universal", "a//b?/c.txt", "a/b/c.txt"],
+        ],
+    )
+    def test_normal_rel_path(self, test_platform, value, expected):
+        assert sanitize_filepath(value, platform=test_platform) == expected
+
+    @pytest.mark.parametrize(
+        ["test_platform", "value", "expected"],
+        [
+            ["linux", "a/b/c.txt", "a/b/c.txt"],
+            ["linux", "a//b?/c.txt", "a/b?/c.txt"],
             ["linux", "../a/./../b/c.txt", "../a/./../b/c.txt"],
             ["windows", "a/b/c.txt", "a\\b\\c.txt"],
             ["windows", "a//b?/c.txt", "a\\b\\c.txt"],
@@ -593,8 +612,8 @@ class Test_sanitize_filepath:
             ["universal", "a//b?/c.txt", "a/b/c.txt"],
         ],
     )
-    def test_normal_rel_path(self, test_platform, value, expected):
-        assert sanitize_filepath(value, platform=test_platform) == expected
+    def test_normal_not_normalize(self, test_platform, value, expected):
+        assert sanitize_filepath(value, platform=test_platform, normalize=False) == expected
 
     @pytest.mark.parametrize(
         ["value", "expected"], [["", ""], [None, ""],],

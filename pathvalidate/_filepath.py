@@ -43,6 +43,7 @@ class FilePathSanitizer(AbstractSanitizer):
         max_len: Optional[int] = None,
         platform: PlatformType = None,
         check_reserved: bool = True,
+        normalize: bool = True,
     ) -> None:
         super().__init__(
             min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
@@ -61,6 +62,7 @@ class FilePathSanitizer(AbstractSanitizer):
             check_reserved=check_reserved,
             platform=self.platform,
         )
+        self.__normalize = normalize
 
         if self._is_universal() or self._is_windows():
             self.__split_drive = ntpath.splitdrive
@@ -74,6 +76,10 @@ class FilePathSanitizer(AbstractSanitizer):
         self.__fpath_validator.validate_abspath(value)
 
         unicode_filepath = preprocess(value)
+
+        if self.__normalize:
+            unicode_filepath = os.path.normpath(unicode_filepath)
+
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
         sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
         if self._is_windows():
@@ -334,6 +340,7 @@ def sanitize_filepath(
     platform: Optional[str] = None,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
+    normalize: bool = True,
 ) -> PathType:
     """Make a valid file path from a string.
 
@@ -371,6 +378,8 @@ def sanitize_filepath(
                 - ``universal``: 260
         check_reserved:
             If |True|, sanitize reserved names of the ``platform``.
+        normalize:
+            If |True|, normalize the the file path.
 
     Returns:
         Same type as the argument (str or PathLike object):
@@ -385,7 +394,7 @@ def sanitize_filepath(
     """
 
     return FilePathSanitizer(
-        platform=platform, max_len=max_len, check_reserved=check_reserved
+        platform=platform, max_len=max_len, check_reserved=check_reserved, normalize=normalize
     ).sanitize(file_path, replacement_text)
 
 
