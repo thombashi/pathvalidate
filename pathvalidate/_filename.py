@@ -258,6 +258,19 @@ def is_valid_filename(
     max_len: Optional[int] = None,
     check_reserved: bool = True,
 ) -> bool:
+    """Check whether the ``filename`` is a valid name or not.
+
+    Args:
+        filename:
+            A filename to be checked.
+
+    Example:
+        :ref:`example-is-valid-filename`
+
+    See Also:
+        :py:func:`.validate_filename()`
+    """
+
     return FileNameValidator(
         platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
     ).is_valid(filename)

@@ -329,6 +329,19 @@ def is_valid_filepath(
     max_len: Optional[int] = None,
     check_reserved: bool = True,
 ) -> bool:
+    """Check whether the ``file_path`` is a valid name or not.
+
+    Args:
+        file_path:
+            A filepath to be checked.
+
+    Example:
+        :ref:`example-is-valid-filepath`
+
+    See Also:
+        :py:func:`.validate_filepath()`
+    """
+
     return FilePathValidator(
         platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
     ).is_valid(file_path)
