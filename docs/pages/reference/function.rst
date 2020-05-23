@@ -1,11 +1,16 @@
 Functions
 ---------------
 
-File name validate/sanitize
+File name validation/sanitization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: pathvalidate.validate_filename
 
 .. autofunction:: pathvalidate.sanitize_filename
+
+
+Check a file name
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: pathvalidate.is_valid_filename
 
 
 File path validate/sanitize
@@ -13,6 +18,11 @@ File path validate/sanitize
 .. autofunction:: pathvalidate.validate_filepath
 
 .. autofunction:: pathvalidate.sanitize_filepath
+
+
+Check a file path
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. autofunction:: pathvalidate.is_valid_filepath
 
 
 Symbol validate/sanitize
