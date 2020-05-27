@@ -1,3 +1,8 @@
+Changelog
+==========
+https://github.com/thombashi/pathvalidate/releases
+
+
 Links
 =====
 - `GitHub repository <https://github.com/thombashi/pathvalidate>`__
