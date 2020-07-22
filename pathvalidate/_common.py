@@ -29,7 +29,7 @@ def is_pathlike_obj(value: PathType) -> bool:
 
 
 def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
-    from .error import ValidationError, ErrorReason
+    from .error import ErrorReason, ValidationError
 
     if _is_not_null_string(text) or is_pathlike_obj(text):
         return
