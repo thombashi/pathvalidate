@@ -17,7 +17,6 @@ Welcome to pathvalidate's documentation!
    pages/installation
    pages/examples/index
    pages/reference/index
-   pages/genindex
    pages/links
 
 

@@ -2,6 +2,9 @@ Changelog
 ==========
 https://github.com/thombashi/pathvalidate/releases
 
+.. include:: sponsors.rst
+
+.. include:: genindex.rst
 
 Links
 =====
