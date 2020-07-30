@@ -30,8 +30,8 @@ Summary
     :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
     :alt: Windows CI status
 
-.. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
-    :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
+.. image:: https://codecov.io/gh/thombashi/pathvalidate/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/thombashi/pathvalidate
     :alt: Test coverage
 
 .. image:: https://img.shields.io/github/stars/thombashi/pathvalidate.svg?style=social&label=Star
