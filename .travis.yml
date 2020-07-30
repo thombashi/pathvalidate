@@ -49,7 +49,7 @@ install:
   - travis_retry bash -x .travis/install.sh
 
 script:
-  - tox
+  - bash -x .travis/run_test.sh
 
 notifications:
   slack:

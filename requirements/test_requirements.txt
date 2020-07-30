@@ -1,4 +1,5 @@
 allpairspy
 click
 faker
-pytest
+pytest>=6.0.1
+pytest-md-report
