@@ -25,9 +25,3 @@ Dependencies
 ============
 Python 3.5+
 No external dependencies.
-
-
-Test dependencies
------------------
-- `pytest <https://docs.pytest.org/en/latest/>`__
-- `tox <https://testrun.org/tox/latest/>`__

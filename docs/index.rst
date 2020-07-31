@@ -14,7 +14,6 @@ Welcome to pathvalidate's documentation!
    :numbered:
    
    pages/introduction/index
-   pages/installation
    pages/examples/index
    pages/reference/index
    pages/links
