@@ -55,6 +55,8 @@ exclude_lines = [
 [tool.pytest.ini_options]
 md_report = true
 md_report_verbose = 0
+md_report_color = "auto"
+
 testpaths = [
     "test",
 ]
