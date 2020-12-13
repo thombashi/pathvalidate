@@ -61,7 +61,12 @@ class Test_FileSanitizer:
 
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [["windows", tuple()], ["posix", ("/", ":")], ["linux", ("/",)], ["macos", ("/", ":")],],
+        [
+            ["windows", tuple()],
+            ["posix", ("/", ":")],
+            ["linux", ("/",)],
+            ["macos", ("/", ":")],
+        ],
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
         assert FilePathValidator(255, platform=test_platform).reserved_keywords == expected
@@ -209,7 +214,10 @@ class Test_validate_filepath:
 
     @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
-        ["value", "expected"], [["C:\\a\\b\\c.txt", None],],
+        ["value", "expected"],
+        [
+            ["C:\\a\\b\\c.txt", None],
+        ],
     )
     def test_normal_auto_platform_win(self, value, expected):
         if expected is None:
@@ -222,7 +230,11 @@ class Test_validate_filepath:
 
     @pytest.mark.skipif(m_platform.system() != "Linux", reason="platform dependent tests")
     @pytest.mark.parametrize(
-        ["value", "expected"], [["/a/b/c.txt", None], ["C:\\a\\b\\c.txt", ValidationError],],
+        ["value", "expected"],
+        [
+            ["/a/b/c.txt", None],
+            ["C:\\a\\b\\c.txt", ValidationError],
+        ],
     )
     def test_normal_auto_platform_linux(self, value, expected):
         if expected is None:
@@ -548,7 +560,11 @@ class Test_sanitize_filepath:
         assert is_valid_filepath(filename, platform=test_platform)
 
     @pytest.mark.parametrize(
-        ["value", "check_reserved", "expected"], [["CON", True, "CON_"], ["CON", False, "CON"],]
+        ["value", "check_reserved", "expected"],
+        [
+            ["CON", True, "CON_"],
+            ["CON", False, "CON"],
+        ],
     )
     def test_normal_check_reserved(self, value, check_reserved, expected):
         assert (
@@ -617,7 +633,11 @@ class Test_sanitize_filepath:
         assert sanitize_filepath(value, platform=test_platform, normalize=False) == expected
 
     @pytest.mark.parametrize(
-        ["value", "expected"], [["", ""], [None, ""],],
+        ["value", "expected"],
+        [
+            ["", ""],
+            [None, ""],
+        ],
     )
     def test_normal_null_values(self, value, expected):
         assert sanitize_filepath(value) == expected
@@ -660,7 +680,10 @@ class Test_sanitize_filepath:
 
     @pytest.mark.skipif(m_platform.system() != "Windows", reason="platform dependent tests")
     @pytest.mark.parametrize(
-        ["value", "expected"], [["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],],
+        ["value", "expected"],
+        [
+            ["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],
+        ],
     )
     def test_normal_auto_platform_win(self, value, expected):
         if isinstance(expected, str):
@@ -672,7 +695,11 @@ class Test_sanitize_filepath:
 
     @pytest.mark.skipif(m_platform.system() != "Linux", reason="platform dependent tests")
     @pytest.mark.parametrize(
-        ["value", "expected"], [["/a/b:c.txt", "/a/bc.txt"], ["C:\\a\\b\\c.txt", ValidationError],],
+        ["value", "expected"],
+        [
+            ["/a/b:c.txt", "/a/bc.txt"],
+            ["C:\\a\\b\\c.txt", ValidationError],
+        ],
     )
     def test_normal_auto_platform_linux(self, value, expected):
         if isinstance(expected, str):

@@ -179,7 +179,10 @@ class Test_validate_filename:
         assert e.value.reason == expected
 
     @pytest.mark.parametrize(
-        ["value", "platform", "max_len", "expected"], [["invalid_max_len", None, 0, ValueError],],
+        ["value", "platform", "max_len", "expected"],
+        [
+            ["invalid_max_len", None, 0, ValueError],
+        ],
     )
     def test_abnormal_max_len(self, value, platform, max_len, expected):
         with pytest.raises(expected):
@@ -269,7 +272,10 @@ class Test_validate_filename:
             [reserved_keyword, platform, None]
             for reserved_keyword, platform in product([".", ".."], ["posix", "linux", "macos"])
         ]
-        + [[":", "posix", ValidationError], [":", "macos", ValidationError],],
+        + [
+            [":", "posix", ValidationError],
+            [":", "macos", ValidationError],
+        ],
     )
     def test_exception_reserved_name(self, value, platform, expected):
         if expected is None:
@@ -403,7 +409,11 @@ class Test_sanitize_filename:
         assert is_valid_filename(sanitized_name)
 
     @pytest.mark.parametrize(
-        ["value", "expected"], [["", ""], [None, ""],],
+        ["value", "expected"],
+        [
+            ["", ""],
+            [None, ""],
+        ],
     )
     def test_normal_null_values(self, value, expected):
         assert sanitize_filename(value) == expected
@@ -455,7 +465,11 @@ class Test_sanitize_filename:
         assert is_valid_filename(filename, platform=test_platform)
 
     @pytest.mark.parametrize(
-        ["value", "check_reserved", "expected"], [["CON", True, "CON_"], ["CON", False, "CON"],]
+        ["value", "check_reserved", "expected"],
+        [
+            ["CON", True, "CON_"],
+            ["CON", False, "CON"],
+        ],
     )
     def test_normal_check_reserved(self, value, check_reserved, expected):
         assert (

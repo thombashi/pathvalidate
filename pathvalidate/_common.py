@@ -39,7 +39,8 @@ def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
             error_msg = "the value must be a not empty"
 
         raise ValidationError(
-            description=error_msg, reason=ErrorReason.NULL_NAME,
+            description=error_msg,
+            reason=ErrorReason.NULL_NAME,
         )
 
     raise TypeError("text must be a string: actual={}".format(type(text)))

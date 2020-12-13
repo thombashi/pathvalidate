@@ -46,7 +46,10 @@ class FilePathSanitizer(AbstractSanitizer):
         normalize: bool = True,
     ) -> None:
         super().__init__(
-            min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
+            min_len=min_len,
+            max_len=max_len,
+            check_reserved=check_reserved,
+            platform=platform,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
@@ -144,7 +147,10 @@ class FilePathValidator(BaseValidator):
         check_reserved: bool = True,
     ) -> None:
         super().__init__(
-            min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform,
+            min_len=min_len,
+            max_len=max_len,
+            check_reserved=check_reserved,
+            platform=platform,
         )
 
         self.__fname_validator = FileNameValidator(
