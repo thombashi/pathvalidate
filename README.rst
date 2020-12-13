@@ -22,13 +22,9 @@ Summary
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python implementations
 
-.. image:: https://img.shields.io/travis/thombashi/pathvalidate/master.svg?label=Linux/macOS%20CI
-    :target: https://travis-ci.org/thombashi/pathvalidate
-    :alt: Linux/macOS CI status
-
-.. image:: https://img.shields.io/appveyor/ci/thombashi/pathvalidate/master.svg?label=Windows%20CI
-    :target: https://ci.appveyor.com/project/thombashi/pathvalidate/branch/master
-    :alt: Windows CI status
+.. image:: https://github.com/thombashi/pathvalidate/workflows/Tests/badge.svg
+    :target: https://github.com/thombashi/pathvalidate/actions?query=workflow%3ATests
+    :alt: Linux/macOS/Windows CI status
 
 .. image:: https://codecov.io/gh/thombashi/pathvalidate/branch/master/graph/badge.svg
     :target: https://codecov.io/gh/thombashi/pathvalidate
