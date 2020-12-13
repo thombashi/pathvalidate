@@ -163,7 +163,7 @@ class FilePathValidator(BaseValidator):
             self.__split_drive = posixpath.splitdrive
 
     def validate(self, value: PathType) -> None:
-        validate_pathtype(value)
+        validate_pathtype(value, allow_whitespaces=True if not self._is_windows() else False)
         self.validate_abspath(value)
 
         _drive, value = self.__split_drive(str(value))

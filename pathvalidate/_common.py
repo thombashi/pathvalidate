@@ -10,6 +10,9 @@ from pathlib import Path
 from typing import Any, List, Optional, Union, cast
 
 
+_re_whitespaces = re.compile(r"^[\s]+$")
+
+
 @enum.unique
 class Platform(enum.Enum):
     POSIX = "POSIX"
@@ -28,10 +31,15 @@ def is_pathlike_obj(value: PathType) -> bool:
     return isinstance(value, Path)
 
 
-def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
+def validate_pathtype(
+    text: PathType, allow_whitespaces: bool = False, error_msg: Optional[str] = None
+) -> None:
     from .error import ErrorReason, ValidationError
 
     if _is_not_null_string(text) or is_pathlike_obj(text):
+        return
+
+    if allow_whitespaces and _re_whitespaces.search(str(text)):
         return
 
     if is_null_string(text):
@@ -48,7 +56,7 @@ def validate_pathtype(text: PathType, error_msg: Optional[str] = None) -> None:
 
 def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
     # Deprecated: alias to validate_pathtype
-    validate_pathtype(text, error_msg)
+    validate_pathtype(text, False, error_msg)
 
 
 def preprocess(name: PathType) -> str:
