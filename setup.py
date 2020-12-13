@@ -37,8 +37,6 @@ with open(os.path.join("docs", "pages", "introduction", "summary.txt"), encoding
 with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     TESTS_REQUIRES = [line.strip() for line in f if line.strip()]
 
-SETUPTOOLS_REQUIRES = ["setuptools>=38.3.0"]
-
 setuptools.setup(
     name=MODULE_NAME,
     version=pkg_info["__version__"],
