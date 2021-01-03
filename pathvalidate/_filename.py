@@ -131,7 +131,12 @@ class FileNameValidator(BaseValidator):
         )
 
     def validate(self, value: PathType) -> None:
-        validate_pathtype(value, allow_whitespaces=True if not self._is_windows() else False)
+        validate_pathtype(
+            value,
+            allow_whitespaces=False
+            if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]
+            else True,
+        )
 
         unicode_filename = preprocess(value)
         value_len = len(unicode_filename)

@@ -137,9 +137,12 @@ class Test_validate_filename:
         validate_filename(value, platform)
         assert is_valid_filename(value, platform=platform)
 
-    def test_abnormal_only_whitespaces(self):
+    @pytest.mark.parametrize(
+        ["platform"],
+        [["windows"], ["universal"]],
+    )
+    def test_abnormal_only_whitespaces(self, platform):
         value = "  "
-        platform = "windows"
         with pytest.raises(ValidationError) as e:
             validate_filename(value, platform=platform)
             assert e.value.reason == ErrorReason.NULL

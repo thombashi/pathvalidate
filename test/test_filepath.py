@@ -114,9 +114,12 @@ class Test_validate_filepath:
         validate_filepath(value, platform)
         assert is_valid_filepath(value, platform=platform)
 
-    def test_abnormal_only_whitespaces(self):
+    @pytest.mark.parametrize(
+        ["platform"],
+        [["windows"], ["universal"]],
+    )
+    def test_abnormal_only_whitespaces(self, platform):
         value = "  "
-        platform = "windows"
         with pytest.raises(ValidationError) as e:
             validate_filepath(value, platform=platform)
             assert e.value.reason == ErrorReason.NULL
