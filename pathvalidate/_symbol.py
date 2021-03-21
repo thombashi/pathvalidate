@@ -3,6 +3,7 @@
 """
 
 import re
+from typing import Sequence
 
 from ._common import ascii_symbols, preprocess, unprintable_ascii_chars
 from .error import InvalidCharError
@@ -52,24 +53,48 @@ def validate_symbol(text: str) -> None:
 def replace_symbol(
     text: str,
     replacement_text: str = "",
+    exclude_symbols: Sequence[str] = [],
     is_replace_consecutive_chars: bool = False,
     is_strip: bool = False,
 ) -> str:
     """
     Replace all of the symbols in the ``text``.
 
-    :param text: Input text.
-    :param replacement_text: Replacement text.
-    :return: A replacement string.
-    :rtype: str
+    Args:
+        text:
+            Input text.
+        replacement_text:
+            Replacement text.
+        exclude_symbols:
+            Symbols that exclude from the replacement.
+        is_replace_consecutive_chars:
+            If |True|, replace consecutive multiple ``replacement_text`` characters
+            to a single character.
+        is_strip:
+            If |True|, strip ``replacement_text`` from the beginning/end of the replacement text.
 
-    :Examples:
+    Returns:
+        A replacement string.
+
+    Example:
 
         :ref:`example-sanitize-symbol`
     """
 
+    if exclude_symbols:
+        regexp = re.compile(
+            "[{}]".format(
+                re.escape(
+                    "".join(set(ascii_symbols + unprintable_ascii_chars) - set(exclude_symbols))
+                )
+            ),
+            re.UNICODE,
+        )
+    else:
+        regexp = __RE_SYMBOL
+
     try:
-        new_text = __RE_SYMBOL.sub(replacement_text, preprocess(text))
+        new_text = regexp.sub(replacement_text, preprocess(text))
     except TypeError:
         raise TypeError("text must be a string")
 

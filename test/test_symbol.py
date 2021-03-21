@@ -63,6 +63,17 @@ class Test_replace_symbol:
         assert replace_symbol(value, replace_text) == expected
 
     @pytest.mark.parametrize(
+        ["value", "exclude_symbols", "expected"],
+        [
+            ["/tmp/h!o|g$e.txt", ["/", "."], "/tmp/hoge.txt"],
+            ["/tmp/h!o|g$e.txt", [], "tmphogetxt"],
+            ["/tmp/h!o|g$e.txt", ["n", "o", "p"], "tmphogetxt"],
+        ],
+    )
+    def test_normal_exclude_symbols(self, value, exclude_symbols, expected):
+        assert replace_symbol(value, exclude_symbols=exclude_symbols) == expected
+
+    @pytest.mark.parametrize(
         ["value", "replace_text", "is_replace_consecutive_chars", "is_strip", "expected"],
         [
             ["!a##b$$$c((((d]]]])", "_", True, True, "a_b_c_d"],
@@ -75,7 +86,13 @@ class Test_replace_symbol:
         self, value, replace_text, is_replace_consecutive_chars, is_strip, expected
     ):
         assert (
-            replace_symbol(value, replace_text, is_replace_consecutive_chars, is_strip) == expected
+            replace_symbol(
+                value,
+                replace_text,
+                is_replace_consecutive_chars=is_replace_consecutive_chars,
+                is_strip=is_strip,
+            )
+            == expected
         )
 
     @pytest.mark.parametrize(
