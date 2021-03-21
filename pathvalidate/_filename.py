@@ -300,7 +300,7 @@ def sanitize_filename(
             - for Windows (or universal) only: |invalid_win_filename_chars|
 
         - Append underscore (``"_"``) at the tail of the name if sanitized name
-          is one of the reserved names by the operating system
+          is one of the reserved names by operating systems
           (only when ``check_reserved`` is |True|).
 
     Args:
