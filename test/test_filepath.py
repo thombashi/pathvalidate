@@ -223,7 +223,7 @@ class Test_validate_filepath:
             ["universal", "C:\\a\\b\\c.txt", ValidationError],
         ],
     )
-    def test_normal_abs_path(self, test_platform, value, expected):
+    def test_abs_path(self, test_platform, value, expected):
         if expected is None:
             validate_filepath(value, platform=test_platform)
             assert is_valid_filepath(value, platform=test_platform)
@@ -239,7 +239,7 @@ class Test_validate_filepath:
             ["C:\\a\\b\\c.txt", None],
         ],
     )
-    def test_normal_auto_platform_win(self, value, expected):
+    def test_auto_platform_win(self, value, expected):
         if expected is None:
             validate_filepath(value, platform="auto")
             assert is_valid_filepath(value, platform="auto")
@@ -256,7 +256,7 @@ class Test_validate_filepath:
             ["C:\\a\\b\\c.txt", ValidationError],
         ],
     )
-    def test_normal_auto_platform_linux(self, value, expected):
+    def test_auto_platform_linux(self, value, expected):
         if expected is None:
             validate_filepath(value, platform="auto")
             assert is_valid_filepath(value, platform="auto")
@@ -280,7 +280,7 @@ class Test_validate_filepath:
             ["universal", "a//b?/c.txt", ValidationError],
         ],
     )
-    def test_normal_rel_path(self, test_platform, value, expected):
+    def test_relative_path(self, test_platform, value, expected):
         if expected is None:
             validate_filepath(value, platform=test_platform)
             assert is_valid_filepath(value, platform=test_platform)
@@ -630,7 +630,7 @@ class Test_sanitize_filepath:
             ["universal", "a//b?/c.txt", "a/b/c.txt"],
         ],
     )
-    def test_normal_rel_path(self, test_platform, value, expected):
+    def test_normal_relative_path(self, test_platform, value, expected):
         assert sanitize_filepath(value, platform=test_platform) == expected
 
     @pytest.mark.parametrize(
@@ -705,7 +705,7 @@ class Test_sanitize_filepath:
             ["C:\\a\\b|c.txt", "C:\\a\\bc.txt"],
         ],
     )
-    def test_normal_auto_platform_win(self, value, expected):
+    def test_auto_platform_win(self, value, expected):
         if isinstance(expected, str):
             sanitized = sanitize_filepath(value, platform="auto")
             assert is_valid_filepath(sanitized, platform="auto")
@@ -717,11 +717,10 @@ class Test_sanitize_filepath:
     @pytest.mark.parametrize(
         ["value", "expected"],
         [
-            ["/a/b:c.txt", "/a/bc.txt"],
             ["C:\\a\\b\\c.txt", ValidationError],
         ],
     )
-    def test_normal_auto_platform_linux(self, value, expected):
+    def test_auto_platform_linux(self, value, expected):
         if isinstance(expected, str):
             sanitized = sanitize_filepath(value, platform="auto")
             assert is_valid_filepath(sanitized, platform="auto")

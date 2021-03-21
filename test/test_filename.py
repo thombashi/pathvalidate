@@ -297,7 +297,7 @@ class Test_validate_filename:
             [":", "macos", ValidationError],
         ],
     )
-    def test_exception_reserved_name(self, value, platform, expected):
+    def test_reserved_name(self, value, platform, expected):
         if expected is None:
             validate_filename(value, platform=platform)
         else:
