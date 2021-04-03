@@ -160,12 +160,18 @@ class FileNameValidator(BaseValidator):
             self.__validate_unix_filename(unicode_filename)
 
     def validate_abspath(self, value: str) -> None:
-        if any([ntpath.isabs(value), posixpath.isabs(value)]):
-            raise ValidationError(
-                description="found an absolute path ({}), expected a filename".format(value),
-                platform=self.platform,
-                reason=ErrorReason.FOUND_ABS_PATH,
-            )
+        err = ValidationError(
+            description="found an absolute path ({}), expected a filename".format(value),
+            platform=self.platform,
+            reason=ErrorReason.FOUND_ABS_PATH,
+        )
+
+        if self._is_universal() or self._is_windows():
+            if ntpath.isabs(value):
+                raise err
+
+        if posixpath.isabs(value):
+            raise err
 
     def __validate_unix_filename(self, unicode_filename: str) -> None:
         match = _RE_INVALID_FILENAME.findall(unicode_filename)

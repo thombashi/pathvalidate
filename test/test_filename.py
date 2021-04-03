@@ -310,6 +310,30 @@ class Test_validate_filename:
             assert not is_valid_filename(value, platform=platform)
 
     @pytest.mark.parametrize(
+        ["platform", "value", "expected"],
+        [
+            [win_abspath, platform, None]
+            for win_abspath, platform in product(
+                ["linux", "macos", "posix"],
+                ["\\", "\\\\", "\\ ", "C:\\", "c:\\", "\\xyz", "\\xyz "],
+            )
+        ]
+        + [
+            [win_abspath, platform, ValidationError]
+            for win_abspath, platform in product(
+                ["windows", "universal"], ["\\", "\\\\", "\\ ", "C:\\", "c:\\", "\\xyz", "\\xyz "]
+            )
+        ],
+    )
+    def test_win_abs_path(self, platform, value, expected):
+        if expected is None:
+            validate_filename(value, platform=platform)
+        else:
+            with pytest.raises(expected) as e:
+                validate_filename(value, platform=platform)
+            assert e.value.reason == ErrorReason.FOUND_ABS_PATH
+
+    @pytest.mark.parametrize(
         ["value", "platform"],
         [
             [value, platform]
