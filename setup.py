@@ -55,6 +55,7 @@ setuptools.setup(
         "Documentation": "https://{:s}.rtfd.io/".format(MODULE_NAME),
         "Source": REPOSITORY_URL,
         "Tracker": "{:s}/issues".format(REPOSITORY_URL),
+        "Changes": "{:s}/releases".format(REPOSITORY_URL),
     },
     python_requires=">=3.5",
     extras_require={"test": TESTS_REQUIRES},
