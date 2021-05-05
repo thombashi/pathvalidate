@@ -123,13 +123,13 @@ def normalize_platform(name: PlatformType) -> Platform:
         return name
 
     if name:
-        name = name.strip().lower()
+        name = name.strip().casefold()
 
     if name == "posix":
         return Platform.POSIX
 
     if name == "auto":
-        name = platform.system().lower()
+        name = platform.system().casefold()
 
     if name in ["linux"]:
         return Platform.LINUX
