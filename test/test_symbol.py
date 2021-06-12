@@ -7,7 +7,7 @@ import itertools
 import pytest
 
 from pathvalidate import ascii_symbols, replace_symbol, unprintable_ascii_chars, validate_symbol
-from pathvalidate._symbol import replace_unprintable, validate_unprintable
+from pathvalidate._symbol import validate_unprintable
 from pathvalidate.error import ErrorReason, ValidationError
 
 from ._common import alphanum_chars
@@ -130,31 +130,3 @@ class Test_validate_unprintable:
         with pytest.raises(ValidationError) as e:
             validate_unprintable(value)
         assert e.value.reason == ErrorReason.INVALID_CHARACTER
-
-
-class Test_replace_unprintable:
-    TARGET_CHARS = unprintable_ascii_chars
-    NOT_TARGET_CHARS = alphanum_chars
-    REPLACE_TEXT_LIST = ["", "_"]
-
-    @pytest.mark.parametrize(
-        ["value", "replace_text", "expected"],
-        [
-            ["A" + c + "B", rep, "A" + rep + "B"]
-            for c, rep in itertools.product(TARGET_CHARS, REPLACE_TEXT_LIST)
-        ]
-        + [
-            ["A" + c + "B", rep, "A" + c + "B"]
-            for c, rep in itertools.product(NOT_TARGET_CHARS, REPLACE_TEXT_LIST)
-        ]
-        + [["", "", ""]],
-    )
-    def test_normal(self, value, replace_text, expected):
-        assert replace_unprintable(value, replace_text) == expected
-
-    @pytest.mark.parametrize(
-        ["value", "expected"], [[None, TypeError], [1, TypeError], [True, TypeError]]
-    )
-    def test_abnormal(self, value, expected):
-        with pytest.raises(expected):
-            replace_unprintable(value)
