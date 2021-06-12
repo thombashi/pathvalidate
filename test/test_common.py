@@ -5,8 +5,14 @@
 import itertools
 
 import pytest
+from tcolorpy import tcolor
 
-from pathvalidate import ascii_symbols, replace_unprintable_char, unprintable_ascii_chars
+from pathvalidate import (
+    ascii_symbols,
+    replace_ansi_escape,
+    replace_unprintable_char,
+    unprintable_ascii_chars,
+)
 
 from ._common import alphanum_chars
 
@@ -37,3 +43,10 @@ class Test_replace_unprintable_char:
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):
             replace_unprintable_char(value)
+
+
+class Test_replace_ansi_escape:
+    def test_normal(self):
+        value = "test"
+        ansi_value = tcolor(value, color="ffffff", bg_color="111111", styles=["bold"])
+        assert replace_ansi_escape(ansi_value) == value

@@ -109,11 +109,21 @@ ascii_symbols = tuple(_get_ascii_symbols())
 __RE_UNPRINTABLE_CHARS = re.compile(
     "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
 )
+__RE_ANSI_ESCAPE = re.compile(
+    r"(?:\x1B[@-Z\\-_]|[\x80-\x9A\x9C-\x9F]|(?:\x1B\[|\x9B)[0-?]*[ -/]*[@-~])"
+)
 
 
 def replace_unprintable_char(text: str, replacement_text: str = "") -> str:
     try:
         return __RE_UNPRINTABLE_CHARS.sub(replacement_text, text)
+    except (TypeError, AttributeError):
+        raise TypeError("text must be a string")
+
+
+def replace_ansi_escape(text: str, replacement_text: str = "") -> str:
+    try:
+        return __RE_ANSI_ESCAPE.sub(replacement_text, text)
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
 

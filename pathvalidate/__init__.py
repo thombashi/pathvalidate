@@ -7,6 +7,7 @@ from ._common import (
     Platform,
     ascii_symbols,
     normalize_platform,
+    replace_ansi_escape,
     replace_unprintable_char,
     unprintable_ascii_chars,
     validate_null_string,
