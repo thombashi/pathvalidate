@@ -372,6 +372,16 @@ class Test_validate_filename:
         [
             [None, ValueError],
             ["", ValidationError],
+        ],
+    )
+    def test_exception_null_value(self, value, expected):
+        with pytest.raises(expected):
+            validate_filename(value)
+        assert not is_valid_filename(value)
+
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
             ["a" * 256, ValidationError],
             [1, TypeError],
             [True, TypeError],
