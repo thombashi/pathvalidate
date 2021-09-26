@@ -10,9 +10,9 @@ from pathvalidate.click import sanitize_filename_arg, sanitize_filepath_arg
 @click.option("--filepath", callback=sanitize_filepath_arg)
 def cli(filename, filepath):
     if filename:
-        click.echo("filename: {}".format(filename))
+        click.echo(f"filename: {filename}")
     if filepath:
-        click.echo("filepath: {}".format(filepath))
+        click.echo(f"filepath: {filepath}")
 
 
 if __name__ == "__main__":

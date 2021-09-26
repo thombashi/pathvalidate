@@ -58,7 +58,7 @@ class Test_FileSanitizer:
         elif test_platform == "macos":
             patch = lambda: "macos"
         else:
-            raise ValueError("unexpected test platform: {}".format(test_platform))
+            raise ValueError(f"unexpected test platform: {test_platform}")
 
         monkeypatch.setattr(m_platform, "system", patch)
 
@@ -284,7 +284,7 @@ class Test_validate_filename:
             )
         ]
         + [
-            ["{}.txt".format(reserved_keyword), platform, ValidationError]
+            [f"{reserved_keyword}.txt", platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
@@ -495,7 +495,7 @@ class Test_sanitize_filename:
             for reserved in WIN_RESERVED_FILE_NAMES
         ]
         + [
-            ["{}.txt".format(reserved_keyword), platform, "{}_.txt".format(reserved_keyword)]
+            [f"{reserved_keyword}.txt", platform, f"{reserved_keyword}_.txt"]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )

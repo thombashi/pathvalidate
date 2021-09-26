@@ -9,11 +9,11 @@ import setuptools
 
 
 MODULE_NAME = "pathvalidate"
-REPOSITORY_URL = "https://github.com/thombashi/{:s}".format(MODULE_NAME)
+REPOSITORY_URL = f"https://github.com/thombashi/{MODULE_NAME:s}"
 REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
 
-pkg_info = {}  # type: Dict[str, str]
+pkg_info: Dict[str, str] = {}
 
 
 def get_release_command_class() -> Dict[str, setuptools.Command]:
@@ -52,10 +52,10 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["test*"]),
     package_data={MODULE_NAME: ["py.typed"]},
     project_urls={
-        "Documentation": "https://{:s}.rtfd.io/".format(MODULE_NAME),
+        "Documentation": f"https://{MODULE_NAME:s}.rtfd.io/",
         "Source": REPOSITORY_URL,
-        "Tracker": "{:s}/issues".format(REPOSITORY_URL),
-        "Changes": "{:s}/releases".format(REPOSITORY_URL),
+        "Tracker": f"{REPOSITORY_URL:s}/issues",
+        "Changes": f"{REPOSITORY_URL:s}/releases",
     },
     python_requires=">=3.6",
     extras_require={"test": TESTS_REQUIRES},

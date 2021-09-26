@@ -22,7 +22,7 @@ def validate_unprintable(text: str) -> None:
     # deprecated
     match_list = __RE_UNPRINTABLE.findall(preprocess(text))
     if match_list:
-        raise InvalidCharError("unprintable character found: {}".format(match_list))
+        raise InvalidCharError(f"unprintable character found: {match_list}")
 
 
 def replace_unprintable(text: str, replacement_text: str = "") -> str:
@@ -51,7 +51,7 @@ def validate_symbol(text: str) -> None:
 
     match_list = __RE_SYMBOL.findall(preprocess(text))
     if match_list:
-        raise InvalidCharError("invalid symbols found: {}".format(match_list))
+        raise InvalidCharError(f"invalid symbols found: {match_list}")
 
 
 def replace_symbol(
@@ -106,7 +106,7 @@ def replace_symbol(
         return new_text
 
     if is_replace_consecutive_chars:
-        new_text = re.sub("{}+".format(re.escape(replacement_text)), replacement_text, new_text)
+        new_text = re.sub(f"{re.escape(replacement_text)}+", replacement_text, new_text)
 
     if is_strip:
         new_text = new_text.strip(replacement_text)

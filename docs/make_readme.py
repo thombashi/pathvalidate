@@ -49,7 +49,7 @@ def write_examples(maker: ReadmeMaker) -> None:
     maker.write_lines(
         [
             "More examples can be found at ",
-            "https://{}.rtfd.io/en/latest/pages/examples/index.html".format(PROJECT_NAME),
+            f"https://{PROJECT_NAME}.rtfd.io/en/latest/pages/examples/index.html",
         ]
     )
 
@@ -59,7 +59,7 @@ def main() -> int:
         PROJECT_NAME,
         OUTPUT_DIR,
         is_make_toc=True,
-        project_url="https://github.com/thombashi/{}".format(PROJECT_NAME),
+        project_url=f"https://github.com/thombashi/{PROJECT_NAME}",
     )
 
     maker.write_chapter("Summary")
@@ -74,7 +74,7 @@ def main() -> int:
 
     maker.set_indent_level(0)
     maker.write_chapter("Documentation")
-    maker.write_lines(["https://{}.rtfd.io/".format(PROJECT_NAME)])
+    maker.write_lines([f"https://{PROJECT_NAME}.rtfd.io/"])
 
     maker.write_file(maker.doc_page_root_dir_path.joinpath("sponsors.rst"))
 

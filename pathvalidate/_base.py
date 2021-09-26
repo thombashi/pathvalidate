@@ -132,7 +132,7 @@ class BaseValidator(AbstractValidator):
         root_name = self.__extract_root_name(name)
         if self._is_reserved_keyword(root_name.upper()):
             raise ReservedNameError(
-                "'{}' is a reserved name".format(root_name),
+                f"'{root_name}' is a reserved name",
                 reusable_name=False,
                 reserved_name=root_name,
                 platform=self.platform,

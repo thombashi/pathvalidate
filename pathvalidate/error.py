@@ -73,13 +73,13 @@ class ValidationError(ValueError):
             item_list.append(Exception.__str__(self))
 
         if self.reason:
-            item_list.append("reason={}".format(cast(ErrorReason, self.reason).value))
+            item_list.append(f"reason={cast(ErrorReason, self.reason).value}")
         if self.platform:
-            item_list.append("target-platform={}".format(self.platform.value))
+            item_list.append(f"target-platform={self.platform.value}")
         if self.description:
-            item_list.append("description={}".format(self.description))
+            item_list.append(f"description={self.description}")
         if self.__reusable_name is not None:
-            item_list.append("reusable_name={}".format(self.reusable_name))
+            item_list.append(f"reusable_name={self.reusable_name}")
 
         return ", ".join(item_list).strip()
 

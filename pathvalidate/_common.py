@@ -51,7 +51,7 @@ def validate_pathtype(
             reason=ErrorReason.NULL_NAME,
         )
 
-    raise TypeError("text must be a string: actual={}".format(type(text)))
+    raise TypeError(f"text must be a string: actual={type(text)}")
 
 
 def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
@@ -91,7 +91,7 @@ unprintable_ascii_chars = tuple(_get_unprintable_ascii_chars())
 
 
 def _get_ascii_symbols() -> List[str]:
-    symbol_list = []  # type: List[str]
+    symbol_list: List[str] = []
 
     for i in range(128):
         c = chr(i)

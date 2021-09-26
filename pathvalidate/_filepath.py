@@ -31,10 +31,8 @@ from .error import (
 from .handler import Handler
 
 
-_RE_INVALID_PATH = re.compile("[{:s}]".format(re.escape(BaseFile._INVALID_PATH_CHARS)), re.UNICODE)
-_RE_INVALID_WIN_PATH = re.compile(
-    "[{:s}]".format(re.escape(BaseFile._INVALID_WIN_PATH_CHARS)), re.UNICODE
-)
+_RE_INVALID_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_PATH_CHARS):s}]", re.UNICODE)
+_RE_INVALID_WIN_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS):s}]", re.UNICODE)
 
 
 class FilePathSanitizer(AbstractSanitizer):
@@ -97,12 +95,12 @@ class FilePathSanitizer(AbstractSanitizer):
         else:
             path_separator = "/"
 
-        sanitized_entries = []  # type: List[str]
+        sanitized_entries: List[str] = []
         if drive:
             sanitized_entries.append(drive)
         for entry in sanitized_path.replace("\\", "/").split("/"):
             if entry in _NTFS_RESERVED_FILE_NAMES:
-                sanitized_entries.append("{}_".format(entry))
+                sanitized_entries.append(f"{entry}_")
                 continue
 
             sanitized_entry = str(self.__fname_sanitizer.sanitize(entry))
@@ -136,7 +134,7 @@ class FilePathSanitizer(AbstractSanitizer):
 
 class FilePathValidator(BaseValidator):
     _RE_NTFS_RESERVED = re.compile(
-        "|".join("^/{}$".format(re.escape(pattern)) for pattern in _NTFS_RESERVED_FILE_NAMES),
+        "|".join(f"^/{re.escape(pattern)}$" for pattern in _NTFS_RESERVED_FILE_NAMES),
         re.IGNORECASE,
     )
     _MACOS_RESERVED_FILE_PATHS = ("/", ":")
@@ -195,7 +193,7 @@ class FilePathValidator(BaseValidator):
 
         if value_len > self.max_len:
             raise InvalidLengthError(
-                "file path is too long: expected<={:d}, actual={:d}".format(self.max_len, value_len)
+                f"file path is too long: expected<={self.max_len:d}, actual={value_len:d}"
             )
         if value_len < self.min_len:
             raise InvalidLengthError(
@@ -281,7 +279,7 @@ class FilePathValidator(BaseValidator):
             if match_reserved:
                 reserved_name = match_reserved.group()
                 raise ReservedNameError(
-                    "'{}' is a reserved name".format(reserved_name),
+                    f"'{reserved_name}' is a reserved name",
                     reusable_name=False,
                     reserved_name=reserved_name,
                     platform=self.platform,

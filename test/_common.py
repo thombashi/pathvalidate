@@ -85,10 +85,7 @@ WIN_RESERVED_FILE_NAMES = [
     "clock$",
     "NUL",
     "nul",
-] + [
-    "{:s}{:d}".format(name, num)
-    for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))
-]
+] + [f"{name:s}{num:d}" for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))]
 NTFS_RESERVED_FILE_NAMES = [
     "$Mft",
     "$MftMirr",

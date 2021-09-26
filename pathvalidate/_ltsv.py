@@ -25,9 +25,7 @@ def validate_ltsv_label(label: str) -> None:
 
     match_list = __RE_INVALID_LTSV_LABEL.findall(preprocess(label))
     if match_list:
-        raise InvalidCharError(
-            "invalid character found for a LTSV format label: {}".format(match_list)
-        )
+        raise InvalidCharError(f"invalid character found for a LTSV format label: {match_list}")
 
 
 def sanitize_ltsv_label(label: str, replacement_text: str = "") -> str:

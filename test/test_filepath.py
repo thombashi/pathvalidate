@@ -54,7 +54,7 @@ class Test_FileSanitizer:
         elif test_platform == "macos":
             patch = lambda: "macos"
         else:
-            raise ValueError("unexpected test platform: {}".format(test_platform))
+            raise ValueError(f"unexpected test platform: {test_platform}")
 
         monkeypatch.setattr(m_platform, "system", patch)
 
@@ -354,18 +354,18 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["value", "platform"],
         [
-            ["/foo/abc/{}.txt".format(reserved_keyword), platform]
+            [f"/foo/abc/{reserved_keyword}.txt", platform]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux", "macos"])
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["{}\\{}_".format(drive, filename), platform]
+            [f"{drive}\\{filename}_", platform]
             for drive, platform, filename in product(
                 ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
         ]
         + [
-            ["{}\\abc\\{}".format(drive, filename), platform]
+            [f"{drive}\\abc\\{filename}", platform]
             for drive, platform, filename in product(
                 ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
@@ -378,26 +378,26 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
-            ["abc\\{}\\xyz".format(reserved_keyword), platform, ValidationError]
+            [f"abc\\{reserved_keyword}\\xyz", platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["foo/abc/{}.txt".format(reserved_keyword), platform, ValidationError]
+            [f"foo/abc/{reserved_keyword}.txt", platform, ValidationError]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["{}".format(reserved_keyword), platform, ValidationError]
+            [f"{reserved_keyword}", platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )
             if reserved_keyword not in [".", ".."]
         ]
         + [
-            ["{}\\{}".format(drive, filename), platform, ValidationError]
+            [f"{drive}\\{filename}", platform, ValidationError]
             for drive, platform, filename in product(
                 ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
@@ -538,46 +538,46 @@ class Test_sanitize_filepath:
         ["value", "test_platform", "expected"],
         [
             [
-                "abc/{}/xyz".format(reserved_keyword),
+                f"abc/{reserved_keyword}/xyz",
                 platform,
-                "abc/{}_/xyz".format(reserved_keyword),
+                f"abc/{reserved_keyword}_/xyz",
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
         ]
         + [
             [
-                "/abc/{}/xyz".format(reserved_keyword),
+                f"/abc/{reserved_keyword}/xyz",
                 platform,
-                "/abc/{}/xyz".format(reserved_keyword),
+                f"/abc/{reserved_keyword}/xyz",
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
         ]
         + [
             [
-                "abc/{}.txt".format(reserved_keyword),
+                f"abc/{reserved_keyword}.txt",
                 platform,
-                "abc/{}_.txt".format(reserved_keyword),
+                f"abc/{reserved_keyword}_.txt",
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["universal"])
         ]
         + [
             [
-                "/abc/{}.txt".format(reserved_keyword),
+                f"/abc/{reserved_keyword}.txt",
                 platform,
-                "/abc/{}.txt".format(reserved_keyword),
+                f"/abc/{reserved_keyword}.txt",
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["linux"])
         ]
         + [
             [
-                "C:\\abc\\{}.txt".format(reserved_keyword),
+                f"C:\\abc\\{reserved_keyword}.txt",
                 platform,
-                "C:\\abc\\{}_.txt".format(reserved_keyword),
+                f"C:\\abc\\{reserved_keyword}_.txt",
             ]
             for reserved_keyword, platform in product(WIN_RESERVED_FILE_NAMES, ["windows"])
         ]
         + [
-            ["{}\\{}".format(drive, filename), platform, "{}\\{}_".format(drive, filename)]
+            [f"{drive}\\{filename}", platform, f"{drive}\\{filename}_"]
             for drive, platform, filename in product(
                 ["C:", "D:"], ["windows"], NTFS_RESERVED_FILE_NAMES
             )
