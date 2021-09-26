@@ -7,7 +7,7 @@ import os.path
 import posixpath
 import re
 from pathlib import Path
-from typing import List, Optional, Pattern, Tuple  # noqa
+from typing import List, Optional, Pattern, Tuple
 
 from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
 from ._common import (
