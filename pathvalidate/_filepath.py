@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple  # noqa
 
-from ._base import AbstractSanitizer, BaseFile, BaseValidator
+from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
 from ._common import (
     PathType,
     Platform,
@@ -38,7 +38,7 @@ _RE_INVALID_WIN_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS
 class FilePathSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        min_len: int = 1,
+        min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
         platform: PlatformType = None,
         check_reserved: bool = True,
@@ -153,7 +153,7 @@ class FilePathValidator(BaseValidator):
 
     def __init__(
         self,
-        min_len: int = 1,
+        min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
         platform: PlatformType = None,
         check_reserved: bool = True,
@@ -289,7 +289,7 @@ class FilePathValidator(BaseValidator):
 def validate_filepath(
     file_path: PathType,
     platform: Optional[str] = None,
-    min_len: int = 1,
+    min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
 ) -> None:
@@ -351,7 +351,7 @@ def validate_file_path(file_path, platform=None, max_path_len=None):
 def is_valid_filepath(
     file_path: PathType,
     platform: Optional[str] = None,
-    min_len: int = 1,
+    min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
 ) -> bool:

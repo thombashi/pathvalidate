@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
-from ._base import AbstractSanitizer, BaseFile, BaseValidator
+from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
 from ._common import (
     PathType,
     Platform,
@@ -33,7 +33,7 @@ _RE_INVALID_WIN_FILENAME = re.compile(
 class FileNameSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        min_len: int = 1,
+        min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
         check_reserved: bool = True,
@@ -122,7 +122,7 @@ class FileNameValidator(BaseValidator):
 
     def __init__(
         self,
-        min_len: int = 1,
+        min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
         check_reserved: bool = True,
@@ -213,7 +213,7 @@ class FileNameValidator(BaseValidator):
 def validate_filename(
     filename: PathType,
     platform: Optional[str] = None,
-    min_len: int = 1,
+    min_len: int = DEFAULT_MIN_LEN,
     max_len: int = _DEFAULT_MAX_FILENAME_LEN,
     check_reserved: bool = True,
 ) -> None:
@@ -270,7 +270,7 @@ def validate_filename(
 def is_valid_filename(
     filename: PathType,
     platform: Optional[str] = None,
-    min_len: int = 1,
+    min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
 ) -> bool:

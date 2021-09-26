@@ -11,6 +11,9 @@ from .error import ReservedNameError, ValidationError
 from .handler import Handler, return_null_string
 
 
+DEFAULT_MIN_LEN = 1
+
+
 class BaseFile:
     _INVALID_PATH_CHARS = "".join(unprintable_ascii_chars)
     _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
@@ -52,7 +55,7 @@ class BaseFile:
         self._null_value_handler = null_value_handler
 
         if min_len <= 0:
-            min_len = 1
+            min_len = DEFAULT_MIN_LEN
         self._min_len = max(min_len, 1)
 
         if platform_max_len is None:
