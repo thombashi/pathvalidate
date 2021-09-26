@@ -57,7 +57,7 @@ class FileNameSanitizer(AbstractSanitizer):
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         try:
-            validate_pathtype(value, allow_whitespaces=True if not self._is_windows() else False)
+            validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
                 return ""
