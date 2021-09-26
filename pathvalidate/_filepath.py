@@ -306,7 +306,7 @@ def validate_filepath(
             Minimum length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
         max_len:
-            Maximum length of the ``file_path`` length. If the value is |None|,
+            Maximum length of the ``file_path`` length. If the value is |None| or minus,
             automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
@@ -412,7 +412,7 @@ def sanitize_filepath(
             .. include:: platform.txt
         max_len:
             Maximum length of the ``file_path`` length. Truncate the name if the ``file_path``
-            length exceedd this value. If the value is |None|,
+            length exceedd this value. If the value is |None| or minus,
             ``max_len`` will automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
