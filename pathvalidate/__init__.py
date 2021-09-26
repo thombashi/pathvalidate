@@ -3,6 +3,7 @@
 """
 
 from .__version__ import __author__, __copyright__, __email__, __license__, __version__
+from ._base import AbstractSanitizer, AbstractValidator
 from ._common import (
     Platform,
     ascii_symbols,
