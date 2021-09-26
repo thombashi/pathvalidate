@@ -30,9 +30,9 @@ Summary
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
     :alt: Test coverage: coveralls
 
-.. image:: https://img.shields.io/github/stars/thombashi/pathvalidate.svg?style=social&label=Star
-    :target: https://github.com/thombashi/pathvalidate
-    :alt: GitHub stars
+.. image:: https://github.com/thombashi/pathvalidate/actions/workflows/codeql-analysis.yml/badge.svg
+    :target: https://github.com/thombashi/pathvalidate/actions/workflows/codeql-analysis.yml
+    :alt: CodeQL
 
 Features
 ---------
@@ -288,7 +288,7 @@ Installation: apt
 
 Dependencies
 ============
-Python 3.5+
+Python 3.6+
 No external dependencies.
 
 Documentation
