@@ -33,8 +33,8 @@ _RE_INVALID_WIN_FILENAME = re.compile(
 class FileNameSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        min_len: Optional[int] = 1,
-        max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
+        min_len: int = 1,
+        max_len: int = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
         check_reserved: bool = True,
         null_value_handler: Optional[Handler] = None,
@@ -122,8 +122,8 @@ class FileNameValidator(BaseValidator):
 
     def __init__(
         self,
-        min_len: Optional[int] = 1,
-        max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
+        min_len: int = 1,
+        max_len: int = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
         check_reserved: bool = True,
     ) -> None:
@@ -288,7 +288,10 @@ def is_valid_filename(
     """
 
     return FileNameValidator(
-        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+        platform=platform,
+        min_len=min_len,
+        max_len=-1 if max_len is None else max_len,
+        check_reserved=check_reserved,
     ).is_valid(filename)
 
 
@@ -347,7 +350,7 @@ def sanitize_filename(
 
     return FileNameSanitizer(
         platform=platform,
-        max_len=max_len,
+        max_len=-1 if max_len is None else max_len,
         check_reserved=check_reserved,
         null_value_handler=null_value_handler,
     ).sanitize(filename, replacement_text)

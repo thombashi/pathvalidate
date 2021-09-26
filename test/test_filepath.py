@@ -201,8 +201,8 @@ class Test_validate_filepath:
         [
             ["valid length", 1, 255, None],
             ["minus min_len", -2, 100, None],
-            ["minus max_len", -3, -2, ValueError],
-            ["zero max_len", -2, 0, ValueError],
+            ["minus max_len", -3, -2, None],
+            ["zero max_len", -2, 0, None],
             ["eq min max", 10, 10, None],
             ["inversion", 100, 1, ValueError],
         ],

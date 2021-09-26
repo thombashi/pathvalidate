@@ -182,7 +182,7 @@ class Test_validate_filename:
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
         [
-            ["a" * 255, None, None, None],
+            ["a" * 255, None, -1, None],
             ["a" * 5000, None, 10000, ErrorReason.INVALID_LENGTH],
             ["valid_length", "universal", 255, None],
             ["valid_length", Platform.UNIVERSAL, 255, None],
@@ -200,18 +200,10 @@ class Test_validate_filename:
         assert e.value.reason == expected
 
     @pytest.mark.parametrize(
-        ["value", "platform", "max_len", "expected"],
-        [
-            ["invalid_max_len", None, 0, ValueError],
-        ],
-    )
-    def test_abnormal_max_len(self, value, platform, max_len, expected):
-        with pytest.raises(expected):
-            validate_filename(value, platform=platform, max_len=max_len)
-
-    @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],
         [
+            ["minux max_len", 1, -1, None],
+            ["zero max_len", 1, 0, None],
             ["valid length", 1, 255, None],
             ["eq min max", 10, 10, None],
             ["inversion", 100, 1, ValueError],

@@ -38,8 +38,8 @@ _RE_INVALID_WIN_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS
 class FilePathSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        min_len: Optional[int] = 1,
-        max_len: Optional[int] = None,
+        min_len: int = 1,
+        max_len: int = -1,
         platform: PlatformType = None,
         check_reserved: bool = True,
         null_value_handler: Optional[Handler] = None,
@@ -153,8 +153,8 @@ class FilePathValidator(BaseValidator):
 
     def __init__(
         self,
-        min_len: Optional[int] = 1,
-        max_len: Optional[int] = None,
+        min_len: int = 1,
+        max_len: int = -1,
         platform: PlatformType = None,
         check_reserved: bool = True,
     ) -> None:
@@ -336,7 +336,10 @@ def validate_filepath(
     """
 
     FilePathValidator(
-        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+        platform=platform,
+        min_len=min_len,
+        max_len=-1 if max_len is None else max_len,
+        check_reserved=check_reserved,
     ).validate(file_path)
 
 
@@ -366,7 +369,10 @@ def is_valid_filepath(
     """
 
     return FilePathValidator(
-        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+        platform=platform,
+        min_len=min_len,
+        max_len=-1 if max_len is None else max_len,
+        check_reserved=check_reserved,
     ).is_valid(file_path)
 
 
@@ -435,7 +441,7 @@ def sanitize_filepath(
 
     return FilePathSanitizer(
         platform=platform,
-        max_len=max_len,
+        max_len=-1 if max_len is None else max_len,
         check_reserved=check_reserved,
         normalize=normalize,
         null_value_handler=null_value_handler,

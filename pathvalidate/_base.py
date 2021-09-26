@@ -37,8 +37,8 @@ class BaseFile:
 
     def __init__(
         self,
-        min_len: Optional[int],
-        max_len: Optional[int],
+        min_len: int,
+        max_len: int,
         check_reserved: bool,
         null_value_handler: Optional[Handler] = None,
         platform_max_len: Optional[int] = None,
@@ -51,14 +51,14 @@ class BaseFile:
             null_value_handler = return_null_string
         self._null_value_handler = null_value_handler
 
-        if min_len is None:
+        if min_len <= 0:
             min_len = 1
         self._min_len = max(min_len, 1)
 
         if platform_max_len is None:
             platform_max_len = self._get_default_max_path_len()
 
-        if max_len in [None, -1]:
+        if max_len <= 0:
             self._max_len = platform_max_len
         else:
             self._max_len = cast(int, max_len)
