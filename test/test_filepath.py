@@ -59,6 +59,8 @@ class Test_FileSanitizer:
 
         assert FilePathSanitizer(255, platform="auto").platform == expected
 
+
+class Test_FilePathValidator:
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
         [
