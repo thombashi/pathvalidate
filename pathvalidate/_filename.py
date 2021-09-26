@@ -24,11 +24,9 @@ from .handler import Handler
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
-_RE_INVALID_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(BaseFile._INVALID_FILENAME_CHARS)), re.UNICODE
-)
+_RE_INVALID_FILENAME = re.compile(f"[{re.escape(BaseFile._INVALID_FILENAME_CHARS):s}]", re.UNICODE)
 _RE_INVALID_WIN_FILENAME = re.compile(
-    "[{:s}]".format(re.escape(BaseFile._INVALID_WIN_FILENAME_CHARS)), re.UNICODE
+    f"[{re.escape(BaseFile._INVALID_WIN_FILENAME_CHARS):s}]", re.UNICODE
 )
 
 
@@ -74,7 +72,7 @@ class FileNameSanitizer(AbstractSanitizer):
         except ValidationError as e:
             if e.reason == ErrorReason.RESERVED_NAME and e.reusable_name is False:
                 sanitized_filename = re.sub(
-                    re.escape(e.reserved_name), "{}_".format(e.reserved_name), sanitized_filename
+                    re.escape(e.reserved_name), f"{e.reserved_name}_", sanitized_filename
                 )
             elif e.reason == ErrorReason.INVALID_CHARACTER:
                 if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
@@ -99,8 +97,7 @@ class FileNameSanitizer(AbstractSanitizer):
 
 class FileNameValidator(BaseValidator):
     _WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "CLOCK$", "NUL") + tuple(
-        "{:s}{:d}".format(name, num)
-        for name, num in itertools.product(("COM", "LPT"), range(1, 10))
+        f"{name:s}{num:d}" for name, num in itertools.product(("COM", "LPT"), range(1, 10))
     )
     _MACOS_RESERVED_FILE_NAMES = (":",)
 
@@ -153,11 +150,11 @@ class FileNameValidator(BaseValidator):
 
         if value_len > self.max_len:
             raise InvalidLengthError(
-                "filename is too long: expected<={:d}, actual={:d}".format(self.max_len, value_len)
+                f"filename is too long: expected<={self.max_len:d}, actual={value_len:d}"
             )
         if value_len < self.min_len:
             raise InvalidLengthError(
-                "filename is too short: expected>={:d}, actual={:d}".format(self.min_len, value_len)
+                f"filename is too short: expected>={self.min_len:d}, actual={value_len:d}"
             )
 
         self._validate_reserved_keywords(unicode_filename)
@@ -169,7 +166,7 @@ class FileNameValidator(BaseValidator):
 
     def validate_abspath(self, value: str) -> None:
         err = ValidationError(
-            description="found an absolute path ({}), expected a filename".format(value),
+            description=f"found an absolute path ({value}), expected a filename",
             platform=self.platform,
             reason=ErrorReason.FOUND_ABS_PATH,
         )
