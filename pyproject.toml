@@ -57,7 +57,7 @@ exclude_lines = [
 
 [tool.mypy]
 ignore_missing_imports = true
-python_version = 3.5
+python_version = 3.6
 
 pretty = true
 show_error_codes = true
