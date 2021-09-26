@@ -28,6 +28,7 @@ from .error import (
     ReservedNameError,
     ValidationError,
 )
+from .handler import Handler
 
 
 _RE_INVALID_PATH = re.compile("[{:s}]".format(re.escape(BaseFile._INVALID_PATH_CHARS)), re.UNICODE)
@@ -43,12 +44,14 @@ class FilePathSanitizer(AbstractSanitizer):
         max_len: Optional[int] = None,
         platform: PlatformType = None,
         check_reserved: bool = True,
+        null_value_handler: Optional[Handler] = None,
         normalize: bool = True,
     ) -> None:
         super().__init__(
             min_len=min_len,
             max_len=max_len,
             check_reserved=check_reserved,
+            null_value_handler=null_value_handler,
             platform=platform,
         )
 
@@ -73,8 +76,12 @@ class FilePathSanitizer(AbstractSanitizer):
             self.__split_drive = posixpath.splitdrive
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
-        if not value:
-            return ""
+        try:
+            validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
+        except ValidationError as e:
+            if e.reason == ErrorReason.NULL_NAME:
+                return self._null_value_handler(e)
+            raise
 
         self.__fpath_validator.validate_abspath(value)
 
@@ -107,6 +114,13 @@ class FilePathSanitizer(AbstractSanitizer):
             sanitized_entries.append(sanitized_entry)
 
         sanitized_path = path_separator.join(sanitized_entries)
+        try:
+            self.__fpath_validator.validate(sanitized_path)
+        except ValidationError as e:
+            if e.reason == ErrorReason.NULL_NAME:
+                return self._null_value_handler(e)
+
+            raise
 
         if is_pathlike_obj(value):
             return Path(sanitized_path)
@@ -364,6 +378,7 @@ def sanitize_filepath(
     platform: Optional[str] = None,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
+    null_value_handler: Optional[Handler] = None,
     normalize: bool = True,
 ) -> PathType:
     """Make a valid file path from a string.
@@ -402,6 +417,9 @@ def sanitize_filepath(
                 - ``universal``: 260
         check_reserved:
             If |True|, sanitize reserved names of the ``platform``.
+        null_value_handler:
+            Function called when a value after sanitization is an empty string.
+            Defaults to ``pathvalidate.handler.return_null_string()`` that just return ``""``.
         normalize:
             If |True|, normalize the the file path.
 
@@ -418,7 +436,11 @@ def sanitize_filepath(
     """
 
     return FilePathSanitizer(
-        platform=platform, max_len=max_len, check_reserved=check_reserved, normalize=normalize
+        platform=platform,
+        max_len=max_len,
+        check_reserved=check_reserved,
+        normalize=normalize,
+        null_value_handler=null_value_handler,
     ).sanitize(file_path, replacement_text)
 
 

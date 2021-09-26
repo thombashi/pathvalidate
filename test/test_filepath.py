@@ -22,6 +22,7 @@ from pathvalidate import (
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
 from pathvalidate._filepath import FilePathSanitizer, FilePathValidator
+from pathvalidate.handler import raise_error, return_null_string, return_timestamp
 
 from ._common import (
     INVALID_PATH_CHARS,
@@ -661,14 +662,18 @@ class Test_sanitize_filepath:
         assert sanitize_filepath(value, platform=test_platform, normalize=False) == expected
 
     @pytest.mark.parametrize(
-        ["value", "expected"],
+        ["value"],
         [
-            ["", ""],
-            [None, ""],
+            [None],
+            [""],
+            ["?"],
         ],
     )
-    def test_normal_null_values(self, value, expected):
-        assert sanitize_filepath(value) == expected
+    def test_normal_null_value_handler(self, value):
+        assert sanitize_filepath(value, null_value_handler=return_null_string) == ""
+        assert sanitize_filepath(value, null_value_handler=return_timestamp) != ""
+        with pytest.raises(ValidationError):
+            sanitize_filepath(value, null_value_handler=raise_error)
 
     @pytest.mark.parametrize(
         ["test_platform", "value", "replace_text", "expected"],

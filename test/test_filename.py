@@ -21,6 +21,7 @@ from pathvalidate import (
 )
 from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
 from pathvalidate._filename import FileNameSanitizer, FileNameValidator
+from pathvalidate.handler import raise_error, return_null_string, return_timestamp
 
 from ._common import (
     INVALID_FILENAME_CHARS,
@@ -453,14 +454,20 @@ class Test_sanitize_filename:
         assert is_valid_filename(sanitized_name)
 
     @pytest.mark.parametrize(
-        ["value", "expected"],
+        ["value"],
         [
-            ["", ""],
-            [None, ""],
+            [None],
+            [""],
+            ["/"],
+            ["//"],
+            ["?"],
         ],
     )
-    def test_normal_null_values(self, value, expected):
-        assert sanitize_filename(value) == expected
+    def test_normal_null_value_handler(self, value):
+        assert sanitize_filename(value, null_value_handler=return_null_string) == ""
+        assert sanitize_filename(value, null_value_handler=return_timestamp) != ""
+        with pytest.raises(ValidationError):
+            sanitize_filename(value, null_value_handler=raise_error)
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],

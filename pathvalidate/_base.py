@@ -8,6 +8,7 @@ from typing import Optional, Tuple, cast
 
 from ._common import PathType, Platform, PlatformType, normalize_platform, unprintable_ascii_chars
 from .error import ReservedNameError, ValidationError
+from .handler import Handler, return_null_string
 
 
 class BaseFile:
@@ -39,11 +40,16 @@ class BaseFile:
         min_len: Optional[int],
         max_len: Optional[int],
         check_reserved: bool,
+        null_value_handler: Optional[Handler] = None,
         platform_max_len: Optional[int] = None,
         platform: PlatformType = None,
     ) -> None:
         self.__platform = normalize_platform(platform)
         self._check_reserved = check_reserved
+
+        if null_value_handler is None:
+            null_value_handler = return_null_string
+        self._null_value_handler = null_value_handler
 
         if min_len is None:
             min_len = 1

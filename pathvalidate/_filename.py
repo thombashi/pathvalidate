@@ -20,6 +20,7 @@ from ._common import (
     validate_pathtype,
 )
 from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
+from .handler import Handler
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -38,11 +39,13 @@ class FileNameSanitizer(AbstractSanitizer):
         max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
         platform: PlatformType = None,
         check_reserved: bool = True,
+        null_value_handler: Optional[Handler] = None,
     ) -> None:
         super().__init__(
             min_len=min_len,
             max_len=max_len,
             check_reserved=check_reserved,
+            null_value_handler=null_value_handler,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
@@ -60,7 +63,7 @@ class FileNameSanitizer(AbstractSanitizer):
             validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
-                return ""
+                return self._null_value_handler(e)
             raise
 
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
@@ -76,6 +79,10 @@ class FileNameSanitizer(AbstractSanitizer):
             elif e.reason == ErrorReason.INVALID_CHARACTER:
                 if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
                     sanitized_filename = sanitized_filename.rstrip(" .")
+            elif e.reason == ErrorReason.NULL_NAME:
+                return self._null_value_handler(e)
+            else:
+                raise
 
         if is_pathlike_obj(value):
             return Path(sanitized_filename)
@@ -293,6 +300,7 @@ def sanitize_filename(
     platform: Optional[str] = None,
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
     check_reserved: bool = True,
+    null_value_handler: Optional[Handler] = None,
 ) -> PathType:
     """Make a valid filename from a string.
 
@@ -323,6 +331,9 @@ def sanitize_filename(
             Defaults to ``255``.
         check_reserved:
             If |True|, sanitize reserved names of the ``platform``.
+        null_value_handler:
+            Function called when a value after sanitization is an empty string.
+            Defaults to ``pathvalidate.handler.return_null_string()`` that just return ``""``.
 
     Returns:
         Same type as the ``filename`` (str or PathLike object):
@@ -337,5 +348,8 @@ def sanitize_filename(
     """
 
     return FileNameSanitizer(
-        platform=platform, max_len=max_len, check_reserved=check_reserved
+        platform=platform,
+        max_len=max_len,
+        check_reserved=check_reserved,
+        null_value_handler=null_value_handler,
     ).sanitize(filename, replacement_text)
