@@ -24,4 +24,4 @@ Installation: apt
 Dependencies
 ============
 Python 3.6+
-No external dependencies.
+no external dependencies.
