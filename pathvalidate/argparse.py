@@ -2,6 +2,7 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
+import warnings
 from argparse import ArgumentTypeError
 
 from ._common import PathType
@@ -49,7 +50,8 @@ def sanitize_filepath_arg(value: str) -> PathType:
 
 
 def filename(value: PathType) -> PathType:  # pragma: no cover
-    # Deprecated
+    warnings.warn("'filename' has moved to 'validate_filename'", DeprecationWarning)
+
     try:
         validate_filename(value)
     except ValidationError as e:
@@ -59,7 +61,8 @@ def filename(value: PathType) -> PathType:  # pragma: no cover
 
 
 def filepath(value: PathType) -> PathType:  # pragma: no cover
-    # Deprecated
+    warnings.warn("'filepath' has moved to 'validate_filepath'", DeprecationWarning)
+
     try:
         validate_filepath(value)
     except ValidationError as e:

@@ -6,6 +6,7 @@ import enum
 import platform
 import re
 import string
+import warnings
 from pathlib import Path
 from typing import Any, List, Optional, Union, cast
 
@@ -55,7 +56,8 @@ def validate_pathtype(
 
 
 def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
-    # Deprecated: alias to validate_pathtype
+    warnings.warn("'validate_null_string' has moved to 'validate_pathtype'", DeprecationWarning)
+
     validate_pathtype(text, False, error_msg)
 
 

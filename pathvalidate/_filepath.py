@@ -6,6 +6,7 @@ import ntpath
 import os.path
 import posixpath
 import re
+import warnings
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple
 
@@ -344,7 +345,8 @@ def validate_filepath(
 
 
 def validate_file_path(file_path, platform=None, max_path_len=None):
-    # Deprecated
+    warnings.warn("'validate_file_path' has moved to 'validate_filepath'", DeprecationWarning)
+
     validate_filepath(file_path, platform, max_path_len)
 
 
@@ -449,5 +451,6 @@ def sanitize_filepath(
 
 
 def sanitize_file_path(file_path, replacement_text="", platform=None, max_path_len=None):
-    # Deprecated
+    warnings.warn("'sanitize_file_path' has moved to 'sanitize_filepath'", DeprecationWarning)
+
     return sanitize_filepath(file_path, platform, max_path_len)

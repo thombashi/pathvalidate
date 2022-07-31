@@ -2,6 +2,8 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
+import warnings
+
 import click
 
 from ._common import PathType
@@ -49,7 +51,8 @@ def sanitize_filepath_arg(ctx, param, value) -> PathType:
 
 
 def filename(ctx, param, value):  # pragma: no cover
-    # Deprecated
+    warnings.warn("'filename' has moved to 'validate_filename'", DeprecationWarning)
+
     if not value:
         return None
 
@@ -62,7 +65,8 @@ def filename(ctx, param, value):  # pragma: no cover
 
 
 def filepath(ctx, param, value):  # pragma: no cover
-    # Deprecated
+    warnings.warn("'filepath' has moved to 'validate_filepath'", DeprecationWarning)
+
     if not value:
         return None
 
