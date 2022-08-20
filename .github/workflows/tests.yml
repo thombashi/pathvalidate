@@ -43,10 +43,17 @@ jobs:
       - name: Install dependencies
         run: make setup-ci
 
-      - name: Run tests
-        run: tox -e cov -- --discord-verbose=0
+      - name: Run tests except Windows
+        if: matrix.os != 'windows-latest'
         env:
           PYTEST_DISCORD_WEBHOOK: ${{ secrets.PYTEST_DISCORD_WEBHOOK }}
+        run: tox -e cov -- --discord-verbose=0
+
+      - name: Run tests for Windows
+        if: matrix.os == 'windows-latest'
+        env:
+          PYTEST_DISCORD_WEBHOOK: ${{ secrets.PYTEST_DISCORD_WEBHOOK }}
+        run: tox -e py -- --discord-verbose=0
 
       - name: Upload coverage report
         if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.8'
