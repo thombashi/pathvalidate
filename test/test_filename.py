@@ -473,7 +473,10 @@ class Test_sanitize_filename:
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
-        [["あい/うえお.txt", "", "あいうえお.txt"], ["属/性.txt", "-", "属-性.txt"]],
+        [
+            ["あい/うえお.txt", "", "あいうえお.txt"],
+            ["属/性.txt", "-", "属-性.txt"],
+        ],
     )
     def test_normal_multibyte(self, value, replace_text, expected):
         sanitized_name = sanitize_filename(value, replace_text)
@@ -483,7 +486,11 @@ class Test_sanitize_filename:
 
     @pytest.mark.parametrize(
         ["value", "max_len", "expected"],
-        [["a" * 10, 255, 10], ["invalid_length" * 100, 255, 255], ["invalid_length" * 100, 10, 10]],
+        [
+            ["a" * 10, 255, 10],
+            ["invalid_length" * 100, 255, 255],
+            ["invalid_length" * 100, 10, 10],
+        ],
     )
     def test_normal_max_len(self, value, max_len, expected):
         filename = sanitize_filename(value, max_len=max_len)

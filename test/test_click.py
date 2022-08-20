@@ -31,13 +31,29 @@ def cli_sanitize(filename, filepath):
 
 
 class Test_validate:
-    @pytest.mark.parametrize(["value", "expected"], [["ab", 0], ["", 0], ["a/b", 2], ["a/?b", 2]])
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            ["ab", 0],
+            ["", 0],
+            ["a/b", 2],
+            ["a/?b", 2],
+        ],
+    )
     def test_normal_filename(self, value, expected):
         runner = CliRunner()
         result = runner.invoke(cli_validate, ["--filename", value])
         assert result.exit_code == expected
 
-    @pytest.mark.parametrize(["value", "expected"], [["ab", 0], ["", 0], ["a/b", 0], ["a/?b", 2]])
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            ["ab", 0],
+            ["", 0],
+            ["a/b", 0],
+            ["a/?b", 2],
+        ],
+    )
     def test_normal_filepath(self, value, expected):
         runner = CliRunner()
         result = runner.invoke(cli_validate, ["--filepath", value])
@@ -46,7 +62,13 @@ class Test_validate:
 
 class Test_sanitize:
     @pytest.mark.parametrize(
-        ["value", "expected"], [["ab", "ab"], ["", ""], ["a/b", "ab"], ["a/?b", "ab"]]
+        ["value", "expected"],
+        [
+            ["ab", "ab"],
+            ["", ""],
+            ["a/b", "ab"],
+            ["a/?b", "ab"],
+        ],
     )
     def test_normal_filename(self, value, expected):
         runner = CliRunner()
@@ -54,7 +76,13 @@ class Test_sanitize:
         assert result.output.strip() == expected
 
     @pytest.mark.parametrize(
-        ["value", "expected"], [["ab", "ab"], ["", ""], ["a/b", "a/b"], ["a/?b", "a/b"]]
+        ["value", "expected"],
+        [
+            ["ab", "ab"],
+            ["", ""],
+            ["a/b", "a/b"],
+            ["a/?b", "a/b"],
+        ],
     )
     def test_normal_filepath(self, value, expected):
         runner = CliRunner()
