@@ -86,11 +86,12 @@ class FilePathSanitizer(AbstractSanitizer):
 
         unicode_filepath = preprocess(value)
 
-        if self.__normalize:
-            unicode_filepath = os.path.normpath(unicode_filepath)
-
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
-        sanitized_path = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
+        unicode_filepath = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
+        if self.__normalize and unicode_filepath:
+            unicode_filepath = os.path.normpath(unicode_filepath)
+        sanitized_path = unicode_filepath
+
         if self._is_windows():
             path_separator = "\\"
         else:
@@ -188,8 +189,7 @@ class FilePathValidator(BaseValidator):
         if not value:
             return
 
-        filepath = os.path.normpath(value)
-        unicode_filepath = preprocess(filepath)
+        unicode_filepath = preprocess(value)
         value_len = len(unicode_filepath)
 
         if value_len > self.max_len:
