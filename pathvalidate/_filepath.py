@@ -344,7 +344,7 @@ def validate_filepath(
     ).validate(file_path)
 
 
-def validate_file_path(file_path, platform=None, max_path_len=None):
+def validate_file_path(file_path, platform=None, max_path_len=None):  # type: ignore
     warnings.warn("'validate_file_path' has moved to 'validate_filepath'", DeprecationWarning)
 
     validate_filepath(file_path, platform, max_path_len)
@@ -450,7 +450,7 @@ def sanitize_filepath(
     ).sanitize(file_path, replacement_text)
 
 
-def sanitize_file_path(file_path, replacement_text="", platform=None, max_path_len=None):
+def sanitize_file_path(file_path, replacement_text="", platform=None, max_path_len=None):  # type: ignore
     warnings.warn("'sanitize_file_path' has moved to 'sanitize_filepath'", DeprecationWarning)
 
     return sanitize_filepath(file_path, platform, max_path_len)
