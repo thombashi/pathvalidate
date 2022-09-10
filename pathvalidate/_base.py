@@ -4,7 +4,7 @@
 
 import abc
 import os
-from typing import Optional, Tuple, cast
+from typing import Optional, Tuple
 
 from ._common import PathType, Platform, PlatformType, normalize_platform, unprintable_ascii_chars
 from .error import ReservedNameError, ValidationError
@@ -64,7 +64,7 @@ class BaseFile:
         if max_len <= 0:
             self._max_len = platform_max_len
         else:
-            self._max_len = cast(int, max_len)
+            self._max_len = max_len
 
         self._max_len = min(self._max_len, platform_max_len)
         self._validate_max_len()
