@@ -127,7 +127,7 @@ class FilePathSanitizer(AbstractSanitizer):
 
         return sanitized_path
 
-    def _get_sanitize_regexp(self) -> Pattern:
+    def _get_sanitize_regexp(self) -> Pattern[str]:
         if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
             return _RE_INVALID_WIN_PATH
 
