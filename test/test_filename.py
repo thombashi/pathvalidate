@@ -541,8 +541,11 @@ class Test_sanitize_filename:
         [
             ["windows", "period.", "period"],
             ["windows", "space ", "space"],
+            ["windows", " space ", "space"],
             ["windows", "space_and_period .", "space_and_period"],
             ["windows", "space_and_period. ", "space_and_period"],
+            ["windows", " .space_and_period", ".space_and_period"],
+            ["windows", ". space_and_period", ". space_and_period"],
             ["linux", "period.", "period."],
             ["linux", "space ", "space "],
             ["linux", "space_and_period. ", "space_and_period. "],

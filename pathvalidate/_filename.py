@@ -78,6 +78,8 @@ class FileNameSanitizer(AbstractSanitizer):
                 if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
                     # Do not end a file or directory name with a space or a period
                     sanitized_filename = sanitized_filename.rstrip(" .")
+                    # Do not start a file or directory name with a space
+                    sanitized_filename = sanitized_filename.lstrip(" ")
             elif e.reason == ErrorReason.NULL_NAME:
                 return self._null_value_handler(e)
             else:
@@ -207,6 +209,15 @@ class FileNameValidator(BaseValidator):
                 ),
                 platform=Platform.WINDOWS,
                 description="Do not end a file or directory name with a space or a period",
+            )
+
+        if unicode_filename[0] in (" "):
+            raise InvalidCharError(
+                self._ERROR_MSG_TEMPLATE.format(
+                    invalid=re.escape(unicode_filename[0]), value=repr(unicode_filename)
+                ),
+                platform=Platform.WINDOWS,
+                description="Do not start a file or directory name with a space",
             )
 
 
