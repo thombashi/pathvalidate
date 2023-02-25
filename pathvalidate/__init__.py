@@ -15,14 +15,7 @@ from ._common import (
     validate_pathtype,
 )
 from ._filename import FileNameSanitizer, is_valid_filename, sanitize_filename, validate_filename
-from ._filepath import (
-    FilePathSanitizer,
-    is_valid_filepath,
-    sanitize_file_path,
-    sanitize_filepath,
-    validate_file_path,
-    validate_filepath,
-)
+from ._filepath import FilePathSanitizer, is_valid_filepath, sanitize_filepath, validate_filepath
 from ._ltsv import sanitize_ltsv_label, validate_ltsv_label
 from ._symbol import replace_symbol, validate_symbol
 from .error import (
