@@ -202,13 +202,17 @@ class FileNameValidator(BaseValidator):
         if unicode_filename in (".", ".."):
             return
 
+        KB2829981_err_tmpl = "{}. Refer: https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/file-folder-name-whitespace-characters"  # noqa: E501
+
         if unicode_filename[-1] in (" ", "."):
             raise InvalidCharError(
                 self._ERROR_MSG_TEMPLATE.format(
                     invalid=re.escape(unicode_filename[-1]), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
-                description="Do not end a file or directory name with a space or a period",
+                description=KB2829981_err_tmpl.format(
+                    "Do not end a file or directory name with a space or a period"
+                ),
             )
 
         if unicode_filename[0] in (" "):
@@ -217,7 +221,9 @@ class FileNameValidator(BaseValidator):
                     invalid=re.escape(unicode_filename[0]), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
-                description="Do not start a file or directory name with a space",
+                description=KB2829981_err_tmpl.format(
+                    "Do not start a file or directory name with a space"
+                ),
             )
 
 
