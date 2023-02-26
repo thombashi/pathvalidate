@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', '3.11', 'pypy-3.8']
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-20.04, macos-latest, windows-latest]
         exclude:
           - os: windows-latest
             python-version: '3.6'
@@ -101,18 +101,17 @@ jobs:
           set -x
 
           pwd
-          ls -lR
+          ls -alR
 
-      - name: Combine reports
+      - name: Install packages
+        run: python -m pip install --upgrade --disable-pip-version-check coveralls tomli
+
+      - name: Combine coverage reports
         run: |
-          python -m pip install --upgrade --disable-pip-version-check coverage[toml]
-
           coverage combine artifact/.coverage_*
-          ls -lR
+          ls -alR
 
       - name: Upload coverage report
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python -m pip install --upgrade --disable-pip-version-check coveralls tomli
-          coveralls --service=github
+        run: coveralls --service=github
