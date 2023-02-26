@@ -8,7 +8,7 @@ import re
 import string
 import warnings
 from pathlib import Path
-from typing import Any, List, Optional, Union, cast
+from typing import Any, List, Optional, TypeVar
 
 
 _re_whitespaces = re.compile(r"^[\s]+$")
@@ -24,8 +24,8 @@ class Platform(enum.Enum):
     MACOS = "macOS"
 
 
-PathType = Union[str, Path]
-PlatformType = Union[str, Platform, None]
+PathType = TypeVar("PathType", str, Path)
+PlatformType = TypeVar("PlatformType", str, Platform)
 
 
 def is_pathlike_obj(value: PathType) -> bool:
@@ -62,10 +62,10 @@ def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> Non
 
 
 def preprocess(name: PathType) -> str:
-    if is_pathlike_obj(name):
-        name = str(name)
+    if isinstance(name, Path):
+        return str(name)
 
-    return cast(str, name)
+    return name
 
 
 def is_null_string(value: Any) -> bool:
@@ -130,12 +130,14 @@ def replace_ansi_escape(text: str, replacement_text: str = "") -> str:
         raise TypeError("text must be a string")
 
 
-def normalize_platform(name: PlatformType) -> Platform:
+def normalize_platform(name: Optional[PlatformType]) -> Platform:
     if isinstance(name, Platform):
         return name
 
-    if name:
-        name = name.strip().casefold()
+    if not name:
+        return Platform.UNIVERSAL
+
+    name = name.strip().casefold()
 
     if name == "posix":
         return Platform.POSIX

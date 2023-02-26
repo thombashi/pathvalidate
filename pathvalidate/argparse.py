@@ -4,7 +4,6 @@
 
 from argparse import ArgumentTypeError
 
-from ._common import PathType
 from ._filename import sanitize_filename, validate_filename
 from ._filepath import sanitize_filepath, validate_filepath
 from .error import ValidationError
@@ -34,14 +33,14 @@ def validate_filepath_arg(value: str) -> str:
     return value
 
 
-def sanitize_filename_arg(value: str) -> PathType:
+def sanitize_filename_arg(value: str) -> str:
     if not value:
         return ""
 
     return sanitize_filename(value)
 
 
-def sanitize_filepath_arg(value: str) -> PathType:
+def sanitize_filepath_arg(value: str) -> str:
     if not value:
         return ""
 

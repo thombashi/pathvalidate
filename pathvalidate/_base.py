@@ -45,7 +45,7 @@ class BaseFile:
         check_reserved: bool,
         null_value_handler: Optional[Handler] = None,
         platform_max_len: Optional[int] = None,
-        platform: PlatformType = None,
+        platform: Optional[PlatformType] = None,
     ) -> None:
         self.__platform = normalize_platform(platform)
         self._check_reserved = check_reserved

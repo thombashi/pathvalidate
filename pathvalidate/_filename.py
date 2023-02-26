@@ -10,15 +10,7 @@ from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
 from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
-from ._common import (
-    PathType,
-    Platform,
-    PlatformType,
-    findall_to_str,
-    is_pathlike_obj,
-    preprocess,
-    validate_pathtype,
-)
+from ._common import PathType, Platform, PlatformType, findall_to_str, preprocess, validate_pathtype
 from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
 from .handler import Handler
 
@@ -35,7 +27,7 @@ class FileNameSanitizer(AbstractSanitizer):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
-        platform: PlatformType = None,
+        platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         null_value_handler: Optional[Handler] = None,
     ) -> None:
@@ -61,6 +53,9 @@ class FileNameSanitizer(AbstractSanitizer):
             validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
+                if isinstance(value, Path):
+                    raise
+
                 return self._null_value_handler(e)
             raise
 
@@ -81,11 +76,11 @@ class FileNameSanitizer(AbstractSanitizer):
                     # Do not start a file or directory name with a space
                     sanitized_filename = sanitized_filename.lstrip(" ")
             elif e.reason == ErrorReason.NULL_NAME:
-                return self._null_value_handler(e)
+                sanitized_filename = self._null_value_handler(e)
             else:
                 raise
 
-        if is_pathlike_obj(value):
+        if isinstance(value, Path):
             return Path(sanitized_filename)
 
         return sanitized_filename
@@ -126,7 +121,7 @@ class FileNameValidator(BaseValidator):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
-        platform: PlatformType = None,
+        platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
     ) -> None:
         super().__init__(

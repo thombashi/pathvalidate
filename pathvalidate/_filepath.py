@@ -6,20 +6,11 @@ import ntpath
 import os.path
 import posixpath
 import re
-import warnings
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple
 
 from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
-from ._common import (
-    PathType,
-    Platform,
-    PlatformType,
-    findall_to_str,
-    is_pathlike_obj,
-    preprocess,
-    validate_pathtype,
-)
+from ._common import PathType, Platform, PlatformType, findall_to_str, preprocess, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES
 from ._filename import FileNameSanitizer, FileNameValidator
 from .error import (
@@ -41,7 +32,7 @@ class FilePathSanitizer(AbstractSanitizer):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
-        platform: PlatformType = None,
+        platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         null_value_handler: Optional[Handler] = None,
         normalize: bool = True,
@@ -79,6 +70,9 @@ class FilePathSanitizer(AbstractSanitizer):
             validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
+                if isinstance(value, Path):
+                    raise
+
                 return self._null_value_handler(e)
             raise
 
@@ -118,11 +112,11 @@ class FilePathSanitizer(AbstractSanitizer):
             self.__fpath_validator.validate(sanitized_path)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
-                return self._null_value_handler(e)
+                sanitized_path = self._null_value_handler(e)
 
             raise
 
-        if is_pathlike_obj(value):
+        if isinstance(value, Path):
             return Path(sanitized_path)
 
         return sanitized_path
@@ -157,7 +151,7 @@ class FilePathValidator(BaseValidator):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
-        platform: PlatformType = None,
+        platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
     ) -> None:
         super().__init__(
@@ -185,11 +179,11 @@ class FilePathValidator(BaseValidator):
         )
         self.validate_abspath(value)
 
-        _drive, value = self.__split_drive(str(value))
-        if not value:
+        _drive, tail = self.__split_drive(value)
+        if not tail:
             return
 
-        unicode_filepath = preprocess(value)
+        unicode_filepath = preprocess(tail)
         value_len = len(unicode_filepath)
 
         if value_len > self.max_len:
@@ -217,7 +211,6 @@ class FilePathValidator(BaseValidator):
             self.__validate_unix_filepath(unicode_filepath)
 
     def validate_abspath(self, value: PathType) -> None:
-        value = str(value)
         is_posix_abs = posixpath.isabs(value)
         is_nt_abs = ntpath.isabs(value)
         err_object = ValidationError(
@@ -346,7 +339,7 @@ def validate_filepath(
 
 def is_valid_filepath(
     file_path: PathType,
-    platform: Optional[str] = None,
+    platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
@@ -375,7 +368,7 @@ def is_valid_filepath(
 def sanitize_filepath(
     file_path: PathType,
     replacement_text: str = "",
-    platform: Optional[str] = None,
+    platform: Optional[PlatformType] = None,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
     null_value_handler: Optional[Handler] = None,
