@@ -20,7 +20,7 @@ from pathvalidate import (
     sanitize_filepath,
     validate_filepath,
 )
-from pathvalidate._common import is_pathlike_obj, unprintable_ascii_chars
+from pathvalidate._common import unprintable_ascii_chars
 from pathvalidate._filepath import FilePathSanitizer, FilePathValidator
 from pathvalidate.handler import raise_error, return_null_string, return_timestamp
 
@@ -618,7 +618,7 @@ class Test_sanitize_filepath:
     def test_normal_pathlike(self, value, replace_text, expected):
         sanitized_name = sanitize_filepath(value, replace_text)
         assert sanitized_name == expected
-        assert is_pathlike_obj(sanitized_name)
+        assert isinstance(sanitized_name, Path)
 
         validate_filepath(sanitized_name)
         assert is_valid_filepath(sanitized_name)

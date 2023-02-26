@@ -28,16 +28,12 @@ PathType = TypeVar("PathType", str, Path)
 PlatformType = TypeVar("PlatformType", str, Platform)
 
 
-def is_pathlike_obj(value: PathType) -> bool:
-    return isinstance(value, Path)
-
-
 def validate_pathtype(
     text: PathType, allow_whitespaces: bool = False, error_msg: Optional[str] = None
 ) -> None:
     from .error import ErrorReason, ValidationError
 
-    if _is_not_null_string(text) or is_pathlike_obj(text):
+    if _is_not_null_string(text) or isinstance(text, Path):
         return
 
     if allow_whitespaces and _re_whitespaces.search(str(text)):
