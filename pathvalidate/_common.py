@@ -45,7 +45,7 @@ def validate_pathtype(
 
     if is_null_string(text):
         if not error_msg:
-            error_msg = "the value must be a not empty"
+            error_msg = "the value must not be an empty"
 
         raise ValidationError(
             description=error_msg,

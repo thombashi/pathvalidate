@@ -86,7 +86,7 @@ class BaseFile:
 
     def _validate_max_len(self) -> None:
         if self.max_len < 1:
-            raise ValueError("max_len must be greater or equals to one")
+            raise ValueError("max_len must be greater or equal to one")
 
         if self.min_len > self.max_len:
             raise ValueError("min_len must be lower than max_len")
