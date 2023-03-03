@@ -11,7 +11,6 @@ from ._common import (
     replace_ansi_escape,
     replace_unprintable_char,
     unprintable_ascii_chars,
-    validate_null_string,
     validate_pathtype,
 )
 from ._filename import (

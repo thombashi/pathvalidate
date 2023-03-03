@@ -6,7 +6,6 @@ import enum
 import platform
 import re
 import string
-import warnings
 from pathlib import Path
 from typing import Any, List, Optional, TypeVar
 
@@ -49,12 +48,6 @@ def validate_pathtype(
         )
 
     raise TypeError(f"text must be a string: actual={type(text)}")
-
-
-def validate_null_string(text: PathType, error_msg: Optional[str] = None) -> None:
-    warnings.warn("'validate_null_string' has moved to 'validate_pathtype'", DeprecationWarning)
-
-    validate_pathtype(text, False, error_msg)
 
 
 def preprocess(name: PathType) -> str:

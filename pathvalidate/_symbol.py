@@ -3,7 +3,6 @@
 """
 
 import re
-import warnings
 from typing import Sequence
 
 from ._common import ascii_symbols, preprocess, unprintable_ascii_chars
@@ -23,17 +22,6 @@ def validate_unprintable(text: str) -> None:
     match_list = __RE_UNPRINTABLE.findall(preprocess(text))
     if match_list:
         raise InvalidCharError(f"unprintable character found: {match_list}")
-
-
-def replace_unprintable(text: str, replacement_text: str = "") -> str:
-    warnings.warn(
-        "'replace_unprintable' has moved to 'replace_unprintable_char'", DeprecationWarning
-    )
-
-    try:
-        return __RE_UNPRINTABLE.sub(replacement_text, preprocess(text))
-    except (TypeError, AttributeError):
-        raise TypeError("text must be a string")
 
 
 def validate_symbol(text: str) -> None:
