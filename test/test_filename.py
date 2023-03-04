@@ -413,7 +413,14 @@ class Test_sanitize_filename:
             for pair in AllPairs(
                 OrderedDict(
                     {
-                        "platform": ["posix", "linux", "macos"],
+                        "platform": [
+                            "posix",
+                            "linux",
+                            "macos",
+                            Platform.POSIX,
+                            Platform.LINUX,
+                            Platform.MACOS,
+                        ],
                         "c": INVALID_PATH_CHARS + unprintable_ascii_chars,
                         "repl": REPLACE_TEXT_LIST,
                     }
@@ -425,7 +432,14 @@ class Test_sanitize_filename:
             for pair in AllPairs(
                 OrderedDict(
                     {
-                        "platform": ["posix", "linux", "macos"],
+                        "platform": [
+                            "posix",
+                            "linux",
+                            "macos",
+                            Platform.POSIX,
+                            Platform.LINUX,
+                            Platform.MACOS,
+                        ],
                         "c": [":", "*", "?", '"', "<", ">", "|"],
                         "repl": REPLACE_TEXT_LIST,
                     }
