@@ -5,7 +5,6 @@
 from .__version__ import __author__, __copyright__, __email__, __license__, __version__
 from ._base import AbstractSanitizer, AbstractValidator
 from ._common import (
-    Platform,
     ascii_symbols,
     normalize_platform,
     replace_ansi_escape,
@@ -13,6 +12,7 @@ from ._common import (
     unprintable_ascii_chars,
     validate_pathtype,
 )
+from ._const import Platform
 from ._filename import (
     FileNameSanitizer,
     FileNameValidator,

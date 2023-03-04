@@ -10,8 +10,8 @@ from pathlib import Path
 from typing import List, Optional, Pattern, Tuple
 
 from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
-from ._common import PathType, Platform, PlatformType, findall_to_str, preprocess, validate_pathtype
-from ._const import _NTFS_RESERVED_FILE_NAMES
+from ._common import PathType, PlatformType, findall_to_str, preprocess, validate_pathtype
+from ._const import _NTFS_RESERVED_FILE_NAMES, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from .error import (
     ErrorReason,

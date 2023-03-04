@@ -1,3 +1,6 @@
+import enum
+
+
 _NTFS_RESERVED_FILE_NAMES = (
     "$Mft",
     "$MftMirr",
@@ -14,3 +17,13 @@ _NTFS_RESERVED_FILE_NAMES = (
     "$ObjId",
     "$Reparse",
 )  # Only in root directory
+
+
+@enum.unique
+class Platform(enum.Enum):
+    POSIX = "POSIX"
+    UNIVERSAL = "universal"
+
+    LINUX = "Linux"
+    WINDOWS = "Windows"
+    MACOS = "macOS"

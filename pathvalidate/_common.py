@@ -2,25 +2,16 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
-import enum
 import platform
 import re
 import string
 from pathlib import Path
 from typing import Any, List, Optional, TypeVar
 
+from ._const import Platform
+
 
 _re_whitespaces = re.compile(r"^[\s]+$")
-
-
-@enum.unique
-class Platform(enum.Enum):
-    POSIX = "POSIX"
-    UNIVERSAL = "universal"
-
-    LINUX = "Linux"
-    WINDOWS = "Windows"
-    MACOS = "macOS"
 
 
 PathType = TypeVar("PathType", str, Path)

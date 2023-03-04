@@ -5,7 +5,7 @@
 import enum
 from typing import Optional
 
-from ._common import Platform
+from ._const import Platform
 
 
 @enum.unique

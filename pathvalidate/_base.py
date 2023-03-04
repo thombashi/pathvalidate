@@ -6,7 +6,8 @@ import abc
 import os
 from typing import Optional, Tuple
 
-from ._common import PathType, Platform, PlatformType, normalize_platform, unprintable_ascii_chars
+from ._common import PathType, PlatformType, normalize_platform, unprintable_ascii_chars
+from ._const import Platform
 from .error import ReservedNameError, ValidationError
 from .handler import Handler, return_null_string
 
