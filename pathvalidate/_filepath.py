@@ -310,7 +310,7 @@ def validate_filepath(
         ValidationError (ErrorReason.INVALID_CHARACTER):
             If the ``file_path`` includes invalid char(s):
             |invalid_file_path_chars|.
-            The following characters are also invalid for Windows platform:
+            The following characters are also invalid for Windows platforms:
             |invalid_win_file_path_chars|
         ValidationError (ErrorReason.INVALID_LENGTH):
             If the ``file_path`` is longer than ``max_len`` characters.
@@ -372,7 +372,7 @@ def sanitize_filepath(
 ) -> PathType:
     """Make a valid file path from a string.
 
-    To make a valid file path the function does:
+    To make a valid file path, the function does the following:
 
         - replace invalid characters for a file path within the ``file_path``
           with the ``replacement_text``. Invalid characters are as follows:

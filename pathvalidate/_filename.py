@@ -255,7 +255,7 @@ def validate_filename(
         ValidationError (ErrorReason.INVALID_CHARACTER):
             If the ``filename`` includes invalid character(s) for a filename:
             |invalid_filename_chars|.
-            The following characters are also invalid for Windows platform:
+            The following characters are also invalid for Windows platforms:
             |invalid_win_filename_chars|.
         ValidationError (ErrorReason.RESERVED_NAME):
             If the ``filename`` equals reserved name by OS.
@@ -313,7 +313,7 @@ def sanitize_filename(
 ) -> PathType:
     """Make a valid filename from a string.
 
-    To make a valid filename the function does:
+    To make a valid filename, the function does the following:
 
         - Replace invalid characters as file names included in the ``filename``
           with the ``replacement_text``. Invalid characters are:
