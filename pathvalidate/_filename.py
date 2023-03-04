@@ -220,7 +220,7 @@ class FileNameValidator(BaseValidator):
 
 def validate_filename(
     filename: PathType,
-    platform: Optional[str] = None,
+    platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: int = _DEFAULT_MAX_FILENAME_LEN,
     check_reserved: bool = True,
@@ -277,7 +277,7 @@ def validate_filename(
 
 def is_valid_filename(
     filename: PathType,
-    platform: Optional[str] = None,
+    platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
@@ -306,7 +306,7 @@ def is_valid_filename(
 def sanitize_filename(
     filename: PathType,
     replacement_text: str = "",
-    platform: Optional[str] = None,
+    platform: Optional[PlatformType] = None,
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
     check_reserved: bool = True,
     null_value_handler: Optional[Handler] = None,

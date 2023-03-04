@@ -275,7 +275,7 @@ class FilePathValidator(BaseValidator):
 
 def validate_filepath(
     file_path: PathType,
-    platform: Optional[str] = None,
+    platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
