@@ -214,8 +214,8 @@ class FilePathValidator(BaseValidator):
                 "an invalid absolute file path ({}) for the platform ({}).".format(
                     value, self.platform.value
                 )
-                + " to avoid the error, specify an appropriate platform that corresponds"
-                + " with the path format or 'auto'."
+                + " to avoid the error, specify an appropriate platform corresponding to"
+                + " the path format or 'auto'."
             ),
             platform=self.platform,
             reason=ErrorReason.MALFORMED_ABS_PATH,
@@ -227,11 +227,8 @@ class FilePathValidator(BaseValidator):
         if self._is_universal() and any([is_posix_abs, is_nt_abs]):
             ValidationError(
                 description=(
-                    "{}. expected a platform independent file path".format(
-                        "POSIX absolute file path found"
-                        if is_posix_abs
-                        else "NT absolute file path found"
-                    )
+                    ("POSIX style" if is_posix_abs else "NT style")
+                    + " absolute file path found. expected a platform-independent file path."
                 ),
                 platform=self.platform,
                 reason=ErrorReason.MALFORMED_ABS_PATH,
