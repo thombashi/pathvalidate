@@ -48,7 +48,11 @@ VALID_MULTIBYTE_NAMES = ["新しいテキスト ドキュメント.txt", "新規
 class Test_FileSanitizer:
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [["windows", Platform.WINDOWS], ["linux", Platform.LINUX], ["macos", Platform.MACOS]],
+        [
+            ["windows", Platform.WINDOWS],
+            ["linux", Platform.LINUX],
+            ["macos", Platform.MACOS],
+        ],
     )
     def test_normal_platform_auto(self, monkeypatch, test_platform, expected):
         if test_platform == "windows":

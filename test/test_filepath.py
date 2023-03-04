@@ -44,7 +44,11 @@ random.seed(0)
 class Test_FileSanitizer:
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
-        [["windows", Platform.WINDOWS], ["linux", Platform.LINUX], ["macos", Platform.MACOS]],
+        [
+            ["windows", Platform.WINDOWS],
+            ["linux", Platform.LINUX],
+            ["macos", Platform.MACOS],
+        ],
     )
     def test_normal_platform_auto(self, monkeypatch, test_platform, expected):
         if test_platform == "windows":
@@ -111,7 +115,11 @@ class Test_validate_filepath:
 
     @pytest.mark.parametrize(
         ["platform"],
-        [["linux"], ["macos"], ["posix"]],
+        [
+            ["linux"],
+            ["macos"],
+            ["posix"],
+        ],
     )
     def test_normal_only_whitespaces(self, platform):
         value = "  "
@@ -120,7 +128,10 @@ class Test_validate_filepath:
 
     @pytest.mark.parametrize(
         ["platform"],
-        [["windows"], ["universal"]],
+        [
+            ["windows"],
+            ["universal"],
+        ],
     )
     def test_abnormal_only_whitespaces(self, platform):
         value = "  "
@@ -744,7 +755,12 @@ class Test_sanitize_filepath:
     @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
     @pytest.mark.parametrize(
         ["value", "expected"],
-        [[1, TypeError], [True, TypeError], [nan, TypeError], [inf, TypeError]],
+        [
+            [1, TypeError],
+            [True, TypeError],
+            [nan, TypeError],
+            [inf, TypeError],
+        ],
     )
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
