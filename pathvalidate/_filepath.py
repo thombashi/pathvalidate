@@ -60,14 +60,14 @@ class FilePathSanitizer(AbstractSanitizer):
         )
         self.__normalize = normalize
 
-        if self._is_universal() or self._is_windows():
+        if self._is_windows(include_universal=True):
             self.__split_drive = ntpath.splitdrive
         else:
             self.__split_drive = posixpath.splitdrive
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         try:
-            validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
+            validate_pathtype(value, allow_whitespaces=not self._is_windows(include_universal=True))
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
                 if isinstance(value, Path):
@@ -122,7 +122,7 @@ class FilePathSanitizer(AbstractSanitizer):
         return sanitized_path
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
-        if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+        if self._is_windows(include_universal=True):
             return _RE_INVALID_WIN_PATH
 
         return _RE_INVALID_PATH
@@ -165,18 +165,13 @@ class FilePathValidator(BaseValidator):
             min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform
         )
 
-        if self._is_universal() or self._is_windows():
+        if self._is_windows(include_universal=True):
             self.__split_drive = ntpath.splitdrive
         else:
             self.__split_drive = posixpath.splitdrive
 
     def validate(self, value: PathType) -> None:
-        validate_pathtype(
-            value,
-            allow_whitespaces=False
-            if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]
-            else True,
-        )
+        validate_pathtype(value, allow_whitespaces=not self._is_windows(include_universal=True))
         self.validate_abspath(value)
 
         _drive, tail = self.__split_drive(value)
@@ -205,7 +200,7 @@ class FilePathValidator(BaseValidator):
 
             self.__fname_validator._validate_reserved_keywords(entry)
 
-        if self._is_universal() or self._is_windows():
+        if self._is_windows(include_universal=True):
             self.__validate_win_filepath(unicode_filepath)
         else:
             self.__validate_unix_filepath(unicode_filepath)
@@ -241,7 +236,7 @@ class FilePathValidator(BaseValidator):
                 reason=ErrorReason.MALFORMED_ABS_PATH,
             )
 
-        if any([self._is_windows(), self._is_universal()]) and is_posix_abs:
+        if self._is_windows(include_universal=True) and is_posix_abs:
             raise err_object
 
         drive, _tail = ntpath.splitdrive(value)

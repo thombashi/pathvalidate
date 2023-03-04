@@ -51,7 +51,7 @@ class FileNameSanitizer(AbstractSanitizer):
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         try:
-            validate_pathtype(value, allow_whitespaces=False if self._is_windows() else True)
+            validate_pathtype(value, allow_whitespaces=not self._is_windows(include_universal=True))
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
                 if isinstance(value, Path):
@@ -71,7 +71,7 @@ class FileNameSanitizer(AbstractSanitizer):
                     re.escape(e.reserved_name), f"{e.reserved_name}_", sanitized_filename
                 )
             elif e.reason == ErrorReason.INVALID_CHARACTER:
-                if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+                if self._is_windows(include_universal=True):
                     # Do not end a file or directory name with a space or a period
                     sanitized_filename = sanitized_filename.rstrip(" .")
                     # Do not start a file or directory name with a space
@@ -87,7 +87,7 @@ class FileNameSanitizer(AbstractSanitizer):
         return sanitized_filename
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
-        if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]:
+        if self._is_windows(include_universal=True):
             return _RE_INVALID_WIN_FILENAME
 
         return _RE_INVALID_FILENAME
@@ -134,12 +134,7 @@ class FileNameValidator(BaseValidator):
         )
 
     def validate(self, value: PathType) -> None:
-        validate_pathtype(
-            value,
-            allow_whitespaces=False
-            if self.platform in [Platform.UNIVERSAL, Platform.WINDOWS]
-            else True,
-        )
+        validate_pathtype(value, allow_whitespaces=not self._is_windows(include_universal=True))
 
         unicode_filename = to_str(value)
         value_len = len(unicode_filename)
@@ -157,7 +152,7 @@ class FileNameValidator(BaseValidator):
 
         self._validate_reserved_keywords(unicode_filename)
 
-        if self._is_universal() or self._is_windows():
+        if self._is_windows(include_universal=True):
             self.__validate_win_filename(unicode_filename)
         else:
             self.__validate_unix_filename(unicode_filename)
@@ -169,7 +164,7 @@ class FileNameValidator(BaseValidator):
             reason=ErrorReason.FOUND_ABS_PATH,
         )
 
-        if self._is_universal() or self._is_windows():
+        if self._is_windows(include_universal=True):
             if ntpath.isabs(value):
                 raise err
 
