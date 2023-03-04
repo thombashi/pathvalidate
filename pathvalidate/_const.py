@@ -1,6 +1,9 @@
 import enum
 
 
+DEFAULT_MIN_LEN = 1
+
+
 _NTFS_RESERVED_FILE_NAMES = (
     "$Mft",
     "$MftMirr",

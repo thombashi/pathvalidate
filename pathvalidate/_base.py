@@ -7,12 +7,9 @@ import os
 from typing import ClassVar, Optional, Tuple
 
 from ._common import PathType, PlatformType, normalize_platform, unprintable_ascii_chars
-from ._const import Platform
+from ._const import DEFAULT_MIN_LEN, Platform
 from .error import ReservedNameError, ValidationError
 from .handler import Handler, return_null_string
-
-
-DEFAULT_MIN_LEN = 1
 
 
 class BaseFile:

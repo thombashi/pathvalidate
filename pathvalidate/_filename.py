@@ -9,9 +9,9 @@ import re
 from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
-from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
+from ._base import AbstractSanitizer, BaseFile, BaseValidator
 from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
-from ._const import Platform
+from ._const import DEFAULT_MIN_LEN, Platform
 from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
 from .handler import Handler
 
