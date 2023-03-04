@@ -76,13 +76,22 @@ class BaseFile:
     def _is_universal(self) -> bool:
         return self.platform == Platform.UNIVERSAL
 
-    def _is_linux(self) -> bool:
+    def _is_linux(self, include_universal: bool = False) -> bool:
+        if include_universal:
+            return self.platform in (Platform.UNIVERSAL, Platform.LINUX)
+
         return self.platform == Platform.LINUX
 
-    def _is_windows(self) -> bool:
+    def _is_windows(self, include_universal: bool = False) -> bool:
+        if include_universal:
+            return self.platform in (Platform.UNIVERSAL, Platform.WINDOWS)
+
         return self.platform == Platform.WINDOWS
 
-    def _is_macos(self) -> bool:
+    def _is_macos(self, include_universal: bool = False) -> bool:
+        if include_universal:
+            return self.platform in (Platform.UNIVERSAL, Platform.MACOS)
+
         return self.platform == Platform.MACOS
 
     def _validate_max_len(self) -> None:
