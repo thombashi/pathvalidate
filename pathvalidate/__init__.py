@@ -11,6 +11,7 @@ from ._common import (
     replace_unprintable_char,
     unprintable_ascii_chars,
     validate_pathtype,
+    validate_unprintable_char,
 )
 from ._const import Platform
 from ._filename import (
@@ -56,6 +57,7 @@ __all__ = (
     "replace_unprintable_char",
     "unprintable_ascii_chars",
     "validate_pathtype",
+    "validate_unprintable_char",
     "FileNameSanitizer",
     "FileNameValidator",
     "is_valid_filename",

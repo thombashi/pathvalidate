@@ -9,19 +9,9 @@ from ._common import ascii_symbols, preprocess, unprintable_ascii_chars
 from .error import InvalidCharError
 
 
-__RE_UNPRINTABLE = re.compile(
-    "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
-)
 __RE_SYMBOL = re.compile(
     "[{}]".format(re.escape("".join(ascii_symbols + unprintable_ascii_chars))), re.UNICODE
 )
-
-
-def validate_unprintable(text: str) -> None:
-    # deprecated
-    match_list = __RE_UNPRINTABLE.findall(preprocess(text))
-    if match_list:
-        raise InvalidCharError(f"unprintable character found: {match_list}")
 
 
 def validate_symbol(text: str) -> None:

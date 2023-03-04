@@ -96,6 +96,14 @@ __RE_ANSI_ESCAPE = re.compile(
 )
 
 
+def validate_unprintable_char(text: str) -> None:
+    from .error import InvalidCharError
+
+    match_list = __RE_UNPRINTABLE_CHARS.findall(preprocess(text))
+    if match_list:
+        raise InvalidCharError(f"unprintable character found: {match_list}")
+
+
 def replace_unprintable_char(text: str, replacement_text: str = "") -> str:
     try:
         return __RE_UNPRINTABLE_CHARS.sub(replacement_text, text)

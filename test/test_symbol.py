@@ -6,8 +6,13 @@ import itertools
 
 import pytest
 
-from pathvalidate import ascii_symbols, replace_symbol, unprintable_ascii_chars, validate_symbol
-from pathvalidate._symbol import validate_unprintable
+from pathvalidate import (
+    ascii_symbols,
+    replace_symbol,
+    unprintable_ascii_chars,
+    validate_symbol,
+    validate_unprintable_char,
+)
 from pathvalidate.error import ErrorReason, ValidationError
 
 from ._common import alphanum_chars
@@ -103,7 +108,7 @@ class Test_replace_symbol:
             replace_symbol(value)
 
 
-class Test_validate_unprintable:
+class Test_validate_unprintable_char:
     VALID_CHARS = alphanum_chars
     INVALID_CHARS = unprintable_ascii_chars
 
@@ -111,13 +116,13 @@ class Test_validate_unprintable:
         ["value"], [["abc" + valid_char + "hoge123"] for valid_char in VALID_CHARS]
     )
     def test_normal(self, value):
-        validate_unprintable(value)
+        validate_unprintable_char(value)
 
     @pytest.mark.parametrize(["value"], [["あいうえお"], ["シート"]])
     def test_normal_multibyte(self, value):
         pytest.skip("TODO")
 
-        validate_unprintable(value)
+        validate_unprintable_char(value)
 
     @pytest.mark.parametrize(
         ["value"],
@@ -128,5 +133,5 @@ class Test_validate_unprintable:
     )
     def test_exception_invalid_char(self, value):
         with pytest.raises(ValidationError) as e:
-            validate_unprintable(value)
+            validate_unprintable_char(value)
         assert e.value.reason == ErrorReason.INVALID_CHARACTER
