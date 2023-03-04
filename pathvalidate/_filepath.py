@@ -86,11 +86,6 @@ class FilePathSanitizer(AbstractSanitizer):
             unicode_filepath = os.path.normpath(unicode_filepath)
         sanitized_path = unicode_filepath
 
-        if self._is_windows():
-            path_separator = "\\"
-        else:
-            path_separator = "/"
-
         sanitized_entries: List[str] = []
         if drive:
             sanitized_entries.append(drive)
@@ -107,7 +102,7 @@ class FilePathSanitizer(AbstractSanitizer):
 
             sanitized_entries.append(sanitized_entry)
 
-        sanitized_path = path_separator.join(sanitized_entries)
+        sanitized_path = self.__get_path_separator().join(sanitized_entries)
         try:
             self.__fpath_validator.validate(sanitized_path)
         except ValidationError as e:
@@ -126,6 +121,12 @@ class FilePathSanitizer(AbstractSanitizer):
             return _RE_INVALID_WIN_PATH
 
         return _RE_INVALID_PATH
+
+    def __get_path_separator(self) -> str:
+        if self._is_windows():
+            return "\\"
+
+        return "/"
 
 
 class FilePathValidator(BaseValidator):
