@@ -4,7 +4,7 @@
 
 import abc
 import os
-from typing import Optional, Tuple
+from typing import ClassVar, Optional, Tuple
 
 from ._common import PathType, PlatformType, normalize_platform, unprintable_ascii_chars
 from ._const import Platform
@@ -16,12 +16,14 @@ DEFAULT_MIN_LEN = 1
 
 
 class BaseFile:
-    _INVALID_PATH_CHARS = "".join(unprintable_ascii_chars)
-    _INVALID_FILENAME_CHARS = _INVALID_PATH_CHARS + "/"
-    _INVALID_WIN_PATH_CHARS = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
-    _INVALID_WIN_FILENAME_CHARS = _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
+    _INVALID_PATH_CHARS: ClassVar[str] = "".join(unprintable_ascii_chars)
+    _INVALID_FILENAME_CHARS: ClassVar[str] = _INVALID_PATH_CHARS + "/"
+    _INVALID_WIN_PATH_CHARS: ClassVar[str] = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
+    _INVALID_WIN_FILENAME_CHARS: ClassVar[str] = (
+        _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
+    )
 
-    _ERROR_MSG_TEMPLATE = "invalid char found: invalids=({invalid}), value={value}"
+    _ERROR_MSG_TEMPLATE: ClassVar[str] = "invalid char found: invalids=({invalid}), value={value}"
 
     @property
     def platform(self) -> Platform:
