@@ -41,7 +41,7 @@ def validate_pathtype(
     raise TypeError(f"text must be a string: actual={type(text)}")
 
 
-def preprocess(name: PathType) -> str:
+def to_str(name: PathType) -> str:
     if isinstance(name, Path):
         return str(name)
 
@@ -99,7 +99,7 @@ __RE_ANSI_ESCAPE = re.compile(
 def validate_unprintable_char(text: str) -> None:
     from .error import InvalidCharError
 
-    match_list = __RE_UNPRINTABLE_CHARS.findall(preprocess(text))
+    match_list = __RE_UNPRINTABLE_CHARS.findall(to_str(text))
     if match_list:
         raise InvalidCharError(f"unprintable character found: {match_list}")
 

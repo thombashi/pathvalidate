@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
 from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
-from ._common import PathType, PlatformType, findall_to_str, preprocess, validate_pathtype
+from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
 from ._const import Platform
 from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
 from .handler import Handler
@@ -141,7 +141,7 @@ class FileNameValidator(BaseValidator):
             else True,
         )
 
-        unicode_filename = preprocess(value)
+        unicode_filename = to_str(value)
         value_len = len(unicode_filename)
 
         self.validate_abspath(unicode_filename)

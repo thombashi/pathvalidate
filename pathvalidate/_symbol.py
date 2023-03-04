@@ -5,7 +5,7 @@
 import re
 from typing import Sequence
 
-from ._common import ascii_symbols, preprocess, unprintable_ascii_chars
+from ._common import ascii_symbols, to_str, unprintable_ascii_chars
 from .error import InvalidCharError
 
 
@@ -27,7 +27,7 @@ def validate_symbol(text: str) -> None:
             If symbol(s) included in the ``text``.
     """
 
-    match_list = __RE_SYMBOL.findall(preprocess(text))
+    match_list = __RE_SYMBOL.findall(to_str(text))
     if match_list:
         raise InvalidCharError(f"invalid symbols found: {match_list}")
 
@@ -76,7 +76,7 @@ def replace_symbol(
         regexp = __RE_SYMBOL
 
     try:
-        new_text = regexp.sub(replacement_text, preprocess(text))
+        new_text = regexp.sub(replacement_text, to_str(text))
     except TypeError:
         raise TypeError("text must be a string")
 

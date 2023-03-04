@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import List, Optional, Pattern, Tuple
 
 from ._base import DEFAULT_MIN_LEN, AbstractSanitizer, BaseFile, BaseValidator
-from ._common import PathType, PlatformType, findall_to_str, preprocess, validate_pathtype
+from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from .error import (
@@ -78,7 +78,7 @@ class FilePathSanitizer(AbstractSanitizer):
 
         self.__fpath_validator.validate_abspath(value)
 
-        unicode_filepath = preprocess(value)
+        unicode_filepath = to_str(value)
 
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
         unicode_filepath = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
@@ -183,7 +183,7 @@ class FilePathValidator(BaseValidator):
         if not tail:
             return
 
-        unicode_filepath = preprocess(tail)
+        unicode_filepath = to_str(tail)
         value_len = len(unicode_filepath)
 
         if value_len > self.max_len:

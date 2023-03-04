@@ -4,7 +4,7 @@
 
 import re
 
-from ._common import preprocess, validate_pathtype
+from ._common import to_str, validate_pathtype
 from .error import InvalidCharError
 
 
@@ -23,7 +23,7 @@ def validate_ltsv_label(label: str) -> None:
 
     validate_pathtype(label, allow_whitespaces=False, error_msg="label is empty")
 
-    match_list = __RE_INVALID_LTSV_LABEL.findall(preprocess(label))
+    match_list = __RE_INVALID_LTSV_LABEL.findall(to_str(label))
     if match_list:
         raise InvalidCharError(f"invalid character found for a LTSV format label: {match_list}")
 
@@ -40,4 +40,4 @@ def sanitize_ltsv_label(label: str, replacement_text: str = "") -> str:
 
     validate_pathtype(label, allow_whitespaces=False, error_msg="label is empty")
 
-    return __RE_INVALID_LTSV_LABEL.sub(replacement_text, preprocess(label))
+    return __RE_INVALID_LTSV_LABEL.sub(replacement_text, to_str(label))
