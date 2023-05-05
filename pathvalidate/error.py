@@ -18,7 +18,7 @@ class ErrorReason(enum.Enum):
     Validation error reasons.
     """
 
-    NULL_NAME = (_to_error_code(1001), "NULL_NAME", "empty value")
+    NULL_NAME = (_to_error_code(1001), "NULL_NAME", "the value must not be an empty")
     RESERVED_NAME = (
         _to_error_code(1002),
         "RESERVED_NAME",
@@ -111,7 +111,7 @@ class ValidationError(ValueError):
         header = ""
 
         if self.reason:
-            header = f"{self.reason}: "
+            header = str(self.reason)
 
         if Exception.__str__(self):
             item_list.append(Exception.__str__(self))
@@ -122,6 +122,9 @@ class ValidationError(ValueError):
             item_list.append(f"description={self.description}")
         if self.__reusable_name is not None:
             item_list.append(f"reusable_name={self.reusable_name}")
+
+        if item_list:
+            header += ": "
 
         return header + ", ".join(item_list).strip()
 

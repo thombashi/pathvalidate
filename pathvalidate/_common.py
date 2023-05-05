@@ -30,13 +30,7 @@ def validate_pathtype(
         return
 
     if is_null_string(text):
-        if not error_msg:
-            error_msg = "the value must not be an empty"
-
-        raise ValidationError(
-            description=error_msg,
-            reason=ErrorReason.NULL_NAME,
-        )
+        raise ValidationError(reason=ErrorReason.NULL_NAME)
 
     raise TypeError(f"text must be a string: actual={type(text)}")
 

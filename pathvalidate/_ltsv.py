@@ -21,7 +21,7 @@ def validate_ltsv_label(label: str) -> None:
         If invalid character(s) found in the ``label`` for a LTSV format label.
     """
 
-    validate_pathtype(label, allow_whitespaces=False, error_msg="label is empty")
+    validate_pathtype(label, allow_whitespaces=False)
 
     match_list = __RE_INVALID_LTSV_LABEL.findall(to_str(label))
     if match_list:
@@ -38,6 +38,6 @@ def sanitize_ltsv_label(label: str, replacement_text: str = "") -> str:
     :rtype: str
     """
 
-    validate_pathtype(label, allow_whitespaces=False, error_msg="label is empty")
+    validate_pathtype(label, allow_whitespaces=False)
 
     return __RE_INVALID_LTSV_LABEL.sub(replacement_text, to_str(label))
