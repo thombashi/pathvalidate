@@ -11,7 +11,7 @@ from typing import List, Optional, Pattern, Tuple
 
 from ._base import AbstractSanitizer, BaseFile, BaseValidator
 from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
-from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, Platform
+from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from .error import (
     ErrorReason,
@@ -245,7 +245,7 @@ class FilePathValidator(BaseValidator):
         match = _RE_INVALID_PATH.findall(unicode_filepath)
         if match:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(
+                INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=findall_to_str(match), value=repr(unicode_filepath)
                 )
             )
@@ -254,7 +254,7 @@ class FilePathValidator(BaseValidator):
         match = _RE_INVALID_WIN_PATH.findall(unicode_filepath)
         if match:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(
+                INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=findall_to_str(match), value=repr(unicode_filepath)
                 ),
                 platform=Platform.WINDOWS,

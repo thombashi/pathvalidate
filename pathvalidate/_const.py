@@ -2,6 +2,7 @@ import enum
 
 
 DEFAULT_MIN_LEN = 1
+INVALID_CHAR_ERR_MSG_TMPL = "invalids=({invalid}), value={value}"
 
 
 _NTFS_RESERVED_FILE_NAMES = (

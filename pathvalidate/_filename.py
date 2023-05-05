@@ -11,7 +11,7 @@ from typing import Optional, Pattern, Tuple
 
 from ._base import AbstractSanitizer, BaseFile, BaseValidator
 from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
-from ._const import DEFAULT_MIN_LEN, Platform
+from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
 from .handler import Handler
 
@@ -175,7 +175,7 @@ class FileNameValidator(BaseValidator):
         match = _RE_INVALID_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(
+                INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=findall_to_str(match), value=repr(unicode_filename)
                 )
             )
@@ -184,7 +184,7 @@ class FileNameValidator(BaseValidator):
         match = _RE_INVALID_WIN_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(
+                INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=findall_to_str(match), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
@@ -197,7 +197,7 @@ class FileNameValidator(BaseValidator):
 
         if unicode_filename[-1] in (" ", "."):
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(
+                INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=re.escape(unicode_filename[-1]), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
@@ -208,7 +208,7 @@ class FileNameValidator(BaseValidator):
 
         if unicode_filename[0] in (" "):
             raise InvalidCharError(
-                self._ERROR_MSG_TEMPLATE.format(
+                INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=re.escape(unicode_filename[0]), value=repr(unicode_filename)
                 ),
                 platform=Platform.WINDOWS,
