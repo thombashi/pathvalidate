@@ -584,7 +584,13 @@ class Test_sanitize_filename:
         assert filename == expected
         assert is_valid_filename(filename, platform=platform)
 
-    @pytest.mark.parametrize(["value", "expected"], [[1, TypeError], [True, TypeError]])
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            [1, TypeError],
+            [True, TypeError],
+        ],
+    )
     def test_exception_type(self, value, expected):
         with pytest.raises(expected):
             sanitize_filename(value)
