@@ -8,18 +8,58 @@ from typing import Optional
 from ._const import Platform
 
 
+def _to_error_code(code: int) -> str:
+    return f"PV{code:04d}"
+
+
 @enum.unique
 class ErrorReason(enum.Enum):
     """
     Validation error reasons.
     """
 
-    FOUND_ABS_PATH = "FOUND_ABS_PATH"  #: found an absolute path when expecting a file name
-    NULL_NAME = "NULL_NAME"  #: empty value
-    INVALID_CHARACTER = "INVALID_CHARACTER"  #: found invalid characters(s) in a value
-    INVALID_LENGTH = "INVALID_LENGTH"  #: found invalid string length
-    MALFORMED_ABS_PATH = "MALFORMED_ABS_PATH"  #: found invalid absolute path format
-    RESERVED_NAME = "RESERVED_NAME"  #: found a reserved name by a platform
+    NULL_NAME = (_to_error_code(1001), "NULL_NAME", "empty value")
+    RESERVED_NAME = (
+        _to_error_code(1002),
+        "RESERVED_NAME",
+        "found a reserved name by a platform",
+    )
+    INVALID_CHARACTER = (
+        _to_error_code(1100),
+        "INVALID_CHARACTER",
+        "invalid characters found",
+    )
+    INVALID_LENGTH = (
+        _to_error_code(1101),
+        "INVALID_LENGTH",
+        "found an invalid string length",
+    )
+    FOUND_ABS_PATH = (
+        _to_error_code(2001),
+        "FOUND_ABS_PATH",
+        "found an absolute path that must be a relative path",
+    )
+    MALFORMED_ABS_PATH = (
+        _to_error_code(2002),
+        "MALFORMED_ABS_PATH",
+        "found invalid absolute path format",
+    )
+
+    @property
+    def code(self) -> str:
+        return self.__code
+
+    @property
+    def name(self) -> str:
+        return self.__name
+
+    def __init__(self, code: str, name: str, description: str) -> None:
+        self.__name = name
+        self.__code = code
+        self.__description = description
+
+    def __str__(self) -> str:
+        return f"[{self.__code}] {self.__description}"
 
 
 class ValidationError(ValueError):
@@ -68,12 +108,14 @@ class ValidationError(ValueError):
 
     def __str__(self) -> str:
         item_list = []
+        header = ""
+
+        if self.reason:
+            header = f"{self.reason}: "
 
         if Exception.__str__(self):
             item_list.append(Exception.__str__(self))
 
-        if self.reason:
-            item_list.append(f"reason={self.reason.value}")
         if self.platform:
             item_list.append(f"target-platform={self.platform.value}")
         if self.description:
@@ -81,7 +123,7 @@ class ValidationError(ValueError):
         if self.__reusable_name is not None:
             item_list.append(f"reusable_name={self.reusable_name}")
 
-        return ", ".join(item_list).strip()
+        return header + ", ".join(item_list).strip()
 
     def __repr__(self, *args, **kwargs) -> str:
         return self.__str__(*args, **kwargs)
