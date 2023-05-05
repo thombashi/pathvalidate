@@ -20,7 +20,7 @@ class BaseFile:
         _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
     )
 
-    _ERROR_MSG_TEMPLATE: ClassVar[str] = "invalid char found: invalids=({invalid}), value={value}"
+    _ERROR_MSG_TEMPLATE: ClassVar[str] = "invalids=({invalid}), value={value}"
 
     @property
     def platform(self) -> Platform:
