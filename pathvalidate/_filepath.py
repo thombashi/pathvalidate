@@ -94,7 +94,9 @@ class FilePathSanitizer(AbstractSanitizer):
                 sanitized_entries.append(f"{entry}_")
                 continue
 
-            sanitized_entry = str(self.__fname_sanitizer.sanitize(entry))
+            sanitized_entry = str(
+                self.__fname_sanitizer.sanitize(entry, replacement_text=replacement_text)
+            )
             if not sanitized_entry:
                 if not sanitized_entries:
                     sanitized_entries.append("")
