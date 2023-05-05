@@ -101,7 +101,12 @@ class Test_replace_symbol:
         )
 
     @pytest.mark.parametrize(
-        ["value", "expected"], [[None, TypeError], [1, TypeError], [True, TypeError]]
+        ["value", "expected"],
+        [
+            [None, TypeError],
+            [1, TypeError],
+            [True, TypeError],
+        ],
     )
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):

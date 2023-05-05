@@ -32,13 +32,20 @@ class Test_replace_unprintable_char:
             ["A" + c + "B", rep, "A" + c + "B"]
             for c, rep in itertools.product(NOT_TARGET_CHARS, REPLACE_TEXT_LIST)
         ]
-        + [["", "", ""]],
+        + [
+            ["", "", ""],
+        ],
     )
     def test_normal(self, value, replace_text, expected):
         assert replace_unprintable_char(value, replace_text) == expected
 
     @pytest.mark.parametrize(
-        ["value", "expected"], [[None, TypeError], [1, TypeError], [True, TypeError]]
+        ["value", "expected"],
+        [
+            [None, TypeError],
+            [1, TypeError],
+            [True, TypeError],
+        ],
     )
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):

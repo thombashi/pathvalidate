@@ -135,7 +135,11 @@ class Test_validate_filename:
 
     @pytest.mark.parametrize(
         ["platform"],
-        [["linux"], ["macos"], ["posix"]],
+        [
+            ["linux"],
+            ["macos"],
+            ["posix"],
+        ],
     )
     def test_normal_only_whitespaces(self, platform):
         value = "  "
@@ -144,7 +148,10 @@ class Test_validate_filename:
 
     @pytest.mark.parametrize(
         ["platform"],
-        [["windows"], ["universal"]],
+        [
+            ["windows"],
+            ["universal"],
+        ],
     )
     def test_abnormal_only_whitespaces(self, platform):
         value = "  "

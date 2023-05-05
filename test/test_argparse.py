@@ -12,14 +12,29 @@ from pathvalidate.argparse import (
 
 
 class Test_validate_filename_arg:
-    @pytest.mark.parametrize(["value"], [["abc"], ["abc.txt"], [""]])
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["abc"],
+            ["abc.txt"],
+            [""],
+        ],
+    )
     def test_normal(self, value):
         parser = ArgumentParser()
         parser.add_argument("filename", type=validate_filename_arg)
 
         assert parser.parse_args([value]).filename == value
 
-    @pytest.mark.parametrize(["value"], [["foo/abc"], ["a?c"], ["COM1"], ["a" * 8000]])
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["foo/abc"],
+            ["a?c"],
+            ["COM1"],
+            ["a" * 8000],
+        ],
+    )
     def test_exception(self, value):
         parser = ArgumentParser()
         parser.add_argument("filename", type=validate_filename_arg)
@@ -33,7 +48,14 @@ class Test_validate_filename_arg:
 
 
 class Test_validate_filepath_arg:
-    @pytest.mark.parametrize(["value"], [["foo/abc"], ["foo/abc.txt"], [""]])
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["foo/abc"],
+            ["foo/abc.txt"],
+            [""],
+        ],
+    )
     def test_normal(self, value):
         parser = ArgumentParser()
         parser.add_argument("filepath", type=validate_filepath_arg)
@@ -41,7 +63,12 @@ class Test_validate_filepath_arg:
         assert parser.parse_args([value]).filepath == value
 
     @pytest.mark.skipif(platform.system() == "Windows", reason="platform dependent tests")
-    @pytest.mark.parametrize(["value"], [["a" * 8000]])
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["a" * 8000],
+        ],
+    )
     def test_exception_posix(self, value):
         parser = ArgumentParser()
         parser.add_argument("filepath", type=validate_filepath_arg)
@@ -54,7 +81,13 @@ class Test_validate_filepath_arg:
             raise RuntimeError()
 
     @pytest.mark.skipif(platform.system() != "Windows", reason="platform dependent tests")
-    @pytest.mark.parametrize(["value"], [["foo/a?c"], ["COM1"]])
+    @pytest.mark.parametrize(
+        ["value"],
+        [
+            ["foo/a?c"],
+            ["COM1"],
+        ],
+    )
     def test_exception_windows(self, value):
         parser = ArgumentParser()
         parser.add_argument("filepath", type=validate_filepath_arg)

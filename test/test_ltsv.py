@@ -89,7 +89,12 @@ class Test_sanitize_ltsv_label:
 
     @pytest.mark.parametrize(
         ["value", "expected"],
-        [["", ValidationError], [None, ValidationError], [1, TypeError], [True, TypeError]],
+        [
+            ["", ValidationError],
+            [None, ValidationError],
+            [1, TypeError],
+            [True, TypeError],
+        ],
     )
     def test_abnormal(self, value, expected):
         with pytest.raises(expected):
