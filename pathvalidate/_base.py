@@ -41,16 +41,11 @@ class BaseFile:
         min_len: int,
         max_len: int,
         check_reserved: bool,
-        null_value_handler: Optional[Handler] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         self.__platform = normalize_platform(platform)
         self._check_reserved = check_reserved
-
-        if null_value_handler is None:
-            null_value_handler = return_null_string
-        self._null_value_handler = null_value_handler
 
         if min_len <= 0:
             min_len = DEFAULT_MIN_LEN
@@ -129,6 +124,27 @@ class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
 
 
 class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
+    def __init__(
+        self,
+        min_len: int,
+        max_len: int,
+        check_reserved: bool,
+        null_value_handler: Optional[Handler] = None,
+        platform_max_len: Optional[int] = None,
+        platform: Optional[PlatformType] = None,
+    ) -> None:
+        super().__init__(
+            min_len=min_len,
+            max_len=max_len,
+            check_reserved=check_reserved,
+            platform_max_len=platform_max_len,
+            platform=platform,
+        )
+
+        if null_value_handler is None:
+            null_value_handler = return_null_string
+        self._null_value_handler = null_value_handler
+
     @abc.abstractmethod
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:  # pragma: no cover
         pass
