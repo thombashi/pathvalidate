@@ -559,9 +559,11 @@ class Test_sanitize_filename:
         ],
     )
     def test_normal_check_reserved(self, value, check_reserved, expected):
-        assert (
-            sanitize_filename(value, platform="windows", check_reserved=check_reserved) == expected
-        )
+        for platform in ["windows", "universal"]:
+            assert (
+                sanitize_filename(value, platform=platform, check_reserved=check_reserved)
+                == expected
+            )
 
     @pytest.mark.parametrize(
         ["platform", "value", "expected"],
