@@ -35,14 +35,14 @@ class ErrorReason(enum.Enum):
         "found an invalid string length",
     )
     FOUND_ABS_PATH = (
-        _to_error_code(2001),
+        _to_error_code(1200),
         "FOUND_ABS_PATH",
-        "found an absolute path that must be a relative path",
+        "found an absolute path where must be a relative path",
     )
     MALFORMED_ABS_PATH = (
-        _to_error_code(2002),
+        _to_error_code(1201),
         "MALFORMED_ABS_PATH",
-        "found invalid absolute path format",
+        "found a malformed absolute path",
     )
 
     @property
