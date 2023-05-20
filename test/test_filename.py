@@ -68,6 +68,8 @@ class Test_FileSanitizer:
 
         assert FileNameSanitizer(255, platform="auto").platform == expected
 
+
+class Test_FileNameValidator:
     @pytest.mark.parametrize(
         ["test_platform", "expected"],
         [
