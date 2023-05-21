@@ -10,8 +10,9 @@ from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
 from ._base import AbstractSanitizer, BaseFile, BaseValidator
-from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
+from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
+from ._types import PathType, PlatformType
 from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
 from .handler import NullValueHandler
 

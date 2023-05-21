@@ -6,16 +6,13 @@ import platform
 import re
 import string
 from pathlib import Path
-from typing import Any, List, Optional, TypeVar
+from typing import Any, List, Optional
 
 from ._const import Platform
+from ._types import PathType, PlatformType
 
 
 _re_whitespaces = re.compile(r"^[\s]+$")
-
-
-PathType = TypeVar("PathType", str, Path)
-PlatformType = TypeVar("PlatformType", str, Platform)
 
 
 def validate_pathtype(

@@ -10,9 +10,10 @@ from pathlib import Path
 from typing import List, Optional, Pattern, Tuple
 
 from ._base import AbstractSanitizer, BaseFile, BaseValidator
-from ._common import PathType, PlatformType, findall_to_str, to_str, validate_pathtype
+from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
+from ._types import PathType, PlatformType
 from .error import (
     ErrorReason,
     InvalidCharError,

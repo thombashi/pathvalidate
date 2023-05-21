@@ -6,8 +6,9 @@ import abc
 import os
 from typing import ClassVar, Optional, Tuple
 
-from ._common import PathType, PlatformType, normalize_platform, unprintable_ascii_chars
+from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
+from ._types import PathType, PlatformType
 from .error import ReservedNameError, ValidationError
 from .handler import NullValueHandler, return_null_string
 
