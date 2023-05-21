@@ -4,6 +4,7 @@
 
 import platform as m_platform
 import random
+import sys
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
@@ -210,6 +211,31 @@ class Test_validate_filename:
 
         with pytest.raises(ValidationError) as e:
             validate_filename(value, platform=platform, max_len=max_len)
+        assert e.value.reason == expected
+
+    @pytest.mark.parametrize(
+        ["value", "platform", "fs_encoding", "max_len", "expected"],
+        [
+            ["あ" * 85, "universal", "utf-8", 255, None],
+            ["あ" * 86, "universal", "utf-8", 255, ErrorReason.INVALID_LENGTH],
+            ["あ" * 126, "universal", "utf-16", 255, None],
+            ["あ" * 127, "universal", "utf-16", 255, ErrorReason.INVALID_LENGTH],
+        ],
+    )
+    def test_max_len_fs_encoding(self, value, platform, fs_encoding, max_len, expected):
+        kwargs = {
+            "platform": platform,
+            "max_len": max_len,
+            "fs_encoding": fs_encoding,
+        }
+
+        if expected is None:
+            validate_filename(value, **kwargs)
+            assert is_valid_filename(value, **kwargs)
+            return
+
+        with pytest.raises(ValidationError) as e:
+            validate_filename(value, **kwargs)
         assert e.value.reason == expected
 
     @pytest.mark.parametrize(

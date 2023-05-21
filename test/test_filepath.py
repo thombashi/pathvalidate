@@ -208,6 +208,31 @@ class Test_validate_filepath:
         assert e.value.reason == ErrorReason.INVALID_LENGTH
 
     @pytest.mark.parametrize(
+        ["value", "platform", "fs_encoding", "max_len", "expected"],
+        [
+            ["/tmp/" + "あ" * 83, "linux", "utf-8", 255, None],
+            ["/tmp/" + "あ" * 84, "linux", "utf-8", 255, ErrorReason.INVALID_LENGTH],
+            ["/tmp/" + "あ" * 121, "linux", "utf-16", 255, None],
+            ["/tmp/" + "あ" * 122, "linux", "utf-16", 255, ErrorReason.INVALID_LENGTH],
+        ],
+    )
+    def test_max_len_fs_encoding(self, value, platform, fs_encoding, max_len, expected):
+        kwargs = {
+            "platform": platform,
+            "max_len": max_len,
+            "fs_encoding": fs_encoding,
+        }
+
+        if expected is None:
+            validate_filepath(value, **kwargs)
+            assert is_valid_filepath(value, **kwargs)
+            return
+
+        with pytest.raises(ValidationError) as e:
+            validate_filepath(value, **kwargs)
+        assert e.value.reason == expected
+
+    @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],
         [
             ["valid length", 1, 255, None],

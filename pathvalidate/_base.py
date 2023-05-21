@@ -4,6 +4,7 @@
 
 import abc
 import os
+import sys
 from typing import ClassVar, Optional, Tuple
 
 from ._common import normalize_platform, unprintable_ascii_chars
@@ -41,6 +42,7 @@ class BaseFile:
         self,
         min_len: int,
         max_len: int,
+        fs_encoding: Optional[str],
         check_reserved: bool,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
@@ -61,6 +63,12 @@ class BaseFile:
             self._max_len = max_len
 
         self._max_len = min(self._max_len, platform_max_len)
+
+        if fs_encoding:
+            self._fs_encoding = fs_encoding
+        else:
+            self._fs_encoding = sys.getfilesystemencoding()
+
         self._validate_max_len()
 
     def _is_posix(self) -> bool:
@@ -129,6 +137,7 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         self,
         min_len: int,
         max_len: int,
+        fs_encoding: Optional[str],
         check_reserved: bool,
         null_value_handler: Optional[NullValueHandler] = None,
         platform_max_len: Optional[int] = None,
@@ -138,6 +147,7 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         super().__init__(
             min_len=min_len,
             max_len=max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             platform_max_len=platform_max_len,
             platform=platform,

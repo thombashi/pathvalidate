@@ -105,6 +105,7 @@ class ValidationError(ValueError):
         self.__description: Optional[str] = kwargs.pop("description", None)
         self.__reserved_name: str = kwargs.pop("reserved_name", "")
         self.__reusable_name: Optional[bool] = kwargs.pop("reusable_name", None)
+        self.__fs_encoding: Optional[str] = kwargs.pop("fs_encoding", None)
 
         try:
             super().__init__(*args[0], **kwargs)
@@ -127,6 +128,8 @@ class ValidationError(ValueError):
             item_list.append(f"description={self.description}")
         if self.__reusable_name is not None:
             item_list.append(f"reusable_name={self.reusable_name}")
+        if self.__fs_encoding:
+            item_list.append(f"fs-encoding={self.__fs_encoding}")
 
         if item_list:
             header += ": "

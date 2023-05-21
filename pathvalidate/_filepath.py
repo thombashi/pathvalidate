@@ -14,13 +14,7 @@ from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
-from .error import (
-    ErrorReason,
-    InvalidCharError,
-    InvalidLengthError,
-    ReservedNameError,
-    ValidationError,
-)
+from .error import ErrorReason, InvalidCharError, ReservedNameError, ValidationError
 from .handler import NullValueHandler
 
 
@@ -33,6 +27,7 @@ class FilePathSanitizer(AbstractSanitizer):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
+        fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         null_value_handler: Optional[NullValueHandler] = None,
@@ -42,6 +37,7 @@ class FilePathSanitizer(AbstractSanitizer):
         super().__init__(
             min_len=min_len,
             max_len=max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             null_value_handler=null_value_handler,
             platform=platform,
@@ -159,12 +155,14 @@ class FilePathValidator(BaseValidator):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
+        fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
     ) -> None:
         super().__init__(
             min_len=min_len,
             max_len=max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             platform=platform,
         )
@@ -187,17 +185,28 @@ class FilePathValidator(BaseValidator):
             return
 
         unicode_filepath = to_str(tail)
-        value_len = len(unicode_filepath)
+        byte_ct = len(unicode_filepath.encode(self._fs_encoding))
+        err_kwargs = {
+            "reason": ErrorReason.INVALID_LENGTH,
+            "platform": self.platform,
+            "fs_encoding": self._fs_encoding,
+        }
 
-        if value_len > self.max_len:
-            raise InvalidLengthError(
-                f"file path is too long: expected<={self.max_len:d}, actual={value_len:d}"
+        if byte_ct > self.max_len:
+            raise ValidationError(
+                [
+                    f"file path is too long: expected<={self.max_len:d} bytes, actual={byte_ct:d} bytes"
+                ],
+                **err_kwargs,
             )
-        if value_len < self.min_len:
-            raise InvalidLengthError(
-                "file path is too short: expected>={:d}, actual={:d}".format(
-                    self.min_len, value_len
-                )
+        if byte_ct < self.min_len:
+            raise ValidationError(
+                [
+                    "file path is too short: expected>={:d} bytes, actual={:d} bytes".format(
+                        self.min_len, byte_ct
+                    )
+                ],
+                **err_kwargs,
             )
 
         self._validate_reserved_keywords(unicode_filepath)
@@ -285,6 +294,7 @@ def validate_filepath(
     platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
+    fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
 ) -> None:
     """Verifying whether the ``file_path`` is a valid file path or not.
@@ -297,16 +307,19 @@ def validate_filepath(
 
             .. include:: platform.txt
         min_len:
-            Minimum length of the ``file_path``. The value must be greater or equal to one.
+            Minimum byte length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
         max_len:
-            Maximum length of the ``file_path`` length. If the value is |None| or minus,
+            Maximum byte length of the ``file_path``. If the value is |None| or minus,
             automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
                 - ``Windows``: 260
                 - ``universal``: 260
+        fs_encoding:
+            Filesystem encoding that used to calculate the byte length of the file path.
+            If |None|, get the value from the execution environment.
         check_reserved:
             If |True|, check reserved names of the ``platform``.
 
@@ -333,6 +346,7 @@ def validate_filepath(
         platform=platform,
         min_len=min_len,
         max_len=-1 if max_len is None else max_len,
+        fs_encoding=fs_encoding,
         check_reserved=check_reserved,
     ).validate(file_path)
 
@@ -342,6 +356,7 @@ def is_valid_filepath(
     platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
+    fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
 ) -> bool:
     """Check whether the ``file_path`` is a valid name or not.
@@ -361,6 +376,7 @@ def is_valid_filepath(
         platform=platform,
         min_len=min_len,
         max_len=-1 if max_len is None else max_len,
+        fs_encoding=fs_encoding,
         check_reserved=check_reserved,
     ).is_valid(file_path)
 
@@ -370,6 +386,7 @@ def sanitize_filepath(
     replacement_text: str = "",
     platform: Optional[PlatformType] = None,
     max_len: Optional[int] = None,
+    fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
     null_value_handler: Optional[NullValueHandler] = None,
     normalize: bool = True,
@@ -401,14 +418,17 @@ def sanitize_filepath(
 
             .. include:: platform.txt
         max_len:
-            Maximum length of the ``file_path`` length. Truncate the name if the ``file_path``
-            length exceedd this value. If the value is |None| or minus,
-            ``max_len`` will automatically determined by the ``platform``:
+            Maximum byte length of the file path.
+            Truncate the path if the value length exceeds the `max_len`.
+            If the value is |None| or minus, ``max_len`` will automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
                 - ``Windows``: 260
                 - ``universal``: 260
+        fs_encoding:
+            Filesystem encoding that used to calculate the byte length of the file path.
+            If |None|, get the value from the execution environment.
         check_reserved:
             If |True|, sanitize reserved names of the ``platform``.
         null_value_handler:
@@ -434,6 +454,7 @@ def sanitize_filepath(
     return FilePathSanitizer(
         platform=platform,
         max_len=-1 if max_len is None else max_len,
+        fs_encoding=fs_encoding,
         check_reserved=check_reserved,
         normalize=normalize,
         null_value_handler=null_value_handler,

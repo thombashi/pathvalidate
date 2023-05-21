@@ -13,7 +13,7 @@ from ._base import AbstractSanitizer, BaseFile, BaseValidator
 from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
-from .error import ErrorReason, InvalidCharError, InvalidLengthError, ValidationError
+from .error import ErrorReason, InvalidCharError, ValidationError
 from .handler import NullValueHandler
 
 
@@ -29,6 +29,7 @@ class FileNameSanitizer(AbstractSanitizer):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
+        fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         null_value_handler: Optional[NullValueHandler] = None,
@@ -37,6 +38,7 @@ class FileNameSanitizer(AbstractSanitizer):
         super().__init__(
             min_len=min_len,
             max_len=max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             null_value_handler=null_value_handler,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
@@ -137,12 +139,14 @@ class FileNameValidator(BaseValidator):
         self,
         min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
+        fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
     ) -> None:
         super().__init__(
             min_len=min_len,
             max_len=max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
@@ -152,17 +156,28 @@ class FileNameValidator(BaseValidator):
         validate_pathtype(value, allow_whitespaces=not self._is_windows(include_universal=True))
 
         unicode_filename = to_str(value)
-        value_len = len(unicode_filename)
+        byte_ct = len(unicode_filename.encode(self._fs_encoding))
 
         self.validate_abspath(unicode_filename)
 
-        if value_len > self.max_len:
-            raise InvalidLengthError(
-                f"filename is too long: expected<={self.max_len:d}, actual={value_len:d}"
+        err_kwargs = {
+            "reason": ErrorReason.INVALID_LENGTH,
+            "platform": self.platform,
+            "fs_encoding": self._fs_encoding,
+        }
+        if byte_ct > self.max_len:
+            raise ValidationError(
+                [
+                    f"filename is too long: expected<={self.max_len:d} bytes, actual={byte_ct:d} bytes"
+                ],
+                **err_kwargs,
             )
-        if value_len < self.min_len:
-            raise InvalidLengthError(
-                f"filename is too short: expected>={self.min_len:d}, actual={value_len:d}"
+        if byte_ct < self.min_len:
+            raise ValidationError(
+                [
+                    f"filename is too short: expected>={self.min_len:d} bytes, actual={byte_ct:d} bytes"
+                ],
+                **err_kwargs,
             )
 
         self._validate_reserved_keywords(unicode_filename)
@@ -238,6 +253,7 @@ def validate_filename(
     platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: int = _DEFAULT_MAX_FILENAME_LEN,
+    fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
 ) -> None:
     """Verifying whether the ``filename`` is a valid file name or not.
@@ -250,10 +266,10 @@ def validate_filename(
 
             .. include:: platform.txt
         min_len:
-            Minimum length of the ``filename``. The value must be greater or equal to one.
+            Minimum byte length of the ``filename``. The value must be greater or equal to one.
             Defaults to ``1``.
         max_len:
-            Maximum length of the ``filename``. The value must be lower than:
+            Maximum byte length of the ``filename``. The value must be lower than:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
@@ -261,6 +277,9 @@ def validate_filename(
                 - ``universal``: 260
 
             Defaults to ``255``.
+        fs_encoding:
+            Filesystem encoding that used to calculate the byte length of the filename.
+            If |None|, get the value from the execution environment.
         check_reserved:
             If |True|, check reserved names of the ``platform``.
 
@@ -286,7 +305,11 @@ def validate_filename(
     """
 
     FileNameValidator(
-        platform=platform, min_len=min_len, max_len=max_len, check_reserved=check_reserved
+        platform=platform,
+        min_len=min_len,
+        max_len=max_len,
+        fs_encoding=fs_encoding,
+        check_reserved=check_reserved,
     ).validate(filename)
 
 
@@ -295,6 +318,7 @@ def is_valid_filename(
     platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
     max_len: Optional[int] = None,
+    fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
 ) -> bool:
     """Check whether the ``filename`` is a valid name or not.
@@ -314,6 +338,7 @@ def is_valid_filename(
         platform=platform,
         min_len=min_len,
         max_len=-1 if max_len is None else max_len,
+        fs_encoding=fs_encoding,
         check_reserved=check_reserved,
     ).is_valid(filename)
 
@@ -323,6 +348,7 @@ def sanitize_filename(
     replacement_text: str = "",
     platform: Optional[PlatformType] = None,
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
+    fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
     null_value_handler: Optional[NullValueHandler] = None,
     validate_after_sanitize: bool = False,
@@ -351,9 +377,12 @@ def sanitize_filename(
 
             .. include:: platform.txt
         max_len:
-            Maximum length of the ``filename`` length. Truncate the name length if
-            the ``filename`` length exceeds this value.
+            Maximum byte length of the ``filename``.
+            Truncate the name length if the ``filename`` length exceeds this value.
             Defaults to ``255``.
+        fs_encoding:
+            Filesystem encoding that used to calculate the byte length of the filename.
+            If |None|, get the value from the execution environment.
         check_reserved:
             If |True|, sanitize reserved names of the ``platform``.
         null_value_handler:
@@ -378,6 +407,7 @@ def sanitize_filename(
     return FileNameSanitizer(
         platform=platform,
         max_len=-1 if max_len is None else max_len,
+        fs_encoding=fs_encoding,
         check_reserved=check_reserved,
         null_value_handler=null_value_handler,
         validate_after_sanitize=validate_after_sanitize,
