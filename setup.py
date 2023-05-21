@@ -80,5 +80,6 @@ setuptools.setup(
         "Topic :: System :: Filesystems",
         "Topic :: Text Processing",
     ],
+    zip_safe=False,
     cmdclass=get_release_command_class(),
 )
