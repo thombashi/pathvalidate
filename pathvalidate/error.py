@@ -162,17 +162,6 @@ class InvalidCharError(ValidationError):
         super().__init__(args, **kwargs)
 
 
-class InvalidLengthError(ValidationError):
-    """
-    Exception raised when a string too long/short.
-    """
-
-    def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
-        kwargs["reason"] = ErrorReason.INVALID_LENGTH
-
-        super().__init__(args, **kwargs)
-
-
 class ReservedNameError(ValidationError):
     """
     Exception raised when a string matched a reserved name.

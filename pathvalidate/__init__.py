@@ -33,7 +33,6 @@ from ._symbol import replace_symbol, validate_symbol
 from .error import (
     ErrorReason,
     InvalidCharError,
-    InvalidLengthError,
     InvalidReservedNameError,
     NullNameError,
     ReservedNameError,
@@ -74,7 +73,6 @@ __all__ = (
     "validate_symbol",
     "ErrorReason",
     "InvalidCharError",
-    "InvalidLengthError",
     "InvalidReservedNameError",
     "NullNameError",
     "ReservedNameError",
