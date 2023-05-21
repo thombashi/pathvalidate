@@ -198,13 +198,18 @@ class Test_validate_filepath:
         ],
     )
     def test_normal_max_len(self, value, platform, max_len, expected):
+        kwargs = {
+            "platform": platform,
+            "max_len": max_len,
+        }
+
         if expected is None:
-            validate_filepath(value, platform=platform, max_len=max_len)
-            assert is_valid_filepath(value, platform=platform, max_len=max_len)
+            validate_filepath(value, **kwargs)
+            assert is_valid_filepath(value, **kwargs)
             return
 
         with pytest.raises(ValidationError) as e:
-            validate_filepath(value, platform=platform, max_len=max_len)
+            validate_filepath(value, **kwargs)
         assert e.value.reason == ErrorReason.INVALID_LENGTH
 
     @pytest.mark.parametrize(
@@ -244,13 +249,18 @@ class Test_validate_filepath:
         ],
     )
     def test_minmax_len(self, value, min_len, max_len, expected):
+        kwargs = {
+            "min_len": min_len,
+            "max_len": max_len,
+        }
+
         if expected is None:
-            validate_filepath(value, min_len=min_len, max_len=max_len)
-            assert is_valid_filepath(value, min_len=min_len, max_len=max_len)
+            validate_filepath(value, **kwargs)
+            assert is_valid_filepath(value, **kwargs)
             return
 
         with pytest.raises(expected):
-            validate_filepath(value, min_len=min_len, max_len=max_len)
+            validate_filepath(value, **kwargs)
 
     @pytest.mark.parametrize(
         ["test_platform", "value", "expected"],
