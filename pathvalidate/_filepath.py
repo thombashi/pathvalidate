@@ -20,7 +20,7 @@ from .error import (
     ReservedNameError,
     ValidationError,
 )
-from .handler import Handler
+from .handler import NullValueHandler
 
 
 _RE_INVALID_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_PATH_CHARS):s}]", re.UNICODE)
@@ -34,7 +34,7 @@ class FilePathSanitizer(AbstractSanitizer):
         max_len: int = -1,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
-        null_value_handler: Optional[Handler] = None,
+        null_value_handler: Optional[NullValueHandler] = None,
         normalize: bool = True,
     ) -> None:
         super().__init__(
@@ -366,7 +366,7 @@ def sanitize_filepath(
     platform: Optional[PlatformType] = None,
     max_len: Optional[int] = None,
     check_reserved: bool = True,
-    null_value_handler: Optional[Handler] = None,
+    null_value_handler: Optional[NullValueHandler] = None,
     normalize: bool = True,
 ) -> PathType:
     """Make a valid file path from a string.
