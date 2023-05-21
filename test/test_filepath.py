@@ -769,11 +769,16 @@ class Test_sanitize_filepath:
     @pytest.mark.parametrize(
         ["platform", "value"],
         [
-            ["windows", "CON\r "],
+            ["windows", "CON \r"],
         ],
     )
     def test_exception_invalid_after_sanitize(self, platform, value):
-        print(sanitize_filepath(value, platform=platform, validate_after_sanitize=False))
+        print(
+            "'{}'".format(
+                sanitize_filepath(value, platform=platform, validate_after_sanitize=False)
+            ),
+            file=sys.stderr,
+        )
         with pytest.raises(ValidationError) as e:
             sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
         assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE

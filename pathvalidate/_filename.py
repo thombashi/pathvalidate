@@ -85,8 +85,6 @@ class FileNameSanitizer(AbstractSanitizer):
                     sanitized_filename = sanitized_filename.rstrip(" .")
             elif e.reason == ErrorReason.NULL_NAME:
                 sanitized_filename = self._null_value_handler(e)
-            else:
-                raise
 
         if self._validate_after_sanitize:
             try:

@@ -114,8 +114,6 @@ class FilePathSanitizer(AbstractSanitizer):
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
                 sanitized_path = self._null_value_handler(e)
-            else:
-                raise
 
         if self._validate_after_sanitize:
             self.__fpath_validator.validate(sanitized_path)

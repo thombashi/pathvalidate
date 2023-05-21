@@ -603,15 +603,22 @@ class Test_sanitize_filename:
             for platform, value in product(
                 ["windows", "universal"],
                 [
-                    "CON\r ",
+                    "\a\r",
                 ],
             )
         ],
     )
     def test_exception_invalid_after_sanitize(self, platform, value):
-        print(sanitize_filename(value, platform=platform, validate_after_sanitize=False))
+        kwargs = {
+            "platform": platform,
+            "replacement_text": "",
+            "validate_after_sanitize": False,
+        }
+        print("'{}'".format(sanitize_filename(value, **kwargs)), file=sys.stderr)
+        kwargs["validate_after_sanitize"] = True
+
         with pytest.raises(ValidationError) as e:
-            sanitize_filename(value, platform=platform, validate_after_sanitize=True)
+            sanitize_filename(value, **kwargs)
         assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
 
     @pytest.mark.parametrize(
