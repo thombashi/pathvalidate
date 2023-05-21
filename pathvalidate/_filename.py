@@ -360,7 +360,8 @@ def sanitize_filename(
             If |True|, sanitize reserved names of the ``platform``.
         null_value_handler:
             Function called when a value after sanitization is an empty string.
-            Defaults to ``pathvalidate.handler.return_null_string()`` that just return ``""``.
+            Defaults to ``pathvalidate.handler.return_null_string()`` function that
+            return an empty string.
         validate_after_sanitize:
             Execute validation after sanitization to the file name.
 
