@@ -30,8 +30,8 @@ Summary
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
     :alt: Test coverage: coveralls
 
-.. image:: https://github.com/thombashi/pathvalidate/actions/workflows/codeql-analysis.yml/badge.svg
-    :target: https://github.com/thombashi/pathvalidate/actions/workflows/codeql-analysis.yml
+.. image:: https://github.com/thombashi/pathvalidate/actions/workflows/github-code-scanning/codeql/badge.svg
+    :target: https://github.com/thombashi/pathvalidate/actions/workflows/github-code-scanning/codeql
     :alt: CodeQL
 
 Features
