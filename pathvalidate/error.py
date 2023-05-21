@@ -44,6 +44,11 @@ class ErrorReason(enum.Enum):
         "MALFORMED_ABS_PATH",
         "found a malformed absolute path",
     )
+    INVALID_AFTER_SANITIZE = (
+        _to_error_code(2000),
+        "INVALID_AFTER_SANITIZE",
+        "found invalid value after sanitizing",
+    )
 
     @property
     def code(self) -> str:

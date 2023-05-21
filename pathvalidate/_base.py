@@ -133,6 +133,7 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         null_value_handler: Optional[NullValueHandler] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
+        validate_after_sanitize: bool = False,
     ) -> None:
         super().__init__(
             min_len=min_len,
@@ -145,6 +146,8 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         if null_value_handler is None:
             null_value_handler = return_null_string
         self._null_value_handler = null_value_handler
+
+        self._validate_after_sanitize = validate_after_sanitize
 
     @abc.abstractmethod
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:  # pragma: no cover

@@ -766,6 +766,18 @@ class Test_sanitize_filepath:
             with pytest.raises(expected):
                 sanitize_filepath(value, platform="auto")
 
+    @pytest.mark.parametrize(
+        ["platform", "value"],
+        [
+            ["windows", "CON\r "],
+        ],
+    )
+    def test_exception_invalid_after_sanitize(self, platform, value):
+        print(sanitize_filepath(value, platform=platform, validate_after_sanitize=False))
+        with pytest.raises(ValidationError) as e:
+            sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
+        assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
+
     @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
     @pytest.mark.parametrize(
         ["value", "expected"],

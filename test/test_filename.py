@@ -597,6 +597,24 @@ class Test_sanitize_filename:
         assert is_valid_filename(filename, platform=platform)
 
     @pytest.mark.parametrize(
+        ["platform", "value"],
+        [
+            [platform, value]
+            for platform, value in product(
+                ["windows", "universal"],
+                [
+                    "CON\r ",
+                ],
+            )
+        ],
+    )
+    def test_exception_invalid_after_sanitize(self, platform, value):
+        print(sanitize_filename(value, platform=platform, validate_after_sanitize=False))
+        with pytest.raises(ValidationError) as e:
+            sanitize_filename(value, platform=platform, validate_after_sanitize=True)
+        assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
+
+    @pytest.mark.parametrize(
         ["value", "expected"],
         [
             [1, TypeError],

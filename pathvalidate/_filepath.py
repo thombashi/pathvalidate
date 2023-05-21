@@ -37,6 +37,7 @@ class FilePathSanitizer(AbstractSanitizer):
         check_reserved: bool = True,
         null_value_handler: Optional[NullValueHandler] = None,
         normalize: bool = True,
+        validate_after_sanitize: bool = False,
     ) -> None:
         super().__init__(
             min_len=min_len,
@@ -44,6 +45,7 @@ class FilePathSanitizer(AbstractSanitizer):
             check_reserved=check_reserved,
             null_value_handler=null_value_handler,
             platform=platform,
+            validate_after_sanitize=validate_after_sanitize,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
@@ -58,6 +60,7 @@ class FilePathSanitizer(AbstractSanitizer):
             max_len=self.max_len,
             check_reserved=check_reserved,
             platform=self.platform,
+            validate_after_sanitize=validate_after_sanitize,
         )
         self.__normalize = normalize
 
@@ -113,6 +116,9 @@ class FilePathSanitizer(AbstractSanitizer):
                 sanitized_path = self._null_value_handler(e)
             else:
                 raise
+
+        if self._validate_after_sanitize:
+            self.__fpath_validator.validate(sanitized_path)
 
         if isinstance(value, Path):
             return Path(sanitized_path)
@@ -369,6 +375,7 @@ def sanitize_filepath(
     check_reserved: bool = True,
     null_value_handler: Optional[NullValueHandler] = None,
     normalize: bool = True,
+    validate_after_sanitize: bool = False,
 ) -> PathType:
     """Make a valid file path from a string.
 
@@ -411,6 +418,8 @@ def sanitize_filepath(
             Defaults to ``pathvalidate.handler.return_null_string()`` that just return ``""``.
         normalize:
             If |True|, normalize the the file path.
+        validate_after_sanitize:
+            Execute validation after sanitization to the file path.
 
     Returns:
         Same type as the argument (str or PathLike object):
@@ -430,4 +439,5 @@ def sanitize_filepath(
         check_reserved=check_reserved,
         normalize=normalize,
         null_value_handler=null_value_handler,
+        validate_after_sanitize=validate_after_sanitize,
     ).sanitize(file_path, replacement_text)

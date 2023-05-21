@@ -32,6 +32,7 @@ class FileNameSanitizer(AbstractSanitizer):
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         null_value_handler: Optional[NullValueHandler] = None,
+        validate_after_sanitize: bool = False,
     ) -> None:
         super().__init__(
             min_len=min_len,
@@ -40,6 +41,7 @@ class FileNameSanitizer(AbstractSanitizer):
             null_value_handler=null_value_handler,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
+            validate_after_sanitize=validate_after_sanitize,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
@@ -85,6 +87,16 @@ class FileNameSanitizer(AbstractSanitizer):
                 sanitized_filename = self._null_value_handler(e)
             else:
                 raise
+
+        if self._validate_after_sanitize:
+            try:
+                self.__validator.validate(sanitized_filename)
+            except ValidationError as e:
+                raise ValidationError(
+                    description=str(e),
+                    reason=ErrorReason.INVALID_AFTER_SANITIZE,
+                    platform=self.platform,
+                )
 
         if isinstance(value, Path):
             return Path(sanitized_filename)
@@ -315,6 +327,7 @@ def sanitize_filename(
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
     check_reserved: bool = True,
     null_value_handler: Optional[NullValueHandler] = None,
+    validate_after_sanitize: bool = False,
 ) -> PathType:
     """Make a valid filename from a string.
 
@@ -348,6 +361,8 @@ def sanitize_filename(
         null_value_handler:
             Function called when a value after sanitization is an empty string.
             Defaults to ``pathvalidate.handler.return_null_string()`` that just return ``""``.
+        validate_after_sanitize:
+            Execute validation after sanitization to the file name.
 
     Returns:
         Same type as the ``filename`` (str or PathLike object):
@@ -366,4 +381,5 @@ def sanitize_filename(
         max_len=-1 if max_len is None else max_len,
         check_reserved=check_reserved,
         null_value_handler=null_value_handler,
+        validate_after_sanitize=validate_after_sanitize,
     ).sanitize(filename, replacement_text)
