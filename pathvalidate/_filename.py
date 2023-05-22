@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import Optional, Pattern, Tuple
 
-from ._base import AbstractSanitizer, BaseFile, BaseValidator
+from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
@@ -27,16 +27,26 @@ _RE_INVALID_WIN_FILENAME = re.compile(
 class FileNameSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        min_len: int = DEFAULT_MIN_LEN,
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         null_value_handler: Optional[NullValueHandler] = None,
         validate_after_sanitize: bool = False,
+        validator: Optional[AbstractValidator] = None,
     ) -> None:
+        if validator:
+            fname_validator = validator
+        else:
+            fname_validator = FileNameValidator(
+                min_len=DEFAULT_MIN_LEN,
+                max_len=max_len,
+                fs_encoding=fs_encoding,
+                check_reserved=check_reserved,
+                platform=platform,
+            )
+
         super().__init__(
-            min_len=min_len,
             max_len=max_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
@@ -44,15 +54,10 @@ class FileNameSanitizer(AbstractSanitizer):
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
+            validator=fname_validator,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
-        self.__validator = FileNameValidator(
-            min_len=self.min_len,
-            max_len=self.max_len,
-            check_reserved=check_reserved,
-            platform=self.platform,
-        )
 
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:
         try:
@@ -69,7 +74,7 @@ class FileNameSanitizer(AbstractSanitizer):
         sanitized_filename = sanitized_filename[: self.max_len]
 
         try:
-            self.__validator.validate(sanitized_filename)
+            self._validator.validate(sanitized_filename)
         except ValidationError as e:
             if e.reason == ErrorReason.RESERVED_NAME and e.reusable_name is False:
                 sanitized_filename = re.sub(
@@ -90,7 +95,7 @@ class FileNameSanitizer(AbstractSanitizer):
 
         if self._validate_after_sanitize:
             try:
-                self.__validator.validate(sanitized_filename)
+                self._validator.validate(sanitized_filename)
             except ValidationError as e:
                 raise ValidationError(
                     description=str(e),

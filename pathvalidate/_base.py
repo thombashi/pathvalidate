@@ -31,16 +31,11 @@ class BaseFile:
         return tuple()
 
     @property
-    def min_len(self) -> int:
-        return self._min_len
-
-    @property
     def max_len(self) -> int:
         return self._max_len
 
     def __init__(
         self,
-        min_len: int,
         max_len: int,
         fs_encoding: Optional[str],
         check_reserved: bool,
@@ -49,10 +44,6 @@ class BaseFile:
     ) -> None:
         self.__platform = normalize_platform(platform)
         self._check_reserved = check_reserved
-
-        if min_len <= 0:
-            min_len = DEFAULT_MIN_LEN
-        self._min_len = max(min_len, 1)
 
         if platform_max_len is None:
             platform_max_len = self._get_default_max_path_len()
@@ -68,8 +59,6 @@ class BaseFile:
             self._fs_encoding = fs_encoding
         else:
             self._fs_encoding = sys.getfilesystemencoding()
-
-        self._validate_max_len()
 
     def _is_posix(self) -> bool:
         return self.platform == Platform.POSIX
@@ -95,13 +84,6 @@ class BaseFile:
 
         return self.platform == Platform.MACOS
 
-    def _validate_max_len(self) -> None:
-        if self.max_len < 1:
-            raise ValueError("max_len must be greater or equal to one")
-
-        if self.min_len > self.max_len:
-            raise ValueError("min_len must be lower than max_len")
-
     def _get_default_max_path_len(self) -> int:
         if self._is_linux():
             return 4096
@@ -116,6 +98,10 @@ class BaseFile:
 
 
 class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
+    @abc.abstractproperty
+    def min_len(self) -> int:  # pragma: no cover
+        pass
+
     @abc.abstractmethod
     def validate(self, value: PathType) -> None:  # pragma: no cover
         pass
@@ -135,17 +121,16 @@ class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
 class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
     def __init__(
         self,
-        min_len: int,
+        validator: AbstractValidator,
         max_len: int,
         fs_encoding: Optional[str],
         check_reserved: bool,
+        validate_after_sanitize: bool,
         null_value_handler: Optional[NullValueHandler] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
-        validate_after_sanitize: bool = False,
     ) -> None:
         super().__init__(
-            min_len=min_len,
             max_len=max_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
@@ -159,12 +144,41 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
 
         self._validate_after_sanitize = validate_after_sanitize
 
+        self._validator = validator
+
     @abc.abstractmethod
     def sanitize(self, value: PathType, replacement_text: str = "") -> PathType:  # pragma: no cover
         pass
 
 
 class BaseValidator(AbstractValidator):
+    @property
+    def min_len(self) -> int:
+        return self._min_len
+
+    def __init__(
+        self,
+        min_len: int,
+        max_len: int,
+        fs_encoding: Optional[str],
+        check_reserved: bool,
+        platform_max_len: Optional[int] = None,
+        platform: Optional[PlatformType] = None,
+    ) -> None:
+        if min_len <= 0:
+            min_len = DEFAULT_MIN_LEN
+        self._min_len = max(min_len, 1)
+
+        super().__init__(
+            max_len=max_len,
+            fs_encoding=fs_encoding,
+            check_reserved=check_reserved,
+            platform_max_len=platform_max_len,
+            platform=platform,
+        )
+
+        self._validate_max_len()
+
     def _validate_reserved_keywords(self, name: str) -> None:
         if not self._check_reserved:
             return
@@ -177,6 +191,13 @@ class BaseValidator(AbstractValidator):
                 reserved_name=root_name,
                 platform=self.platform,
             )
+
+    def _validate_max_len(self) -> None:
+        if self.max_len < 1:
+            raise ValueError("max_len must be greater or equal to one")
+
+        if self.min_len > self.max_len:
+            raise ValueError("min_len must be lower than max_len")
 
     @staticmethod
     def __extract_root_name(path: str) -> str:

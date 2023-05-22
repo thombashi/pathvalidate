@@ -794,12 +794,19 @@ class Test_sanitize_filepath:
         ],
     )
     def test_auto_platform_linux(self, value, expected):
+        kwargs = {
+            "platform": "auto",
+            "validate_after_sanitize": True,
+        }
+
         if isinstance(expected, str):
-            sanitized = sanitize_filepath(value, platform="auto")
+            sanitized = sanitize_filepath(value, **kwargs)
             assert is_valid_filepath(sanitized, platform="auto")
-        else:
-            with pytest.raises(expected):
-                sanitize_filepath(value, platform="auto")
+            return
+
+        with pytest.raises(expected) as e:
+            sanitize_filepath(value, **kwargs)
+        assert e.value.reason == ErrorReason.MALFORMED_ABS_PATH
 
     @pytest.mark.parametrize(
         ["platform", "value"],

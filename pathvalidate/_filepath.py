@@ -9,7 +9,7 @@ import re
 from pathlib import Path
 from typing import List, Optional, Pattern, Tuple
 
-from ._base import AbstractSanitizer, BaseFile, BaseValidator
+from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
@@ -25,7 +25,6 @@ _RE_INVALID_WIN_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS
 class FilePathSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        min_len: int = DEFAULT_MIN_LEN,
         max_len: int = -1,
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
@@ -33,28 +32,34 @@ class FilePathSanitizer(AbstractSanitizer):
         null_value_handler: Optional[NullValueHandler] = None,
         normalize: bool = True,
         validate_after_sanitize: bool = False,
+        validator: Optional[AbstractValidator] = None,
     ) -> None:
+        if validator:
+            fpath_validator = validator
+        else:
+            fpath_validator = FilePathValidator(
+                min_len=DEFAULT_MIN_LEN,
+                max_len=max_len,
+                fs_encoding=fs_encoding,
+                check_reserved=check_reserved,
+                platform=platform,
+            )
         super().__init__(
-            min_len=min_len,
             max_len=max_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
+            validator=fpath_validator,
             null_value_handler=null_value_handler,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
         )
 
         self._sanitize_regexp = self._get_sanitize_regexp()
-        self.__fpath_validator = FilePathValidator(
-            min_len=self.min_len,
-            max_len=self.max_len,
-            check_reserved=check_reserved,
-            platform=self.platform,
-        )
         self.__fname_sanitizer = FileNameSanitizer(
-            min_len=self.min_len,
             max_len=self.max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
+            null_value_handler=null_value_handler,
             platform=self.platform,
             validate_after_sanitize=validate_after_sanitize,
         )
@@ -75,8 +80,6 @@ class FilePathSanitizer(AbstractSanitizer):
 
                 return self._null_value_handler(e)
             raise
-
-        self.__fpath_validator.validate_abspath(value)
 
         unicode_filepath = to_str(value)
 
@@ -106,13 +109,13 @@ class FilePathSanitizer(AbstractSanitizer):
 
         sanitized_path = self.__get_path_separator().join(sanitized_entries)
         try:
-            self.__fpath_validator.validate(sanitized_path)
+            self._validator.validate(sanitized_path)
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
                 sanitized_path = self._null_value_handler(e)
 
         if self._validate_after_sanitize:
-            self.__fpath_validator.validate(sanitized_path)
+            self._validator.validate(sanitized_path)
 
         if isinstance(value, Path):
             return Path(sanitized_path)
