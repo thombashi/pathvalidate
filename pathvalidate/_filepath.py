@@ -303,16 +303,16 @@ def validate_filepath(
     """Verifying whether the ``file_path`` is a valid file path or not.
 
     Args:
-        file_path:
-            File path to validate.
-        platform:
+        file_path (PathType):
+            File path to be validated.
+        platform (Optional[PlatformType], optional):
             Target platform name of the file path.
 
             .. include:: platform.txt
-        min_len:
+        min_len (int, optional):
             Minimum byte length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
-        max_len:
+        max_len (Optional[int], optional):
             Maximum byte length of the ``file_path``. If the value is |None| or minus,
             automatically determined by the ``platform``:
 
@@ -320,10 +320,10 @@ def validate_filepath(
                 - ``macOS``: 1024
                 - ``Windows``: 260
                 - ``universal``: 260
-        fs_encoding:
+        fs_encoding (Optional[str], optional):
             Filesystem encoding that used to calculate the byte length of the file path.
             If |None|, get the value from the execution environment.
-        check_reserved:
+        check_reserved (bool, optional):
             If |True|, check reserved names of the ``platform``.
 
     Raises:

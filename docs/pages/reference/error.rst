@@ -1,8 +1,9 @@
 Errors
 ---------------
 
-.. autoexception:: pathvalidate.error.ErrorReason
+.. autoclass:: pathvalidate.error.ErrorReason
     :members:
+    :undoc-members:
     :show-inheritance:
 
 .. autoexception:: pathvalidate.error.ValidationError

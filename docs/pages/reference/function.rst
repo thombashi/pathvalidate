@@ -13,7 +13,7 @@ Check a file name
 .. autofunction:: pathvalidate.is_valid_filename
 
 
-File path validate/sanitize
+File path validation/sanitization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: pathvalidate.validate_filepath
 
@@ -25,7 +25,7 @@ Check a file path
 .. autofunction:: pathvalidate.is_valid_filepath
 
 
-Symbol validate/sanitize
+Symbol validation/sanitization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autofunction:: pathvalidate.validate_symbol
 
