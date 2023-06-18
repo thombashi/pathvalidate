@@ -95,7 +95,7 @@ jobs:
           name: coverage
           path: artifact
 
-      - name: List
+      - name: List artifacts
         working-directory: artifact
         run: |
           set -x
