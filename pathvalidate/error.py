@@ -84,7 +84,7 @@ class ValidationError(ValueError):
         return self.__platform
 
     @property
-    def reason(self) -> Optional[ErrorReason]:
+    def reason(self) -> ErrorReason:
         return self.__reason
 
     @property
@@ -100,8 +100,11 @@ class ValidationError(ValueError):
         return self.__reusable_name
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
+        if "reason" not in kwargs:
+            raise ValueError("reason must be specified")
+
+        self.__reason: ErrorReason = kwargs.pop("reason")
         self.__platform: Optional[Platform] = kwargs.pop("platform", None)
-        self.__reason: Optional[ErrorReason] = kwargs.pop("reason", None)
         self.__description: Optional[str] = kwargs.pop("description", None)
         self.__reserved_name: str = kwargs.pop("reserved_name", "")
         self.__reusable_name: Optional[bool] = kwargs.pop("reusable_name", None)
@@ -114,10 +117,7 @@ class ValidationError(ValueError):
 
     def __str__(self) -> str:
         item_list = []
-        header = ""
-
-        if self.reason:
-            header = str(self.reason)
+        header = str(self.reason)
 
         if Exception.__str__(self):
             item_list.append(Exception.__str__(self))
