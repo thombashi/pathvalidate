@@ -211,7 +211,8 @@ class FileNameValidator(BaseValidator):
             raise InvalidCharError(
                 INVALID_CHAR_ERR_MSG_TMPL.format(
                     invalid=findall_to_str(match), value=repr(unicode_filename)
-                )
+                ),
+                platform=Platform.UNIVERSAL,
             )
 
     def __validate_win_filename(self, unicode_filename: str) -> None:
