@@ -37,6 +37,9 @@ with open(os.path.join("docs", "pages", "introduction", "summary.txt"), encoding
 with open(os.path.join(REQUIREMENT_DIR, "test_requirements.txt")) as f:
     TESTS_REQUIRES = [line.strip() for line in f if line.strip()]
 
+with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
+    docs_requires = [line.strip() for line in f if line.strip()]
+
 setuptools.setup(
     name=MODULE_NAME,
     version=pkg_info["__version__"],
@@ -58,7 +61,10 @@ setuptools.setup(
         "Changlog": f"{REPOSITORY_URL:s}/releases",
     },
     python_requires=">=3.6",
-    extras_require={"test": TESTS_REQUIRES},
+    extras_require={
+        "docs": docs_requires,
+        "test": TESTS_REQUIRES,
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
