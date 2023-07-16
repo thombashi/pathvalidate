@@ -58,6 +58,11 @@ class ErrorReason(enum.Enum):
     def name(self) -> str:
         return self.__name
 
+    @property
+    def description(self) -> str:
+        """str: Error reason description."""
+        return self.__description
+
     def __init__(self, code: str, name: str, description: str) -> None:
         self.__name = name
         self.__code = code
