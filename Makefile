@@ -21,7 +21,9 @@ build: clean
 
 .PHONY: check
 check:
-	@$(PYTHON) -m tox -e lint
+	$(PYTHON) -m tox -e lint
+	-$(PYTHON) -m tox -e lint-examples
+	-rm examples/pathvalidate_examples.py
 
 .PHONY: clean
 clean:
