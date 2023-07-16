@@ -3,7 +3,7 @@
 """
 
 import enum
-from typing import Optional
+from typing import Dict, Optional
 
 from ._const import Platform
 
@@ -123,6 +123,28 @@ class ValidationError(ValueError):
             super().__init__(*args[0], **kwargs)
         except IndexError:
             super().__init__(*args, **kwargs)
+
+    def as_slog(self) -> Dict[str, str]:
+        """Return a dictionary representation of the error.
+
+        Returns:
+            Dict[str, str]: A dictionary representation of the error.
+        """
+
+        slog: Dict[str, str] = {
+            "code": self.reason.code,
+            "description": self.reason.description,
+        }
+        if self.platform:
+            slog["platform"] = self.platform.value
+        if self.description:
+            slog["description"] = self.description
+        if self.__reusable_name is not None:
+            slog["reusable_name"] = str(self.__reusable_name)
+        if self.__fs_encoding:
+            slog["fs_encoding"] = self.__fs_encoding
+
+        return slog
 
     def __str__(self) -> str:
         item_list = []
