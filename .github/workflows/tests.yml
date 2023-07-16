@@ -56,8 +56,7 @@ jobs:
       - name: Install pip
         run: python -m pip install --upgrade --disable-pip-version-check "pip>=21.1"
 
-      - name: Install dependencies
-        run: make setup-ci
+      - run: make setup-ci
 
       - name: Run tests
         env:
@@ -95,8 +94,7 @@ jobs:
       - name: Setup env
         run: echo "COVERAGE_FILE=.coverage_${{ matrix.os }}_${{ matrix.python-version }} " >> $GITHUB_ENV
 
-      - name: Install dependencies
-        run: make setup-ci
+      - run: make setup-ci
 
       - name: Run tests
         run: tox -e cov
