@@ -6,7 +6,7 @@ import ntpath
 import os.path
 import posixpath
 import re
-from pathlib import Path
+from pathlib import Path, PurePath
 from typing import List, Optional, Pattern, Tuple
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
@@ -75,7 +75,7 @@ class FilePathSanitizer(AbstractSanitizer):
             validate_pathtype(value, allow_whitespaces=not self._is_windows(include_universal=True))
         except ValidationError as e:
             if e.reason == ErrorReason.NULL_NAME:
-                if isinstance(value, Path):
+                if isinstance(value, PurePath):
                     raise
 
                 return self._null_value_handler(e)
@@ -117,7 +117,7 @@ class FilePathSanitizer(AbstractSanitizer):
         if self._validate_after_sanitize:
             self._validator.validate(sanitized_path)
 
-        if isinstance(value, Path):
+        if isinstance(value, PurePath):
             return Path(sanitized_path)
 
         return sanitized_path

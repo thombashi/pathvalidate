@@ -5,7 +5,7 @@
 import platform
 import re
 import string
-from pathlib import Path
+from pathlib import PurePath
 from typing import Any, List, Optional
 
 from ._const import Platform
@@ -20,7 +20,7 @@ def validate_pathtype(
 ) -> None:
     from .error import ErrorReason, ValidationError
 
-    if _is_not_null_string(text) or isinstance(text, Path):
+    if _is_not_null_string(text) or isinstance(text, PurePath):
         return
 
     if allow_whitespaces and _re_whitespaces.search(str(text)):
@@ -33,7 +33,7 @@ def validate_pathtype(
 
 
 def to_str(name: PathType) -> str:
-    if isinstance(name, Path):
+    if isinstance(name, PurePath):
         return str(name)
 
     return name
