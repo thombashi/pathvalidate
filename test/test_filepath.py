@@ -825,7 +825,6 @@ class Test_sanitize_filepath:
             sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
         assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
 
-    @pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher")
     @pytest.mark.parametrize(
         ["value", "expected"],
         [

@@ -289,7 +289,7 @@ Installation: apt
 
 Dependencies
 ============
-Python 3.6+
+Python 3.7+
 no external dependencies.
 
 Documentation
