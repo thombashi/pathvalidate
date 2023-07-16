@@ -186,11 +186,10 @@ class FileNameValidator(BaseValidator):
             )
 
         self._validate_reserved_keywords(unicode_filename)
+        self.__validate_universal_filename(unicode_filename)
 
         if self._is_windows(include_universal=True):
             self.__validate_win_filename(unicode_filename)
-        else:
-            self.__validate_unix_filename(unicode_filename)
 
     def validate_abspath(self, value: str) -> None:
         err = ValidationError(
@@ -206,7 +205,7 @@ class FileNameValidator(BaseValidator):
         if posixpath.isabs(value):
             raise err
 
-    def __validate_unix_filename(self, unicode_filename: str) -> None:
+    def __validate_universal_filename(self, unicode_filename: str) -> None:
         match = _RE_INVALID_FILENAME.findall(unicode_filename)
         if match:
             raise InvalidCharError(
