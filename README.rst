@@ -41,7 +41,7 @@ Features
     - file path
 - file name/path argument validator/sanitizer for ``argparse`` and ``click``
 - Multi platform support:
-    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``Posix``) or ``universal`` (platform independent)
+    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``POSIX``) or ``universal`` (platform independent)
 - Multibyte character support
 
 Examples
@@ -110,9 +110,9 @@ Validate a filename
 :Output:
     .. code-block::
 
-        invalid char found: invalids=(':', '*', '/', '"', '?', '>', '|', '<'), value='fi:l*e/p"a?t>h|.t<xt', reason=INVALID_CHARACTER, target-platform=Windows
+        [PV1100] invalid characters found: target-platform=universal, description=invalids=('/'), value='fi:l*e/p"a?t>h|.t<xt'
 
-        'COM1' is a reserved name, reason=RESERVED_NAME, target-platform=universal
+        [PV1002] found a reserved name by a platform: 'COM1' is a reserved name, target-platform=universal, reusable_name=False
 
 Check a filename
 ------------------
@@ -134,8 +134,8 @@ Check a filename
 
         is_valid_filename('filepath.txt') return True
 
-filename/filepath validator for argparse
-------------------------------------------
+filename/filepath validator for ``argparse``
+----------------------------------------------
 :Sample Code:
     .. code-block:: python
 
@@ -144,30 +144,30 @@ filename/filepath validator for argparse
         from pathvalidate.argparse import validate_filename_arg, validate_filepath_arg
 
         parser = ArgumentParser()
-        parser.add_argument("--filepath", type=validate_filepath_arg)
         parser.add_argument("--filename", type=validate_filename_arg)
+        parser.add_argument("--filepath", type=validate_filepath_arg)
         options = parser.parse_args()
 
         if options.filename:
-            print("filename: {}".format(options.filename))
+            print(f"filename: {options.filename}")
 
         if options.filepath:
-            print("filepath: {}".format(options.filepath))
+            print(f"filepath: {options.filepath}")
 
 :Output:
     .. code-block::
 
         $ ./examples/argparse_validate.py --filename eg
         filename: eg
-        $ ./examples/argparse_validate.py --filepath e?g
-        usage: argparse_validate.py [-h] [--filepath FILEPATH] [--filename FILENAME]
-        argparse_validate.py: error: argument --filepath: invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
+        $ ./examples/argparse_validate.py --filename e?g
+        usage: argparse_validate.py [-h] [--filename FILENAME] [--filepath FILEPATH]
+        argparse_validate.py: error: argument --filename: [PV1100] invalid characters found: invalids=(':'), value='e:g', target-platform=Windows
 
 .. note::
     ``validate_filepath_arg`` consider ``platform`` as of ``"auto"`` if the input is an absolute file path.
 
-filename/filepath sanitizer for argparse
-------------------------------------------
+filename/filepath sanitizer for ``argparse``
+----------------------------------------------
 :Sample Code:
     .. code-block:: python
 
@@ -196,8 +196,8 @@ filename/filepath sanitizer for argparse
 .. note::
     ``sanitize_filepath_arg`` is set platform as ``"auto"``.
 
-filename/filepath validator for click
----------------------------------------
+filename/filepath validator for ``click``
+-------------------------------------------
 :Sample Code:
     .. code-block:: python
 
@@ -209,11 +209,11 @@ filename/filepath validator for click
         @click.command()
         @click.option("--filename", callback=validate_filename_arg)
         @click.option("--filepath", callback=validate_filepath_arg)
-        def cli(filename, filepath):
+        def cli(filename: str, filepath: str) -> None:
             if filename:
-                click.echo("filename: {}".format(filename))
+                click.echo(f"filename: {filename}")
             if filepath:
-                click.echo("filepath: {}".format(filepath))
+                click.echo(f"filepath: {filepath}")
 
 
         if __name__ == "__main__":
@@ -226,11 +226,12 @@ filename/filepath validator for click
         filename: ab
         $ ./examples/click_validate.py --filepath e?g
         Usage: click_validate.py [OPTIONS]
+        Try 'click_validate.py --help' for help.
 
-        Error: Invalid value for "--filepath": invalid char found: invalids=('?'), value='e?g', reason=INVALID_CHARACTER, target-platform=Windows
+        Error: Invalid value for '--filename': [PV1100] invalid characters found: invalids=('?'), value='e?g', target-platform=Windows
 
-filename/filepath sanitizer for click
----------------------------------------
+filename/filepath sanitizer for ``click``
+-------------------------------------------
 :Sample Code:
     .. code-block:: python
 
@@ -244,9 +245,9 @@ filename/filepath sanitizer for click
         @click.option("--filepath", callback=sanitize_filepath_arg)
         def cli(filename, filepath):
             if filename:
-                click.echo("filename: {}".format(filename))
+                click.echo(f"filename: {filename}")
             if filepath:
-                click.echo("filepath: {}".format(filepath))
+                click.echo(f"filepath: {filepath}")
 
 
         if __name__ == "__main__":
