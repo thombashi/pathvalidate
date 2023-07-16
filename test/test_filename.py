@@ -291,6 +291,20 @@ class Test_validate_filename:
     @pytest.mark.parametrize(
         ["value", "platform"],
         [
+            ["a/b", Platform.UNIVERSAL],
+            [Path("a/b"), Platform.UNIVERSAL],
+            ["a*b", Platform.WINDOWS],
+        ],
+    )
+    def test_exception_invalid_char_specific_target_platform(self, value, platform):
+        with pytest.raises(ValidationError) as e:
+            validate_filename(value, platform)
+        assert e.value.reason == ErrorReason.INVALID_CHARACTER
+        assert e.value.platform == platform
+
+    @pytest.mark.parametrize(
+        ["value", "platform"],
+        [
             ["{0}{1}{0}".format(randstr(64), invalid_c), platform]
             for invalid_c, platform in product(
                 set(INVALID_WIN_PATH_CHARS).difference(

@@ -15,6 +15,24 @@ class Test_to_error_code:
         assert _to_error_code(value) == expected
 
 
+class Test_str:
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            [
+                ValidationError(
+                    description="hoge",
+                    platform=Platform.UNIVERSAL,
+                    reason=ErrorReason.INVALID_CHARACTER,
+                ),
+                "[PV1100] invalid characters found: target-platform=universal, description=hoge",
+            ],
+        ],
+    )
+    def test_normal(self, value, expected):
+        assert str(value) == expected
+
+
 class Test_as_slog:
     @pytest.mark.parametrize(
         ["value", "expected"],
