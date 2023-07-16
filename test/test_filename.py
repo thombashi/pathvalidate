@@ -7,7 +7,7 @@ import random
 import sys
 from collections import OrderedDict
 from itertools import chain, product
-from pathlib import Path
+from pathlib import Path, PurePosixPath, PureWindowsPath
 
 import pytest
 from allpairspy import AllPairs
@@ -292,8 +292,9 @@ class Test_validate_filename:
         ["value", "platform"],
         [
             ["a/b", Platform.UNIVERSAL],
-            [Path("a/b"), Platform.UNIVERSAL],
             ["a*b", Platform.WINDOWS],
+            [PurePosixPath("a/b"), Platform.UNIVERSAL],
+            [PureWindowsPath("a/b"), Platform.WINDOWS],
         ],
     )
     def test_exception_invalid_char_specific_target_platform(self, value, platform):
