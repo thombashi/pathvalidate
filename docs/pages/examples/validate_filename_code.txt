@@ -17,6 +17,6 @@
 :Output:
     .. code-block:: none
 
-        invalid char found: invalids=(':', '*', '/', '"', '?', '>', '|', '<'), value='fi:l*e/p"a?t>h|.t<xt', reason=INVALID_CHARACTER, target-platform=Windows
+        [PV1100] invalid characters found: target-platform=universal, description=invalids=('/'), value='fi:l*e/p"a?t>h|.t<xt'
 
-        'COM1' is a reserved name, reason=RESERVED_NAME, target-platform=universal
+        [PV1002] found a reserved name by a platform: 'COM1' is a reserved name, target-platform=universal, reusable_name=False

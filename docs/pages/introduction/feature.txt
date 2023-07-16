@@ -5,5 +5,5 @@ Features
     - file path
 - file name/path argument validator/sanitizer for ``argparse`` and ``click``
 - Multi platform support:
-    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``Posix``) or ``universal`` (platform independent)
+    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``POSIX``) or ``universal`` (platform independent)
 - Multibyte character support

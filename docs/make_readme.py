@@ -33,16 +33,16 @@ def write_examples(maker: ReadmeMaker) -> None:
     maker.write_chapter("Check a filename")
     maker.write_file(example_root.joinpath("is_valid_filename_code.txt"))
 
-    maker.write_chapter("filename/filepath validator for argparse")
+    maker.write_chapter("filename/filepath validator for ``argparse``")
     maker.write_file(example_root.joinpath("argparse_validator.txt"))
 
-    maker.write_chapter("filename/filepath sanitizer for argparse")
+    maker.write_chapter("filename/filepath sanitizer for ``argparse``")
     maker.write_file(example_root.joinpath("argparse_sanitizer.txt"))
 
-    maker.write_chapter("filename/filepath validator for click")
+    maker.write_chapter("filename/filepath validator for ``click``")
     maker.write_file(example_root.joinpath("click_validator.txt"))
 
-    maker.write_chapter("filename/filepath sanitizer for click")
+    maker.write_chapter("filename/filepath sanitizer for ``click``")
     maker.write_file(example_root.joinpath("click_sanitizer.txt"))
 
     maker.write_chapter("For more information")
