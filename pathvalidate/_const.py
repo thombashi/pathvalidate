@@ -28,7 +28,7 @@ class Platform(enum.Enum):
     """
     Platform specifier enumeration.
     """
-    
+
     #: POSIX compatible platform.
     POSIX = "POSIX"
 

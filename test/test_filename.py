@@ -640,7 +640,7 @@ class Test_sanitize_filename:
             "replacement_text": "",
             "validate_after_sanitize": False,
         }
-        print("'{}'".format(sanitize_filename(value, **kwargs)), file=sys.stderr)
+        print(f"'{sanitize_filename(value, **kwargs)}'", file=sys.stderr)
         kwargs["validate_after_sanitize"] = True
 
         with pytest.raises(ValidationError) as e:
