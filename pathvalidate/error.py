@@ -52,10 +52,12 @@ class ErrorReason(enum.Enum):
 
     @property
     def code(self) -> str:
+        """str: Error code."""
         return self.__code
 
     @property
     def name(self) -> str:
+        """str: Error reason name."""
         return self.__name
 
     @property
@@ -75,33 +77,35 @@ class ErrorReason(enum.Enum):
 class ValidationError(ValueError):
     """
     Exception class of validation errors.
-
-    .. py:attribute:: reason
-
-        The cause of the error.
-
-        Returns:
-            :py:class:`~pathvalidate.error.ErrorReason`:
     """
 
     @property
     def platform(self) -> Optional[Platform]:
+        """
+        :py:class:`~pathvalidate.Platform`: Platform information.
+        """
         return self.__platform
 
     @property
     def reason(self) -> ErrorReason:
+        """
+        :py:class:`~pathvalidate.error.ErrorReason`: The cause of the error.
+        """
         return self.__reason
 
     @property
     def description(self) -> Optional[str]:
+        """Optional[str]: Error description."""
         return self.__description
 
     @property
     def reserved_name(self) -> str:
+        """str: Reserved name."""
         return self.__reserved_name
 
     @property
     def reusable_name(self) -> Optional[bool]:
+        """Optional[bool]: Whether the name is reusable or not."""
         return self.__reusable_name
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore

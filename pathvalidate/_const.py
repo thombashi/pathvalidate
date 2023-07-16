@@ -25,7 +25,11 @@ _NTFS_RESERVED_FILE_NAMES = (
 
 @enum.unique
 class Platform(enum.Enum):
-    #: POSIX compatible. note that absolute paths cannot specify this.
+    """
+    Platform specifier enumeration.
+    """
+    
+    #: POSIX compatible platform.
     POSIX = "POSIX"
 
     #: platform independent. note that absolute paths cannot specify this.
