@@ -188,10 +188,13 @@ class Test_validate_filename:
         if expected is None:
             validate_filename(value, min_len=min_len)
             assert is_valid_filename(value, min_len=min_len)
-        else:
-            with pytest.raises(ValidationError) as e:
-                validate_filename(value, min_len=min_len)
-            assert e.value.reason == expected
+            return
+
+        with pytest.raises(ValidationError) as e:
+            validate_filename(value, min_len=min_len)
+        assert e.value.reason == expected
+        assert e.value.fs_encoding
+        assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
@@ -212,6 +215,8 @@ class Test_validate_filename:
         with pytest.raises(ValidationError) as e:
             validate_filename(value, platform=platform, max_len=max_len)
         assert e.value.reason == expected
+        assert e.value.fs_encoding
+        assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
         ["value", "platform", "fs_encoding", "max_len", "expected"],
@@ -237,6 +242,8 @@ class Test_validate_filename:
         with pytest.raises(ValidationError) as e:
             validate_filename(value, **kwargs)
         assert e.value.reason == expected
+        assert e.value.fs_encoding
+        assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],
@@ -252,9 +259,10 @@ class Test_validate_filename:
         if expected is None:
             validate_filename(value, min_len=min_len, max_len=max_len)
             assert is_valid_filename(value, min_len=min_len, max_len=max_len)
-        else:
-            with pytest.raises(expected):
-                validate_filename(value, min_len=min_len, max_len=max_len)
+            return
+
+        with pytest.raises(expected):
+            validate_filename(value, min_len=min_len, max_len=max_len)
 
     @pytest.mark.skipif(not is_faker_installed(), reason="requires faker")
     @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])

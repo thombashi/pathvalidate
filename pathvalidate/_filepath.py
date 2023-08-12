@@ -194,6 +194,7 @@ class FilePathValidator(BaseValidator):
             ErrorAttrKey.REASON: ErrorReason.INVALID_LENGTH,
             ErrorAttrKey.PLATFORM: self.platform,
             ErrorAttrKey.FS_ENCODING: self._fs_encoding,
+            ErrorAttrKey.BYTE_COUNT: byte_ct,
         }
 
         if byte_ct > self.max_len:

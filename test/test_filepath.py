@@ -176,6 +176,8 @@ class Test_validate_filepath:
         with pytest.raises(ValidationError) as e:
             validate_filepath(value, min_len=min_len)
         assert e.value.reason == expected
+        assert e.value.fs_encoding
+        assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
         ["value", "platform", "max_len", "expected"],
@@ -211,6 +213,8 @@ class Test_validate_filepath:
         with pytest.raises(ValidationError) as e:
             validate_filepath(value, **kwargs)
         assert e.value.reason == ErrorReason.INVALID_LENGTH
+        assert e.value.fs_encoding
+        assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
         ["value", "platform", "fs_encoding", "max_len", "expected"],
@@ -236,6 +240,8 @@ class Test_validate_filepath:
         with pytest.raises(ValidationError) as e:
             validate_filepath(value, **kwargs)
         assert e.value.reason == expected
+        assert e.value.fs_encoding
+        assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
         ["value", "min_len", "max_len", "expected"],

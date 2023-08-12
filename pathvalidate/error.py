@@ -13,6 +13,7 @@ def _to_error_code(code: int) -> str:
 
 
 class ErrorAttrKey:
+    BYTE_COUNT = "byte_count"
     DESCRIPTION = "description"
     FS_ENCODING = "fs_encoding"
     PLATFORM = "platform"
@@ -122,11 +123,17 @@ class ValidationError(ValueError):
         """Optional[str]: File system encoding."""
         return self.__fs_encoding
 
+    @property
+    def byte_count(self) -> Optional[int]:
+        """Optional[int]: Byte count of the path."""
+        return self.__byte_count
+
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
         if ErrorAttrKey.REASON not in kwargs:
             raise ValueError(f"{ErrorAttrKey.REASON} must be specified")
 
         self.__reason: ErrorReason = kwargs.pop(ErrorAttrKey.REASON)
+        self.__byte_count: Optional[int] = kwargs.pop(ErrorAttrKey.BYTE_COUNT, None)
         self.__platform: Optional[Platform] = kwargs.pop(ErrorAttrKey.PLATFORM, None)
         self.__description: Optional[str] = kwargs.pop(ErrorAttrKey.DESCRIPTION, None)
         self.__reserved_name: str = kwargs.pop(ErrorAttrKey.RESERVED_NAME, "")
@@ -157,6 +164,8 @@ class ValidationError(ValueError):
             slog[ErrorAttrKey.REUSABLE_NAME] = str(self.__reusable_name)
         if self.__fs_encoding:
             slog[ErrorAttrKey.FS_ENCODING] = self.__fs_encoding
+        if self.__byte_count:
+            slog[ErrorAttrKey.BYTE_COUNT] = str(self.__byte_count)
 
         return slog
 
@@ -175,6 +184,8 @@ class ValidationError(ValueError):
             item_list.append(f"{ErrorAttrKey.REUSABLE_NAME}={self.reusable_name}")
         if self.__fs_encoding:
             item_list.append(f"{ErrorAttrKey.FS_ENCODING}={self.__fs_encoding}")
+        if self.__byte_count is not None:
+            item_list.append(f"{ErrorAttrKey.BYTE_COUNT}={self.__byte_count:,d}")
 
         if item_list:
             header += ": "
