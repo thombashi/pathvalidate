@@ -15,7 +15,7 @@ from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
 from .error import ErrorReason, InvalidCharError, ReservedNameError, ValidationError
-from .handler import NullValueHandler
+from .handler import ValidationErrorHandler
 
 
 _RE_INVALID_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_PATH_CHARS):s}]", re.UNICODE)
@@ -29,7 +29,7 @@ class FilePathSanitizer(AbstractSanitizer):
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
-        null_value_handler: Optional[NullValueHandler] = None,
+        null_value_handler: Optional[ValidationErrorHandler] = None,
         normalize: bool = True,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
@@ -391,7 +391,7 @@ def sanitize_filepath(
     max_len: Optional[int] = None,
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
-    null_value_handler: Optional[NullValueHandler] = None,
+    null_value_handler: Optional[ValidationErrorHandler] = None,
     normalize: bool = True,
     validate_after_sanitize: bool = False,
 ) -> PathType:

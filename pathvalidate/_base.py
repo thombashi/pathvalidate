@@ -11,7 +11,7 @@ from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
 from ._types import PathType, PlatformType
 from .error import ReservedNameError, ValidationError
-from .handler import NullValueHandler, return_null_string
+from .handler import ValidationErrorHandler, return_null_string
 
 
 class BaseFile:
@@ -126,7 +126,7 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         fs_encoding: Optional[str],
         check_reserved: bool,
         validate_after_sanitize: bool,
-        null_value_handler: Optional[NullValueHandler] = None,
+        null_value_handler: Optional[ValidationErrorHandler] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:

@@ -14,7 +14,7 @@ from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
 from .error import ErrorReason, InvalidCharError, ValidationError
-from .handler import NullValueHandler
+from .handler import ValidationErrorHandler
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -31,7 +31,7 @@ class FileNameSanitizer(AbstractSanitizer):
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
-        null_value_handler: Optional[NullValueHandler] = None,
+        null_value_handler: Optional[ValidationErrorHandler] = None,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
     ) -> None:
@@ -355,7 +355,7 @@ def sanitize_filename(
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
-    null_value_handler: Optional[NullValueHandler] = None,
+    null_value_handler: Optional[ValidationErrorHandler] = None,
     validate_after_sanitize: bool = False,
 ) -> PathType:
     """Make a valid filename from a string.

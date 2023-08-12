@@ -9,7 +9,7 @@ from typing import Callable
 from .error import ValidationError
 
 
-NullValueHandler = Callable[[ValidationError], str]
+ValidationErrorHandler = Callable[[ValidationError], str]
 
 
 def return_null_string(e: ValidationError) -> str:
