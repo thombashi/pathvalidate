@@ -117,6 +117,11 @@ class ValidationError(ValueError):
         """Optional[bool]: Whether the name is reusable or not."""
         return self.__reusable_name
 
+    @property
+    def fs_encoding(self) -> Optional[str]:
+        """Optional[str]: File system encoding."""
+        return self.__fs_encoding
+
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
         if ErrorAttrKey.REASON not in kwargs:
             raise ValueError(f"{ErrorAttrKey.REASON} must be specified")
