@@ -6,6 +6,7 @@ import itertools
 import ntpath
 import posixpath
 import re
+import warnings
 from pathlib import Path, PurePath
 from typing import Optional, Pattern, Tuple
 
@@ -14,7 +15,7 @@ from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
 from .error import ErrorReason, InvalidCharError, ValidationError
-from .handler import ValidationErrorHandler
+from .handler import ReservedNameHandler, ValidationErrorHandler
 
 
 _DEFAULT_MAX_FILENAME_LEN = 255
@@ -30,8 +31,8 @@ class FileNameSanitizer(AbstractSanitizer):
         max_len: int = _DEFAULT_MAX_FILENAME_LEN,
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
-        check_reserved: bool = True,
         null_value_handler: Optional[ValidationErrorHandler] = None,
+        reserved_name_handler: Optional[ValidationErrorHandler] = None,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
     ) -> None:
@@ -42,15 +43,15 @@ class FileNameSanitizer(AbstractSanitizer):
                 min_len=DEFAULT_MIN_LEN,
                 max_len=max_len,
                 fs_encoding=fs_encoding,
-                check_reserved=check_reserved,
+                check_reserved=True,
                 platform=platform,
             )
 
         super().__init__(
             max_len=max_len,
             fs_encoding=fs_encoding,
-            check_reserved=check_reserved,
             null_value_handler=null_value_handler,
+            reserved_name_handler=reserved_name_handler,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
@@ -76,10 +77,12 @@ class FileNameSanitizer(AbstractSanitizer):
         try:
             self._validator.validate(sanitized_filename)
         except ValidationError as e:
-            if e.reason == ErrorReason.RESERVED_NAME and e.reusable_name is False:
-                sanitized_filename = re.sub(
-                    re.escape(e.reserved_name), f"{e.reserved_name}_", sanitized_filename
-                )
+            if e.reason == ErrorReason.RESERVED_NAME:
+                replacement_word = self._reserved_name_handler(e)
+                if e.reserved_name != replacement_word:
+                    sanitized_filename = re.sub(
+                        re.escape(e.reserved_name), replacement_word, sanitized_filename
+                    )
             elif e.reason == ErrorReason.INVALID_CHARACTER and self._is_windows(
                 include_universal=True
             ):
@@ -354,8 +357,9 @@ def sanitize_filename(
     platform: Optional[PlatformType] = None,
     max_len: Optional[int] = _DEFAULT_MAX_FILENAME_LEN,
     fs_encoding: Optional[str] = None,
-    check_reserved: bool = True,
+    check_reserved: Optional[bool] = None,
     null_value_handler: Optional[ValidationErrorHandler] = None,
+    reserved_name_handler: Optional[ValidationErrorHandler] = None,
     validate_after_sanitize: bool = False,
 ) -> PathType:
     """Make a valid filename from a string.
@@ -369,9 +373,8 @@ def sanitize_filename(
             - |invalid_filename_chars|
             - for Windows (or universal) only: |invalid_win_filename_chars|
 
-        - Append underscore (``"_"``) at the tail of the return value if a sanitized name
-          is one of the reserved names by operating systems
-          (only when ``check_reserved`` is |True|).
+        - Replace a value if a sanitized value is a reserved name by operating systems
+          with a specified handler by ``reserved_name_handler``.
 
     Args:
         filename: Filename to sanitize.
@@ -389,16 +392,26 @@ def sanitize_filename(
             Filesystem encoding that used to calculate the byte length of the filename.
             If |None|, get the value from the execution environment.
         check_reserved:
-            If |True|, sanitize reserved names of the ``platform``.
+            [Deprecated] Use 'reserved_name_handler' instead.
         null_value_handler:
             Function called when a value after sanitization is an empty string.
             You can specify predefined handlers:
 
-                - :py:func:`.handler.return_null_string`
-                - :py:func:`.handler.return_timestamp`
-                - :py:func:`.handler.raise_error`
+                - :py:func:`~.handler.return_null_string`
+                - :py:func:`~.handler.return_timestamp`
+                - :py:func:`~.handler.raise_error`
 
             Defaults to :py:func:`.handler.return_null_string` that just return ``""``.
+        reserved_name_handler:
+            Function called when a value after sanitization is a reserved name.
+            You can specify predefined handlers:
+
+                - :py:meth:`~.handler.ReservedNameHandler.add_leading_underscore`
+                - :py:meth:`~.handler.ReservedNameHandler.add_trailing_underscore`
+                - :py:meth:`~.handler.ReservedNameHandler.as_is`
+                - :py:func:`~.handler.raise_error`
+
+            Defaults to :py:func:`.handler.add_trailing_underscore`.
         validate_after_sanitize:
             Execute validation after sanitization to the file name.
 
@@ -414,11 +427,20 @@ def sanitize_filename(
         :ref:`example-sanitize-filename`
     """
 
+    if check_reserved is not None:
+        warnings.warn(
+            "'check_reserved' is deprecated. Use 'reserved_name_handler' instead.",
+            DeprecationWarning,
+        )
+
+        if check_reserved is False:
+            reserved_name_handler = ReservedNameHandler.as_is
+
     return FileNameSanitizer(
         platform=platform,
         max_len=-1 if max_len is None else max_len,
         fs_encoding=fs_encoding,
-        check_reserved=check_reserved,
         null_value_handler=null_value_handler,
+        reserved_name_handler=reserved_name_handler,
         validate_after_sanitize=validate_after_sanitize,
     ).sanitize(filename, replacement_text)

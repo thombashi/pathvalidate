@@ -6,6 +6,7 @@ import ntpath
 import os.path
 import posixpath
 import re
+import warnings
 from pathlib import Path, PurePath
 from typing import List, Optional, Pattern, Tuple
 
@@ -15,7 +16,7 @@ from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
 from .error import ErrorReason, InvalidCharError, ReservedNameError, ValidationError
-from .handler import ValidationErrorHandler
+from .handler import ReservedNameHandler, ValidationErrorHandler
 
 
 _RE_INVALID_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_PATH_CHARS):s}]", re.UNICODE)
@@ -28,8 +29,8 @@ class FilePathSanitizer(AbstractSanitizer):
         max_len: int = -1,
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
-        check_reserved: bool = True,
         null_value_handler: Optional[ValidationErrorHandler] = None,
+        reserved_name_handler: Optional[ValidationErrorHandler] = None,
         normalize: bool = True,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
@@ -41,15 +42,15 @@ class FilePathSanitizer(AbstractSanitizer):
                 min_len=DEFAULT_MIN_LEN,
                 max_len=max_len,
                 fs_encoding=fs_encoding,
-                check_reserved=check_reserved,
+                check_reserved=True,
                 platform=platform,
             )
         super().__init__(
             max_len=max_len,
             fs_encoding=fs_encoding,
-            check_reserved=check_reserved,
             validator=fpath_validator,
             null_value_handler=null_value_handler,
+            reserved_name_handler=reserved_name_handler,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
         )
@@ -58,8 +59,8 @@ class FilePathSanitizer(AbstractSanitizer):
         self.__fname_sanitizer = FileNameSanitizer(
             max_len=self.max_len,
             fs_encoding=fs_encoding,
-            check_reserved=check_reserved,
             null_value_handler=null_value_handler,
+            reserved_name_handler=reserved_name_handler,
             platform=self.platform,
             validate_after_sanitize=validate_after_sanitize,
         )
@@ -390,8 +391,9 @@ def sanitize_filepath(
     platform: Optional[PlatformType] = None,
     max_len: Optional[int] = None,
     fs_encoding: Optional[str] = None,
-    check_reserved: bool = True,
+    check_reserved: Optional[bool] = None,
     null_value_handler: Optional[ValidationErrorHandler] = None,
+    reserved_name_handler: Optional[ValidationErrorHandler] = None,
     normalize: bool = True,
     validate_after_sanitize: bool = False,
 ) -> PathType:
@@ -399,16 +401,15 @@ def sanitize_filepath(
 
     To make a valid file path, the function does the following:
 
-        - replace invalid characters for a file path within the ``file_path``
+        - Replace invalid characters for a file path within the ``file_path``
           with the ``replacement_text``. Invalid characters are as follows:
 
             - unprintable characters
             - |invalid_file_path_chars|
             - for Windows (or universal) only: |invalid_win_file_path_chars|
 
-        - Append underscore (``"_"``) at the tail of the name if sanitized name
-          is one of the reserved names by operating systems
-          (only when ``check_reserved`` is |True|).
+        - Replace a value if a sanitized value is a reserved name by operating systems
+          with a specified handler by ``reserved_name_handler``.
 
     Args:
         file_path:
@@ -433,7 +434,7 @@ def sanitize_filepath(
             Filesystem encoding that used to calculate the byte length of the file path.
             If |None|, get the value from the execution environment.
         check_reserved:
-            If |True|, sanitize reserved names of the ``platform``.
+            [Deprecated] Use 'reserved_name_handler' instead.
         null_value_handler:
             Function called when a value after sanitization is an empty string.
             You can specify predefined handlers:
@@ -443,6 +444,16 @@ def sanitize_filepath(
                 - :py:func:`.handler.raise_error`
 
             Defaults to :py:func:`.handler.return_null_string` that just return ``""``.
+        reserved_name_handler:
+            Function called when a value after sanitization is one of the reserved names.
+            You can specify predefined handlers:
+
+                - :py:meth:`~.handler.ReservedNameHandler.add_leading_underscore`
+                - :py:meth:`~.handler.ReservedNameHandler.add_trailing_underscore`
+                - :py:meth:`~.handler.ReservedNameHandler.as_is`
+                - :py:func:`~.handler.raise_error`
+
+            Defaults to :py:func:`.handler.add_trailing_underscore`.
         normalize:
             If |True|, normalize the the file path.
         validate_after_sanitize:
@@ -460,12 +471,21 @@ def sanitize_filepath(
         :ref:`example-sanitize-file-path`
     """
 
+    if check_reserved is not None:
+        warnings.warn(
+            "'check_reserved' is deprecated. Use 'reserved_name_handler' instead.",
+            DeprecationWarning,
+        )
+
+        if check_reserved is False:
+            reserved_name_handler = ReservedNameHandler.as_is
+
     return FilePathSanitizer(
         platform=platform,
         max_len=-1 if max_len is None else max_len,
         fs_encoding=fs_encoding,
-        check_reserved=check_reserved,
         normalize=normalize,
         null_value_handler=null_value_handler,
+        reserved_name_handler=reserved_name_handler,
         validate_after_sanitize=validate_after_sanitize,
     ).sanitize(file_path, replacement_text)

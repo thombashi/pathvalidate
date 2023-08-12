@@ -22,7 +22,12 @@ from pathvalidate import (
 )
 from pathvalidate._common import unprintable_ascii_chars
 from pathvalidate._filename import FileNameSanitizer, FileNameValidator
-from pathvalidate.handler import raise_error, return_null_string, return_timestamp
+from pathvalidate.handler import (
+    ReservedNameHandler,
+    raise_error,
+    return_null_string,
+    return_timestamp,
+)
 
 from ._common import (
     INVALID_FILENAME_CHARS,
@@ -591,6 +596,29 @@ class Test_sanitize_filename:
         filename = sanitize_filename(value, platform=test_platform)
         assert filename == expected
         assert is_valid_filename(filename, platform=test_platform)
+
+    @pytest.mark.parametrize(
+        ["value", "reserved_name_handler", "expected"],
+        [
+            ["CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
+            ["CON", ReservedNameHandler.add_leading_underscore, "_CON"],
+            ["CON", ReservedNameHandler.as_is, "CON"],
+        ],
+    )
+    def test_normal_reserved_name_handler(self, value, reserved_name_handler, expected):
+        for platform in ["windows", "universal"]:
+            assert (
+                sanitize_filename(
+                    value, platform=platform, reserved_name_handler=reserved_name_handler
+                )
+                == expected
+            )
+
+    def test_exception_reserved_name_handler(self):
+        for platform in ["windows", "universal"]:
+            with pytest.raises(ValidationError) as e:
+                sanitize_filename("CON", platform=platform, reserved_name_handler=raise_error)
+            assert e.value.reason == ErrorReason.RESERVED_NAME
 
     @pytest.mark.parametrize(
         ["value", "check_reserved", "expected"],

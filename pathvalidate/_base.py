@@ -11,7 +11,7 @@ from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
 from ._types import PathType, PlatformType
 from .error import ReservedNameError, ValidationError
-from .handler import ValidationErrorHandler, return_null_string
+from .handler import ReservedNameHandler, ValidationErrorHandler, return_null_string
 
 
 class BaseFile:
@@ -38,12 +38,10 @@ class BaseFile:
         self,
         max_len: int,
         fs_encoding: Optional[str],
-        check_reserved: bool,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         self.__platform = normalize_platform(platform)
-        self._check_reserved = check_reserved
 
         if platform_max_len is None:
             platform_max_len = self._get_default_max_path_len()
@@ -98,6 +96,23 @@ class BaseFile:
 
 
 class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
+    def __init__(
+        self,
+        max_len: int,
+        fs_encoding: Optional[str],
+        check_reserved: bool,
+        platform_max_len: Optional[int] = None,
+        platform: Optional[PlatformType] = None,
+    ) -> None:
+        self._check_reserved = check_reserved
+
+        super().__init__(
+            max_len,
+            fs_encoding,
+            platform_max_len=platform_max_len,
+            platform=platform,
+        )
+
     @abc.abstractproperty
     def min_len(self) -> int:  # pragma: no cover
         pass
@@ -124,16 +139,15 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         validator: AbstractValidator,
         max_len: int,
         fs_encoding: Optional[str],
-        check_reserved: bool,
         validate_after_sanitize: bool,
         null_value_handler: Optional[ValidationErrorHandler] = None,
+        reserved_name_handler: Optional[ValidationErrorHandler] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         super().__init__(
             max_len=max_len,
             fs_encoding=fs_encoding,
-            check_reserved=check_reserved,
             platform_max_len=platform_max_len,
             platform=platform,
         )
@@ -141,6 +155,10 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         if null_value_handler is None:
             null_value_handler = return_null_string
         self._null_value_handler = null_value_handler
+
+        if reserved_name_handler is None:
+            reserved_name_handler = ReservedNameHandler.add_trailing_underscore
+        self._reserved_name_handler = reserved_name_handler
 
         self._validate_after_sanitize = validate_after_sanitize
 
