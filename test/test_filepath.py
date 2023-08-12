@@ -479,7 +479,7 @@ class Test_validate_filepath:
         assert e.value.reason == expected
         assert str(e.value) == (
             r"[PV1100] invalid characters found: invalids=('\r'), value='asdf\rsdf', "
-            "target-platform=Windows"
+            "platform=Windows"
         )  # noqa
 
     @pytest.mark.parametrize(

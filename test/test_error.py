@@ -25,7 +25,7 @@ class Test_str:
                     platform=Platform.UNIVERSAL,
                     reason=ErrorReason.INVALID_CHARACTER,
                 ),
-                "[PV1100] invalid characters found: target-platform=universal, description=hoge",
+                "[PV1100] invalid characters found: platform=universal, description=hoge",
             ],
         ],
     )

@@ -12,6 +12,15 @@ def _to_error_code(code: int) -> str:
     return f"PV{code:04d}"
 
 
+class ErrorAttrKey:
+    DESCRIPTION = "description"
+    FS_ENCODING = "fs_encoding"
+    PLATFORM = "platform"
+    REASON = "reason"
+    RESERVED_NAME = "reserved_name"
+    REUSABLE_NAME = "reusable_name"
+
+
 @enum.unique
 class ErrorReason(enum.Enum):
     """
@@ -109,15 +118,15 @@ class ValidationError(ValueError):
         return self.__reusable_name
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
-        if "reason" not in kwargs:
-            raise ValueError("reason must be specified")
+        if ErrorAttrKey.REASON not in kwargs:
+            raise ValueError(f"{ErrorAttrKey.REASON} must be specified")
 
-        self.__reason: ErrorReason = kwargs.pop("reason")
-        self.__platform: Optional[Platform] = kwargs.pop("platform", None)
-        self.__description: Optional[str] = kwargs.pop("description", None)
-        self.__reserved_name: str = kwargs.pop("reserved_name", "")
-        self.__reusable_name: Optional[bool] = kwargs.pop("reusable_name", None)
-        self.__fs_encoding: Optional[str] = kwargs.pop("fs_encoding", None)
+        self.__reason: ErrorReason = kwargs.pop(ErrorAttrKey.REASON)
+        self.__platform: Optional[Platform] = kwargs.pop(ErrorAttrKey.PLATFORM, None)
+        self.__description: Optional[str] = kwargs.pop(ErrorAttrKey.DESCRIPTION, None)
+        self.__reserved_name: str = kwargs.pop(ErrorAttrKey.RESERVED_NAME, "")
+        self.__reusable_name: Optional[bool] = kwargs.pop(ErrorAttrKey.REUSABLE_NAME, None)
+        self.__fs_encoding: Optional[str] = kwargs.pop(ErrorAttrKey.FS_ENCODING, None)
 
         try:
             super().__init__(*args[0], **kwargs)
@@ -133,16 +142,16 @@ class ValidationError(ValueError):
 
         slog: Dict[str, str] = {
             "code": self.reason.code,
-            "description": self.reason.description,
+            ErrorAttrKey.DESCRIPTION: self.reason.description,
         }
         if self.platform:
-            slog["platform"] = self.platform.value
+            slog[ErrorAttrKey.PLATFORM] = self.platform.value
         if self.description:
-            slog["description"] = self.description
+            slog[ErrorAttrKey.DESCRIPTION] = self.description
         if self.__reusable_name is not None:
-            slog["reusable_name"] = str(self.__reusable_name)
+            slog[ErrorAttrKey.REUSABLE_NAME] = str(self.__reusable_name)
         if self.__fs_encoding:
-            slog["fs_encoding"] = self.__fs_encoding
+            slog[ErrorAttrKey.FS_ENCODING] = self.__fs_encoding
 
         return slog
 
@@ -154,13 +163,13 @@ class ValidationError(ValueError):
             item_list.append(Exception.__str__(self))
 
         if self.platform:
-            item_list.append(f"target-platform={self.platform.value}")
+            item_list.append(f"{ErrorAttrKey.PLATFORM}={self.platform.value}")
         if self.description:
-            item_list.append(f"description={self.description}")
+            item_list.append(f"{ErrorAttrKey.DESCRIPTION}={self.description}")
         if self.__reusable_name is not None:
-            item_list.append(f"reusable_name={self.reusable_name}")
+            item_list.append(f"{ErrorAttrKey.REUSABLE_NAME}={self.reusable_name}")
         if self.__fs_encoding:
-            item_list.append(f"fs-encoding={self.__fs_encoding}")
+            item_list.append(f"{ErrorAttrKey.FS_ENCODING}={self.__fs_encoding}")
 
         if item_list:
             header += ": "
@@ -177,7 +186,7 @@ class NullNameError(ValidationError):
     """
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
-        kwargs["reason"] = ErrorReason.NULL_NAME
+        kwargs[ErrorAttrKey.REASON] = ErrorReason.NULL_NAME
 
         super().__init__(args, **kwargs)
 
@@ -188,7 +197,7 @@ class InvalidCharError(ValidationError):
     """
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
-        kwargs["reason"] = ErrorReason.INVALID_CHARACTER
+        kwargs[ErrorAttrKey.REASON] = ErrorReason.INVALID_CHARACTER
 
         super().__init__(args, **kwargs)
 
@@ -199,7 +208,7 @@ class ReservedNameError(ValidationError):
     """
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
-        kwargs["reason"] = ErrorReason.RESERVED_NAME
+        kwargs[ErrorAttrKey.REASON] = ErrorReason.RESERVED_NAME
 
         super().__init__(args, **kwargs)
 
@@ -211,7 +220,7 @@ class ValidReservedNameError(ReservedNameError):
     """
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
-        kwargs["reusable_name"] = True
+        kwargs[ErrorAttrKey.REUSABLE_NAME] = True
 
         super().__init__(args, **kwargs)
 
@@ -223,6 +232,6 @@ class InvalidReservedNameError(ReservedNameError):
     """
 
     def __init__(self, *args, **kwargs) -> None:  # type: ignore[no-untyped-def]
-        kwargs["reusable_name"] = False
+        kwargs[ErrorAttrKey.REUSABLE_NAME] = False
 
         super().__init__(args, **kwargs)

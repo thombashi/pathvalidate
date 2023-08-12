@@ -14,7 +14,7 @@ from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
-from .error import ErrorReason, InvalidCharError, ValidationError
+from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ValidationError
 from .handler import ReservedNameHandler, ValidationErrorHandler
 
 
@@ -169,9 +169,9 @@ class FileNameValidator(BaseValidator):
         self.validate_abspath(unicode_filename)
 
         err_kwargs = {
-            "reason": ErrorReason.INVALID_LENGTH,
-            "platform": self.platform,
-            "fs_encoding": self._fs_encoding,
+            ErrorAttrKey.REASON: ErrorReason.INVALID_LENGTH,
+            ErrorAttrKey.PLATFORM: self.platform,
+            ErrorAttrKey.FS_ENCODING: self._fs_encoding,
         }
         if byte_ct > self.max_len:
             raise ValidationError(

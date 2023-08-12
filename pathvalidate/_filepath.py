@@ -15,7 +15,7 @@ from ._common import findall_to_str, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
-from .error import ErrorReason, InvalidCharError, ReservedNameError, ValidationError
+from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ReservedNameError, ValidationError
 from .handler import ReservedNameHandler, ValidationErrorHandler
 
 
@@ -191,9 +191,9 @@ class FilePathValidator(BaseValidator):
         unicode_filepath = to_str(tail)
         byte_ct = len(unicode_filepath.encode(self._fs_encoding))
         err_kwargs = {
-            "reason": ErrorReason.INVALID_LENGTH,
-            "platform": self.platform,
-            "fs_encoding": self._fs_encoding,
+            ErrorAttrKey.REASON: ErrorReason.INVALID_LENGTH,
+            ErrorAttrKey.PLATFORM: self.platform,
+            ErrorAttrKey.FS_ENCODING: self._fs_encoding,
         }
 
         if byte_ct > self.max_len:
