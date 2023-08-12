@@ -439,11 +439,11 @@ def sanitize_filepath(
             Function called when a value after sanitization is an empty string.
             You can specify predefined handlers:
 
-                - :py:func:`.handler.return_null_string`
-                - :py:func:`.handler.return_timestamp`
+                - :py:func:`.handler.NullValueHandler.return_null_string`
+                - :py:func:`.handler.NullValueHandler.return_timestamp`
                 - :py:func:`.handler.raise_error`
 
-            Defaults to :py:func:`.handler.return_null_string` that just return ``""``.
+            Defaults to :py:func:`.handler.NullValueHandler.return_null_string` that just return ``""``.
         reserved_name_handler:
             Function called when a value after sanitization is one of the reserved names.
             You can specify predefined handlers:

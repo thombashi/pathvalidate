@@ -3,6 +3,7 @@
 """
 
 
+import warnings
 from datetime import datetime
 from typing import Callable
 
@@ -22,6 +23,11 @@ def return_null_string(e: ValidationError) -> str:
         str: An empty string.
     """
 
+    warnings.warn(
+        "'return_null_string' is deprecated. Use 'NullValueHandler.return_null_string' instead.",
+        DeprecationWarning,
+    )
+
     return ""
 
 
@@ -34,6 +40,11 @@ def return_timestamp(e: ValidationError) -> str:
     Returns:
         str: A timestamp.
     """
+
+    warnings.warn(
+        "'return_timestamp' is deprecated. Use 'NullValueHandler.reserved_name_handler' instead.",
+        DeprecationWarning,
+    )
 
     return str(datetime.now().timestamp())
 
@@ -49,6 +60,34 @@ def raise_error(e: ValidationError) -> str:
     """
 
     raise e
+
+
+class NullValueHandler:
+    @classmethod
+    def return_null_string(cls, e: ValidationError) -> str:
+        """Null value handler that always returns an empty string.
+
+        Args:
+            e (ValidationError): A validation error.
+
+        Returns:
+            str: An empty string.
+        """
+
+        return ""
+
+    @classmethod
+    def return_timestamp(cls, e: ValidationError) -> str:
+        """Null value handler that returns a timestamp of when the function was called.
+
+        Args:
+            e (ValidationError): A validation error.
+
+        Returns:
+            str: A timestamp.
+        """
+
+        return str(datetime.now().timestamp())
 
 
 class ReservedNameHandler:

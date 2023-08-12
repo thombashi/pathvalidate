@@ -22,12 +22,7 @@ from pathvalidate import (
 )
 from pathvalidate._common import unprintable_ascii_chars
 from pathvalidate._filepath import FilePathSanitizer, FilePathValidator
-from pathvalidate.handler import (
-    ReservedNameHandler,
-    raise_error,
-    return_null_string,
-    return_timestamp,
-)
+from pathvalidate.handler import NullValueHandler, ReservedNameHandler, raise_error
 
 from ._common import (
     INVALID_PATH_CHARS,
@@ -757,8 +752,10 @@ class Test_sanitize_filepath:
         ],
     )
     def test_normal_null_value_handler(self, value):
-        assert sanitize_filepath(value, null_value_handler=return_null_string) == ""
-        assert sanitize_filepath(value, null_value_handler=return_timestamp) != ""
+        assert (
+            sanitize_filepath(value, null_value_handler=NullValueHandler.return_null_string) == ""
+        )
+        assert sanitize_filepath(value, null_value_handler=NullValueHandler.return_timestamp) != ""
         with pytest.raises(ValidationError):
             sanitize_filepath(value, null_value_handler=raise_error)
 
