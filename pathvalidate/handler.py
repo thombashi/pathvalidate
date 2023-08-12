@@ -137,16 +137,3 @@ class ReservedNameHandler:
         """
 
         return e.reserved_name
-
-    @classmethod
-    def raise_error(cls, e: ValidationError) -> str:
-        """Reserved name handler that always raises an exception.
-
-        Args:
-            e (ValidationError): A reserved name error.
-
-        Raises:
-            ValidationError: Always raised.
-        """
-
-        raise e
