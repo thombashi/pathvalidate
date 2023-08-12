@@ -172,7 +172,7 @@ class ValidationError(ValueError):
 
 
 class NullNameError(ValidationError):
-    """
+    """[Deprecated]
     Exception raised when a name is empty.
     """
 
@@ -205,7 +205,7 @@ class ReservedNameError(ValidationError):
 
 
 class ValidReservedNameError(ReservedNameError):
-    """
+    """[Deprecated]
     Exception raised when a string matched a reserved name.
     However, it can be used as a name.
     """
@@ -217,7 +217,7 @@ class ValidReservedNameError(ReservedNameError):
 
 
 class InvalidReservedNameError(ReservedNameError):
-    """
+    """[Deprecated]
     Exception raised when a string matched a reserved name.
     Moreover, the reserved name is invalid as a name.
     """

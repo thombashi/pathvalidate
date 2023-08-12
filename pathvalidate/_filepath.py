@@ -436,7 +436,13 @@ def sanitize_filepath(
             If |True|, sanitize reserved names of the ``platform``.
         null_value_handler:
             Function called when a value after sanitization is an empty string.
-            Defaults to ``pathvalidate.handler.return_null_string()`` that just return ``""``.
+            You can specify predefined handlers:
+
+                - :py:func:`.handler.return_null_string`
+                - :py:func:`.handler.return_timestamp`
+                - :py:func:`.handler.raise_error`
+
+            Defaults to :py:func:`.handler.return_null_string` that just return ``""``.
         normalize:
             If |True|, normalize the the file path.
         validate_after_sanitize:
