@@ -192,8 +192,8 @@ class ValidationError(ValueError):
 
         return header + ", ".join(item_list).strip()
 
-    def __repr__(self, *args, **kwargs) -> str:
-        return self.__str__(*args, **kwargs)
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class NullNameError(ValidationError):

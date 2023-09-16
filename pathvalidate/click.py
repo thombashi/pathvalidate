@@ -10,7 +10,7 @@ from ._filepath import sanitize_filepath, validate_filepath
 from .error import ValidationError
 
 
-def validate_filename_arg(ctx: Context, param: Option, value) -> str:
+def validate_filename_arg(ctx: Context, param: Option, value: str) -> str:
     if not value:
         return ""
 
@@ -22,7 +22,7 @@ def validate_filename_arg(ctx: Context, param: Option, value) -> str:
     return value
 
 
-def validate_filepath_arg(ctx: Context, param: Option, value) -> str:
+def validate_filepath_arg(ctx: Context, param: Option, value: str) -> str:
     if not value:
         return ""
 
