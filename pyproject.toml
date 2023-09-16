@@ -1,9 +1,8 @@
 [build-system]
-requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61.0"]
 
 [tool.black]
-line-length = 100
 exclude = '''
 /(
       \.eggs
@@ -19,43 +18,44 @@ exclude = '''
 )/
 | docs/conf.py
 '''
+line-length = 100
 target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']
 
 [tool.isort]
-known_third_party = [
-    'allpairspy',
-    'path',
-    'pytest',
-    'readmemaker',
-    'sphinx_rtd_theme',
-]
 include_trailing_comma = true
+known_third_party = [
+  'allpairspy',
+  'path',
+  'pytest',
+  'readmemaker',
+  'sphinx_rtd_theme',
+]
 line_length = 100
 lines_after_imports = 2
 multi_line_output = 3
 skip_glob = [
-    '*/.eggs/*',
-    '*/.pytype/*',
-    '*/.tox/*',
+  '*/.eggs/*',
+  '*/.pytype/*',
+  '*/.tox/*',
 ]
 
 [tool.coverage.run]
-source = ['pathvalidate']
 branch = true
+source = ['pathvalidate']
 
 [tool.coverage.report]
-show_missing = true
-precision = 1
 exclude_lines = [
-    'except ImportError',
-    'raise NotImplementedError',
-    'pass',
-    'ABCmeta',
-    'abstractmethod',
-    'abstractproperty',
-    'abstractclassmethod',
-    'warnings.warn',
+  'except ImportError',
+  'raise NotImplementedError',
+  'pass',
+  'ABCmeta',
+  'abstractmethod',
+  'abstractproperty',
+  'abstractclassmethod',
+  'warnings.warn',
 ]
+precision = 1
+show_missing = true
 
 [tool.mypy]
 ignore_missing_imports = true
@@ -69,11 +69,11 @@ warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = [
-    "test",
+  "test",
 ]
 
 md_report = true
-md_report_verbose = 0
 md_report_color = "auto"
+md_report_verbose = 0
 
 discord_verbose = 1
