@@ -67,6 +67,7 @@ def main() -> int:
     maker.write_introduction_file("badges.txt")
 
     maker.write_introduction_file("feature.txt")
+    maker.write_introduction_file("cli.txt")
 
     write_examples(maker)
 

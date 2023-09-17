@@ -15,4 +15,6 @@ Summary
 
 .. include:: feature.txt
 
+.. include:: cli.txt
+
 .. include:: installation.rst
