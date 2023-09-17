@@ -39,9 +39,18 @@ Features
 - Sanitize/Validate a string as a:
     - file name
     - file path
-- file name/path argument validator/sanitizer for ``argparse`` and ``click``
+- Sanitize will do:
+    - Remove invalid characters for a target platform
+    - Replace reserved names for a target platform
+    - Normalize
+    - Remove unprintable characters
+- Argument validator/sanitizer for ``argparse`` and ``click``
 - Multi platform support:
-    - sanitize/validate file names/paths for a specific platform (``Linux``/``Windows``/``macOS``/``POSIX``) or ``universal`` (platform independent)
+    - ``Linux``
+    - ``Windows``
+    - ``macOS``
+    - ``POSIX``
+    - ``universal`` (platform independent)
 - Multibyte character support
 
 Examples
@@ -110,9 +119,9 @@ Validate a filename
 :Output:
     .. code-block::
 
-        [PV1100] invalid characters found: target-platform=universal, description=invalids=('/'), value='fi:l*e/p"a?t>h|.t<xt'
+        [PV1100] invalid characters found: platform=universal, description=invalids=('/'), value='fi:l*e/p"a?t>h|.t<xt'
 
-        [PV1002] found a reserved name by a platform: 'COM1' is a reserved name, target-platform=universal, reusable_name=False
+        [PV1002] found a reserved name by a platform: 'COM1' is a reserved name, platform=universal, reusable_name=False
 
 Check a filename
 ------------------
@@ -161,7 +170,7 @@ filename/filepath validator for ``argparse``
         filename: eg
         $ ./examples/argparse_validate.py --filename e?g
         usage: argparse_validate.py [-h] [--filename FILENAME] [--filepath FILEPATH]
-        argparse_validate.py: error: argument --filename: [PV1100] invalid characters found: invalids=(':'), value='e:g', target-platform=Windows
+        argparse_validate.py: error: argument --filename: [PV1100] invalid characters found: invalids=(':'), value='e:g', platform=Windows
 
 .. note::
     ``validate_filepath_arg`` consider ``platform`` as of ``"auto"`` if the input is an absolute file path.
@@ -228,7 +237,7 @@ filename/filepath validator for ``click``
         Usage: click_validate.py [OPTIONS]
         Try 'click_validate.py --help' for help.
 
-        Error: Invalid value for '--filename': [PV1100] invalid characters found: invalids=('?'), value='e?g', target-platform=Windows
+        Error: Invalid value for '--filename': [PV1100] invalid characters found: invalids=('?'), value='e?g', platform=Windows
 
 filename/filepath sanitizer for ``click``
 -------------------------------------------
