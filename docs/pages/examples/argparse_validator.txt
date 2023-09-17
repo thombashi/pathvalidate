@@ -23,7 +23,7 @@
         filename: eg
         $ ./examples/argparse_validate.py --filename e?g
         usage: argparse_validate.py [-h] [--filename FILENAME] [--filepath FILEPATH]
-        argparse_validate.py: error: argument --filename: [PV1100] invalid characters found: invalids=(':'), value='e:g', target-platform=Windows
+        argparse_validate.py: error: argument --filename: [PV1100] invalid characters found: invalids=(':'), value='e:g', platform=Windows
 
 .. note::
     ``validate_filepath_arg`` consider ``platform`` as of ``"auto"`` if the input is an absolute file path.

@@ -28,4 +28,4 @@
         Usage: click_validate.py [OPTIONS]
         Try 'click_validate.py --help' for help.
 
-        Error: Invalid value for '--filename': [PV1100] invalid characters found: invalids=('?'), value='e?g', target-platform=Windows
+        Error: Invalid value for '--filename': [PV1100] invalid characters found: invalids=('?'), value='e?g', platform=Windows
