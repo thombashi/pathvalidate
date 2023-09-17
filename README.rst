@@ -53,6 +53,10 @@ Features
     - ``universal`` (platform independent)
 - Multibyte character support
 
+CLI tool
+---------
+You can find this package's command line interface tool at the `pathvalidate-cli <https://github.com/thombashi/pathvalidate-cli>`__ repository.
+
 Examples
 ==========
 Sanitize a filename
