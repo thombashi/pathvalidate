@@ -8,7 +8,7 @@ import posixpath
 import re
 import warnings
 from pathlib import Path, PurePath
-from typing import List, Optional, Pattern, Tuple
+from typing import List, Optional, Pattern, Sequence, Tuple
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, to_str, validate_pathtype
@@ -31,6 +31,7 @@ class FilePathSanitizer(AbstractSanitizer):
         platform: Optional[PlatformType] = None,
         null_value_handler: Optional[ValidationErrorHandler] = None,
         reserved_name_handler: Optional[ValidationErrorHandler] = None,
+        additional_reserved_names: Optional[Sequence[str]] = None,
         normalize: bool = True,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
@@ -43,6 +44,7 @@ class FilePathSanitizer(AbstractSanitizer):
                 max_len=max_len,
                 fs_encoding=fs_encoding,
                 check_reserved=True,
+                additional_reserved_names=additional_reserved_names,
                 platform=platform,
             )
         super().__init__(
@@ -51,6 +53,7 @@ class FilePathSanitizer(AbstractSanitizer):
             validator=fpath_validator,
             null_value_handler=null_value_handler,
             reserved_name_handler=reserved_name_handler,
+            additional_reserved_names=additional_reserved_names,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
         )
@@ -61,6 +64,7 @@ class FilePathSanitizer(AbstractSanitizer):
             fs_encoding=fs_encoding,
             null_value_handler=null_value_handler,
             reserved_name_handler=reserved_name_handler,
+            additional_reserved_names=additional_reserved_names,
             platform=self.platform,
             validate_after_sanitize=validate_after_sanitize,
         )
@@ -162,17 +166,23 @@ class FilePathValidator(BaseValidator):
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
+        additional_reserved_names: Optional[Sequence[str]] = None,
     ) -> None:
         super().__init__(
             min_len=min_len,
             max_len=max_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
+            additional_reserved_names=additional_reserved_names,
             platform=platform,
         )
 
         self.__fname_validator = FileNameValidator(
-            min_len=min_len, max_len=max_len, check_reserved=check_reserved, platform=platform
+            min_len=min_len,
+            max_len=max_len,
+            check_reserved=check_reserved,
+            additional_reserved_names=additional_reserved_names,
+            platform=platform,
         )
 
         if self._is_windows(include_universal=True):
@@ -301,6 +311,7 @@ def validate_filepath(
     max_len: Optional[int] = None,
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
+    additional_reserved_names: Optional[Sequence[str]] = None,
 ) -> None:
     """Verifying whether the ``file_path`` is a valid file path or not.
 
@@ -327,6 +338,9 @@ def validate_filepath(
             If |None|, get the value from the execution environment.
         check_reserved (bool, optional):
             If |True|, check reserved names of the ``platform``.
+            Defaults to |True|.
+        additional_reserved_names (Optional[Sequence[str]], optional):
+            Additional reserved names to check.
 
     Raises:
         ValidationError (ErrorReason.INVALID_CHARACTER):
@@ -353,6 +367,7 @@ def validate_filepath(
         max_len=-1 if max_len is None else max_len,
         fs_encoding=fs_encoding,
         check_reserved=check_reserved,
+        additional_reserved_names=additional_reserved_names,
     ).validate(file_path)
 
 
@@ -363,12 +378,15 @@ def is_valid_filepath(
     max_len: Optional[int] = None,
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
+    additional_reserved_names: Optional[Sequence[str]] = None,
 ) -> bool:
     """Check whether the ``file_path`` is a valid name or not.
 
     Args:
         file_path:
             A filepath to be checked.
+        platform:
+            Target platform name of the file path.
 
     Example:
         :ref:`example-is-valid-filepath`
@@ -383,6 +401,7 @@ def is_valid_filepath(
         max_len=-1 if max_len is None else max_len,
         fs_encoding=fs_encoding,
         check_reserved=check_reserved,
+        additional_reserved_names=additional_reserved_names,
     ).is_valid(file_path)
 
 
@@ -395,6 +414,7 @@ def sanitize_filepath(
     check_reserved: Optional[bool] = None,
     null_value_handler: Optional[ValidationErrorHandler] = None,
     reserved_name_handler: Optional[ValidationErrorHandler] = None,
+    additional_reserved_names: Optional[Sequence[str]] = None,
     normalize: bool = True,
     validate_after_sanitize: bool = False,
 ) -> PathType:
@@ -455,6 +475,9 @@ def sanitize_filepath(
                 - :py:func:`~.handler.raise_error`
 
             Defaults to :py:func:`.handler.add_trailing_underscore`.
+        additional_reserved_names:
+            Additional reserved names to sanitize.
+            Case insensitive.
         normalize:
             If |True|, normalize the the file path.
         validate_after_sanitize:
@@ -488,5 +511,6 @@ def sanitize_filepath(
         normalize=normalize,
         null_value_handler=null_value_handler,
         reserved_name_handler=reserved_name_handler,
+        additional_reserved_names=additional_reserved_names,
         validate_after_sanitize=validate_after_sanitize,
     ).sanitize(file_path, replacement_text)

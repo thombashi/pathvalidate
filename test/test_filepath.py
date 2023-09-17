@@ -64,6 +64,10 @@ class Test_FileSanitizer:
 
         assert FilePathSanitizer(255, platform="auto").platform == expected
 
+    def test_normal_additional_reserved_names(self):
+        sanitizer = FilePathSanitizer(additional_reserved_names=["abc"])
+        assert sanitizer.reserved_keywords == ("ABC",)
+
 
 class Test_FilePathValidator:
     @pytest.mark.parametrize(
@@ -77,6 +81,10 @@ class Test_FilePathValidator:
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
         assert FilePathValidator(255, platform=test_platform).reserved_keywords == expected
+
+    def test_normal_additional_reserved_names(self):
+        sanitizer = FilePathValidator(additional_reserved_names=["abc"])
+        assert "ABC" in sanitizer.reserved_keywords
 
 
 class Test_validate_filepath:
@@ -466,6 +474,16 @@ class Test_validate_filepath:
         assert not is_valid_filepath(value, platform=platform)
 
     @pytest.mark.parametrize(
+        ["value", "arn", "expected"],
+        [
+            ["abc/efg.txt", ["abc"], False],
+            ["abc/efg.txt", ["efg.txt"], False],
+        ],
+    )
+    def test_normal_additional_reserved_names(self, value, arn, expected):
+        assert is_valid_filepath(value, additional_reserved_names=arn) == expected
+
+    @pytest.mark.parametrize(
         ["value", "platform", "expected"],
         [
             [value, platform, ErrorReason.INVALID_CHARACTER]
@@ -687,6 +705,23 @@ class Test_sanitize_filepath:
         assert (
             sanitize_filepath(value, platform="windows", check_reserved=check_reserved) == expected
         )
+
+    @pytest.mark.parametrize(
+        ["value", "arn", "expected"],
+        [
+            ["abc", ["abc"], "abc_"],
+        ],
+    )
+    def test_normal_additional_reserved_names(self, value, arn, expected):
+        for platform in ["windows", "universal"]:
+            assert (
+                sanitize_filepath(
+                    value,
+                    platform=platform,
+                    additional_reserved_names=arn,
+                )
+                == expected
+            )
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],

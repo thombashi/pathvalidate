@@ -69,6 +69,10 @@ class Test_FileSanitizer:
 
         assert FileNameSanitizer(255, platform="auto").platform == expected
 
+    def test_normal_additional_reserved_names(self):
+        sanitizer = FileNameSanitizer(additional_reserved_names=["abc"])
+        assert sanitizer.reserved_keywords == ("ABC",)
+
 
 class Test_FileNameValidator:
     @pytest.mark.parametrize(
@@ -77,11 +81,8 @@ class Test_FileNameValidator:
             [
                 "windows",
                 (
-                    "CON",
-                    "PRN",
                     "AUX",
                     "CLOCK$",
-                    "NUL",
                     "COM1",
                     "COM2",
                     "COM3",
@@ -91,6 +92,7 @@ class Test_FileNameValidator:
                     "COM7",
                     "COM8",
                     "COM9",
+                    "CON",
                     "LPT1",
                     "LPT2",
                     "LPT3",
@@ -100,6 +102,8 @@ class Test_FileNameValidator:
                     "LPT7",
                     "LPT8",
                     "LPT9",
+                    "NUL",
+                    "PRN",
                 ),
             ],
             ["linux", ()],
@@ -108,6 +112,16 @@ class Test_FileNameValidator:
     )
     def test_normal_reserved_keywords(self, test_platform, expected):
         assert FileNameValidator(255, platform=test_platform).reserved_keywords == expected
+
+    def test_normal_additional_reserved_names(self):
+        sanitizer = FileNameValidator(additional_reserved_names=["abc", "efg.txt"])
+        assert "ABC" in sanitizer.reserved_keywords
+        assert "EFG.TXT" in sanitizer.reserved_keywords
+
+        sanitizer = FileNameValidator(platform="windows", additional_reserved_names=["CON"])
+        assert (
+            sanitizer.reserved_keywords == FileNameValidator(platform="windows").reserved_keywords
+        )
 
 
 class Test_validate_filename:
@@ -363,6 +377,19 @@ class Test_validate_filename:
             assert e.value.reusable_name is False
 
             assert not is_valid_filename(value, platform=platform)
+
+    @pytest.mark.parametrize(
+        ["value", "arn", "expected"],
+        [
+            ["abc", [], True],
+            ["abc", ["abc"], False],
+            ["Abc", ["abc"], False],
+            ["ABC", ["abc"], False],
+            ["abc.txt", ["abc.txt"], False],
+        ],
+    )
+    def test_normal_additional_reserved_names(self, value, arn, expected):
+        assert is_valid_filename(value, additional_reserved_names=arn) == expected
 
     @pytest.mark.parametrize(
         ["platform", "value", "expected"],
@@ -624,6 +651,24 @@ class Test_sanitize_filename:
             with pytest.raises(ValidationError) as e:
                 sanitize_filename("CON", platform=platform, reserved_name_handler=raise_error)
             assert e.value.reason == ErrorReason.RESERVED_NAME
+
+    @pytest.mark.parametrize(
+        ["value", "arn", "expected"],
+        [
+            ["abc", [], "abc"],
+            ["abc", ["abc"], "abc_"],
+        ],
+    )
+    def test_normal_additional_reserved_names(self, value, arn, expected):
+        for platform in ["windows", "universal"]:
+            assert (
+                sanitize_filename(
+                    value,
+                    platform=platform,
+                    additional_reserved_names=arn,
+                )
+                == expected
+            )
 
     @pytest.mark.parametrize(
         ["value", "check_reserved", "expected"],

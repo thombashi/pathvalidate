@@ -8,7 +8,7 @@ import posixpath
 import re
 import warnings
 from pathlib import Path, PurePath
-from typing import Optional, Pattern, Tuple
+from typing import Optional, Pattern, Sequence, Tuple
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, to_str, validate_pathtype
@@ -33,6 +33,7 @@ class FileNameSanitizer(AbstractSanitizer):
         platform: Optional[PlatformType] = None,
         null_value_handler: Optional[ValidationErrorHandler] = None,
         reserved_name_handler: Optional[ValidationErrorHandler] = None,
+        additional_reserved_names: Optional[Sequence[str]] = None,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
     ) -> None:
@@ -44,6 +45,7 @@ class FileNameSanitizer(AbstractSanitizer):
                 max_len=max_len,
                 fs_encoding=fs_encoding,
                 check_reserved=True,
+                additional_reserved_names=additional_reserved_names,
                 platform=platform,
             )
 
@@ -52,6 +54,7 @@ class FileNameSanitizer(AbstractSanitizer):
             fs_encoding=fs_encoding,
             null_value_handler=null_value_handler,
             reserved_name_handler=reserved_name_handler,
+            additional_reserved_names=additional_reserved_names,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
@@ -129,19 +132,19 @@ class FileNameValidator(BaseValidator):
         common_keywords = super().reserved_keywords
 
         if self._is_universal():
-            return (
+            word_set = set(
                 common_keywords
                 + self._WINDOWS_RESERVED_FILE_NAMES
                 + self._MACOS_RESERVED_FILE_NAMES
             )
+        elif self._is_windows():
+            word_set = set(common_keywords + self._WINDOWS_RESERVED_FILE_NAMES)
+        elif self._is_posix() or self._is_macos():
+            word_set = set(common_keywords + self._MACOS_RESERVED_FILE_NAMES)
+        else:
+            word_set = set(common_keywords)
 
-        if self._is_windows():
-            return common_keywords + self._WINDOWS_RESERVED_FILE_NAMES
-
-        if self._is_posix() or self._is_macos():
-            return common_keywords + self._MACOS_RESERVED_FILE_NAMES
-
-        return common_keywords
+        return tuple(sorted(word_set))
 
     def __init__(
         self,
@@ -150,12 +153,14 @@ class FileNameValidator(BaseValidator):
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
+        additional_reserved_names: Optional[Sequence[str]] = None,
     ) -> None:
         super().__init__(
             min_len=min_len,
             max_len=max_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
+            additional_reserved_names=additional_reserved_names,
             platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
@@ -264,6 +269,7 @@ def validate_filename(
     max_len: int = _DEFAULT_MAX_FILENAME_LEN,
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
+    additional_reserved_names: Optional[Sequence[str]] = None,
 ) -> None:
     """Verifying whether the ``filename`` is a valid file name or not.
 
@@ -291,6 +297,9 @@ def validate_filename(
             If |None|, get the value from the execution environment.
         check_reserved:
             If |True|, check reserved names of the ``platform``.
+        additional_reserved_names:
+            Additional reserved names to check.
+            Case insensitive.
 
     Raises:
         ValidationError (ErrorReason.INVALID_LENGTH):
@@ -319,6 +328,7 @@ def validate_filename(
         max_len=max_len,
         fs_encoding=fs_encoding,
         check_reserved=check_reserved,
+        additional_reserved_names=additional_reserved_names,
     ).validate(filename)
 
 
@@ -329,12 +339,15 @@ def is_valid_filename(
     max_len: Optional[int] = None,
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
+    additional_reserved_names: Optional[Sequence[str]] = None,
 ) -> bool:
     """Check whether the ``filename`` is a valid name or not.
 
     Args:
         filename:
             A filename to be checked.
+        platform:
+            Target platform name of the filename.
 
     Example:
         :ref:`example-is-valid-filename`
@@ -349,6 +362,7 @@ def is_valid_filename(
         max_len=-1 if max_len is None else max_len,
         fs_encoding=fs_encoding,
         check_reserved=check_reserved,
+        additional_reserved_names=additional_reserved_names,
     ).is_valid(filename)
 
 
@@ -361,6 +375,7 @@ def sanitize_filename(
     check_reserved: Optional[bool] = None,
     null_value_handler: Optional[ValidationErrorHandler] = None,
     reserved_name_handler: Optional[ValidationErrorHandler] = None,
+    additional_reserved_names: Optional[Sequence[str]] = None,
     validate_after_sanitize: bool = False,
 ) -> PathType:
     """Make a valid filename from a string.
@@ -413,6 +428,9 @@ def sanitize_filename(
                 - :py:func:`~.handler.raise_error`
 
             Defaults to :py:func:`.handler.add_trailing_underscore`.
+        additional_reserved_names:
+            Additional reserved names to sanitize.
+            Case insensitive.
         validate_after_sanitize:
             Execute validation after sanitization to the file name.
 
@@ -443,5 +461,6 @@ def sanitize_filename(
         fs_encoding=fs_encoding,
         null_value_handler=null_value_handler,
         reserved_name_handler=reserved_name_handler,
+        additional_reserved_names=additional_reserved_names,
         validate_after_sanitize=validate_after_sanitize,
     ).sanitize(filename, replacement_text)

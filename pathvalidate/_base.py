@@ -5,7 +5,7 @@
 import abc
 import os
 import sys
-from typing import ClassVar, Optional, Tuple
+from typing import ClassVar, Optional, Sequence, Tuple
 
 from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
@@ -28,7 +28,7 @@ class BaseFile:
 
     @property
     def reserved_keywords(self) -> Tuple[str, ...]:
-        return tuple()
+        return self._additional_reserved_names
 
     @property
     def max_len(self) -> int:
@@ -38,9 +38,14 @@ class BaseFile:
         self,
         max_len: int,
         fs_encoding: Optional[str],
+        additional_reserved_names: Optional[Sequence[str]] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
+        if additional_reserved_names is None:
+            additional_reserved_names = tuple()
+        self._additional_reserved_names = tuple(n.upper() for n in additional_reserved_names)
+
         self.__platform = normalize_platform(platform)
 
         if platform_max_len is None:
@@ -101,6 +106,7 @@ class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
         max_len: int,
         fs_encoding: Optional[str],
         check_reserved: bool,
+        additional_reserved_names: Optional[Sequence[str]] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
@@ -109,6 +115,7 @@ class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
         super().__init__(
             max_len,
             fs_encoding,
+            additional_reserved_names=additional_reserved_names,
             platform_max_len=platform_max_len,
             platform=platform,
         )
@@ -142,12 +149,14 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
         validate_after_sanitize: bool,
         null_value_handler: Optional[ValidationErrorHandler] = None,
         reserved_name_handler: Optional[ValidationErrorHandler] = None,
+        additional_reserved_names: Optional[Sequence[str]] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         super().__init__(
             max_len=max_len,
             fs_encoding=fs_encoding,
+            additional_reserved_names=additional_reserved_names,
             platform_max_len=platform_max_len,
             platform=platform,
         )
@@ -180,6 +189,7 @@ class BaseValidator(AbstractValidator):
         max_len: int,
         fs_encoding: Optional[str],
         check_reserved: bool,
+        additional_reserved_names: Optional[Sequence[str]] = None,
         platform_max_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
@@ -191,6 +201,7 @@ class BaseValidator(AbstractValidator):
             max_len=max_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
+            additional_reserved_names=additional_reserved_names,
             platform_max_len=platform_max_len,
             platform=platform,
         )
@@ -202,7 +213,11 @@ class BaseValidator(AbstractValidator):
             return
 
         root_name = self.__extract_root_name(name)
-        if self._is_reserved_keyword(root_name.upper()):
+        base_name = os.path.basename(name).upper()
+
+        if self._is_reserved_keyword(root_name.upper()) or self._is_reserved_keyword(
+            base_name.upper()
+        ):
             raise ReservedNameError(
                 f"'{root_name}' is a reserved name",
                 reusable_name=False,
