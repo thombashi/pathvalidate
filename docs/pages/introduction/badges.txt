@@ -14,9 +14,9 @@
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python implementations
 
-.. image:: https://github.com/thombashi/pathvalidate/workflows/Tests/badge.svg
-    :target: https://github.com/thombashi/pathvalidate/actions?query=workflow%3ATests
-    :alt: Linux/macOS/Windows CI status
+.. image:: https://github.com/thombashi/pathvalidate/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/thombashi/pathvalidate/actions/workflows/ci.yml
+    :alt: CI status of Linux/macOS/Windows
 
 .. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
