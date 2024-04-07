@@ -85,6 +85,7 @@ setuptools.setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: System :: Filesystems",
         "Topic :: Text Processing",
+        "Typing :: Typed",
     ],
     zip_safe=False,
     cmdclass=get_release_command_class(),
