@@ -19,7 +19,7 @@ exclude = '''
 | docs/conf.py
 '''
 line-length = 100
-target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311']
+target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311', 'py312']
 
 [tool.isort]
 include_trailing_comma = true
