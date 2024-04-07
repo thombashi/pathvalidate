@@ -166,7 +166,7 @@ jobs:
 
       - name: Combine coverage reports
         run: |
-          coverage combine artifact/**/.coverage_*
+          coverage combine artifact/.coverage_*
           ls -alR
 
       - name: Upload coverage report
