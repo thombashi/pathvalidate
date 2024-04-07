@@ -117,7 +117,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: coverage
+          name: coverage_${{ matrix.os }}
           path: .coverage_*
 
   upload-coverage:
@@ -140,7 +140,17 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: coverage
+          name: coverage_ubuntu-latest
+          path: artifact
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage_macos-latest
+          path: artifact
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage_windows-latest
           path: artifact
 
       - name: List artifacts
@@ -156,7 +166,7 @@ jobs:
 
       - name: Combine coverage reports
         run: |
-          coverage combine artifact/.coverage_*
+          coverage combine artifact/**/.coverage_*
           ls -alR
 
       - name: Upload coverage report
