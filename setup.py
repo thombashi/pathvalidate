@@ -55,10 +55,10 @@ setuptools.setup(
     packages=setuptools.find_packages(exclude=["test*"]),
     package_data={MODULE_NAME: ["py.typed"]},
     project_urls={
+        "Changlog": f"{REPOSITORY_URL:s}/blob/master/CHANGELOG.md",
         "Documentation": f"https://{MODULE_NAME:s}.rtfd.io/",
         "Source": REPOSITORY_URL,
         "Tracker": f"{REPOSITORY_URL:s}/issues",
-        "Changlog": f"{REPOSITORY_URL:s}/releases",
     },
     python_requires=">=3.7",
     extras_require={
