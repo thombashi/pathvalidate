@@ -21,6 +21,10 @@ jobs:
       image: ghcr.io/thombashi/python-ci:3.11
 
     steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
+        with:
+          config: ${{ vars.PERMISSIONS_CONFIG }}
+
       - uses: actions/checkout@v4
 
       - run: make build
@@ -35,6 +39,10 @@ jobs:
       image: ghcr.io/thombashi/python-ci:3.11
 
     steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
+        with:
+          config: ${{ vars.PERMISSIONS_CONFIG }}
+
       - uses: actions/checkout@v4
 
       - run: make check
@@ -55,6 +63,10 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
+        with:
+          config: ${{ vars.PERMISSIONS_CONFIG }}
+
       - uses: actions/checkout@v4
 
       - name: Setup Python ${{ matrix.python-version }}
@@ -93,6 +105,10 @@ jobs:
         shell: bash
 
     steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
+        with:
+          config: ${{ vars.PERMISSIONS_CONFIG }}
+
       - uses: actions/checkout@v4
 
       - name: Setup Python ${{ matrix.python-version }}
@@ -126,6 +142,10 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
+        with:
+          config: ${{ vars.PERMISSIONS_CONFIG }}
+
       - uses: actions/checkout@v4
 
       - name: Setup Python
