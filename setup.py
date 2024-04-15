@@ -6,6 +6,7 @@ import os.path
 from typing import Dict, Type
 
 import setuptools
+from setuptools_scm import ScmVersion
 
 
 MODULE_NAME = "pathvalidate"
@@ -14,6 +15,24 @@ REQUIREMENT_DIR = "requirements"
 ENCODING = "utf8"
 
 pkg_info: Dict[str, str] = {}
+
+
+def version_scheme(version: ScmVersion) -> str:
+    from packaging.version import parse
+    from setuptools_scm import get_version
+    from setuptools_scm.version import guess_next_version
+
+    scm_version = get_version()
+    parsed_version = parse(scm_version)
+
+    if parsed_version.is_devrelease:
+        return version.format_next_version(guess_next_version, "{guessed}.dev{distance}")
+
+    return version.format_with("{tag}")
+
+
+def no_local_version(version: ScmVersion) -> str:
+    return ""
 
 
 def get_release_command_class() -> Dict[str, Type[setuptools.Command]]:
@@ -42,7 +61,6 @@ with open(os.path.join(REQUIREMENT_DIR, "docs_requirements.txt")) as f:
 
 setuptools.setup(
     name=MODULE_NAME,
-    version=pkg_info["__version__"],
     url=REPOSITORY_URL,
     author=pkg_info["__author__"],
     author_email=pkg_info["__email__"],
