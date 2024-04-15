@@ -28,7 +28,7 @@ class ErrorReason(enum.Enum):
     Validation error reasons.
     """
 
-    NULL_NAME = (_to_error_code(1001), "NULL_NAME", "the value must not be an empty")
+    NULL_NAME = (_to_error_code(1001), "NULL_NAME", "the value must not be an empty string")
     RESERVED_NAME = (
         _to_error_code(1002),
         "RESERVED_NAME",

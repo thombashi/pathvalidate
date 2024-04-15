@@ -337,7 +337,7 @@ def validate_filepath(
             Filesystem encoding that used to calculate the byte length of the file path.
             If |None|, get the value from the execution environment.
         check_reserved (bool, optional):
-            If |True|, check reserved names of the ``platform``.
+            If |True|, check the reserved names of the ``platform``.
             Defaults to |True|.
         additional_reserved_names (Optional[Sequence[str]], optional):
             Additional reserved names to check.
@@ -351,7 +351,7 @@ def validate_filepath(
         ValidationError (ErrorReason.INVALID_LENGTH):
             If the ``file_path`` is longer than ``max_len`` characters.
         ValidationError:
-            If ``file_path`` include invalid values.
+            If ``file_path`` includes invalid values.
 
     Example:
         :ref:`example-validate-file-path`

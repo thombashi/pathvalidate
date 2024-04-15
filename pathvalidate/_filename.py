@@ -296,7 +296,7 @@ def validate_filename(
             Filesystem encoding that used to calculate the byte length of the filename.
             If |None|, get the value from the execution environment.
         check_reserved:
-            If |True|, check reserved names of the ``platform``.
+            If |True|, check the reserved names of the ``platform``.
         additional_reserved_names:
             Additional reserved names to check.
             Case insensitive.
@@ -310,7 +310,7 @@ def validate_filename(
             The following characters are also invalid for Windows platforms:
             |invalid_win_filename_chars|.
         ValidationError (ErrorReason.RESERVED_NAME):
-            If the ``filename`` equals reserved name by OS.
+            If the ``filename`` equals the reserved name by OS.
             Windows reserved name is as follows:
             ``"CON"``, ``"PRN"``, ``"AUX"``, ``"NUL"``, ``"COM[1-9]"``, ``"LPT[1-9]"``.
 

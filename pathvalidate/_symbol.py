@@ -48,7 +48,7 @@ def replace_symbol(
         replacement_text:
             Replacement text.
         exclude_symbols:
-            Symbols that exclude from the replacement.
+            Symbols that were excluded from the replacement.
         is_replace_consecutive_chars:
             If |True|, replace consecutive multiple ``replacement_text`` characters
             to a single character.
