@@ -2,10 +2,14 @@ name: CI
 
 on:
   push:
+    branches:
+      - master
     paths-ignore:
       - ".gitignore"
       - "README.rst"
   pull_request:
+    branches-ignore:
+      - master
     paths-ignore:
       - ".gitignore"
       - "README.rst"
