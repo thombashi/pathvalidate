@@ -82,6 +82,8 @@ jobs:
       group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-sign-pkg
       cancel-in-progress: true
     timeout-minutes: 20
+    permissions:
+      id-token: write
 
     steps:
       - uses: actions/download-artifact@v4
@@ -123,6 +125,8 @@ jobs:
         python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "pypy-3.10"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         exclude:
+          - os: macos-latest
+            python-version: "3.7"
           - os: windows-latest
             python-version: "3.11"
     concurrency:
