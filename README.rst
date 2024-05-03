@@ -6,31 +6,33 @@ Summary
 =========
 `pathvalidate <https://github.com/thombashi/pathvalidate>`__ is a Python library to sanitize/validate a string such as filenames/file-paths/etc.
 
-.. image:: https://badge.fury.io/py/pathvalidate.svg
+|PyPI pkg ver| |conda pkg ver| |Supported Python ver| |Supported Python impl| |CI status| |Test coverage| |CodeQL|
+
+.. |PyPI pkg ver| image:: https://badge.fury.io/py/pathvalidate.svg
     :target: https://badge.fury.io/py/pathvalidate
     :alt: PyPI package version
 
-.. image:: https://anaconda.org/thombashi/pathvalidate/badges/version.svg
+.. |conda pkg ver| image:: https://anaconda.org/thombashi/pathvalidate/badges/version.svg
     :target: https://anaconda.org/thombashi/pathvalidate
     :alt: conda package version
 
-.. image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
+.. |Supported Python ver| image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python versions
 
-.. image:: https://img.shields.io/pypi/implementation/pathvalidate.svg
+.. |Supported Python impl| image:: https://img.shields.io/pypi/implementation/pathvalidate.svg
     :target: https://pypi.org/project/pathvalidate
     :alt: Supported Python implementations
 
-.. image:: https://github.com/thombashi/pathvalidate/actions/workflows/ci.yml/badge.svg
+.. |CI status| image:: https://github.com/thombashi/pathvalidate/actions/workflows/ci.yml/badge.svg
     :target: https://github.com/thombashi/pathvalidate/actions/workflows/ci.yml
     :alt: CI status of Linux/macOS/Windows
 
-.. image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
+.. |Test coverage| image:: https://coveralls.io/repos/github/thombashi/pathvalidate/badge.svg?branch=master
     :target: https://coveralls.io/github/thombashi/pathvalidate?branch=master
     :alt: Test coverage: coveralls
 
-.. image:: https://github.com/thombashi/pathvalidate/actions/workflows/github-code-scanning/codeql/badge.svg
+.. |CodeQL| image:: https://github.com/thombashi/pathvalidate/actions/workflows/github-code-scanning/codeql/badge.svg
     :target: https://github.com/thombashi/pathvalidate/actions/workflows/github-code-scanning/codeql
     :alt: CodeQL
 
@@ -311,18 +313,23 @@ https://pathvalidate.rtfd.io/
 
 Sponsors
 ====================================
-.. image:: https://avatars.githubusercontent.com/u/44389260?s=48&u=6da7176e51ae2654bcfd22564772ef8a3bb22318&v=4
+|chasbecker| |shiguredo| |b4tman| |Arturi0| |github|
+
+.. |chasbecker| image:: https://avatars.githubusercontent.com/u/44389260?s=48&u=6da7176e51ae2654bcfd22564772ef8a3bb22318&v=4
    :target: https://github.com/chasbecker
-   :alt: Charles Becker (chasbecker)
-.. image:: https://avatars.githubusercontent.com/u/9919?s=48&v=4
-   :target: https://github.com/github
-   :alt: onetime: GitHub (github)
-.. image:: https://avatars.githubusercontent.com/u/46711571?s=48&u=57687c0e02d5d6e8eeaf9177f7b7af4c9f275eb5&v=4
-   :target: https://github.com/Arturi0
-   :alt: onetime: Arturi0
-.. image:: https://avatars.githubusercontent.com/u/3658062?s=48&v=4
+   :alt: ex-sponsor: Charles Becker (chasbecker)
+.. |shiguredo| image:: https://avatars.githubusercontent.com/u/2549434?s=48&v=4
+   :target: https://github.com/shiguredo
+   :alt: ex-sponsor: 時雨堂 (shiguredo)
+.. |b4tman| image:: https://avatars.githubusercontent.com/u/3658062?s=48&v=4
    :target: https://github.com/b4tman
    :alt: onetime: Dmitry Belyaev (b4tman)
+.. |Arturi0| image:: https://avatars.githubusercontent.com/u/46711571?s=48&u=57687c0e02d5d6e8eeaf9177f7b7af4c9f275eb5&v=4
+   :target: https://github.com/Arturi0
+   :alt: onetime: Arturi0
+.. |github| image:: https://avatars.githubusercontent.com/u/9919?s=48&v=4
+   :target: https://github.com/github
+   :alt: onetime: GitHub (github)
 
 `Become a sponsor <https://github.com/sponsors/thombashi>`__
 
