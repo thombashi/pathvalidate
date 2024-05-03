@@ -8,8 +8,6 @@ on:
       - ".gitignore"
       - "README.rst"
   pull_request:
-    branches-ignore:
-      - master
     paths-ignore:
       - ".gitignore"
       - "README.rst"
