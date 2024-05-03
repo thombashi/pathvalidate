@@ -120,7 +120,8 @@ class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
             platform=platform,
         )
 
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def min_len(self) -> int:  # pragma: no cover
         pass
 
