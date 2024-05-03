@@ -81,6 +81,10 @@ setuptools.setup(
     python_requires=">=3.7",
     extras_require={
         "docs": docs_requires,
+        "readme": [
+            "readmemaker>=1.1.0",
+            "path>=13,<17",
+        ],
         "test": TESTS_REQUIRES,
     },
     classifiers=[
