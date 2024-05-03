@@ -6,8 +6,8 @@ from pathvalidate.click import sanitize_filename_arg, sanitize_filepath_arg
 
 
 @click.command()
-@click.option("--filename", callback=sanitize_filename_arg)
-@click.option("--filepath", callback=sanitize_filepath_arg)
+@click.option("--filename", type=str, callback=sanitize_filename_arg)
+@click.option("--filepath", type=str, callback=sanitize_filepath_arg)
 def cli(filename: str, filepath: str) -> None:
     if filename:
         click.echo(f"filename: {filename}")
