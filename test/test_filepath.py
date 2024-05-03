@@ -372,7 +372,13 @@ class Test_validate_filepath:
         assert is_valid_filepath(value, platform=platform)
 
     @pytest.mark.skipif(not is_faker_installed(), reason="requires faker")
-    @pytest.mark.parametrize(["locale"], [[None], ["ja_JP"]])
+    @pytest.mark.parametrize(
+        ["locale"],
+        [
+            [None],
+            ["ja_JP"],
+        ],
+    )
     def test_locale_jp(self, locale):
         from faker import Factory
 
