@@ -1,10 +1,21 @@
-PYTHON := python3
+BIN_DIR := $(shell pwd)/bin
 
+PYTHON := python3
+BIN_CHANGELOG_FROM_RELEASE := $(BIN_DIR)/changelog-from-release
+
+
+$(BIN_CHANGELOG_FROM_RELEASE):
+	GOBIN=$(BIN_DIR) go install github.com/rhysd/changelog-from-release/v3@latest
 
 .PHONY: build
 build: clean
 	@$(PYTHON) -m tox -e build
 	ls -lh dist/*
+
+.PHONY: changelog
+changelog: $(BIN_CHANGELOG_FROM_RELEASE)
+	$(BIN_CHANGELOG_FROM_RELEASE) > CHANGELOG.md
+	cp -a CHANGELOG.md docs/pages/CHANGELOG.md
 
 .PHONY: check
 check:
@@ -14,6 +25,7 @@ check:
 
 .PHONY: clean
 clean:
+	rm -rf $(BIN_DIR)
 	$(PYTHON) -m tox -e clean
 
 .PHONY: docs
