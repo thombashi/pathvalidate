@@ -16,6 +16,7 @@ Welcome to pathvalidate's documentation!
    pages/introduction/index
    pages/examples/index
    pages/reference/index
+   pages/changelog_ref
    pages/links
 
 
