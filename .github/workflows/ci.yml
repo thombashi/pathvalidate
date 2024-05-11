@@ -166,108 +166,32 @@ jobs:
       - name: Run tests
         env:
           PYTEST_DISCORD_WEBHOOK: ${{ secrets.PYTEST_DISCORD_WEBHOOK }}
-        run: tox -e py
-
-  run-coverage:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10"]
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    concurrency:
-      group: ${{ github.event_name }}-${{ github.workflow }}-run-coverage-${{ matrix.os }}-${{ matrix.python-version }}
-      cancel-in-progress: true
-    timeout-minutes: 20
-    defaults:
-      run:
-        shell: bash
-
-    steps:
-      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
-        with:
-          config: ${{ vars.PERMISSIONS_CONFIG }}
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: |
-            setup.py
-            **/*requirements.txt
-            tox.ini
-
-      - name: Setup env
-        run: echo "COVERAGE_FILE=.coverage_${{ matrix.os }}_${{ matrix.python-version }} " >> $GITHUB_ENV
-
-      - run: make setup-ci
-
-      - name: Run tests
         run: tox -e cov
 
-      - run: ls -a
+      - run: ls -alR
+        if : ${{ matrix.os != 'windows-latest' }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: coverage_${{ matrix.os }}
-          path: .coverage_*
-
-  upload-coverage:
-    needs: run-coverage
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    steps:
-      - uses: GitHubSecurityLab/actions-permissions/monitor@v1
-        with:
-          config: ${{ vars.PERMISSIONS_CONFIG }}
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: pip
-          cache-dependency-path: |
-            setup.py
-            **/*requirements.txt
-            tox.ini
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage_ubuntu-latest
-          path: artifact
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage_macos-latest
-          path: artifact
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: coverage_windows-latest
-          path: artifact
-
-      - name: List artifacts
-        working-directory: artifact
-        run: |
-          set -x
-
-          pwd
-          ls -alR
-
-      - name: Install packages
+      - name: Install coveralls
         run: python -m pip install --upgrade --disable-pip-version-check coveralls tomli
 
-      - name: Combine coverage reports
-        run: |
-          coverage combine artifact/.coverage_*
-          ls -alR
-
-      - name: Upload coverage report
+      - name: Upload coverage data to coveralls.io
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ matrix.os }}-${{ matrix.python-version }}
+          COVERALLS_PARALLEL: true
         run: coveralls --service=github
+
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: unit-test
+    runs-on: ubuntu-latest
+    container: python:3-slim
+
+    steps:
+    - run: pip3 install --upgrade coveralls
+
+    - name: Finished
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: coveralls --finish
+
