@@ -1,3 +1,5 @@
+# type: ignore
+
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
@@ -34,6 +36,9 @@ from ._common import (
     VALID_PLATFORM_NAMES,
     WIN_RESERVED_FILE_NAMES,
     is_faker_installed,
+    platform_linux,
+    platform_macos,
+    platform_windows,
     randstr,
 )
 
@@ -57,11 +62,11 @@ class Test_FileSanitizer:
     )
     def test_normal_platform_auto(self, monkeypatch, test_platform, expected):
         if test_platform == "windows":
-            patch = lambda: "windows"
+            patch = platform_windows
         elif test_platform == "linux":
-            patch = lambda: "linux"
+            patch = platform_linux
         elif test_platform == "macos":
-            patch = lambda: "macos"
+            patch = platform_macos
         else:
             raise ValueError(f"unexpected test platform: {test_platform}")
 
@@ -174,7 +179,7 @@ class Test_validate_filename:
         value = "  "
         with pytest.raises(ValidationError) as e:
             validate_filename(value, platform=platform)
-            assert e.value.reason == ErrorReason.NULL
+            assert e.value.reason == ErrorReason.NULL_NAME
         assert not is_valid_filename(value, platform)
 
     @pytest.mark.parametrize(

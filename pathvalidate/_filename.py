@@ -71,7 +71,7 @@ class FileNameSanitizer(AbstractSanitizer):
                 if isinstance(value, PurePath):
                     raise
 
-                return self._null_value_handler(e)
+                return self._null_value_handler(e)  # type: ignore
             raise
 
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
@@ -110,9 +110,9 @@ class FileNameSanitizer(AbstractSanitizer):
                 )
 
         if isinstance(value, PurePath):
-            return Path(sanitized_filename)
+            return Path(sanitized_filename)  # type: ignore
 
-        return sanitized_filename
+        return sanitized_filename  # type: ignore
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
         if self._is_windows(include_universal=True):

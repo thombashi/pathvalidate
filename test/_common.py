@@ -115,3 +115,15 @@ def is_faker_installed():
 
 def randstr(length, char_list=alphanum_chars):
     return "".join([random.choice(char_list) for _i in range(length)])
+
+
+def platform_macos():
+    return "macos"
+
+
+def platform_windows():
+    return "windows"
+
+
+def platform_linux():
+    return "linux"

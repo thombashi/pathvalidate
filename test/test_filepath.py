@@ -1,3 +1,5 @@
+# type: ignore
+
 """
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
@@ -31,6 +33,9 @@ from ._common import (
     VALID_PATH_CHARS,
     WIN_RESERVED_FILE_NAMES,
     is_faker_installed,
+    platform_linux,
+    platform_macos,
+    platform_windows,
     randstr,
 )
 
@@ -52,11 +57,11 @@ class Test_FileSanitizer:
     )
     def test_normal_platform_auto(self, monkeypatch, test_platform, expected):
         if test_platform == "windows":
-            patch = lambda: "windows"
+            patch = platform_windows
         elif test_platform == "linux":
-            patch = lambda: "linux"
+            patch = platform_linux
         elif test_platform == "macos":
-            patch = lambda: "macos"
+            patch = platform_macos
         else:
             raise ValueError(f"unexpected test platform: {test_platform}")
 
@@ -185,6 +190,7 @@ class Test_validate_filepath:
             validate_filepath(value, min_len=min_len)
         assert e.value.reason == expected
         assert e.value.fs_encoding
+        assert e.value.byte_count
         assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
@@ -222,6 +228,7 @@ class Test_validate_filepath:
             validate_filepath(value, **kwargs)
         assert e.value.reason == ErrorReason.INVALID_LENGTH
         assert e.value.fs_encoding
+        assert e.value.byte_count
         assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(
@@ -249,6 +256,7 @@ class Test_validate_filepath:
             validate_filepath(value, **kwargs)
         assert e.value.reason == expected
         assert e.value.fs_encoding
+        assert e.value.byte_count
         assert e.value.byte_count > 0
 
     @pytest.mark.parametrize(

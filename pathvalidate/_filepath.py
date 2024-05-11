@@ -83,11 +83,10 @@ class FilePathSanitizer(AbstractSanitizer):
                 if isinstance(value, PurePath):
                     raise
 
-                return self._null_value_handler(e)
+                return self._null_value_handler(e)  # type: ignore
             raise
 
         unicode_filepath = to_str(value)
-
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
         unicode_filepath = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
         if self.__normalize and unicode_filepath:
@@ -123,9 +122,9 @@ class FilePathSanitizer(AbstractSanitizer):
             self._validator.validate(sanitized_path)
 
         if isinstance(value, PurePath):
-            return Path(sanitized_path)
+            return Path(sanitized_path)  # type: ignore
 
-        return sanitized_path
+        return sanitized_path  # type: ignore
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
         if self._is_windows(include_universal=True):
