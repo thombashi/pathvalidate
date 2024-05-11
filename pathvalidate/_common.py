@@ -116,21 +116,21 @@ def normalize_platform(name: Optional[PlatformType]) -> Platform:
     if not name:
         return Platform.UNIVERSAL
 
-    name = name.strip().casefold()
+    platform_str = name.strip().casefold()
 
-    if name == "posix":
+    if platform_str == "posix":
         return Platform.POSIX
 
-    if name == "auto":
-        name = platform.system().casefold()
+    if platform_str == "auto":
+        platform_str = platform.system().casefold()
 
-    if name in ["linux"]:
+    if platform_str in ["linux"]:
         return Platform.LINUX
 
-    if name and name.startswith("win"):
+    if platform_str and platform_str.startswith("win"):
         return Platform.WINDOWS
 
-    if name in ["mac", "macos", "darwin"]:
+    if platform_str in ["mac", "macos", "darwin"]:
         return Platform.MACOS
 
     return Platform.UNIVERSAL
