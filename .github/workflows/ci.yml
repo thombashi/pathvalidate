@@ -68,6 +68,7 @@ jobs:
 
       - name: Publish package to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
