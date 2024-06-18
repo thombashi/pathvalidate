@@ -756,3 +756,20 @@ class Test_sanitize_filename:
         with pytest.raises(expected):
             sanitize_filename(value)
         assert not is_valid_filename(value)
+
+    @pytest.mark.parametrize(
+        ["value", "platform", "fs_encoding", "max_len", "expected"],
+        [
+            ["あ" * 85, "universal", "utf-8", 255, "あ" * 85],
+            ["あ" * 86, "universal", "utf-8", 255, "あ" * 85],
+            ["あ" * 126, "universal", "utf-16", 255, "あ" * 126],
+            ["あ" * 127, "universal", "utf-16", 255, "あ" * 126],
+        ],
+    )
+    def test_max_len_fs_encoding(self, value, platform, fs_encoding, max_len, expected):
+        kwargs = {
+            "platform": platform,
+            "max_len": max_len,
+            "fs_encoding": fs_encoding,
+        }
+        assert sanitize_filename(value, **kwargs) == expected
