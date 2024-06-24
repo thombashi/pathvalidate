@@ -138,3 +138,10 @@ def normalize_platform(name: Optional[PlatformType]) -> Platform:
 
 def findall_to_str(match: List[Any]) -> str:
     return ", ".join([repr(text) for text in match])
+
+
+def truncate_str(text: str, encoding: str, max_bytes: int) -> str:
+    str_bytes = text.encode(encoding)
+    str_bytes = str_bytes[:max_bytes]
+    # last char might be malformed, ignore it
+    return str_bytes.decode(encoding, "ignore")

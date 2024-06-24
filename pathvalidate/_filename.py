@@ -11,7 +11,7 @@ from pathlib import Path, PurePath
 from typing import Optional, Pattern, Sequence, Tuple
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
-from ._common import findall_to_str, to_str, validate_pathtype
+from ._common import findall_to_str, to_str, truncate_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
 from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ValidationError
@@ -75,7 +75,7 @@ class FileNameSanitizer(AbstractSanitizer):
             raise
 
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
-        sanitized_filename = sanitized_filename[: self.max_len]
+        sanitized_filename = truncate_str(sanitized_filename, self._fs_encoding, self.max_len)
 
         try:
             self._validator.validate(sanitized_filename)
