@@ -218,7 +218,52 @@ class Test_validate_filepath:
         kwargs = {
             "platform": platform,
             "max_filepath_len": max_len,
-            "max_filename_len": math.inf,  # ignore filename checks
+            "max_filename_len": math.inf,  # ignore filename length checks
+        }
+
+        if expected is None:
+            validate_filepath(value, **kwargs)
+            assert is_valid_filepath(value, **kwargs)
+            return
+
+        with pytest.raises(ValidationError) as e:
+            validate_filepath(value, **kwargs)
+        assert e.value.reason == ErrorReason.INVALID_LENGTH
+        assert e.value.fs_encoding
+        assert e.value.byte_count
+        assert e.value.byte_count > 0
+
+    @pytest.mark.parametrize(
+        ["value", "platform", "max_path_len", "max_name_len", "expected"],
+        [
+            ["a/" + "a" * 255, "linux", None, None, None],
+            ["a/" + "a" * 256, "linux", None, None, ErrorReason.INVALID_LENGTH],
+            ["a/" + "a" * 255, "windows", None, None, None],
+            ["a/" + "a" * 256, "windows", None, None, ErrorReason.INVALID_LENGTH],
+            ["a/" + "a" * 255, "universal", None, None, None],
+            ["a/" + "a" * 256, "universal", None, None, ErrorReason.INVALID_LENGTH],
+            ["/".join("a" * 255 for _ in range(16)), "linux", None, None, None],
+            [
+                "/".join("a" * 255 for _ in range(17)),
+                "linux",
+                None,
+                None,
+                ErrorReason.INVALID_LENGTH,
+            ],
+            ["a/" + "a" * 255 + "/aa", "windows", None, None, None],
+            ["a/" + "a" * 255 + "/aa", "universal", None, None, None],
+            ["a/" + "a" * 255 + "/aaa", "windows", None, None, ErrorReason.INVALID_LENGTH],
+            ["a/" + "a" * 255 + "/aaa", "universal", None, None, ErrorReason.INVALID_LENGTH],
+            ["/".join("a" * 10 for _ in range(5)), "universal", 54, 10, None],
+            ["/".join("a" * 10 for _ in range(5)), "universal", 53, 10, ErrorReason.INVALID_LENGTH],
+            ["/".join("a" * 10 for _ in range(5)), "universal", 54, 9, ErrorReason.INVALID_LENGTH],
+        ],
+    )
+    def test_max_name_max_path_len(self, value, platform, max_path_len, max_name_len, expected):
+        kwargs = {
+            "platform": platform,
+            "max_filepath_len": max_path_len,
+            "max_filename_len": max_name_len,
         }
 
         if expected is None:
