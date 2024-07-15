@@ -4,6 +4,7 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
+import math
 import platform as m_platform
 import random
 import sys
@@ -216,7 +217,8 @@ class Test_validate_filepath:
     def test_normal_max_len(self, value, platform, max_len, expected):
         kwargs = {
             "platform": platform,
-            "max_len": max_len,
+            "max_filepath_len": max_len,
+            "max_filename_len": math.inf,  # ignore filename checks
         }
 
         if expected is None:
@@ -376,8 +378,13 @@ class Test_validate_filepath:
         ],
     )
     def test_normal_space_or_period_at_tail(self, platform, value):
-        validate_filepath(value, platform=platform)
-        assert is_valid_filepath(value, platform=platform)
+        if platform == "windows" or platform == "universal":
+            with pytest.raises(ValidationError):
+                validate_filepath(value, platform=platform)
+            assert not is_valid_filepath(value, platform=platform)
+        else:
+            validate_filepath(value, platform=platform)
+            assert is_valid_filepath(value, platform=platform)
 
     @pytest.mark.skipif(not is_faker_installed(), reason="requires faker")
     @pytest.mark.parametrize(
