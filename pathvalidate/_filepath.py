@@ -199,7 +199,9 @@ class FilePathValidator(BaseValidator):
 
         self.__fname_validator = FileNameValidator(
             min_len=min_len,
-            max_len=max_len,
+            max_filename_len=self.max_filename_len,
+            max_filepath_len=self.max_filepath_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             additional_reserved_names=additional_reserved_names,
             platform=platform,
@@ -249,8 +251,7 @@ class FilePathValidator(BaseValidator):
         for entry in unicode_filepath.split("/"):
             if not entry or entry in (".", ".."):
                 continue
-
-            self.__fname_validator._validate_reserved_keywords(entry)
+            self.__fname_validator.validate(entry)
 
         if self._is_windows(include_universal=True):
             self.__validate_win_filepath(unicode_filepath)

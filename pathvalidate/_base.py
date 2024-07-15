@@ -5,8 +5,8 @@
 import abc
 import os
 import sys
-from typing import ClassVar, Optional, Sequence, Tuple
 import warnings
+from typing import ClassVar, Optional, Sequence, Tuple
 
 from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
@@ -80,7 +80,7 @@ class BaseFile:
         if max_filename_len is None or max_filename_len <= 0:
             self._max_filename_len = platform_max_filename_len
         else:
-            self._max_filename_len = min(max_filename_len, platform_max_filename_len)
+            self._max_filename_len = max_filename_len
         # name cannot be longer than max path length
         self._max_filename_len = min(self._max_filename_len, self._max_filepath_len)
 
