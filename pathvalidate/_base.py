@@ -6,6 +6,7 @@ import abc
 import os
 import sys
 from typing import ClassVar, Optional, Sequence, Tuple
+import warnings
 
 from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
@@ -21,6 +22,7 @@ class BaseFile:
     _INVALID_WIN_FILENAME_CHARS: ClassVar[str] = (
         _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
     )
+    _DEFAULT_MAX_FILENAME_LEN = 255
 
     @property
     def platform(self) -> Platform:
@@ -32,14 +34,28 @@ class BaseFile:
 
     @property
     def max_len(self) -> int:
-        return self._max_len
+        warnings.warn(
+            "'max_len' is deprecated. Use 'max_filepath_len' instead.",
+            DeprecationWarning,
+        )
+        return self._max_filepath_len
+
+    @property
+    def max_filename_len(self) -> int:
+        return self._max_filename_len
+
+    @property
+    def max_filepath_len(self) -> int:
+        return self._max_filepath_len
 
     def __init__(
         self,
-        max_len: int,
         fs_encoding: Optional[str],
+        max_filename_len: Optional[int] = None,
+        max_filepath_len: Optional[int] = None,
         additional_reserved_names: Optional[Sequence[str]] = None,
-        platform_max_len: Optional[int] = None,
+        platform_max_filename_len: Optional[int] = None,
+        platform_max_filepath_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         if additional_reserved_names is None:
@@ -48,15 +64,25 @@ class BaseFile:
 
         self.__platform = normalize_platform(platform)
 
-        if platform_max_len is None:
-            platform_max_len = self._get_default_max_path_len()
+        # determine max filepath length
+        if platform_max_filepath_len is None:
+            platform_max_filepath_len = self._get_default_max_path_len()
 
-        if max_len <= 0:
-            self._max_len = platform_max_len
+        if max_filepath_len is None or max_filepath_len <= 0:
+            self._max_filepath_len = platform_max_filepath_len
         else:
-            self._max_len = max_len
+            self._max_filepath_len = min(max_filepath_len, platform_max_filepath_len)
 
-        self._max_len = min(self._max_len, platform_max_len)
+        # determine max filename length
+        if platform_max_filename_len is None:
+            platform_max_filename_len = self._get_default_max_name_len()
+
+        if max_filename_len is None or max_filename_len <= 0:
+            self._max_filename_len = platform_max_filename_len
+        else:
+            self._max_filename_len = min(max_filename_len, platform_max_filename_len)
+        # name cannot be longer than max path length
+        self._max_filename_len = min(self._max_filename_len, self._max_filepath_len)
 
         if fs_encoding:
             self._fs_encoding = fs_encoding
@@ -99,24 +125,29 @@ class BaseFile:
 
         return 260  # universal
 
+    def _get_default_max_name_len(self) -> int:
+        return self._DEFAULT_MAX_FILENAME_LEN
+
 
 class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
     def __init__(
         self,
-        max_len: int,
         fs_encoding: Optional[str],
         check_reserved: bool,
+        max_filename_len: Optional[int] = None,
+        max_filepath_len: Optional[int] = None,
         additional_reserved_names: Optional[Sequence[str]] = None,
-        platform_max_len: Optional[int] = None,
+        platform_max_filepath_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         self._check_reserved = check_reserved
 
         super().__init__(
-            max_len,
             fs_encoding,
+            max_filename_len=max_filename_len,
+            max_filepath_len=max_filepath_len,
             additional_reserved_names=additional_reserved_names,
-            platform_max_len=platform_max_len,
+            platform_max_filepath_len=platform_max_filepath_len,
             platform=platform,
         )
 
@@ -145,21 +176,23 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
     def __init__(
         self,
         validator: AbstractValidator,
-        max_len: int,
         fs_encoding: Optional[str],
         validate_after_sanitize: bool,
+        max_filename_len: Optional[int] = None,
+        max_filepath_len: Optional[int] = None,
         null_value_handler: Optional[ValidationErrorHandler] = None,
         reserved_name_handler: Optional[ValidationErrorHandler] = None,
         additional_reserved_names: Optional[Sequence[str]] = None,
-        platform_max_len: Optional[int] = None,
+        platform_max_filepath_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         super().__init__(
-            max_len=max_len,
             fs_encoding=fs_encoding,
             additional_reserved_names=additional_reserved_names,
-            platform_max_len=platform_max_len,
+            platform_max_filepath_len=platform_max_filepath_len,
             platform=platform,
+            max_filename_len=max_filename_len,
+            max_filepath_len=max_filepath_len,
         )
 
         if null_value_handler is None:
@@ -187,11 +220,12 @@ class BaseValidator(AbstractValidator):
     def __init__(
         self,
         min_len: int,
-        max_len: int,
         fs_encoding: Optional[str],
         check_reserved: bool,
+        max_filename_len: Optional[int] = None,
+        max_filepath_len: Optional[int] = None,
         additional_reserved_names: Optional[Sequence[str]] = None,
-        platform_max_len: Optional[int] = None,
+        platform_max_filepath_len: Optional[int] = None,
         platform: Optional[PlatformType] = None,
     ) -> None:
         if min_len <= 0:
@@ -199,11 +233,12 @@ class BaseValidator(AbstractValidator):
         self._min_len = max(min_len, 1)
 
         super().__init__(
-            max_len=max_len,
             fs_encoding=fs_encoding,
+            max_filename_len=max_filename_len,
+            max_filepath_len=max_filepath_len,
             check_reserved=check_reserved,
             additional_reserved_names=additional_reserved_names,
-            platform_max_len=platform_max_len,
+            platform_max_filepath_len=platform_max_filepath_len,
             platform=platform,
         )
 
@@ -227,11 +262,14 @@ class BaseValidator(AbstractValidator):
             )
 
     def _validate_max_len(self) -> None:
-        if self.max_len < 1:
-            raise ValueError("max_len must be greater or equal to one")
+        if self.max_filename_len < 1:
+            raise ValueError("max_filename_len must be greater or equal to one")
 
-        if self.min_len > self.max_len:
-            raise ValueError("min_len must be lower than max_len")
+        if self.max_filepath_len < 1:
+            raise ValueError("max_filepath_len must be greater or equal to one")
+
+        if self.min_len > self.max_filename_len:
+            raise ValueError("min_len must be lower than max_filename_len")
 
     @staticmethod
     def __extract_root_name(path: str) -> str:

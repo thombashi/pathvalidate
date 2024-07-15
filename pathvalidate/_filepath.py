@@ -26,7 +26,7 @@ _RE_INVALID_WIN_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS
 class FilePathSanitizer(AbstractSanitizer):
     def __init__(
         self,
-        max_len: int = -1,
+        max_len: Optional[int] = None,  # deprecated
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         null_value_handler: Optional[ValidationErrorHandler] = None,
@@ -35,20 +35,31 @@ class FilePathSanitizer(AbstractSanitizer):
         normalize: bool = True,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
+        max_filename_len: Optional[int] = None,
+        max_filepath_len: Optional[int] = None,
     ) -> None:
+        if max_len is not None:
+            warnings.warn(
+                "'max_len' is deprecated. Use 'max_filepath_len' instead.",
+                DeprecationWarning,
+            )
+            max_filepath_len = max_len
+
         if validator:
             fpath_validator = validator
         else:
             fpath_validator = FilePathValidator(
                 min_len=DEFAULT_MIN_LEN,
-                max_len=max_len,
+                max_filename_len=max_filename_len,
+                max_filepath_len=max_filepath_len,
                 fs_encoding=fs_encoding,
                 check_reserved=True,
                 additional_reserved_names=additional_reserved_names,
                 platform=platform,
             )
         super().__init__(
-            max_len=max_len,
+            max_filename_len=max_filename_len,
+            max_filepath_len=max_filepath_len,
             fs_encoding=fs_encoding,
             validator=fpath_validator,
             null_value_handler=null_value_handler,
@@ -60,7 +71,8 @@ class FilePathSanitizer(AbstractSanitizer):
 
         self._sanitize_regexp = self._get_sanitize_regexp()
         self.__fname_sanitizer = FileNameSanitizer(
-            max_len=self.max_len,
+            max_filename_len=self.max_filename_len,
+            max_filepath_len=self.max_filepath_len,
             fs_encoding=fs_encoding,
             null_value_handler=null_value_handler,
             reserved_name_handler=reserved_name_handler,
@@ -161,15 +173,24 @@ class FilePathValidator(BaseValidator):
     def __init__(
         self,
         min_len: int = DEFAULT_MIN_LEN,
-        max_len: int = -1,
+        max_len: Optional[int] = None,  # deprecated
         fs_encoding: Optional[str] = None,
         platform: Optional[PlatformType] = None,
         check_reserved: bool = True,
         additional_reserved_names: Optional[Sequence[str]] = None,
+        max_filename_len: Optional[int] = None,
+        max_filepath_len: Optional[int] = None,
     ) -> None:
+        if max_len is not None:
+            warnings.warn(
+                "'max_len' is deprecated. Use 'max_filepath_len' instead.",
+                DeprecationWarning,
+            )
+            max_filepath_len = max_len
         super().__init__(
             min_len=min_len,
-            max_len=max_len,
+            max_filename_len=max_filename_len,
+            max_filepath_len=max_filepath_len,
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             additional_reserved_names=additional_reserved_names,
@@ -206,10 +227,10 @@ class FilePathValidator(BaseValidator):
             ErrorAttrKey.BYTE_COUNT: byte_ct,
         }
 
-        if byte_ct > self.max_len:
+        if byte_ct > self.max_filepath_len:
             raise ValidationError(
                 [
-                    f"file path is too long: expected<={self.max_len:d} bytes, actual={byte_ct:d} bytes"
+                    f"file path is too long: expected<={self.max_filepath_len:d} bytes, actual={byte_ct:d} bytes"
                 ],
                 **err_kwargs,
             )
@@ -307,10 +328,12 @@ def validate_filepath(
     file_path: PathType,
     platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
-    max_len: Optional[int] = None,
+    max_len: Optional[int] = None,  # deprecated
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
     additional_reserved_names: Optional[Sequence[str]] = None,
+    max_filename_len: Optional[int] = None,
+    max_filepath_len: Optional[int] = None,
 ) -> None:
     """Verifying whether the ``file_path`` is a valid file path or not.
 
@@ -325,13 +348,7 @@ def validate_filepath(
             Minimum byte length of the ``file_path``. The value must be greater or equal to one.
             Defaults to ``1``.
         max_len (Optional[int], optional):
-            Maximum byte length of the ``file_path``. If the value is |None| or minus,
-            automatically determined by the ``platform``:
-
-                - ``Linux``: 4096
-                - ``macOS``: 1024
-                - ``Windows``: 260
-                - ``universal``: 260
+            [Deprecated] Use 'max_filepath_len' instead.
         fs_encoding (Optional[str], optional):
             Filesystem encoding that used to calculate the byte length of the file path.
             If |None|, get the value from the execution environment.
@@ -340,6 +357,17 @@ def validate_filepath(
             Defaults to |True|.
         additional_reserved_names (Optional[Sequence[str]], optional):
             Additional reserved names to check.
+        max_filename_len:
+            Maximum byte length of each component of the ``file_path``.
+            Defaults to ``255``.
+        max_filepath_len:
+            Maximum byte length of the ``file_path``.
+            Defaults to:
+
+                - ``Linux``: 4096
+                - ``macOS``: 1024
+                - ``Windows``: 260
+                - ``universal``: 260
 
     Raises:
         ValidationError (ErrorReason.INVALID_CHARACTER):
@@ -359,11 +387,18 @@ def validate_filepath(
         `Naming Files, Paths, and Namespaces - Win32 apps | Microsoft Docs
         <https://docs.microsoft.com/en-us/windows/win32/fileio/naming-a-file>`__
     """
+    if max_len is not None:
+        warnings.warn(
+            "'max_len' is deprecated. Use 'max_filepath_len' instead.",
+            DeprecationWarning,
+        )
+        max_filepath_len = max_len
 
     FilePathValidator(
         platform=platform,
         min_len=min_len,
-        max_len=-1 if max_len is None else max_len,
+        max_filename_len=max_filename_len,
+        max_filepath_len=max_filepath_len,
         fs_encoding=fs_encoding,
         check_reserved=check_reserved,
         additional_reserved_names=additional_reserved_names,
@@ -374,10 +409,12 @@ def is_valid_filepath(
     file_path: PathType,
     platform: Optional[PlatformType] = None,
     min_len: int = DEFAULT_MIN_LEN,
-    max_len: Optional[int] = None,
+    max_len: Optional[int] = None,  # deprecated
     fs_encoding: Optional[str] = None,
     check_reserved: bool = True,
     additional_reserved_names: Optional[Sequence[str]] = None,
+    max_filename_len: Optional[int] = None,
+    max_filepath_len: Optional[int] = None,
 ) -> bool:
     """Check whether the ``file_path`` is a valid name or not.
 
@@ -393,11 +430,18 @@ def is_valid_filepath(
     See Also:
         :py:func:`.validate_filepath()`
     """
+    if max_len is not None:
+        warnings.warn(
+            "'max_len' is deprecated. Use 'max_filepath_len' instead.",
+            DeprecationWarning,
+        )
+        max_filepath_len = max_len
 
     return FilePathValidator(
         platform=platform,
         min_len=min_len,
-        max_len=-1 if max_len is None else max_len,
+        max_filename_len=max_filename_len,
+        max_filepath_len=max_filepath_len,
         fs_encoding=fs_encoding,
         check_reserved=check_reserved,
         additional_reserved_names=additional_reserved_names,
@@ -408,7 +452,7 @@ def sanitize_filepath(
     file_path: PathType,
     replacement_text: str = "",
     platform: Optional[PlatformType] = None,
-    max_len: Optional[int] = None,
+    max_len: Optional[int] = None,  # deprecated
     fs_encoding: Optional[str] = None,
     check_reserved: Optional[bool] = None,
     null_value_handler: Optional[ValidationErrorHandler] = None,
@@ -416,6 +460,8 @@ def sanitize_filepath(
     additional_reserved_names: Optional[Sequence[str]] = None,
     normalize: bool = True,
     validate_after_sanitize: bool = False,
+    max_filename_len: Optional[int] = None,
+    max_filepath_len: Optional[int] = None,
 ) -> PathType:
     """Make a valid file path from a string.
 
@@ -442,14 +488,7 @@ def sanitize_filepath(
 
             .. include:: platform.txt
         max_len:
-            Maximum byte length of the file path.
-            Truncate the path if the value length exceeds the `max_len`.
-            If the value is |None| or minus, ``max_len`` will automatically determined by the ``platform``:
-
-                - ``Linux``: 4096
-                - ``macOS``: 1024
-                - ``Windows``: 260
-                - ``universal``: 260
+            [Deprecated] Use 'max_filepath_len' instead.
         fs_encoding:
             Filesystem encoding that used to calculate the byte length of the file path.
             If |None|, get the value from the execution environment.
@@ -481,6 +520,18 @@ def sanitize_filepath(
             If |True|, normalize the the file path.
         validate_after_sanitize:
             Execute validation after sanitization to the file path.
+        max_filename_len:
+            Maximum byte length of each component of the ``file_path``.
+            Truncate each component if the length exceeds this value.
+            Defaults to ``255``.
+        max_filepath_len:
+            Maximum byte length of the ``file_path``.
+            Defaults to:
+
+                - ``Linux``: 4096
+                - ``macOS``: 1024
+                - ``Windows``: 260
+                - ``universal``: 260
 
     Returns:
         Same type as the argument (str or PathLike object):
@@ -493,6 +544,12 @@ def sanitize_filepath(
     Example:
         :ref:`example-sanitize-file-path`
     """
+    if max_len is not None:
+        warnings.warn(
+            "'max_len' is deprecated. Use 'max_filepath_len' instead.",
+            DeprecationWarning,
+        )
+        max_filepath_len = max_len
 
     if check_reserved is not None:
         warnings.warn(
@@ -505,7 +562,8 @@ def sanitize_filepath(
 
     return FilePathSanitizer(
         platform=platform,
-        max_len=-1 if max_len is None else max_len,
+        max_filename_len=max_filename_len,
+        max_filepath_len=max_filepath_len,
         fs_encoding=fs_encoding,
         normalize=normalize,
         null_value_handler=null_value_handler,
