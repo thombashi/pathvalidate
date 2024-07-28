@@ -5,7 +5,6 @@
 import abc
 import os
 import sys
-import warnings
 from typing import ClassVar, Optional, Sequence, Tuple
 
 from ._common import normalize_platform, unprintable_ascii_chars
@@ -34,10 +33,6 @@ class BaseFile:
 
     @property
     def max_len(self) -> int:
-        warnings.warn(
-            "'max_len' is deprecated. Use 'max_filepath_len' instead.",
-            DeprecationWarning,
-        )
         return self._max_filepath_len
 
     @property
