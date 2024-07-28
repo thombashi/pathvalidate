@@ -352,8 +352,8 @@ def validate_filepath(
             Maximum byte length of each component of the ``file_path``.
             Defaults to ``255``.
         max_filepath_len:
-            Maximum byte length of the ``file_path``.
-            Defaults to:
+            Maximum byte length of the ``file_path``. If the value is |None| or minus,
+            automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
@@ -508,8 +508,8 @@ def sanitize_filepath(
             Truncate each component if the length exceeds this value.
             Defaults to ``255``.
         max_filepath_len:
-            Maximum byte length of the ``file_path``.
-            Defaults to:
+            Maximum byte length of the ``file_path``. If the value is |None| or minus,
+            automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
                 - ``macOS``: 1024
