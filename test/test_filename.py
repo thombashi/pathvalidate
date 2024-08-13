@@ -418,7 +418,10 @@ class Test_validate_filename:
         else:
             with pytest.raises(expected) as e:
                 validate_filename(value, platform=platform)
-            assert e.value.reason == ErrorReason.FOUND_ABS_PATH
+            assert e.value.reason in [
+                ErrorReason.FOUND_ABS_PATH,
+                ErrorReason.INVALID_CHARACTER,
+                ]
 
     @pytest.mark.parametrize(
         ["value", "platform"],

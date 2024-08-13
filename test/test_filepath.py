@@ -289,7 +289,7 @@ class Test_validate_filepath:
         [
             ["linux", "/a/b/c.txt", None],
             ["linux", "C:\\a\\b\\c.txt", ValidationError],
-            ["windows", "/a/b/c.txt", None],
+            ["windows", "/a/b/c.txt", None if sys.version_info < (3, 13) else ValidationError],
             ["windows", "C:\\a\\b\\c.txt", None],
             ["universal", "/a/b/c.txt", ValidationError],
             ["universal", "C:\\a\\b\\c.txt", ValidationError],
