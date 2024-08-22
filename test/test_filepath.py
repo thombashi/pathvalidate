@@ -106,6 +106,7 @@ class Test_validate_filepath:
         "C:\\Users",
         "C:\\",
         "\\Users",
+        r"\\fileserver\public",
     ]
 
     @pytest.mark.parametrize(
