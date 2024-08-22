@@ -2,9 +2,11 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
+import ntpath
 import platform
 import re
 import string
+import sys
 from pathlib import PurePath
 from typing import Any, List, Optional
 
@@ -37,6 +39,19 @@ def to_str(name: PathType) -> str:
         return str(name)
 
     return name
+
+
+def is_nt_abspath(value: str) -> bool:
+    ver_info = sys.version_info[:2]
+    if ver_info <= (3, 10):
+        if value.startswith("\\\\"):
+            return True
+    elif ver_info >= (3, 13):
+        return ntpath.isabs(value)
+
+    drive, _tail = ntpath.splitdrive(value)
+
+    return ntpath.isabs(value) and len(drive) > 0
 
 
 def is_null_string(value: Any) -> bool:

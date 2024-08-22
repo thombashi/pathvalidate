@@ -3,7 +3,6 @@
 """
 
 import itertools
-import ntpath
 import posixpath
 import re
 import warnings
@@ -11,7 +10,7 @@ from pathlib import Path, PurePath
 from typing import Optional, Pattern, Sequence, Tuple
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
-from ._common import findall_to_str, to_str, truncate_str, validate_pathtype
+from ._common import findall_to_str, is_nt_abspath, to_str, truncate_str, validate_pathtype
 from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._types import PathType, PlatformType
 from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ValidationError
@@ -55,7 +54,6 @@ class FileNameSanitizer(AbstractSanitizer):
             null_value_handler=null_value_handler,
             reserved_name_handler=reserved_name_handler,
             additional_reserved_names=additional_reserved_names,
-            platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
             validate_after_sanitize=validate_after_sanitize,
             validator=fname_validator,
@@ -161,7 +159,6 @@ class FileNameValidator(BaseValidator):
             fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             additional_reserved_names=additional_reserved_names,
-            platform_max_len=_DEFAULT_MAX_FILENAME_LEN,
             platform=platform,
         )
 
@@ -208,7 +205,7 @@ class FileNameValidator(BaseValidator):
         )
 
         if self._is_windows(include_universal=True):
-            if ntpath.isabs(value):
+            if is_nt_abspath(value):
                 raise err
 
         if posixpath.isabs(value):
