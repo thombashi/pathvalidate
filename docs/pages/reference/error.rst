@@ -6,7 +6,7 @@ Errors
     :undoc-members:
     :show-inheritance:
 
-.. table:: Liar od Errors
+.. table:: List of Errors
 
     +--------+------------------------+------------------------------------------------------+
     |  Code  |          Name          |                     Description                      |
