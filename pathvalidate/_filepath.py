@@ -11,7 +11,7 @@ from pathlib import Path, PurePath
 from typing import List, Optional, Pattern, Sequence, Tuple
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
-from ._common import findall_to_str, to_str, validate_pathtype
+from ._common import findall_to_str, is_nt_abspath, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
@@ -178,7 +178,8 @@ class FilePathValidator(BaseValidator):
 
         self.__fname_validator = FileNameValidator(
             min_len=min_len,
-            max_len=max_len,
+            max_len=self.max_len,
+            fs_encoding=fs_encoding,
             check_reserved=check_reserved,
             additional_reserved_names=additional_reserved_names,
             platform=platform,
@@ -229,7 +230,7 @@ class FilePathValidator(BaseValidator):
             if not entry or entry in (".", ".."):
                 continue
 
-            self.__fname_validator._validate_reserved_keywords(entry)
+            self.__fname_validator.validate(entry)
 
         if self._is_windows(include_universal=True):
             self.__validate_win_filepath(unicode_filepath)
@@ -238,7 +239,18 @@ class FilePathValidator(BaseValidator):
 
     def validate_abspath(self, value: PathType) -> None:
         is_posix_abs = posixpath.isabs(value)
-        is_nt_abs = ntpath.isabs(value)
+        is_nt_abs = is_nt_abspath(to_str(value))
+
+        if any([self._is_windows() and is_nt_abs, self._is_posix() and is_posix_abs]):
+            return
+
+        if self._is_universal() and any([is_nt_abs, is_posix_abs]):
+            ValidationError(
+                "platform-independent absolute file path is not supported",
+                platform=self.platform,
+                reason=ErrorReason.MALFORMED_ABS_PATH,
+            )
+
         err_object = ValidationError(
             description=(
                 "an invalid absolute file path ({}) for the platform ({}).".format(
@@ -251,25 +263,13 @@ class FilePathValidator(BaseValidator):
             reason=ErrorReason.MALFORMED_ABS_PATH,
         )
 
-        if any([self._is_windows() and is_nt_abs, self._is_linux() and is_posix_abs]):
-            return
-
-        if self._is_universal() and any([is_posix_abs, is_nt_abs]):
-            ValidationError(
-                description=(
-                    ("POSIX style" if is_posix_abs else "NT style")
-                    + " absolute file path found. expected a platform-independent file path."
-                ),
-                platform=self.platform,
-                reason=ErrorReason.MALFORMED_ABS_PATH,
-            )
-
         if self._is_windows(include_universal=True) and is_posix_abs:
             raise err_object
 
-        drive, _tail = ntpath.splitdrive(value)
-        if not self._is_windows() and drive and is_nt_abs:
-            raise err_object
+        if not self._is_windows():
+            drive, _tail = ntpath.splitdrive(value)
+            if drive and is_nt_abs:
+                raise err_object
 
     def __validate_unix_filepath(self, unicode_filepath: str) -> None:
         match = _RE_INVALID_PATH.findall(unicode_filepath)

@@ -289,7 +289,7 @@ class Test_validate_filepath:
         [
             ["linux", "/a/b/c.txt", None],
             ["linux", "C:\\a\\b\\c.txt", ValidationError],
-            ["windows", "/a/b/c.txt", None],
+            ["windows", "/a/b/c.txt", ValidationError],
             ["windows", "C:\\a\\b\\c.txt", None],
             ["universal", "/a/b/c.txt", ValidationError],
             ["universal", "C:\\a\\b\\c.txt", ValidationError],
@@ -363,21 +363,31 @@ class Test_validate_filepath:
     @pytest.mark.parametrize(
         ["platform", "value"],
         [
-            ["windows", "period."],
-            ["windows", "space "],
-            ["windows", "space_and_period ."],
-            ["windows", "space_and_period. "],
             ["linux", "period."],
             ["linux", "space "],
             ["linux", "space_and_period. "],
-            ["universal", "period."],
-            ["universal", "space "],
-            ["universal", "space_and_period ."],
         ],
     )
     def test_normal_space_or_period_at_tail(self, platform, value):
         validate_filepath(value, platform=platform)
         assert is_valid_filepath(value, platform=platform)
+
+    @pytest.mark.parametrize(
+        ["platform", "value"],
+        [
+            ["windows", "period."],
+            ["windows", "space "],
+            ["windows", "space_and_period ."],
+            ["windows", "space_and_period. "],
+            ["universal", "period."],
+            ["universal", "space "],
+            ["universal", "space_and_period ."],
+        ],
+    )
+    def test_exception_space_or_period_at_tail(self, platform, value):
+        with pytest.raises(ValidationError):
+            validate_filepath(value, platform=platform)
+        assert not is_valid_filepath(value, platform=platform)
 
     @pytest.mark.skipif(not is_faker_installed(), reason="requires faker")
     @pytest.mark.parametrize(

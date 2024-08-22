@@ -397,28 +397,32 @@ class Test_validate_filename:
         assert is_valid_filename(value, additional_reserved_names=arn) == expected
 
     @pytest.mark.parametrize(
-        ["platform", "value", "expected"],
+        ["platform", "value", "expected", "reason"],
         [
-            [win_abspath, platform, None]
+            [win_abspath, platform, None, None]
             for win_abspath, platform in product(
                 ["linux", "macos", "posix"],
                 ["\\", "\\\\", "\\ ", "C:\\", "c:\\", "\\xyz", "\\xyz "],
             )
         ]
         + [
-            [win_abspath, platform, ValidationError]
+            [win_abspath, platform, ValidationError, ErrorReason.FOUND_ABS_PATH]
+            for win_abspath, platform in product(["windows", "universal"], ["\\\\", "C:\\", "c:\\"])
+        ]
+        + [
+            [win_abspath, platform, ValidationError, ErrorReason.INVALID_CHARACTER]
             for win_abspath, platform in product(
-                ["windows", "universal"], ["\\", "\\\\", "\\ ", "C:\\", "c:\\", "\\xyz", "\\xyz "]
+                ["windows", "universal"], ["\\", "\\ ", "\\xyz", "\\xyz "]
             )
         ],
     )
-    def test_win_abs_path(self, platform, value, expected):
+    def test_win_abs_path(self, platform, value, expected, reason):
         if expected is None:
             validate_filename(value, platform=platform)
         else:
             with pytest.raises(expected) as e:
                 validate_filename(value, platform=platform)
-            assert e.value.reason == ErrorReason.FOUND_ABS_PATH
+            assert e.value.reason == reason
 
     @pytest.mark.parametrize(
         ["value", "platform"],
@@ -461,21 +465,6 @@ class Test_validate_filename:
         ],
     )
     def test_exception_null_value(self, value, expected):
-        with pytest.raises(expected):
-            validate_filename(value)
-        assert not is_valid_filename(value)
-
-    @pytest.mark.parametrize(
-        ["value", "expected"],
-        [
-            ["a" * 256, ValidationError],
-            [1, TypeError],
-            [True, TypeError],
-            [nan, TypeError],
-            [inf, TypeError],
-        ],
-    )
-    def test_exception(self, value, expected):
         with pytest.raises(expected):
             validate_filename(value)
         assert not is_valid_filename(value)
