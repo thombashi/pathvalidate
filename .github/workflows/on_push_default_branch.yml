@@ -44,7 +44,7 @@ jobs:
           path: ./dist/*
 
   publish-package:
-    needs: build-package
+    needs: build-wheel-package
     runs-on: ubuntu-latest
     concurrency:
       group: ${{ github.event_name }}-${{ github.workflow }}-${{ github.ref_name }}-publish-pkg
