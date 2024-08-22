@@ -3,7 +3,7 @@ name: Publish to TestPyPI and Sign with Sigstore
 on:
   push:
     branches:
-      - main
+      - master
     paths-ignore:
       - ".gitignore"
       - "README.rst"
