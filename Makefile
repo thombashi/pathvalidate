@@ -3,6 +3,7 @@ BIN_DIR := $(shell pwd)/bin
 PYTHON := python3
 BIN_CHANGELOG_FROM_RELEASE := $(BIN_DIR)/changelog-from-release
 
+FIRST_RELEASE_YEAR := 2016
 LAST_UPDATE_YEAR := $(shell git log -1 --format=%cd --date=format:%Y)
 
 
@@ -68,5 +69,5 @@ test:
 
 .PHONY: update-copyright
 update-copyright:
-	sed -i "s/^__copyright__ = .*/__copyright__ = f\"Copyright 2016-$(LAST_UPDATE_YEAR), {__author__}\"/" pathvalidate/__version__.py
-	sed -i "s/^Copyright (c) .* Tsuyoshi Hombashi/Copyright (c) 2016-$(LAST_UPDATE_YEAR) Tsuyoshi Hombashi/" LICENSE
+	sed -i "s/^__copyright__ = .*/__copyright__ = f\"Copyright $(FIRST_RELEASE_YEAR)-$(LAST_UPDATE_YEAR), {__author__}\"/" pathvalidate/__version__.py
+	sed -i "s/^Copyright (c) .* Tsuyoshi Hombashi/Copyright (c) $(FIRST_RELEASE_YEAR)-$(LAST_UPDATE_YEAR) Tsuyoshi Hombashi/" LICENSE
