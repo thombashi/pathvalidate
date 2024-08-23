@@ -51,8 +51,8 @@ Features
     - ``Linux``
     - ``Windows``
     - ``macOS``
-    - ``POSIX``
-    - ``universal`` (platform independent)
+    - ``POSIX``: POSIX-compliant systems (Linux, macOS, etc.)
+    - ``universal``: platform independent
 - Multibyte character support
 
 CLI tool
