@@ -1,3 +1,37 @@
+<a name="v3.2.1"></a>
+# [v3.2.1](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.1) - 23 Aug 2024
+
+## What's Changed
+* Test Python 3.12 in CIs by [@MatthieuDartiailh](https://github.com/MatthieuDartiailh) in https://github.com/thombashi/pathvalidate/pull/40
+* Bump actions/setup-python from 4 to 5 by [@dependabot](https://github.com/dependabot) in https://github.com/thombashi/pathvalidate/pull/36
+* Bump actions/upload-artifact from 3 to 4 by [@dependabot](https://github.com/dependabot) in https://github.com/thombashi/pathvalidate/pull/38
+* Bump actions/download-artifact from 3 to 4 by [@dependabot](https://github.com/dependabot) in https://github.com/thombashi/pathvalidate/pull/37
+* Fix CI by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/41
+* Update the CI workflow to include a job that publishes packages to TestPyPI by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/42
+* Fix coverage report by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/45
+* Fix `sanitize_filename` truncation by [@7x11x13](https://github.com/7x11x13) in https://github.com/thombashi/pathvalidate/pull/48
+* Fix validation functions of filepaths by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/55
+* Add support for Python 3.13 by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/56
+* Improve type annotations
+* Add a build and publish workflow
+* Fix validation functions of filepaths: [#39](https://github.com/thombashi/pathvalidate/issues/39)
+  - If `platform` argument is `windows` or `universal`, filepaths ending with a space or a period should be detected as an error
+  - Fix POSIX-style absolute paths were not detected as errors with `platform="windows"` on Python 3.12 and below
+* Update copyright year to include the last update year: [#54](https://github.com/thombashi/pathvalidate/issues/54) (Thanks to [@Flimm](https://github.com/Flimm))
+* Add CHANGELOG
+
+
+## New Contributors
+* [@MatthieuDartiailh](https://github.com/MatthieuDartiailh) made their first contribution in https://github.com/thombashi/pathvalidate/pull/40
+* [@dependabot](https://github.com/dependabot) made their first contribution in https://github.com/thombashi/pathvalidate/pull/36
+* [@thombashi](https://github.com/thombashi) made their first contribution in https://github.com/thombashi/pathvalidate/pull/41
+* [@7x11x13](https://github.com/7x11x13) made their first contribution in https://github.com/thombashi/pathvalidate/pull/48
+
+**Full Changelog**: https://github.com/thombashi/pathvalidate/compare/v3.2.0...v3.2.1
+
+[Changes][v3.2.1]
+
+
 <a name="v3.2.0"></a>
 # [v3.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.0) - 17 Sep 2023
 
@@ -529,6 +563,7 @@ mkbloke)
 [Changes][v0.1.0]
 
 
+[v3.2.1]: https://github.com/thombashi/pathvalidate/compare/v3.2.0...v3.2.1
 [v3.2.0]: https://github.com/thombashi/pathvalidate/compare/v3.1.0...v3.2.0
 [v3.1.0]: https://github.com/thombashi/pathvalidate/compare/v3.0.0...v3.1.0
 [v3.0.0]: https://github.com/thombashi/pathvalidate/compare/v2.5.2...v3.0.0
