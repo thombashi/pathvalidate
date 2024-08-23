@@ -11,12 +11,11 @@
 * Fix coverage report by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/45
 * Fix `sanitize_filename` truncation by [@7x11x13](https://github.com/7x11x13) in https://github.com/thombashi/pathvalidate/pull/48
 * Fix validation functions of filepaths by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/55
+  - If `platform` argument is `windows` or `universal`, filepaths ending with a space or a period should be detected as an error
+  - Fix POSIX-style absolute paths were not detected as errors with `platform="windows"` or `platform="universal"` on Python 3.12 and below
 * Add support for Python 3.13 by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/56
 * Improve type annotations
 * Add a build and publish workflow
-* Fix validation functions of filepaths: [#39](https://github.com/thombashi/pathvalidate/issues/39)
-  - If `platform` argument is `windows` or `universal`, filepaths ending with a space or a period should be detected as an error
-  - Fix POSIX-style absolute paths were not detected as errors with `platform="windows"` on Python 3.12 and below
 * Update copyright year to include the last update year: [#54](https://github.com/thombashi/pathvalidate/issues/54) (Thanks to [@Flimm](https://github.com/Flimm))
 * Add CHANGELOG
 
