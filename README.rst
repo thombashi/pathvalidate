@@ -12,8 +12,8 @@ Summary
     :target: https://badge.fury.io/py/pathvalidate
     :alt: PyPI package version
 
-.. |conda pkg ver| image:: https://anaconda.org/thombashi/pathvalidate/badges/version.svg
-    :target: https://anaconda.org/thombashi/pathvalidate
+.. |conda pkg ver| image:: https://anaconda.org/conda-forge/pathvalidate/badges/version.svg
+    :target: https://anaconda.org/conda-forge/pathvalidate
     :alt: conda package version
 
 .. |Supported Python ver| image:: https://img.shields.io/pypi/pyversions/pathvalidate.svg
@@ -291,7 +291,7 @@ Installation: conda
 ------------------------------
 ::
 
-    conda install -c thombashi pathvalidate
+    conda install conda-forge::pathvalidate
 
 Installation: apt
 ------------------------------
