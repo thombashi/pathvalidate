@@ -10,7 +10,7 @@ Installation: conda
 ------------------------------
 ::
 
-    conda install -c thombashi pathvalidate
+    conda install conda-forge::pathvalidate
 
 Installation: apt
 ------------------------------
