@@ -6,8 +6,10 @@ import itertools
 import posixpath
 import re
 import warnings
+from collections.abc import Sequence
 from pathlib import Path, PurePath
-from typing import Optional, Pattern, Sequence, Tuple
+from re import Pattern
+from typing import Optional
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, is_nt_abspath, to_str, truncate_str, validate_pathtype
@@ -126,7 +128,7 @@ class FileNameValidator(BaseValidator):
     _MACOS_RESERVED_FILE_NAMES = (":",)
 
     @property
-    def reserved_keywords(self) -> Tuple[str, ...]:
+    def reserved_keywords(self) -> tuple[str, ...]:
         common_keywords = super().reserved_keywords
 
         if self._is_universal():

@@ -5,7 +5,8 @@
 import abc
 import os
 import sys
-from typing import ClassVar, Optional, Sequence, Tuple
+from collections.abc import Sequence
+from typing import ClassVar, Optional
 
 from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
@@ -27,7 +28,7 @@ class BaseFile:
         return self.__platform
 
     @property
-    def reserved_keywords(self) -> Tuple[str, ...]:
+    def reserved_keywords(self) -> tuple[str, ...]:
         return self._additional_reserved_names
 
     @property

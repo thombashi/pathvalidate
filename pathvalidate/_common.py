@@ -8,7 +8,7 @@ import re
 import string
 import sys
 from pathlib import PurePath
-from typing import Any, List, Optional
+from typing import Any, Optional
 
 from ._const import Platform
 from ._types import PathType, PlatformType
@@ -71,15 +71,15 @@ def _is_not_null_string(value: Any) -> bool:
         return False
 
 
-def _get_unprintable_ascii_chars() -> List[str]:
+def _get_unprintable_ascii_chars() -> list[str]:
     return [chr(c) for c in range(128) if chr(c) not in string.printable]
 
 
 unprintable_ascii_chars = tuple(_get_unprintable_ascii_chars())
 
 
-def _get_ascii_symbols() -> List[str]:
-    symbol_list: List[str] = []
+def _get_ascii_symbols() -> list[str]:
+    symbol_list: list[str] = []
 
     for i in range(128):
         c = chr(i)
@@ -151,7 +151,7 @@ def normalize_platform(name: Optional[PlatformType]) -> Platform:
     return Platform.UNIVERSAL
 
 
-def findall_to_str(match: List[Any]) -> str:
+def findall_to_str(match: list[Any]) -> str:
     return ", ".join([repr(text) for text in match])
 
 

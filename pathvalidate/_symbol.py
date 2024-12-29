@@ -3,7 +3,7 @@
 """
 
 import re
-from typing import Sequence
+from collections.abc import Sequence
 
 from ._common import ascii_symbols, to_str, unprintable_ascii_chars
 from .error import InvalidCharError

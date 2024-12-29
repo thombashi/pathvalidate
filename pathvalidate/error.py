@@ -3,7 +3,7 @@
 """
 
 import enum
-from typing import Dict, Optional
+from typing import Optional
 
 from ._const import Platform
 
@@ -145,14 +145,14 @@ class ValidationError(ValueError):
         except IndexError:
             super().__init__(*args, **kwargs)
 
-    def as_slog(self) -> Dict[str, str]:
+    def as_slog(self) -> dict[str, str]:
         """Return a dictionary representation of the error.
 
         Returns:
             Dict[str, str]: A dictionary representation of the error.
         """
 
-        slog: Dict[str, str] = {
+        slog: dict[str, str] = {
             "code": self.reason.code,
             ErrorAttrKey.DESCRIPTION: self.reason.description,
         }

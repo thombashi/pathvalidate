@@ -7,8 +7,10 @@ import os.path
 import posixpath
 import re
 import warnings
+from collections.abc import Sequence
 from pathlib import Path, PurePath
-from typing import List, Optional, Pattern, Sequence, Tuple
+from re import Pattern
+from typing import Optional
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, is_nt_abspath, to_str, validate_pathtype
@@ -93,7 +95,7 @@ class FilePathSanitizer(AbstractSanitizer):
             unicode_filepath = os.path.normpath(unicode_filepath)
         sanitized_path = unicode_filepath
 
-        sanitized_entries: List[str] = []
+        sanitized_entries: list[str] = []
         if drive:
             sanitized_entries.append(drive)
         for entry in sanitized_path.replace("\\", "/").split("/"):
@@ -147,7 +149,7 @@ class FilePathValidator(BaseValidator):
     _MACOS_RESERVED_FILE_PATHS = ("/", ":")
 
     @property
-    def reserved_keywords(self) -> Tuple[str, ...]:
+    def reserved_keywords(self) -> tuple[str, ...]:
         common_keywords = super().reserved_keywords
 
         if any([self._is_universal(), self._is_posix(), self._is_macos()]):
