@@ -52,7 +52,7 @@ jobs:
     timeout-minutes: 10
     environment:
       name: testpypi
-      url: https://pypi.org/p/pathvalidate
+      url: https://test.pypi.org/p/pathvalidate
     permissions:
       id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
 
