@@ -2,8 +2,7 @@
 build-backend = "setuptools.build_meta"
 requires = [
   "setuptools>=64",
-  "setuptools_scm>=7,<8; python_version<'3.8'",
-  "setuptools_scm>=8; python_version>='3.8'",
+  "setuptools_scm>=8",
 ]
 
 [tool.setuptools_scm]
@@ -27,7 +26,7 @@ exclude = '''
 | docs/conf.py
 '''
 line-length = 100
-target-version = ['py36', 'py37', 'py38', 'py39', 'py310', 'py311', 'py312', 'py313']
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.isort]
 include_trailing_comma = true
@@ -74,7 +73,7 @@ exclude = [
     "build",
     "dist"
 ]
-pythonVersion = "3.7"
+pythonVersion = "3.9"
 
 [tool.pytest.ini_options]
 testpaths = [
@@ -92,7 +91,7 @@ discord_verbose = 1
 
 [tool.ruff]
 line-length = 100
-target-version = "py37"
+target-version = "py39"
 exclude = [
     ".eggs/",
     ".tox/",
