@@ -63,8 +63,8 @@ setuptools.setup(
     extras_require={
         "docs": docs_requires,
         "readme": [
-            "readmemaker>=1.1.0",
-            "path>=13,<17",
+            "readmemaker>=1.2.0",
+            "path>=13,<18",
         ],
         "test": TESTS_REQUIRES,
     },
