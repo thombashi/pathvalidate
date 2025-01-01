@@ -1,38 +1,50 @@
-<a name="v3.2.1"></a>
-# [v3.2.1](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.1) - 23 Aug 2024
+<a id="v3.2.2"></a>
+# [v3.2.2](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.2) - 2025-01-01
+
+- Fix the detection logic of the reservation words for the file name on Windows: [#57](https://github.com/thombashi/pathvalidate/issues/57) (Thanks to [@jplarocque](https://github.com/jplarocque))
+- Drop support for Python 3.7/3.8
+- Refactor type annotations
+
+**Full Changelog**: https://github.com/thombashi/pathvalidate/compare/v3.2.1...v3.2.2
+
+[Changes][v3.2.2]
+
+
+<a id="v3.2.1"></a>
+# [v3.2.1](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.1) - 2024-08-23
 
 ## What's Changed
-* Test Python 3.12 in CIs by [@MatthieuDartiailh](https://github.com/MatthieuDartiailh) in https://github.com/thombashi/pathvalidate/pull/40
-* Bump actions/setup-python from 4 to 5 by [@dependabot](https://github.com/dependabot) in https://github.com/thombashi/pathvalidate/pull/36
-* Bump actions/upload-artifact from 3 to 4 by [@dependabot](https://github.com/dependabot) in https://github.com/thombashi/pathvalidate/pull/38
-* Bump actions/download-artifact from 3 to 4 by [@dependabot](https://github.com/dependabot) in https://github.com/thombashi/pathvalidate/pull/37
-* Fix CI by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/41
-* Update the CI workflow to include a job that publishes packages to TestPyPI by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/42
-* Fix coverage report by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/45
-* Fix `sanitize_filename` truncation by [@7x11x13](https://github.com/7x11x13) in https://github.com/thombashi/pathvalidate/pull/48
-* Fix validation functions of filepaths by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/55
+* Test Python 3.12 in CIs by [@MatthieuDartiailh](https://github.com/MatthieuDartiailh) in [#40](https://github.com/thombashi/pathvalidate/pull/40)
+* Bump actions/setup-python from 4 to 5 by [@dependabot](https://github.com/dependabot) in [#36](https://github.com/thombashi/pathvalidate/pull/36)
+* Bump actions/upload-artifact from 3 to 4 by [@dependabot](https://github.com/dependabot) in [#38](https://github.com/thombashi/pathvalidate/pull/38)
+* Bump actions/download-artifact from 3 to 4 by [@dependabot](https://github.com/dependabot) in [#37](https://github.com/thombashi/pathvalidate/pull/37)
+* Fix CI by [@thombashi](https://github.com/thombashi) in [#41](https://github.com/thombashi/pathvalidate/pull/41)
+* Update the CI workflow to include a job that publishes packages to TestPyPI by [@thombashi](https://github.com/thombashi) in [#42](https://github.com/thombashi/pathvalidate/pull/42)
+* Fix coverage report by [@thombashi](https://github.com/thombashi) in [#45](https://github.com/thombashi/pathvalidate/pull/45)
+* Fix `sanitize_filename` truncation by [@7x11x13](https://github.com/7x11x13) in [#48](https://github.com/thombashi/pathvalidate/pull/48)
+* Fix validation functions of filepaths by [@thombashi](https://github.com/thombashi) in [#55](https://github.com/thombashi/pathvalidate/pull/55)
   - If `platform` argument is `windows` or `universal`, filepaths ending with a space or a period should be detected as an error
   - Fix POSIX-style absolute paths were not detected as errors with `platform="windows"` or `platform="universal"` on Python 3.12 and below
-* Add support for Python 3.13 by [@thombashi](https://github.com/thombashi) in https://github.com/thombashi/pathvalidate/pull/56
+* Add support for Python 3.13 by [@thombashi](https://github.com/thombashi) in [#56](https://github.com/thombashi/pathvalidate/pull/56)
 * Improve type annotations
 * Add a build and publish workflow
+* Add Sigstore signatures to release assets
 * Update copyright year to include the last update year: [#54](https://github.com/thombashi/pathvalidate/issues/54) (Thanks to [@Flimm](https://github.com/Flimm))
 * Add CHANGELOG
 
 
 ## New Contributors
-* [@MatthieuDartiailh](https://github.com/MatthieuDartiailh) made their first contribution in https://github.com/thombashi/pathvalidate/pull/40
-* [@dependabot](https://github.com/dependabot) made their first contribution in https://github.com/thombashi/pathvalidate/pull/36
-* [@thombashi](https://github.com/thombashi) made their first contribution in https://github.com/thombashi/pathvalidate/pull/41
-* [@7x11x13](https://github.com/7x11x13) made their first contribution in https://github.com/thombashi/pathvalidate/pull/48
+* [@MatthieuDartiailh](https://github.com/MatthieuDartiailh) made their first contribution in [#40](https://github.com/thombashi/pathvalidate/pull/40)
+* [@dependabot](https://github.com/dependabot) made their first contribution in [#36](https://github.com/thombashi/pathvalidate/pull/36)
+* [@7x11x13](https://github.com/7x11x13) made their first contribution in [#48](https://github.com/thombashi/pathvalidate/pull/48)
 
 **Full Changelog**: https://github.com/thombashi/pathvalidate/compare/v3.2.0...v3.2.1
 
 [Changes][v3.2.1]
 
 
-<a name="v3.2.0"></a>
-# [v3.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.0) - 17 Sep 2023
+<a id="v3.2.0"></a>
+# [v3.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.0) - 2023-09-17
 
 - Add `reserved_name_handler` argument to `sanitize_filename` function and `sanitize_filepath` function
 - Add `NullValueHandler` class and `ReservedNameHandler` class
@@ -46,8 +58,8 @@
 [Changes][v3.2.0]
 
 
-<a name="v3.1.0"></a>
-# [v3.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.1.0) - 16 Jul 2023
+<a id="v3.1.0"></a>
+# [v3.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.1.0) - 2023-07-16
 
 - Fix validation error messages to show the `target-platform` properly: [#34](https://github.com/thombashi/pathvalidate/issues/34) (Thanks to [@matanster](https://github.com/matanster))
 - Fix README: out of date with the actual error generated by `validate_filename` [#35](https://github.com/thombashi/pathvalidate/issues/35) (Thanks to [@hXtreme](https://github.com/hXtreme))
@@ -64,11 +76,11 @@
 [Changes][v3.1.0]
 
 
-<a name="v3.0.0"></a>
-# [v3.0.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.0.0) - 22 May 2023
+<a id="v3.0.0"></a>
+# [v3.0.0](https://github.com/thombashi/pathvalidate/releases/tag/v3.0.0) - 2023-05-22
 
 ## What's Changed
-- Trim heading spaces in Windows by [@eggplants](https://github.com/eggplants) in https://github.com/thombashi/pathvalidate/pull/28
+- Trim heading spaces in Windows by [@eggplants](https://github.com/eggplants) in [#28](https://github.com/thombashi/pathvalidate/pull/28)
 - Consider filesystem encoding for length calculations: [#26](https://github.com/thombashi/pathvalidate/issues/26) (Thanks to [@virlos](https://github.com/virlos))
 - Fix type model: [#29](https://github.com/thombashi/pathvalidate/issues/29) (Thanks to [@rogalski](https://github.com/rogalski))
 - Fix sanitizing of filenames that only consist of whitespaces and periods
@@ -94,8 +106,8 @@
 [Changes][v3.0.0]
 
 
-<a name="v2.5.2"></a>
-# [v2.5.2](https://github.com/thombashi/pathvalidate/releases/tag/v2.5.2) - 20 Aug 2022
+<a id="v2.5.2"></a>
+# [v2.5.2](https://github.com/thombashi/pathvalidate/releases/tag/v2.5.2) - 2022-08-20
 
 - Add support for Python 3.11: [#22](https://github.com/thombashi/pathvalidate/issues/22) (Thanks to [@hegjon](https://github.com/hegjon))
 
@@ -105,24 +117,24 @@
 [Changes][v2.5.2]
 
 
-<a name="v2.5.1"></a>
-# [v2.5.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.5.1) - 31 Jul 2022
+<a id="v2.5.1"></a>
+# [v2.5.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.5.1) - 2022-07-31
 
 ## What's Changed
-* Add `__all__` by [@eggplants](https://github.com/eggplants) in https://github.com/thombashi/pathvalidate/pull/24
+* Add `__all__` by [@eggplants](https://github.com/eggplants) in [#24](https://github.com/thombashi/pathvalidate/pull/24)
 * Add `DeprecationWarning` to deprecated functions
 
 
 ## New Contributors
-* [@eggplants](https://github.com/eggplants) made their first contribution in https://github.com/thombashi/pathvalidate/pull/24
+* [@eggplants](https://github.com/eggplants) made their first contribution in [#24](https://github.com/thombashi/pathvalidate/pull/24)
 
 **Full Changelog**: https://github.com/thombashi/pathvalidate/compare/v2.5.0...v2.5.1
 
 [Changes][v2.5.1]
 
 
-<a name="v2.5.0"></a>
-# [v2.5.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.5.0) - 26 Sep 2021
+<a id="v2.5.0"></a>
+# [v2.5.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.5.0) - 2021-09-26
 
 - Add support for Python 3.10
 - Drop support for Python 3.5
@@ -137,8 +149,8 @@ mkbloke)
 [Changes][v2.5.0]
 
 
-<a name="v2.4.1"></a>
-# [v2.4.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.4.1) - 03 Apr 2021
+<a id="v2.4.1"></a>
+# [v2.4.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.4.1) - 2021-04-03
 
 - Fix filename validations that include `'\'` (backslash) on other than Windows: [#18](https://github.com/thombashi/pathvalidate/issues/18) (Thanks to [@Traktormaster](https://github.com/Traktormaster))
 
@@ -146,8 +158,8 @@ mkbloke)
 [Changes][v2.4.1]
 
 
-<a name="v2.4.0"></a>
-# [v2.4.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.4.0) - 21 Mar 2021
+<a id="v2.4.0"></a>
+# [v2.4.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.4.0) - 2021-03-21
 
 - Add `exclude_symbols` argument to `replace_symbol` function
 - Fix permissions of files included in `sdist` package binary (Thanks to [@hegjon](https://github.com/hegjon))
@@ -156,16 +168,16 @@ mkbloke)
 [Changes][v2.4.0]
 
 
-<a name="v2.3.2"></a>
-# [v2.3.2](https://github.com/thombashi/pathvalidate/releases/tag/v2.3.2) - 03 Jan 2021
+<a id="v2.3.2"></a>
+# [v2.3.2](https://github.com/thombashi/pathvalidate/releases/tag/v2.3.2) - 2021-01-03
 
 - Fix to disallow file name/path that only white spaces for `universal` platform
 
 [Changes][v2.3.2]
 
 
-<a name="v2.3.1"></a>
-# [v2.3.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.3.1) - 13 Dec 2020
+<a id="v2.3.1"></a>
+# [v2.3.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.3.1) - 2020-12-13
 
 - Modify to accept file name/path that consists only whitespaces: [#15](https://github.com/thombashi/pathvalidate/issues/15) (Thank to [@Traktormaster](https://github.com/Traktormaster))
 
@@ -173,8 +185,8 @@ mkbloke)
 [Changes][v2.3.1]
 
 
-<a name="v2.3.0"></a>
-# [v2.3.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.3.0) - 03 May 2020
+<a id="v2.3.0"></a>
+# [v2.3.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.3.0) - 2020-05-03
 
 - Change not to process for `"."`/`".."` by sanitization functions: [#13](https://github.com/thombashi/pathvalidate/issues/13) (Thanks to [@ProfElectric](https://github.com/ProfElectric))
 - Change to normalize with `sanitize_filepath` in default
@@ -184,8 +196,8 @@ mkbloke)
 [Changes][v2.3.0]
 
 
-<a name="v2.2.2"></a>
-# [v2.2.2](https://github.com/thombashi/pathvalidate/releases/tag/v2.2.2) - 28 Mar 2020
+<a id="v2.2.2"></a>
+# [v2.2.2](https://github.com/thombashi/pathvalidate/releases/tag/v2.2.2) - 2020-03-28
 
 - Improve file path validation for Windows platform: [#12](https://github.com/thombashi/pathvalidate/issues/12) (Thanks to [@bschollnick](https://github.com/bschollnick))
 - Fix `__str__` method
@@ -197,8 +209,8 @@ mkbloke)
 [Changes][v2.2.2]
 
 
-<a name="v2.2.1"></a>
-# [v2.2.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.2.1) - 20 Mar 2020
+<a id="v2.2.1"></a>
+# [v2.2.1](https://github.com/thombashi/pathvalidate/releases/tag/v2.2.1) - 2020-03-20
 
 - Fix to include `py.typed` to the package
 
@@ -206,8 +218,8 @@ mkbloke)
 [Changes][v2.2.1]
 
 
-<a name="v2.2.0"></a>
-# [v2.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.2.0) - 12 Feb 2020
+<a id="v2.2.0"></a>
+# [v2.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.2.0) - 2020-02-12
 
 - Add `POSIX` as a platform
 - Add a reserved keyword for macOS
@@ -217,8 +229,8 @@ mkbloke)
 [Changes][v2.2.0]
 
 
-<a name="v2.1.0"></a>
-# [v2.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.1.0) - 01 Feb 2020
+<a id="v2.1.0"></a>
+# [v2.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.1.0) - 2020-02-01
 
 - Add `check_reserved` argument to validate/sanitize functions
 - Add `'/'` as a reserved file path for Linux/macOS
@@ -232,8 +244,8 @@ mkbloke)
 [Changes][v2.1.0]
 
 
-<a name="v2.0.0"></a>
-# [v2.0.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.0.0) - 13 Jan 2020
+<a id="v2.0.0"></a>
+# [v2.0.0](https://github.com/thombashi/pathvalidate/releases/tag/v2.0.0) - 2020-01-13
 
 - Change to be more strict validation for absolute paths
 - Fix argparse validator/sanitizer failed when empty inputs
@@ -243,8 +255,8 @@ mkbloke)
 [Changes][v2.0.0]
 
 
-<a name="v1.1.0"></a>
-# [v1.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v1.1.0) - 04 Jan 2020
+<a id="v1.1.0"></a>
+# [v1.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v1.1.0) - 2020-01-04
 
 - Modify validate/sanitize functions for `argparse`
 - Modify validate/sanitize functions for `click`
@@ -254,8 +266,8 @@ mkbloke)
 [Changes][v1.1.0]
 
 
-<a name="v1.0.0"></a>
-# [v1.0.0](https://github.com/thombashi/pathvalidate/releases/tag/v1.0.0) - 03 Jan 2020
+<a id="v1.0.0"></a>
+# [v1.0.0](https://github.com/thombashi/pathvalidate/releases/tag/v1.0.0) - 2020-01-03
 
 - Drop Python 2 support
 - Modify to use Python 3 functionality
@@ -267,8 +279,8 @@ mkbloke)
 [Changes][v1.0.0]
 
 
-<a name="v0.29.1"></a>
-# [v0.29.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.29.1) - 02 Jan 2020
+<a id="v0.29.1"></a>
+# [v0.29.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.29.1) - 2020-01-02
 
 - Fix file path length validation: [#10](https://github.com/thombashi/pathvalidate/issues/10) (Thanks to [@UncleGoogle](https://github.com/UncleGoogle))
 - Add `.asc` files of packages to PyPI
@@ -277,8 +289,8 @@ mkbloke)
 [Changes][v0.29.1]
 
 
-<a name="v0.29.0"></a>
-# [v0.29.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.29.0) - 16 Jun 2019
+<a id="v0.29.0"></a>
+# [v0.29.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.29.0) - 2019-06-16
 
 - Add filename/filepath validators for `argparse`/`click`
 - Modify error messages
@@ -286,24 +298,24 @@ mkbloke)
 [Changes][v0.29.0]
 
 
-<a name="v0.28.2"></a>
-# [v0.28.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.28.2) - 18 May 2019
+<a id="v0.28.2"></a>
+# [v0.28.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.28.2) - 2019-05-18
 
 - Fix to properly escape special chars for validation error messages: [#9](https://github.com/thombashi/pathvalidate/issues/9) (Thanks to [@UncleGoogle](https://github.com/UncleGoogle))
 
 [Changes][v0.28.2]
 
 
-<a name="v0.28.0"></a>
-# [v0.28.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.28.0) - 01 May 2019
+<a id="v0.28.0"></a>
+# [v0.28.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.28.0) - 2019-05-01
 
 - Drop support for Python 3.4
 
 [Changes][v0.28.0]
 
 
-<a name="v0.26.0"></a>
-# [v0.26.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.26.0) - 15 Mar 2019
+<a id="v0.26.0"></a>
+# [v0.26.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.26.0) - 2019-03-15
 
 - Add support for NTFS reserved names
 - Improve drive letter handling
@@ -311,8 +323,8 @@ mkbloke)
 [Changes][v0.26.0]
 
 
-<a name="v0.25.0"></a>
-# [v0.25.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.25.0) - 14 Mar 2019
+<a id="v0.25.0"></a>
+# [v0.25.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.25.0) - 2019-03-14
 
 - Add `CLOCK$` as a reserved filename for Windows platform: [#8](https://github.com/thombashi/pathvalidate/issues/8) (Thanks to [@sparr](https://github.com/sparr))
 - Improve reserved name detection
@@ -322,8 +334,8 @@ mkbloke)
 [Changes][v0.25.0]
 
 
-<a name="v0.24.1"></a>
-# [v0.24.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.24.1) - 12 Feb 2019
+<a id="v0.24.1"></a>
+# [v0.24.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.24.1) - 2019-02-12
 
 - Fix improper error messages
 - Improve error message readability
@@ -331,8 +343,8 @@ mkbloke)
 [Changes][v0.24.1]
 
 
-<a name="v0.24.0"></a>
-# [v0.24.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.24.0) - 03 Feb 2019
+<a id="v0.24.0"></a>
+# [v0.24.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.24.0) - 2019-02-03
 
 - Add `is_valid_filename`/`is_valid_filepath` function
 - Add `FileNameSanitizer`/`FilePathSanitizer` classes
@@ -343,8 +355,8 @@ mkbloke)
 [Changes][v0.24.0]
 
 
-<a name="v0.23.0"></a>
-# [v0.23.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.23.0) - 06 Jan 2019
+<a id="v0.23.0"></a>
+# [v0.23.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.23.0) - 2019-01-06
 
 - Improve sanitization/validation for files
 - Add `.` and `..` as reserved keywords for files
@@ -361,8 +373,8 @@ mkbloke)
 [Changes][v0.23.0]
 
 
-<a name="v0.22.0"></a>
-# [v0.22.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.22.0) - 23 Dec 2018
+<a id="v0.22.0"></a>
+# [v0.22.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.22.0) - 2018-12-23
 
 - Add universal (platform independent) filename/filepath sanitization/validation
 - Treat ASCII whitespace other than normal space as invalid on Windows [#6](https://github.com/thombashi/pathvalidate/issues/6) (Thanks to [@nyuszika7h](https://github.com/nyuszika7h))
@@ -371,8 +383,8 @@ mkbloke)
 [Changes][v0.22.0]
 
 
-<a name="v0.21.1"></a>
-# [v0.21.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.21.1) - 28 Jul 2018
+<a id="v0.21.1"></a>
+# [v0.21.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.21.1) - 2018-07-28
 
 - Add support for PathLike object
 - Bug fixes
@@ -381,8 +393,8 @@ mkbloke)
 [Changes][v0.21.1]
 
 
-<a name="v0.18.0"></a>
-# [v0.18.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.18.0) - 07 Jul 2018
+<a id="v0.18.0"></a>
+# [v0.18.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.18.0) - 2018-07-07
 
 - Add validations/sanitizations for unprintable characters
 - Add support for Python 3.7
@@ -390,8 +402,8 @@ mkbloke)
 [Changes][v0.18.0]
 
 
-<a name="v0.15.0"></a>
-# [v0.15.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.15.0) - 18 Mar 2017
+<a id="v0.15.0"></a>
+# [v0.15.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.15.0) - 2017-03-18
 
 - Remove package dependencies
     - pathvalidate functions are expected to passing unicode strings.
@@ -400,8 +412,8 @@ mkbloke)
 [Changes][v0.15.0]
 
 
-<a name="v0.14.0"></a>
-# [v0.14.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.14.0) - 11 Feb 2017
+<a id="v0.14.0"></a>
+# [v0.14.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.14.0) - 2017-02-11
 
 - Change max file name/path length to configurable
 - Add support for Python 3.6
@@ -411,8 +423,8 @@ mkbloke)
 [Changes][v0.14.0]
 
 
-<a name="v0.13.0"></a>
-# [v0.13.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.13.0) - 03 Jan 2017
+<a id="v0.13.0"></a>
+# [v0.13.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.13.0) - 2017-01-03
 
 - Add JavaScript validator/sanitizer
 - Bug fixes
@@ -421,8 +433,8 @@ mkbloke)
 [Changes][v0.13.0]
 
 
-<a name="v0.11.0"></a>
-# [v0.11.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.11.0) - 25 Dec 2016
+<a id="v0.11.0"></a>
+# [v0.11.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.11.0) - 2016-12-25
 
 - Add multibyte character validate/sanitize support
 
@@ -430,8 +442,8 @@ mkbloke)
 [Changes][v0.11.0]
 
 
-<a name="v0.10.0"></a>
-# [v0.10.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.10.0) - 23 Dec 2016
+<a id="v0.10.0"></a>
+# [v0.10.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.10.0) - 2016-12-23
 
 - Add LTSV support
 
@@ -439,8 +451,8 @@ mkbloke)
 [Changes][v0.10.0]
 
 
-<a name="v0.9.1"></a>
-# [v0.9.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.9.1) - 17 Nov 2016
+<a id="v0.9.1"></a>
+# [v0.9.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.9.1) - 2016-11-17
 
 - Support UTF8
 
@@ -448,8 +460,8 @@ mkbloke)
 [Changes][v0.9.1]
 
 
-<a name="v0.9.0"></a>
-# [v0.9.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.9.0) - 13 Nov 2016
+<a id="v0.9.0"></a>
+# [v0.9.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.9.0) - 2016-11-13
 
 - Add validate_symbol function
 
@@ -457,8 +469,8 @@ mkbloke)
 [Changes][v0.9.0]
 
 
-<a name="v0.8.2"></a>
-# [v0.8.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.8.2) - 27 Oct 2016
+<a id="v0.8.2"></a>
+# [v0.8.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.8.2) - 2016-10-27
 
 - Fix Windows path validation
 - Bug fixes
@@ -467,8 +479,8 @@ mkbloke)
 [Changes][v0.8.2]
 
 
-<a name="v0.6.0"></a>
-# [v0.6.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.6.0) - 19 Sep 2016
+<a id="v0.6.0"></a>
+# [v0.6.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.6.0) - 2016-09-19
 
 - Add SQLite name validation function
 
@@ -476,8 +488,8 @@ mkbloke)
 [Changes][v0.6.0]
 
 
-<a name="v0.5.2"></a>
-# [v0.5.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.5.2) - 20 Aug 2016
+<a id="v0.5.2"></a>
+# [v0.5.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.5.2) - 2016-08-20
 
 - Fix validate/sanitize of excel sheet
 - Subdividing errors
@@ -487,8 +499,8 @@ mkbloke)
 [Changes][v0.5.2]
 
 
-<a name="v0.5.1"></a>
-# [v0.5.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.5.1) - 23 Jul 2016
+<a id="v0.5.1"></a>
+# [v0.5.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.5.1) - 2016-07-23
 
 - Modify error handling
 
@@ -496,8 +508,8 @@ mkbloke)
 [Changes][v0.5.1]
 
 
-<a name="v0.5.0"></a>
-# [v0.5.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.5.0) - 17 Jul 2016
+<a id="v0.5.0"></a>
+# [v0.5.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.5.0) - 2016-07-17
 
 - Drop support for Python 2.6
 - Add validate_excel_sheet_name function
@@ -507,8 +519,8 @@ mkbloke)
 [Changes][v0.5.0]
 
 
-<a name="v0.4.2"></a>
-# [v0.4.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.4.2) - 19 Jun 2016
+<a id="v0.4.2"></a>
+# [v0.4.2](https://github.com/thombashi/pathvalidate/releases/tag/v0.4.2) - 2016-06-19
 
 - Make pytest-runner a conditional requirement
 
@@ -516,8 +528,8 @@ mkbloke)
 [Changes][v0.4.2]
 
 
-<a name="v0.4.1"></a>
-# [v0.4.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.4.1) - 29 May 2016
+<a id="v0.4.1"></a>
+# [v0.4.1](https://github.com/thombashi/pathvalidate/releases/tag/v0.4.1) - 2016-05-29
 
 - Modify replace_symbol function behavior
 
@@ -525,8 +537,8 @@ mkbloke)
 [Changes][v0.4.1]
 
 
-<a name="v0.4.0"></a>
-# [v0.4.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.4.0) - 28 May 2016
+<a id="v0.4.0"></a>
+# [v0.4.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.4.0) - 2016-05-28
 
 - Add validate_file_path/sanitize_file_path functions
 - Fix validate/sanitize filename functions
@@ -536,8 +548,8 @@ mkbloke)
 [Changes][v0.4.0]
 
 
-<a name="v0.3.0"></a>
-# [v0.3.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.3.0) - 22 May 2016
+<a id="v0.3.0"></a>
+# [v0.3.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.3.0) - 2016-05-22
 
 - Add validate_python_var_name function
 
@@ -545,8 +557,8 @@ mkbloke)
 [Changes][v0.3.0]
 
 
-<a name="v0.2.0"></a>
-# [v0.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.2.0) - 21 May 2016
+<a id="v0.2.0"></a>
+# [v0.2.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.2.0) - 2016-05-21
 
 - Add sanitize_python_var_name function
 
@@ -554,14 +566,15 @@ mkbloke)
 [Changes][v0.2.0]
 
 
-<a name="v0.1.0"></a>
-# [v0.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.1.0) - 24 Mar 2016
+<a id="v0.1.0"></a>
+# [v0.1.0](https://github.com/thombashi/pathvalidate/releases/tag/v0.1.0) - 2016-03-24
 
 
 
 [Changes][v0.1.0]
 
 
+[v3.2.2]: https://github.com/thombashi/pathvalidate/compare/v3.2.1...v3.2.2
 [v3.2.1]: https://github.com/thombashi/pathvalidate/compare/v3.2.0...v3.2.1
 [v3.2.0]: https://github.com/thombashi/pathvalidate/compare/v3.1.0...v3.2.0
 [v3.1.0]: https://github.com/thombashi/pathvalidate/compare/v3.0.0...v3.1.0
@@ -612,4 +625,4 @@ mkbloke)
 [v0.2.0]: https://github.com/thombashi/pathvalidate/compare/v0.1.0...v0.2.0
 [v0.1.0]: https://github.com/thombashi/pathvalidate/tree/v0.1.0
 
-<!-- Generated by https://github.com/rhysd/changelog-from-release v3.7.2 -->
+<!-- Generated by https://github.com/rhysd/changelog-from-release v3.8.1 -->
