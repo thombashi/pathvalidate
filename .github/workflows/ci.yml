@@ -137,10 +137,27 @@ jobs:
       - name: Run tests
         env:
           PYTEST_DISCORD_WEBHOOK: ${{ secrets.PYTEST_DISCORD_WEBHOOK }}
-        run: tox -e cov
+          REPORT_OUTPUT: md_report.md
+        run: |
+          echo "REPORT_FILE=${REPORT_OUTPUT}" >> "$GITHUB_ENV"
+          tox -e py -- --md-report-output "${REPORT_OUTPUT}"
 
       - run: ls -alR
         if : ${{ matrix.os != 'windows-latest' }}
+
+      - name: Output reports to the job summary when tests fail
+        if: failure()
+        shell: bash
+        run: |
+          if [ -f "$REPORT_FILE" ]; then
+            echo "<details><summary>Failed Test Report</summary>" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            cat "$REPORT_FILE" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "</details>" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No failed tests to report"
+          fi
 
       - name: Install coveralls
         run: python -m pip install --upgrade --disable-pip-version-check coveralls tomli
