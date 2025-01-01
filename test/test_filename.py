@@ -88,6 +88,7 @@ class Test_FileNameValidator:
                 (
                     "AUX",
                     "CLOCK$",
+                    "COM0",
                     "COM1",
                     "COM2",
                     "COM3",
@@ -97,7 +98,11 @@ class Test_FileNameValidator:
                     "COM7",
                     "COM8",
                     "COM9",
+                    "COM²",
+                    "COM³",
+                    "COM¹",
                     "CON",
+                    "LPT0",
                     "LPT1",
                     "LPT2",
                     "LPT3",
@@ -107,6 +112,9 @@ class Test_FileNameValidator:
                     "LPT7",
                     "LPT8",
                     "LPT9",
+                    "LPT²",
+                    "LPT³",
+                    "LPT¹",
                     "NUL",
                     "PRN",
                 ),
@@ -358,6 +366,12 @@ class Test_validate_filename:
         ]
         + [
             [f"{reserved_keyword}.txt", platform, ValidationError]
+            for reserved_keyword, platform in product(
+                WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
+            )
+        ]
+        + [
+            [f"{reserved_keyword}.tar.gz", platform, ValidationError]
             for reserved_keyword, platform in product(
                 WIN_RESERVED_FILE_NAMES, ["windows", "universal"]
             )

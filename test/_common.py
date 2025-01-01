@@ -85,7 +85,14 @@ WIN_RESERVED_FILE_NAMES = [
     "clock$",
     "NUL",
     "nul",
-] + [f"{name:s}{num:d}" for name, num in product(["COM", "com", "LPT", "lpt"], range(1, 10))]
+] + [
+    f"{name:s}{num}"
+    for name, num in product(
+        ["COM", "com", "LPT", "lpt"],
+        list(range(0, 10))
+        + ["\N{SUPERSCRIPT ONE}", "\N{SUPERSCRIPT TWO}", "\N{SUPERSCRIPT THREE}"],
+    )
+]
 NTFS_RESERVED_FILE_NAMES = [
     "$Mft",
     "$MftMirr",

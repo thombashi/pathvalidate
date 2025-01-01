@@ -122,8 +122,16 @@ class FileNameSanitizer(AbstractSanitizer):
 
 
 class FileNameValidator(BaseValidator):
-    _WINDOWS_RESERVED_FILE_NAMES = ("CON", "PRN", "AUX", "CLOCK$", "NUL") + tuple(
-        f"{name:s}{num:d}" for name, num in itertools.product(("COM", "LPT"), range(1, 10))
+    _WINDOWS_RESERVED_FILE_NAMES = (
+        ("CON", "PRN", "AUX", "CLOCK$", "NUL")
+        + tuple(f"{name:s}{num:d}" for name, num in itertools.product(("COM", "LPT"), range(0, 10)))
+        + tuple(
+            f"{name:s}{ssd:s}"
+            for name, ssd in itertools.product(
+                ("COM", "LPT"),
+                ("\N{SUPERSCRIPT ONE}", "\N{SUPERSCRIPT TWO}", "\N{SUPERSCRIPT THREE}"),
+            )
+        )
     )
     _MACOS_RESERVED_FILE_NAMES = (":",)
 

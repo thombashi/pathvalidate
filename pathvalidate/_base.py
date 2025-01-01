@@ -4,9 +4,10 @@
 
 import abc
 import os
+import re
 import sys
 from collections.abc import Sequence
-from typing import ClassVar, Optional
+from typing import ClassVar, Final, Optional
 
 from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
@@ -181,6 +182,8 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
 
 
 class BaseValidator(AbstractValidator):
+    __RE_ROOT_NAME: Final = re.compile(r"([^\.]+)")
+
     @property
     def min_len(self) -> int:
         return self._min_len
@@ -234,6 +237,10 @@ class BaseValidator(AbstractValidator):
         if self.min_len > self.max_len:
             raise ValueError("min_len must be lower than max_len")
 
-    @staticmethod
-    def __extract_root_name(path: str) -> str:
-        return os.path.splitext(os.path.basename(path))[0]
+    @classmethod
+    def __extract_root_name(cls, path: str) -> str:
+        match = cls.__RE_ROOT_NAME.match(os.path.basename(path))
+        if match is None:
+            return ""
+
+        return match.group(1)
