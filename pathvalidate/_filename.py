@@ -9,7 +9,7 @@ import warnings
 from collections.abc import Sequence
 from pathlib import Path, PurePath
 from re import Pattern
-from typing import Optional
+from typing import Final, Optional
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, is_nt_abspath, to_str, truncate_str, validate_pathtype
@@ -19,9 +19,11 @@ from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ValidationError
 from .handler import ReservedNameHandler, ValidationErrorHandler
 
 
-_DEFAULT_MAX_FILENAME_LEN = 255
-_RE_INVALID_FILENAME = re.compile(f"[{re.escape(BaseFile._INVALID_FILENAME_CHARS):s}]", re.UNICODE)
-_RE_INVALID_WIN_FILENAME = re.compile(
+_DEFAULT_MAX_FILENAME_LEN: Final = 255
+_RE_INVALID_FILENAME: Final = re.compile(
+    f"[{re.escape(BaseFile._INVALID_FILENAME_CHARS):s}]", re.UNICODE
+)
+_RE_INVALID_WIN_FILENAME: Final = re.compile(
     f"[{re.escape(BaseFile._INVALID_WIN_FILENAME_CHARS):s}]", re.UNICODE
 )
 
@@ -122,7 +124,7 @@ class FileNameSanitizer(AbstractSanitizer):
 
 
 class FileNameValidator(BaseValidator):
-    _WINDOWS_RESERVED_FILE_NAMES = (
+    _WINDOWS_RESERVED_FILE_NAMES: Final = (
         ("CON", "PRN", "AUX", "CLOCK$", "NUL")
         + tuple(f"{name:s}{num:d}" for name, num in itertools.product(("COM", "LPT"), range(0, 10)))
         + tuple(
@@ -133,7 +135,7 @@ class FileNameValidator(BaseValidator):
             )
         )
     )
-    _MACOS_RESERVED_FILE_NAMES = (":",)
+    _MACOS_RESERVED_FILE_NAMES: Final = (":",)
 
     @property
     def reserved_keywords(self) -> tuple[str, ...]:

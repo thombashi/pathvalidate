@@ -3,12 +3,13 @@
 """
 
 import re
+from typing import Final
 
 from ._common import to_str, validate_pathtype
 from .error import InvalidCharError
 
 
-__RE_INVALID_LTSV_LABEL = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)
+__RE_INVALID_LTSV_LABEL: Final = re.compile("[^0-9A-Za-z_.-]", re.UNICODE)
 
 
 def validate_ltsv_label(label: str) -> None:

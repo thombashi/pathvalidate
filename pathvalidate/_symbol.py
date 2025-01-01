@@ -4,12 +4,13 @@
 
 import re
 from collections.abc import Sequence
+from typing import Final
 
 from ._common import ascii_symbols, to_str, unprintable_ascii_chars
 from .error import InvalidCharError
 
 
-__RE_SYMBOL = re.compile(
+__RE_SYMBOL: Final = re.compile(
     "[{}]".format(re.escape("".join(ascii_symbols + unprintable_ascii_chars))), re.UNICODE
 )
 

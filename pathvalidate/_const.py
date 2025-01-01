@@ -1,11 +1,12 @@
 import enum
+from typing import Final
 
 
-DEFAULT_MIN_LEN = 1
-INVALID_CHAR_ERR_MSG_TMPL = "invalids=({invalid}), value={value}"
+DEFAULT_MIN_LEN: Final = 1
+INVALID_CHAR_ERR_MSG_TMPL: Final = "invalids=({invalid}), value={value}"
 
 
-_NTFS_RESERVED_FILE_NAMES = (
+_NTFS_RESERVED_FILE_NAMES: Final = (
     "$Mft",
     "$MftMirr",
     "$LogFile",

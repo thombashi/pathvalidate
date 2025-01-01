@@ -3,7 +3,7 @@
 """
 
 import enum
-from typing import Optional
+from typing import Final, Optional
 
 from ._const import Platform
 
@@ -13,13 +13,13 @@ def _to_error_code(code: int) -> str:
 
 
 class ErrorAttrKey:
-    BYTE_COUNT = "byte_count"
-    DESCRIPTION = "description"
-    FS_ENCODING = "fs_encoding"
-    PLATFORM = "platform"
-    REASON = "reason"
-    RESERVED_NAME = "reserved_name"
-    REUSABLE_NAME = "reusable_name"
+    BYTE_COUNT: Final = "byte_count"
+    DESCRIPTION: Final = "description"
+    FS_ENCODING: Final = "fs_encoding"
+    PLATFORM: Final = "platform"
+    REASON: Final = "reason"
+    RESERVED_NAME: Final = "reserved_name"
+    REUSABLE_NAME: Final = "reusable_name"
 
 
 @enum.unique

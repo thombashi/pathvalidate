@@ -8,13 +8,13 @@ import re
 import string
 import sys
 from pathlib import PurePath
-from typing import Any, Optional
+from typing import Any, Final, Optional
 
 from ._const import Platform
 from ._types import PathType, PlatformType
 
 
-_re_whitespaces = re.compile(r"^[\s]+$")
+_re_whitespaces: Final = re.compile(r"^[\s]+$")
 
 
 def validate_pathtype(
@@ -75,7 +75,7 @@ def _get_unprintable_ascii_chars() -> list[str]:
     return [chr(c) for c in range(128) if chr(c) not in string.printable]
 
 
-unprintable_ascii_chars = tuple(_get_unprintable_ascii_chars())
+unprintable_ascii_chars: Final = tuple(_get_unprintable_ascii_chars())
 
 
 def _get_ascii_symbols() -> list[str]:
@@ -92,12 +92,12 @@ def _get_ascii_symbols() -> list[str]:
     return symbol_list
 
 
-ascii_symbols = tuple(_get_ascii_symbols())
+ascii_symbols: Final = tuple(_get_ascii_symbols())
 
-__RE_UNPRINTABLE_CHARS = re.compile(
+__RE_UNPRINTABLE_CHARS: Final = re.compile(
     "[{}]".format(re.escape("".join(unprintable_ascii_chars))), re.UNICODE
 )
-__RE_ANSI_ESCAPE = re.compile(
+__RE_ANSI_ESCAPE: Final = re.compile(
     r"(?:\x1B[@-Z\\-_]|[\x80-\x9A\x9C-\x9F]|(?:\x1B\[|\x9B)[0-?]*[ -/]*[@-~])"
 )
 

@@ -7,7 +7,7 @@ import os
 import re
 import sys
 from collections.abc import Sequence
-from typing import ClassVar, Final, Optional
+from typing import Final, Optional
 
 from ._common import normalize_platform, unprintable_ascii_chars
 from ._const import DEFAULT_MIN_LEN, Platform
@@ -17,10 +17,10 @@ from .handler import NullValueHandler, ReservedNameHandler, ValidationErrorHandl
 
 
 class BaseFile:
-    _INVALID_PATH_CHARS: ClassVar[str] = "".join(unprintable_ascii_chars)
-    _INVALID_FILENAME_CHARS: ClassVar[str] = _INVALID_PATH_CHARS + "/"
-    _INVALID_WIN_PATH_CHARS: ClassVar[str] = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
-    _INVALID_WIN_FILENAME_CHARS: ClassVar[str] = (
+    _INVALID_PATH_CHARS: Final[str] = "".join(unprintable_ascii_chars)
+    _INVALID_FILENAME_CHARS: Final[str] = _INVALID_PATH_CHARS + "/"
+    _INVALID_WIN_PATH_CHARS: Final[str] = _INVALID_PATH_CHARS + ':*?"<>|\t\n\r\x0b\x0c'
+    _INVALID_WIN_FILENAME_CHARS: Final[str] = (
         _INVALID_FILENAME_CHARS + _INVALID_WIN_PATH_CHARS + "\\"
     )
 

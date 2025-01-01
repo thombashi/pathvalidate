@@ -10,7 +10,7 @@ import warnings
 from collections.abc import Sequence
 from pathlib import Path, PurePath
 from re import Pattern
-from typing import Optional
+from typing import Final, Optional
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, is_nt_abspath, to_str, validate_pathtype
@@ -21,8 +21,10 @@ from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ReservedNameErro
 from .handler import ReservedNameHandler, ValidationErrorHandler
 
 
-_RE_INVALID_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_PATH_CHARS):s}]", re.UNICODE)
-_RE_INVALID_WIN_PATH = re.compile(f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS):s}]", re.UNICODE)
+_RE_INVALID_PATH: Final = re.compile(f"[{re.escape(BaseFile._INVALID_PATH_CHARS):s}]", re.UNICODE)
+_RE_INVALID_WIN_PATH: Final = re.compile(
+    f"[{re.escape(BaseFile._INVALID_WIN_PATH_CHARS):s}]", re.UNICODE
+)
 
 
 class FilePathSanitizer(AbstractSanitizer):
@@ -142,11 +144,11 @@ class FilePathSanitizer(AbstractSanitizer):
 
 
 class FilePathValidator(BaseValidator):
-    _RE_NTFS_RESERVED = re.compile(
+    _RE_NTFS_RESERVED: Final = re.compile(
         "|".join(f"^/{re.escape(pattern)}$" for pattern in _NTFS_RESERVED_FILE_NAMES),
         re.IGNORECASE,
     )
-    _MACOS_RESERVED_FILE_PATHS = ("/", ":")
+    _MACOS_RESERVED_FILE_PATHS: Final = ("/", ":")
 
     @property
     def reserved_keywords(self) -> tuple[str, ...]:
