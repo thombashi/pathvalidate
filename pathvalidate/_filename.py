@@ -302,8 +302,8 @@ def validate_filename(
 
             Defaults to ``255``.
         fs_encoding:
-            Filesystem encoding that used to calculate the byte length of the filename.
-            If |None|, get the value from the execution environment.
+            Filesystem encoding that is used to calculate the byte length of the filename.
+            If |None|, get the encoding from the execution environment.
         check_reserved:
             If |True|, check the reserved names of the ``platform``.
         additional_reserved_names:
@@ -414,8 +414,8 @@ def sanitize_filename(
             Truncate the name length if the ``filename`` length exceeds this value.
             Defaults to ``255``.
         fs_encoding:
-            Filesystem encoding that used to calculate the byte length of the filename.
-            If |None|, get the value from the execution environment.
+            Filesystem encoding that is used to calculate the byte length of the filename.
+            If |None|, get the encoding from the execution environment.
         check_reserved:
             [Deprecated] Use 'reserved_name_handler' instead.
         null_value_handler:
