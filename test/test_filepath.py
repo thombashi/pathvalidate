@@ -701,7 +701,9 @@ class Test_sanitize_filepath:
         ["value", "reserved_name_handler", "expected"],
         [
             ["CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
+            ["hoge/CON", ReservedNameHandler.add_trailing_underscore, "hoge\\CON_"],
             ["CON", ReservedNameHandler.add_leading_underscore, "_CON"],
+            ["hoge/CON", ReservedNameHandler.add_leading_underscore, "hoge\\_CON"],
             ["CON", ReservedNameHandler.as_is, "CON"],
         ],
     )
@@ -709,6 +711,32 @@ class Test_sanitize_filepath:
         assert (
             sanitize_filepath(
                 value, platform="windows", reserved_name_handler=reserved_name_handler
+            )
+            == expected
+        )
+
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            ["hoge/.", "hoge\\._"],
+            ["hoge/./foo", "hoge\\._\\foo"],
+            ["hoge/..", "hoge\\.._"],
+        ],
+    )
+    def test_normal_custom_reserved_name_handler_for_dot_files(self, value, expected):
+        def always_add_trailing_underscore(e: ValidationError) -> str:
+            if e.reusable_name:
+                return e.reserved_name
+
+            return f"{e.reserved_name}_"
+
+        assert (
+            sanitize_filepath(
+                value,
+                platform="windows",
+                reserved_name_handler=always_add_trailing_underscore,
+                additional_reserved_names=[".", ".."],
+                normalize=False,
             )
             == expected
         )

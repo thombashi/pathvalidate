@@ -405,6 +405,8 @@ class Test_validate_filename:
             ["Abc", ["abc"], False],
             ["ABC", ["abc"], False],
             ["abc.txt", ["abc.txt"], False],
+            [".", [".", ".."], False],
+            ["..", [".", ".."], False],
         ],
     )
     def test_normal_additional_reserved_names(self, value, arn, expected):
@@ -654,6 +656,35 @@ class Test_sanitize_filename:
                 == expected
             )
 
+    @pytest.mark.parametrize(
+        ["value", "test_platform", "arn", "expected"],
+        [
+            [".", "windows", [".", ".."], "._"],
+            [".", "universal", [".", ".."], "._"],
+            ["..", "windows", [".", ".."], ".._"],
+            ["..", "universal", [".", ".."], ".._"],
+            ["...", "linux", [".", ".."], "..."],
+        ],
+    )
+    def test_normal_custom_reserved_name_handler_for_dot_files(
+        self, value, test_platform, arn, expected
+    ):
+        def always_add_trailing_underscore(e: ValidationError) -> str:
+            if e.reusable_name:
+                return e.reserved_name
+
+            return f"{e.reserved_name}_"
+
+        assert (
+            sanitize_filename(
+                value,
+                platform=test_platform,
+                reserved_name_handler=always_add_trailing_underscore,
+                additional_reserved_names=arn,
+            )
+            == expected
+        )
+
     def test_exception_reserved_name_handler(self):
         for platform in ["windows", "universal"]:
             with pytest.raises(ValidationError) as e:
@@ -676,7 +707,7 @@ class Test_sanitize_filename:
                     additional_reserved_names=arn,
                 )
                 == expected
-            )
+            ), platform
 
     @pytest.mark.parametrize(
         ["value", "check_reserved", "expected"],
@@ -709,6 +740,7 @@ class Test_sanitize_filename:
             ["linux", "period.", "period."],
             ["linux", "space ", "space "],
             ["linux", "space_and_period. ", "space_and_period. "],
+            ["linux", "...", "..."],
             ["universal", "period.", "period"],
             ["universal", "space ", "space"],
             ["universal", "space_and_period .", "space_and_period"],
