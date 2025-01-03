@@ -140,7 +140,7 @@ class AbstractValidator(BaseFile, metaclass=abc.ABCMeta):
         return True
 
     def _is_reserved_keyword(self, value: str) -> bool:
-        return value in self.reserved_keywords
+        return value.upper() in self.reserved_keywords
 
 
 class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
@@ -183,6 +183,7 @@ class AbstractSanitizer(BaseFile, metaclass=abc.ABCMeta):
 
 class BaseValidator(AbstractValidator):
     __RE_ROOT_NAME: Final = re.compile(r"([^\.]+)")
+    __RE_REPEAD_DOT: Final = re.compile(r"^\.{3,}")
 
     @property
     def min_len(self) -> int:
@@ -218,17 +219,16 @@ class BaseValidator(AbstractValidator):
             return
 
         root_name = self.__extract_root_name(name)
-        base_name = os.path.basename(name).upper()
+        base_name = os.path.basename(name)
 
-        if self._is_reserved_keyword(root_name.upper()) or self._is_reserved_keyword(
-            base_name.upper()
-        ):
-            raise ReservedNameError(
-                f"'{root_name}' is a reserved name",
-                reusable_name=False,
-                reserved_name=root_name,
-                platform=self.platform,
-            )
+        for name in (root_name, base_name):
+            if self._is_reserved_keyword(name):
+                raise ReservedNameError(
+                    f"'{root_name}' is a reserved name",
+                    reusable_name=False,
+                    reserved_name=root_name,
+                    platform=self.platform,
+                )
 
     def _validate_max_len(self) -> None:
         if self.max_len < 1:
@@ -239,6 +239,12 @@ class BaseValidator(AbstractValidator):
 
     @classmethod
     def __extract_root_name(cls, path: str) -> str:
+        if path in (".", ".."):
+            return path
+
+        if cls.__RE_REPEAD_DOT.search(path):
+            return path
+
         match = cls.__RE_ROOT_NAME.match(os.path.basename(path))
         if match is None:
             return ""

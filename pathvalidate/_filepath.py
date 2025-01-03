@@ -337,8 +337,8 @@ def validate_filepath(
                 - ``Windows``: 260
                 - ``universal``: 260
         fs_encoding (Optional[str], optional):
-            Filesystem encoding that used to calculate the byte length of the file path.
-            If |None|, get the value from the execution environment.
+            Filesystem encoding that is used to calculate the byte length of the file path.
+            If |None|, get the encoding from the execution environment.
         check_reserved (bool, optional):
             If |True|, check the reserved names of the ``platform``.
             Defaults to |True|.
@@ -455,8 +455,8 @@ def sanitize_filepath(
                 - ``Windows``: 260
                 - ``universal``: 260
         fs_encoding:
-            Filesystem encoding that used to calculate the byte length of the file path.
-            If |None|, get the value from the execution environment.
+            Filesystem encoding that is used to calculate the byte length of the file path.
+            If |None|, get the encoding from the execution environment.
         check_reserved:
             [Deprecated] Use 'reserved_name_handler' instead.
         null_value_handler:

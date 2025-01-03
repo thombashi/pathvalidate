@@ -8,3 +8,4 @@ Reference
    function
    types
    handler
+   tips
