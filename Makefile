@@ -9,6 +9,7 @@ LAST_UPDATE_YEAR := $(shell git log -1 --format=%cd --date=format:%Y)
 
 
 $(BIN_CHANGELOG_FROM_RELEASE):
+	mkdir -p $(BIN_DIR)
 	GOBIN=$(BIN_DIR) go install github.com/rhysd/changelog-from-release/v3@latest
 
 .PHONY: build
