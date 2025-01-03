@@ -1,3 +1,14 @@
+<a id="v3.2.3"></a>
+# [v3.2.3](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.3) - 2025-01-03
+
+## What's Changed
+* Fix dot-files validation by [@thombashi](https://github.com/thombashi) in [#60](https://github.com/thombashi/pathvalidate/pull/60) (Thanks to [@slingshotvfx](https://github.com/slingshotvfx))
+
+**Full Changelog**: https://github.com/thombashi/pathvalidate/compare/v3.2.2...v3.2.3
+
+[Changes][v3.2.3]
+
+
 <a id="v3.2.2"></a>
 # [v3.2.2](https://github.com/thombashi/pathvalidate/releases/tag/v3.2.2) - 2025-01-01
 
@@ -574,6 +585,7 @@ mkbloke)
 [Changes][v0.1.0]
 
 
+[v3.2.3]: https://github.com/thombashi/pathvalidate/compare/v3.2.2...v3.2.3
 [v3.2.2]: https://github.com/thombashi/pathvalidate/compare/v3.2.1...v3.2.2
 [v3.2.1]: https://github.com/thombashi/pathvalidate/compare/v3.2.0...v3.2.1
 [v3.2.0]: https://github.com/thombashi/pathvalidate/compare/v3.1.0...v3.2.0
