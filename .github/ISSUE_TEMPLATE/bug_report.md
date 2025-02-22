@@ -37,5 +37,12 @@ A clear and concise description of what you expected to happen.
 
 ## Your Environment
 <!--- Include as many relevant details about the environment you experienced the bug in -->
-* Version used:
-* Operating System and version:
+
+<!---
+Please execute the following command and past the output:
+
+```
+pip install envinfopy[markdown]
+python -m envinfopy --format=markdown pathvalidate
+```
+--->
