@@ -1,0 +1,71 @@
+name: Bug Report
+description: Report a bug
+title: "[Bug]: "
+labels: ["needs-triage"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Summary
+      description: "A brief summary of the bug"
+      placeholder: "e.g., xxx method raises an exception when yyy"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: "Detailed description of the bug"
+      placeholder: "A clear and concise description of what the bug is in detail..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: "What you expected to happen"
+      placeholder: "A clear and concise description of what you expected to happen."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: "How has this issue affected you? What are you trying to accomplish?"
+      placeholder: "Providing context helps us come up with a solution that is most useful in the real world"
+    validations:
+      required: false
+
+  - type: textarea
+    id: possible-solution
+    attributes:
+      label: Possible Solution
+      description: "Optional: suggest a fix/reason for the bug or ideas on how to implement the addition or change"
+    validations:
+      required: false
+
+  - type: textarea
+    id: code-to-reproduce
+    attributes:
+      label: Code to reproduce
+      description: "How to reproduce the bug with code"
+      placeholder: Paste the code that reproduces the bug
+      render: python
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Your Environment
+      description: "Include as many relevant details about the environment you experienced the bug in"
+      placeholder: |
+        Please execute the following commands and past the output here:
+
+        pip install envinfopy[markdown]
+        python -m envinfopy --format=markdown pathvalidate
+    validations:
+      required: true

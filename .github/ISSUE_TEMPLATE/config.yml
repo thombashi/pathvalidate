@@ -1,0 +1,7 @@
+contact_links:
+  - name: GitHub Discussions
+    url: https://github.com/thombashi/pathvalidate/discussions
+    about: Please ask and answer questions here.
+  - name: Documentation
+    url: https://pathvalidate.rtfd.io/
+    about: Please check the documentation before creating an issue.
