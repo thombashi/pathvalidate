@@ -152,7 +152,8 @@ def normalize_platform(name: Optional[PlatformType]) -> Platform:
 
 
 def findall_to_str(match: list[Any]) -> str:
-    return ", ".join([repr(text) for text in match])
+    uniq_list = set([repr(text) for text in match])
+    return ", ".join(uniq_list)
 
 
 def truncate_str(text: str, encoding: str, max_bytes: int) -> str:
