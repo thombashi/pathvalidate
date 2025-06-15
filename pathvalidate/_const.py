@@ -3,7 +3,7 @@ from typing import Final
 
 
 DEFAULT_MIN_LEN: Final = 1
-INVALID_CHAR_ERR_MSG_TMPL: Final = "invalids=({invalid}), value={value}"
+INVALID_CHAR_ERR_MSG_TMPL: Final = "invalids=({invalid}), value={value!r}"
 
 
 _NTFS_RESERVED_FILE_NAMES: Final = (

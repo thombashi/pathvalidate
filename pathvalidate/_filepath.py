@@ -258,9 +258,7 @@ class FilePathValidator(BaseValidator):
 
         err_object = ValidationError(
             description=(
-                "an invalid absolute file path ({}) for the platform ({}).".format(
-                    value, self.platform.value
-                )
+                f"an invalid absolute file path ({value!r}) for the platform ({self.platform.value})."
                 + " to avoid the error, specify an appropriate platform corresponding to"
                 + " the path format or 'auto'."
             ),

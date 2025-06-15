@@ -191,7 +191,7 @@ class ValidationError(ValueError):
         if self.__byte_count is not None:
             item_list.append(f"{ErrorAttrKey.BYTE_COUNT}={self.__byte_count:,d}")
         if self.__value:
-            item_list.append(f"{ErrorAttrKey.VALUE}={self.__value}")
+            item_list.append(f"{ErrorAttrKey.VALUE}={self.__value!r}")
 
         if item_list:
             header += ": "

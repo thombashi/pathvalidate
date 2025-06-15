@@ -212,7 +212,7 @@ class FileNameValidator(BaseValidator):
 
     def validate_abspath(self, value: str) -> None:
         err = ValidationError(
-            description=f"found an absolute path ({value}), expected a filename",
+            description=f"found an absolute path ({value!r}), expected a filename",
             platform=self.platform,
             reason=ErrorReason.FOUND_ABS_PATH,
         )
