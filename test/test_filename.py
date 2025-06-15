@@ -467,10 +467,10 @@ class Test_validate_filename:
             print(platform, repr(value))
             validate_filename(value, platform=platform)
 
-        assert e.value.reason == ErrorReason.INVALID_CHARACTER
+        assert e.value.reason == expected
         assert str(e.value) == (
-            r"[PV1100] invalid characters found: invalids=('\r'), value='asdf\rsdf', "
-            "platform=Windows"
+            r"[PV1100] invalid characters found: invalids=('\r'), "
+            "platform=Windows, value='asdf\\rsdf'"
         )  # noqa
 
     @pytest.mark.parametrize(

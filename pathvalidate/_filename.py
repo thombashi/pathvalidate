@@ -229,9 +229,10 @@ class FileNameValidator(BaseValidator):
         if match:
             raise InvalidCharError(
                 INVALID_CHAR_ERR_MSG_TMPL.format(
-                    invalid=findall_to_str(match), value=repr(unicode_filename)
+                    invalid=findall_to_str(match),
                 ),
                 platform=Platform.UNIVERSAL,
+                value=unicode_filename,
             )
 
     def __validate_win_filename(self, unicode_filename: str) -> None:
@@ -239,36 +240,37 @@ class FileNameValidator(BaseValidator):
         if match:
             raise InvalidCharError(
                 INVALID_CHAR_ERR_MSG_TMPL.format(
-                    invalid=findall_to_str(match), value=repr(unicode_filename)
+                    invalid=findall_to_str(match),
                 ),
                 platform=Platform.WINDOWS,
+                value=unicode_filename,
             )
 
         if unicode_filename in (".", ".."):
             return
 
         KB2829981_err_tmpl = "{}. Refer: https://learn.microsoft.com/en-us/troubleshoot/windows-client/shell-experience/file-folder-name-whitespace-characters"  # noqa: E501
+        err_kwargs = {
+            ErrorAttrKey.PLATFORM: Platform.WINDOWS,
+            ErrorAttrKey.VALUE: unicode_filename,
+        }
 
         if unicode_filename[-1] in (" ", "."):
             raise InvalidCharError(
-                INVALID_CHAR_ERR_MSG_TMPL.format(
-                    invalid=re.escape(unicode_filename[-1]), value=repr(unicode_filename)
-                ),
-                platform=Platform.WINDOWS,
+                INVALID_CHAR_ERR_MSG_TMPL.format(invalid=re.escape(unicode_filename[-1])),
                 description=KB2829981_err_tmpl.format(
                     "Do not end a file or directory name with a space or a period"
                 ),
+                **err_kwargs,
             )
 
         if unicode_filename[0] in (" "):
             raise InvalidCharError(
-                INVALID_CHAR_ERR_MSG_TMPL.format(
-                    invalid=re.escape(unicode_filename[0]), value=repr(unicode_filename)
-                ),
-                platform=Platform.WINDOWS,
+                INVALID_CHAR_ERR_MSG_TMPL.format(invalid=re.escape(unicode_filename[0])),
                 description=KB2829981_err_tmpl.format(
                     "Do not start a file or directory name with a space"
                 ),
+                **err_kwargs,
             )
 
 

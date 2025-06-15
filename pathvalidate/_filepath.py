@@ -278,19 +278,17 @@ class FilePathValidator(BaseValidator):
         match = _RE_INVALID_PATH.findall(unicode_filepath)
         if match:
             raise InvalidCharError(
-                INVALID_CHAR_ERR_MSG_TMPL.format(
-                    invalid=findall_to_str(match), value=repr(unicode_filepath)
-                )
+                INVALID_CHAR_ERR_MSG_TMPL.format(invalid=findall_to_str(match)),
+                value=unicode_filepath,
             )
 
     def __validate_win_filepath(self, unicode_filepath: str) -> None:
         match = _RE_INVALID_WIN_PATH.findall(unicode_filepath)
         if match:
             raise InvalidCharError(
-                INVALID_CHAR_ERR_MSG_TMPL.format(
-                    invalid=findall_to_str(match), value=repr(unicode_filepath)
-                ),
+                INVALID_CHAR_ERR_MSG_TMPL.format(invalid=findall_to_str(match)),
                 platform=Platform.WINDOWS,
+                value=unicode_filepath,
             )
 
         _drive, value = self.__split_drive(unicode_filepath)
