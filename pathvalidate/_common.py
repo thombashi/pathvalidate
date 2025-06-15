@@ -152,7 +152,7 @@ def normalize_platform(name: Optional[PlatformType]) -> Platform:
 
 
 def findall_to_str(match: list[Any]) -> str:
-    uniq_list = set([repr(text) for text in match])
+    uniq_list = {repr(text) for text in match}
     return ", ".join(uniq_list)
 
 
