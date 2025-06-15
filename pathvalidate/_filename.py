@@ -187,6 +187,7 @@ class FileNameValidator(BaseValidator):
             ErrorAttrKey.PLATFORM: self.platform,
             ErrorAttrKey.FS_ENCODING: self._fs_encoding,
             ErrorAttrKey.BYTE_COUNT: byte_ct,
+            ErrorAttrKey.VALUE: unicode_filename,
         }
         if byte_ct > self.max_len:
             raise ValidationError(

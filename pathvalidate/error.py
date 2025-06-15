@@ -20,6 +20,7 @@ class ErrorAttrKey:
     REASON: Final = "reason"
     RESERVED_NAME: Final = "reserved_name"
     REUSABLE_NAME: Final = "reusable_name"
+    VALUE: Final = "value"
 
 
 @enum.unique
@@ -139,6 +140,7 @@ class ValidationError(ValueError):
         self.__reserved_name: str = kwargs.pop(ErrorAttrKey.RESERVED_NAME, "")
         self.__reusable_name: Optional[bool] = kwargs.pop(ErrorAttrKey.REUSABLE_NAME, None)
         self.__fs_encoding: Optional[str] = kwargs.pop(ErrorAttrKey.FS_ENCODING, None)
+        self.__value: Optional[str] = kwargs.pop(ErrorAttrKey.VALUE, None)
 
         try:
             super().__init__(*args[0], **kwargs)
@@ -166,6 +168,8 @@ class ValidationError(ValueError):
             slog[ErrorAttrKey.FS_ENCODING] = self.__fs_encoding
         if self.__byte_count:
             slog[ErrorAttrKey.BYTE_COUNT] = str(self.__byte_count)
+        if self.__value:
+            slog[ErrorAttrKey.VALUE] = self.__value
 
         return slog
 
@@ -186,6 +190,8 @@ class ValidationError(ValueError):
             item_list.append(f"{ErrorAttrKey.FS_ENCODING}={self.__fs_encoding}")
         if self.__byte_count is not None:
             item_list.append(f"{ErrorAttrKey.BYTE_COUNT}={self.__byte_count:,d}")
+        if self.__value:
+            item_list.append(f"{ErrorAttrKey.VALUE}={self.__value}")
 
         if item_list:
             header += ": "
