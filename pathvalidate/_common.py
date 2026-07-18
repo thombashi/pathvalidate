@@ -8,6 +8,7 @@ import re
 import string
 import sys
 from pathlib import PurePath
+from re import Pattern
 from typing import Any, Final, Optional
 
 from ._const import Platform
@@ -110,16 +111,21 @@ def validate_unprintable_char(text: str) -> None:
         raise InvalidCharError(f"unprintable character found: {match_list}")
 
 
+def sub_literal(regexp: Pattern[str], replacement_text: str, text: str) -> str:
+    """Like Pattern.sub, but treat replacement_text as a literal string."""
+    return regexp.sub(lambda _match: replacement_text, text)
+
+
 def replace_unprintable_char(text: str, replacement_text: str = "") -> str:
     try:
-        return __RE_UNPRINTABLE_CHARS.sub(replacement_text, text)
+        return sub_literal(__RE_UNPRINTABLE_CHARS, replacement_text, text)
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
 
 
 def replace_ansi_escape(text: str, replacement_text: str = "") -> str:
     try:
-        return __RE_ANSI_ESCAPE.sub(replacement_text, text)
+        return sub_literal(__RE_ANSI_ESCAPE, replacement_text, text)
     except (TypeError, AttributeError):
         raise TypeError("text must be a string")
 

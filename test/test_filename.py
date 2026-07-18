@@ -808,3 +808,16 @@ class Test_sanitize_filename:
             "fs_encoding": fs_encoding,
         }
         assert sanitize_filename(value, **kwargs) == expected
+
+    @pytest.mark.parametrize(
+        ["value", "replacement_text", "expected"],
+        [
+            ["a/b", "\\", "a\\b"],
+            ["a/b", "\\1", "a\\1b"],
+            ["a/b", "\\x00", "a\\x00b"],
+            ["a\x00b", "/\\", "a/\\b"],
+        ],
+    )
+    def test_normal_literal_replacement_text(self, value, replacement_text, expected):
+        # replacement_text is a literal, including backslash sequences
+        assert sanitize_filename(value, replacement_text=replacement_text, platform="linux") == expected

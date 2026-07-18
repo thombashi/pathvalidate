@@ -6,7 +6,7 @@ import re
 from collections.abc import Sequence
 from typing import Final
 
-from ._common import ascii_symbols, to_str, unprintable_ascii_chars
+from ._common import ascii_symbols, sub_literal, to_str, unprintable_ascii_chars
 from .error import InvalidCharError
 
 
@@ -77,7 +77,7 @@ def replace_symbol(
         regexp = __RE_SYMBOL
 
     try:
-        new_text = regexp.sub(replacement_text, to_str(text))
+        new_text = sub_literal(regexp, replacement_text, to_str(text))
     except TypeError:
         raise TypeError("text must be a string")
 
@@ -85,7 +85,11 @@ def replace_symbol(
         return new_text
 
     if is_replace_consecutive_chars:
-        new_text = re.sub(f"{re.escape(replacement_text)}+", replacement_text, new_text)
+        new_text = sub_literal(
+            re.compile(f"{re.escape(replacement_text)}+"),
+            replacement_text,
+            new_text,
+        )
 
     if is_strip:
         new_text = new_text.strip(replacement_text)

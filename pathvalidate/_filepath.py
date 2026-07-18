@@ -13,7 +13,7 @@ from re import Pattern
 from typing import Final, Optional
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
-from ._common import findall_to_str, is_nt_abspath, to_str, validate_pathtype
+from ._common import findall_to_str, is_nt_abspath, sub_literal, to_str, validate_pathtype
 from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
@@ -92,7 +92,7 @@ class FilePathSanitizer(AbstractSanitizer):
 
         unicode_filepath = to_str(value)
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
-        unicode_filepath = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
+        unicode_filepath = sub_literal(self._sanitize_regexp, replacement_text, unicode_filepath)
         if self.__normalize and unicode_filepath:
             unicode_filepath = os.path.normpath(unicode_filepath)
         sanitized_path = unicode_filepath

@@ -5,7 +5,7 @@
 import re
 from typing import Final
 
-from ._common import to_str, validate_pathtype
+from ._common import sub_literal, to_str, validate_pathtype
 from .error import InvalidCharError
 
 
@@ -41,4 +41,4 @@ def sanitize_ltsv_label(label: str, replacement_text: str = "") -> str:
 
     validate_pathtype(label, allow_whitespaces=False)
 
-    return __RE_INVALID_LTSV_LABEL.sub(replacement_text, to_str(label))
+    return sub_literal(__RE_INVALID_LTSV_LABEL, replacement_text, to_str(label))
