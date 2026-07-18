@@ -98,6 +98,19 @@ class FileNameSanitizer(AbstractSanitizer):
                 sanitized_filename = sanitized_filename.rstrip(" ")
                 if sanitized_filename not in (".", ".."):
                     sanitized_filename = sanitized_filename.rstrip(" .")
+
+                # Whitespace strip can reveal a reserved name (e.g. " AUX" -> "AUX").
+                try:
+                    self._validator.validate(sanitized_filename)
+                except ValidationError as reserved_error:
+                    if reserved_error.reason == ErrorReason.RESERVED_NAME:
+                        replacement_word = self._reserved_name_handler(reserved_error)
+                        if reserved_error.reserved_name != replacement_word:
+                            sanitized_filename = re.sub(
+                                re.escape(reserved_error.reserved_name),
+                                replacement_word,
+                                sanitized_filename,
+                            )
             elif e.reason == ErrorReason.NULL_NAME:
                 sanitized_filename = self._null_value_handler(e)
 

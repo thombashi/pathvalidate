@@ -640,6 +640,23 @@ class Test_sanitize_filename:
         assert is_valid_filename(filename, platform=test_platform)
 
     @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            [" AUX", "AUX_"],
+            ["  NUL", "NUL_"],
+            [" AUX.txt", "AUX_.txt"],
+            ["  CON.tar.gz", "CON_.tar.gz"],
+            ["AUX ", "AUX_"],
+            [" NUL ", "NUL_"],
+        ],
+    )
+    def test_normal_reserved_name_after_whitespace_strip(self, value, expected):
+        # Leading/trailing spaces are stripped on Windows before reserved-name handling
+        filename = sanitize_filename(value, platform="windows")
+        assert filename == expected
+        assert is_valid_filename(filename, platform="windows")
+
+    @pytest.mark.parametrize(
         ["value", "reserved_name_handler", "expected"],
         [
             ["CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
