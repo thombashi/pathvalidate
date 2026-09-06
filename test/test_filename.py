@@ -808,3 +808,24 @@ class Test_sanitize_filename:
             "fs_encoding": fs_encoding,
         }
         assert sanitize_filename(value, **kwargs) == expected
+
+
+@pytest.mark.parametrize("platform", ["windows", "universal"])
+@pytest.mark.parametrize("name", WIN_RESERVED_FILE_NAMES)
+@pytest.mark.parametrize("padding", [" {}", " {}. "])
+def test_sanitize_reserved_name_after_normalization(platform, name, padding):
+    result = sanitize_filename(padding.format(name), platform=platform)
+    assert result == name + "_"
+    assert is_valid_filename(result, platform=platform)
+    assert sanitize_filename(result, platform=platform) == result
+
+
+@pytest.mark.parametrize("platform", ["windows", "universal"])
+@pytest.mark.parametrize("handler", [ReservedNameHandler.add_leading_underscore, raise_error])
+def test_normalized_reserved_name_uses_handler(platform, handler):
+    if handler is raise_error:
+        with pytest.raises(ValidationError) as exc:
+            sanitize_filename(" AUX", platform=platform, reserved_name_handler=handler)
+        assert exc.value.reason == ErrorReason.RESERVED_NAME
+    else:
+        assert sanitize_filename(" AUX", platform=platform, reserved_name_handler=handler) == "_AUX"

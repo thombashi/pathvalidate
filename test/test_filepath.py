@@ -6,7 +6,6 @@
 
 import platform as m_platform
 import random
-import sys
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
@@ -926,22 +925,10 @@ class Test_sanitize_filepath:
             sanitize_filepath(value, **kwargs)
         assert e.value.reason == ErrorReason.MALFORMED_ABS_PATH
 
-    @pytest.mark.parametrize(
-        ["platform", "value"],
-        [
-            ["windows", "CON \r"],
-        ],
-    )
-    def test_exception_invalid_after_sanitize(self, platform, value):
-        print(
-            "'{}'".format(
-                sanitize_filepath(value, platform=platform, validate_after_sanitize=False)
-            ),
-            file=sys.stderr,
-        )
-        with pytest.raises(ValidationError) as e:
-            sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
-        assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
+    def test_normal_reserved_after_control_character_removal(self):
+        result = sanitize_filepath("CON \r", platform="windows", validate_after_sanitize=True)
+        assert result == "CON_"
+        assert is_valid_filepath(result, platform="windows")
 
     @pytest.mark.parametrize(
         ["value", "expected"],
@@ -956,3 +943,15 @@ class Test_sanitize_filepath:
         with pytest.raises(expected):
             sanitize_filepath(value)
         assert not is_valid_filepath(value)
+
+
+@pytest.mark.parametrize("platform, separator", [("windows", "\\"), ("universal", "/")])
+@pytest.mark.parametrize("as_path", [False, True])
+def test_sanitize_normalized_reserved_components(platform, separator, as_path):
+    value = " AUX/ NUL.txt"
+    if as_path:
+        value = Path(value)
+    result = sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
+    assert str(result) == separator.join(["AUX_", "NUL_.txt"])
+    assert isinstance(result, Path) == as_path
+    assert is_valid_filepath(result, platform=platform)

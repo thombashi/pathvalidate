@@ -79,6 +79,12 @@ class FileNameSanitizer(AbstractSanitizer):
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
         sanitized_filename = truncate_str(sanitized_filename, self._fs_encoding, self.max_len)
 
+        if self._is_windows(include_universal=True):
+            # Normalize before validation: stripping spaces can expose a reserved name.
+            sanitized_filename = sanitized_filename.lstrip(" ").rstrip(" ")
+            if sanitized_filename not in (".", ".."):
+                sanitized_filename = sanitized_filename.rstrip(" .")
+
         try:
             self._validator.validate(sanitized_filename)
         except ValidationError as e:
@@ -88,16 +94,6 @@ class FileNameSanitizer(AbstractSanitizer):
                     sanitized_filename = re.sub(
                         re.escape(e.reserved_name), replacement_word, sanitized_filename
                     )
-            elif e.reason == ErrorReason.INVALID_CHARACTER and self._is_windows(
-                include_universal=True
-            ):
-                # Do not start a file or directory name with a space
-                sanitized_filename = sanitized_filename.lstrip(" ")
-
-                # Do not end a file or directory name with a space or a period
-                sanitized_filename = sanitized_filename.rstrip(" ")
-                if sanitized_filename not in (".", ".."):
-                    sanitized_filename = sanitized_filename.rstrip(" .")
             elif e.reason == ErrorReason.NULL_NAME:
                 sanitized_filename = self._null_value_handler(e)
 
@@ -432,6 +428,8 @@ def sanitize_filename(
             Defaults to :py:func:`.handler.NullValueHandler.return_null_string` that just return ``""``.
         reserved_name_handler:
             Function called when a value after sanitization is a reserved name.
+            Windows/universal leading spaces and trailing spaces/periods are
+            removed before checking for reserved names.
             You can specify predefined handlers:
 
                 - :py:meth:`~.handler.ReservedNameHandler.add_leading_underscore`
