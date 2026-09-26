@@ -6,7 +6,6 @@
 
 import platform as m_platform
 import random
-import sys
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
@@ -926,22 +925,23 @@ class Test_sanitize_filepath:
             sanitize_filepath(value, **kwargs)
         assert e.value.reason == ErrorReason.MALFORMED_ABS_PATH
 
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
     @pytest.mark.parametrize(
-        ["platform", "value"],
+        ["value", "expected"],
         [
-            ["windows", "CON \r"],
+            [" AUX", "AUX_"],
+            [" NUL.txt", "NUL_.txt"],
+            ["parent/ AUX/ NUL.txt", "parent/AUX_/NUL_.txt"],
+            ["CON \r", "CON_"],
         ],
     )
-    def test_exception_invalid_after_sanitize(self, platform, value):
-        print(
-            "'{}'".format(
-                sanitize_filepath(value, platform=platform, validate_after_sanitize=False)
-            ),
-            file=sys.stderr,
-        )
-        with pytest.raises(ValidationError) as e:
-            sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
-        assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
+    def test_normal_reserved_name_after_trim(self, platform, value, expected):
+        if platform == "windows":
+            expected = expected.replace("/", "\\")
+        filename = sanitize_filepath(value, platform=platform)
+        assert filename == expected
+        assert is_valid_filepath(filename, platform=platform)
+        assert sanitize_filepath(value, platform=platform, validate_after_sanitize=True) == filename
 
     @pytest.mark.parametrize(
         ["value", "expected"],
