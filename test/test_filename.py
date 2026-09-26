@@ -639,12 +639,35 @@ class Test_sanitize_filename:
         assert filename == expected
         assert is_valid_filename(filename, platform=test_platform)
 
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
+    @pytest.mark.parametrize("pathtype", [str, Path])
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            [" AUX", "AUX_"],
+            [" NUL.txt", "NUL_.txt"],
+            ["  com1.tar.gz ", "com1_.tar.gz"],
+            ["AUX ", "AUX_"],
+        ],
+    )
+    def test_normal_reserved_name_after_trim(self, platform, pathtype, value, expected):
+        filename = sanitize_filename(pathtype(value), platform=platform)
+        assert filename == pathtype(expected)
+        assert is_valid_filename(filename, platform=platform)
+        assert (
+            sanitize_filename(pathtype(value), platform=platform, validate_after_sanitize=True)
+            == filename
+        )
+
     @pytest.mark.parametrize(
         ["value", "reserved_name_handler", "expected"],
         [
             ["CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
             ["CON", ReservedNameHandler.add_leading_underscore, "_CON"],
             ["CON", ReservedNameHandler.as_is, "CON"],
+            [" CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
+            [" CON", ReservedNameHandler.add_leading_underscore, "_CON"],
+            [" CON", ReservedNameHandler.as_is, "CON"],
         ],
     )
     def test_normal_reserved_name_handler(self, value, reserved_name_handler, expected):
@@ -685,10 +708,11 @@ class Test_sanitize_filename:
             == expected
         )
 
-    def test_exception_reserved_name_handler(self):
+    @pytest.mark.parametrize("value", ["CON", " CON"])
+    def test_exception_reserved_name_handler(self, value):
         for platform in ["windows", "universal"]:
             with pytest.raises(ValidationError) as e:
-                sanitize_filename("CON", platform=platform, reserved_name_handler=raise_error)
+                sanitize_filename(value, platform=platform, reserved_name_handler=raise_error)
             assert e.value.reason == ErrorReason.RESERVED_NAME
 
     @pytest.mark.parametrize(
@@ -739,6 +763,7 @@ class Test_sanitize_filename:
             ["windows", ".. ", ".."],
             ["linux", "period.", "period."],
             ["linux", "space ", "space "],
+            ["linux", " AUX", " AUX"],
             ["linux", "space_and_period. ", "space_and_period. "],
             ["linux", "...", "..."],
             ["universal", "period.", "period"],
