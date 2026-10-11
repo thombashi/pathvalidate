@@ -92,7 +92,9 @@ class FilePathSanitizer(AbstractSanitizer):
 
         unicode_filepath = to_str(value)
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
-        unicode_filepath = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
+        unicode_filepath = self._sanitize_regexp.sub(
+            lambda match: replacement_text, unicode_filepath
+        )
         if self.__normalize and unicode_filepath:
             unicode_filepath = os.path.normpath(unicode_filepath)
         sanitized_path = unicode_filepath

@@ -76,7 +76,7 @@ class FileNameSanitizer(AbstractSanitizer):
                 return self._null_value_handler(e)  # type: ignore
             raise
 
-        sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
+        sanitized_filename = self._sanitize_regexp.sub(lambda match: replacement_text, str(value))
         sanitized_filename = truncate_str(sanitized_filename, self._fs_encoding, self.max_len)
 
         try:
@@ -86,7 +86,9 @@ class FileNameSanitizer(AbstractSanitizer):
                 replacement_word = self._reserved_name_handler(e)
                 if e.reserved_name != replacement_word:
                     sanitized_filename = re.sub(
-                        re.escape(e.reserved_name), replacement_word, sanitized_filename
+                        re.escape(e.reserved_name),
+                        lambda match: replacement_word,
+                        sanitized_filename,
                     )
             elif e.reason == ErrorReason.INVALID_CHARACTER and self._is_windows(
                 include_universal=True
