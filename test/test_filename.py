@@ -139,13 +139,36 @@ class Test_validate_filename:
     VALID_CHARS = VALID_FILENAME_CHARS
     INVALID_CHARS = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
 
-    @pytest.mark.parametrize("value", ["COM0", "LPT0", "COM0.txt", "LPT0.log"])
-    def test_normal_com0_lpt0(self, value):
-        validate_filename(value, platform="windows")
-        assert is_valid_filename(value, platform="windows")
-        assert sanitize_filename(value, platform="windows") == value
+    @pytest.mark.parametrize(
+        "value",
+        [
+            "COM0",
+            "com0",
+            "cOm0",
+            "COM0.txt",
+            "com0.TXT",
+            "COM0.tar.gz",
+            "cOm0.TaR.Gz",
+            "LPT0",
+            "lpt0",
+            "lPt0",
+            "LPT0.log",
+            "lpt0.LOG",
+            "LPT0.tar.gz",
+            "lPt0.TaR.Gz",
+        ],
+    )
+    @pytest.mark.parametrize("platform", ["windows", "universal", None])
+    def test_normal_com0_lpt0(self, value, platform):
+        kwargs = {} if platform is None else {"platform": platform}
+        validate_filename(value, **kwargs)
+        assert is_valid_filename(value, **kwargs)
+        assert sanitize_filename(value, **kwargs) == value
 
-    @pytest.mark.parametrize("value", ["COM1", "LPT1", "COM1.txt", "LPT1.log"])
+    @pytest.mark.parametrize(
+        "value",
+        ["COM1", "LPT1", "COM1.txt", "LPT1.log", "cOm1.TaR.Gz", "lPt1.TaR.Gz"],
+    )
     def test_exception_com1_lpt1_remain_reserved(self, value):
         with pytest.raises(ValidationError) as exc_info:
             validate_filename(value, platform="windows")
@@ -415,6 +438,8 @@ class Test_validate_filename:
             ["Abc", ["abc"], False],
             ["ABC", ["abc"], False],
             ["abc.txt", ["abc.txt"], False],
+            ["COM0", ["COM0"], False],
+            ["lPt0.TaR.Gz", ["LPT0"], False],
             [".", [".", ".."], False],
             ["..", [".", ".."], False],
         ],
