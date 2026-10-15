@@ -110,6 +110,21 @@ class Test_validate_filepath:
     ]
 
     @pytest.mark.parametrize(
+        "value",
+        [
+            r"C:\COM0",
+            r"C:\com0.txt",
+            r"C:\cOm0.TaR.Gz",
+            r"C:\LPT0.txt",
+            r"C:\lPt0.TaR.Gz",
+        ],
+    )
+    def test_normal_com0_lpt0(self, value):
+        validate_filepath(value, platform="windows")
+        assert is_valid_filepath(value, platform="windows")
+        assert sanitize_filepath(value, platform="windows") == value
+
+    @pytest.mark.parametrize(
         ["value", "platform"],
         chain.from_iterable(
             [
@@ -503,6 +518,8 @@ class Test_validate_filepath:
         [
             ["abc/efg.txt", ["abc"], False],
             ["abc/efg.txt", ["efg.txt"], False],
+            ["COM0", ["COM0"], False],
+            ["folder/lPt0.TaR.Gz", ["LPT0"], False],
         ],
     )
     def test_normal_additional_reserved_names(self, value, arn, expected):
