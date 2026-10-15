@@ -89,7 +89,7 @@ WIN_RESERVED_FILE_NAMES = [
     f"{name:s}{num}"
     for name, num in product(
         ["COM", "com", "LPT", "lpt"],
-        list(range(0, 10))
+        list(range(1, 10))
         + ["\N{SUPERSCRIPT ONE}", "\N{SUPERSCRIPT TWO}", "\N{SUPERSCRIPT THREE}"],
     )
 ]

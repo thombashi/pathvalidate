@@ -109,6 +109,12 @@ class Test_validate_filepath:
         r"\\fileserver\public",
     ]
 
+    @pytest.mark.parametrize("value", [r"C:\COM0", r"C:\LPT0.txt"])
+    def test_normal_com0_lpt0(self, value):
+        validate_filepath(value, platform="windows")
+        assert is_valid_filepath(value, platform="windows")
+        assert sanitize_filepath(value, platform="windows") == value
+
     @pytest.mark.parametrize(
         ["value", "platform"],
         chain.from_iterable(

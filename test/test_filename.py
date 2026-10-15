@@ -88,7 +88,6 @@ class Test_FileNameValidator:
                 (
                     "AUX",
                     "CLOCK$",
-                    "COM0",
                     "COM1",
                     "COM2",
                     "COM3",
@@ -102,7 +101,6 @@ class Test_FileNameValidator:
                     "COM³",
                     "COM¹",
                     "CON",
-                    "LPT0",
                     "LPT1",
                     "LPT2",
                     "LPT3",
@@ -140,6 +138,18 @@ class Test_FileNameValidator:
 class Test_validate_filename:
     VALID_CHARS = VALID_FILENAME_CHARS
     INVALID_CHARS = INVALID_WIN_FILENAME_CHARS + unprintable_ascii_chars
+
+    @pytest.mark.parametrize("value", ["COM0", "LPT0", "COM0.txt", "LPT0.log"])
+    def test_normal_com0_lpt0(self, value):
+        validate_filename(value, platform="windows")
+        assert is_valid_filename(value, platform="windows")
+        assert sanitize_filename(value, platform="windows") == value
+
+    @pytest.mark.parametrize("value", ["COM1", "LPT1", "COM1.txt", "LPT1.log"])
+    def test_exception_com1_lpt1_remain_reserved(self, value):
+        with pytest.raises(ValidationError) as exc_info:
+            validate_filename(value, platform="windows")
+        assert exc_info.value.reason == ErrorReason.RESERVED_NAME
 
     @pytest.mark.parametrize(
         ["value", "platform"],
