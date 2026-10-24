@@ -94,7 +94,7 @@ class FilePathSanitizer(AbstractSanitizer):
         drive, unicode_filepath = self.__split_drive(unicode_filepath)
         unicode_filepath = self._sanitize_regexp.sub(replacement_text, unicode_filepath)
         if self.__normalize and unicode_filepath:
-            unicode_filepath = os.path.normpath(unicode_filepath)
+            unicode_filepath = os.path.normpath(unicode_filepath.replace("\\", "/"))
         sanitized_path = unicode_filepath
 
         sanitized_entries: list[str] = []
