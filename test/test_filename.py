@@ -808,3 +808,25 @@ class Test_sanitize_filename:
             "fs_encoding": fs_encoding,
         }
         assert sanitize_filename(value, **kwargs) == expected
+
+    @pytest.mark.parametrize(
+        ["value", "fs_encoding", "max_len", "expected"],
+        [
+            ["日本語", "iso2022_jp", 8, "日"],
+            ["日本語", "iso2022_jp", 9, "日"],
+            ["日本語", "iso2022_jp", 10, "日本"],
+            ["日本語", "iso2022_jp", 12, "日本語"],
+            ["汉字测试", "hz", 8, "汉字"],
+            ["日本語", "utf-7", 7, "日"],
+            ["日本語", "utf-7", 8, "日本"],
+            ["日本語", "utf-8", 8, "日本"],
+            ["日本語", "utf-16", 7, "日本"],
+        ],
+    )
+    def test_sanitized_name_fits_reencoded_byte_limit(self, value, fs_encoding, max_len, expected):
+        kwargs = {"platform": "linux", "fs_encoding": fs_encoding, "max_len": max_len}
+        sanitized = sanitize_filename(value, **kwargs)
+        assert sanitized == expected
+        assert len(sanitized.encode(fs_encoding)) <= max_len
+        validate_filename(sanitized, **kwargs)
+        assert sanitize_filename(value, validate_after_sanitize=True, **kwargs) == expected

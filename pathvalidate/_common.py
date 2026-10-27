@@ -160,4 +160,8 @@ def truncate_str(text: str, encoding: str, max_bytes: int) -> str:
     str_bytes = text.encode(encoding)
     str_bytes = str_bytes[:max_bytes]
     # last char might be malformed, ignore it
-    return str_bytes.decode(encoding, "ignore")
+    truncated = str_bytes.decode(encoding, "ignore")
+    # Stateful encodings can add closing escape sequences when re-encoded.
+    while truncated and len(truncated.encode(encoding)) > max_bytes:
+        truncated = truncated[:-1]
+    return truncated
