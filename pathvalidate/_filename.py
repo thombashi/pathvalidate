@@ -83,11 +83,7 @@ class FileNameSanitizer(AbstractSanitizer):
             self._validator.validate(sanitized_filename)
         except ValidationError as e:
             if e.reason == ErrorReason.RESERVED_NAME:
-                replacement_word = self._reserved_name_handler(e)
-                if e.reserved_name != replacement_word:
-                    sanitized_filename = re.sub(
-                        re.escape(e.reserved_name), replacement_word, sanitized_filename
-                    )
+                sanitized_filename = self.__replace_reserved_name(sanitized_filename, e)
             elif e.reason == ErrorReason.INVALID_CHARACTER and self._is_windows(
                 include_universal=True
             ):
@@ -98,6 +94,16 @@ class FileNameSanitizer(AbstractSanitizer):
                 sanitized_filename = sanitized_filename.rstrip(" ")
                 if sanitized_filename not in (".", ".."):
                     sanitized_filename = sanitized_filename.rstrip(" .")
+
+                # Trimming can expose a reserved name. Keep the first validation above
+                # so that custom reserved names containing edge spaces still match.
+                try:
+                    self._validator.validate(sanitized_filename)
+                except ValidationError as trimmed_error:
+                    if trimmed_error.reason == ErrorReason.RESERVED_NAME:
+                        sanitized_filename = self.__replace_reserved_name(
+                            sanitized_filename, trimmed_error
+                        )
             elif e.reason == ErrorReason.NULL_NAME:
                 sanitized_filename = self._null_value_handler(e)
 
@@ -115,6 +121,13 @@ class FileNameSanitizer(AbstractSanitizer):
             return Path(sanitized_filename)  # type: ignore
 
         return sanitized_filename  # type: ignore
+
+    def __replace_reserved_name(self, filename: str, error: ValidationError) -> str:
+        replacement_word = self._reserved_name_handler(error)
+        if error.reserved_name == replacement_word:
+            return filename
+
+        return re.sub(re.escape(error.reserved_name), replacement_word, filename)
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
         if self._is_windows(include_universal=True):
@@ -432,6 +445,10 @@ def sanitize_filename(
             Defaults to :py:func:`.handler.NullValueHandler.return_null_string` that just return ``""``.
         reserved_name_handler:
             Function called when a value after sanitization is a reserved name.
+            On Windows and universal platforms, names exposed by removing leading
+            spaces or trailing spaces/periods are also checked. Custom reserved
+            names are checked before this removal to preserve matches containing
+            edge spaces.
             You can specify predefined handlers:
 
                 - :py:meth:`~.handler.ReservedNameHandler.add_leading_underscore`

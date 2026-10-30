@@ -6,7 +6,6 @@
 
 import platform as m_platform
 import random
-import sys
 from collections import OrderedDict
 from itertools import chain, product
 from pathlib import Path
@@ -705,6 +704,8 @@ class Test_sanitize_filepath:
             ["CON", ReservedNameHandler.add_leading_underscore, "_CON"],
             ["hoge/CON", ReservedNameHandler.add_leading_underscore, "hoge\\_CON"],
             ["CON", ReservedNameHandler.as_is, "CON"],
+            ["hoge/ CON", ReservedNameHandler.add_leading_underscore, "hoge\\_CON"],
+            ["hoge/ CON", ReservedNameHandler.as_is, "hoge\\CON"],
         ],
     )
     def test_normal_reserved_name_handler(self, value, reserved_name_handler, expected):
@@ -741,10 +742,11 @@ class Test_sanitize_filepath:
             == expected
         )
 
-    def test_exception_reserved_name_handler(self):
+    @pytest.mark.parametrize("value", ["CON", "parent/ CON"])
+    def test_exception_reserved_name_handler(self, value):
         for platform in ["windows", "universal"]:
             with pytest.raises(ValidationError) as e:
-                sanitize_filepath("CON", platform=platform, reserved_name_handler=raise_error)
+                sanitize_filepath(value, platform=platform, reserved_name_handler=raise_error)
             assert e.value.reason == ErrorReason.RESERVED_NAME
 
     @pytest.mark.parametrize(
@@ -775,6 +777,25 @@ class Test_sanitize_filepath:
                 )
                 == expected
             )
+
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
+    @pytest.mark.parametrize("reserved_name", [" CUSTOM", "CUSTOM"])
+    def test_normal_custom_reserved_component_with_edge_spaces(self, platform, reserved_name):
+        calls = []
+
+        def handler(error):
+            calls.append(error.reserved_name)
+            return "CUSTOM_"
+
+        separator = "\\" if platform == "windows" else "/"
+        assert sanitize_filepath(
+            "parent/ CUSTOM",
+            platform=platform,
+            additional_reserved_names=[reserved_name],
+            reserved_name_handler=handler,
+            validate_after_sanitize=True,
+        ) == separator.join(["parent", "CUSTOM_"])
+        assert calls == [reserved_name]
 
     @pytest.mark.parametrize(
         ["value", "replace_text", "expected"],
@@ -926,22 +947,28 @@ class Test_sanitize_filepath:
             sanitize_filepath(value, **kwargs)
         assert e.value.reason == ErrorReason.MALFORMED_ABS_PATH
 
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
+    @pytest.mark.parametrize("pathtype", [str, Path])
     @pytest.mark.parametrize(
-        ["platform", "value"],
+        ["value", "expected"],
         [
-            ["windows", "CON \r"],
+            ["CON \r", "CON_"],
+            [" AUX", "AUX_"],
+            [" NUL.txt", "NUL_.txt"],
+            ["parent/ AUX/ NUL.txt", "parent/AUX_/NUL_.txt"],
         ],
     )
-    def test_exception_invalid_after_sanitize(self, platform, value):
-        print(
-            "'{}'".format(
-                sanitize_filepath(value, platform=platform, validate_after_sanitize=False)
-            ),
-            file=sys.stderr,
+    def test_normal_reserved_components_after_trim(self, platform, pathtype, value, expected):
+        if platform == "windows":
+            expected = expected.replace("/", "\\")
+        result = sanitize_filepath(pathtype(value), platform=platform)
+        assert result == pathtype(expected)
+        assert isinstance(result, pathtype)
+        assert is_valid_filepath(result, platform=platform)
+        assert (
+            sanitize_filepath(pathtype(value), platform=platform, validate_after_sanitize=True)
+            == result
         )
-        with pytest.raises(ValidationError) as e:
-            sanitize_filepath(value, platform=platform, validate_after_sanitize=True)
-        assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
 
     @pytest.mark.parametrize(
         ["value", "expected"],

@@ -467,6 +467,9 @@ def sanitize_filepath(
             Defaults to :py:func:`.handler.NullValueHandler.return_null_string` that just return ``""``.
         reserved_name_handler:
             Function called when a value after sanitization is one of the reserved names.
+            Each component is also checked for reserved names exposed by removing
+            Windows/universal leading spaces or trailing spaces/periods. Custom
+            reserved names containing edge spaces are checked before this removal.
             You can specify predefined handlers:
 
                 - :py:meth:`~.handler.ReservedNameHandler.add_leading_underscore`
