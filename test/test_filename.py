@@ -639,12 +639,61 @@ class Test_sanitize_filename:
         assert filename == expected
         assert is_valid_filename(filename, platform=test_platform)
 
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
+    @pytest.mark.parametrize("pathtype", [str, Path])
+    @pytest.mark.parametrize(
+        ["value", "expected"],
+        [
+            [" AUX", "AUX_"],
+            [" NUL.txt", "NUL_.txt"],
+            ["AUX ", "AUX_"],
+            [" AUX. ", "AUX_"],
+            ["  com1.tar.gz ", "com1_.tar.gz"],
+        ],
+    )
+    def test_normal_reserved_name_after_trim(self, platform, pathtype, value, expected):
+        filename = sanitize_filename(pathtype(value), platform=platform)
+        assert filename == pathtype(expected)
+        assert isinstance(filename, pathtype)
+        assert is_valid_filename(filename, platform=platform)
+        assert (
+            sanitize_filename(pathtype(value), platform=platform, validate_after_sanitize=True)
+            == filename
+        )
+
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
+    @pytest.mark.parametrize(
+        ["value", "reserved_name"],
+        [[" CUSTOM", " CUSTOM"], ["CUSTOM ", "CUSTOM "], [" CUSTOM ", "CUSTOM"]],
+    )
+    def test_normal_custom_reserved_name_with_edge_spaces(self, platform, value, reserved_name):
+        calls = []
+
+        def handler(error):
+            calls.append(error.reserved_name)
+            return "CUSTOM_"
+
+        assert (
+            sanitize_filename(
+                value,
+                platform=platform,
+                additional_reserved_names=[reserved_name],
+                reserved_name_handler=handler,
+                validate_after_sanitize=True,
+            )
+            == "CUSTOM_"
+        )
+        assert calls == [reserved_name]
+
     @pytest.mark.parametrize(
         ["value", "reserved_name_handler", "expected"],
         [
             ["CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
             ["CON", ReservedNameHandler.add_leading_underscore, "_CON"],
             ["CON", ReservedNameHandler.as_is, "CON"],
+            [" CON", ReservedNameHandler.add_trailing_underscore, "CON_"],
+            [" CON", ReservedNameHandler.add_leading_underscore, "_CON"],
+            [" CON", ReservedNameHandler.as_is, "CON"],
         ],
     )
     def test_normal_reserved_name_handler(self, value, reserved_name_handler, expected):
@@ -685,11 +734,23 @@ class Test_sanitize_filename:
             == expected
         )
 
-    def test_exception_reserved_name_handler(self):
+    @pytest.mark.parametrize("value", ["CON", " CON"])
+    def test_exception_reserved_name_handler(self, value):
         for platform in ["windows", "universal"]:
             with pytest.raises(ValidationError) as e:
-                sanitize_filename("CON", platform=platform, reserved_name_handler=raise_error)
+                sanitize_filename(value, platform=platform, reserved_name_handler=raise_error)
             assert e.value.reason == ErrorReason.RESERVED_NAME
+
+    @pytest.mark.parametrize("platform", ["windows", "universal"])
+    def test_exception_reserved_name_after_trim_as_is(self, platform):
+        with pytest.raises(ValidationError) as e:
+            sanitize_filename(
+                " CON",
+                platform=platform,
+                reserved_name_handler=ReservedNameHandler.as_is,
+                validate_after_sanitize=True,
+            )
+        assert e.value.reason == ErrorReason.INVALID_AFTER_SANITIZE
 
     @pytest.mark.parametrize(
         ["value", "arn", "expected"],
@@ -739,6 +800,7 @@ class Test_sanitize_filename:
             ["windows", ".. ", ".."],
             ["linux", "period.", "period."],
             ["linux", "space ", "space "],
+            ["linux", " AUX", " AUX"],
             ["linux", "space_and_period. ", "space_and_period. "],
             ["linux", "...", "..."],
             ["universal", "period.", "period"],
