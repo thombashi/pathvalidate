@@ -13,7 +13,7 @@ from ._common import (
     validate_pathtype,
     validate_unprintable_char,
 )
-from ._const import Platform
+from ._const import LengthBehavior, Platform
 from ._filename import (
     FileNameSanitizer,
     FileNameValidator,
@@ -49,6 +49,7 @@ __all__ = (
     "__version__",
     "AbstractSanitizer",
     "AbstractValidator",
+    "LengthBehavior",
     "Platform",
     "ascii_symbols",
     "normalize_platform",

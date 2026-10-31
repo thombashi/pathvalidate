@@ -2,6 +2,7 @@
 .. codeauthor:: Tsuyoshi Hombashi <tsuyoshi.hombashi@gmail.com>
 """
 
+import codecs
 import itertools
 import posixpath
 import re
@@ -9,11 +10,11 @@ import warnings
 from collections.abc import Sequence
 from pathlib import Path, PurePath
 from re import Pattern
-from typing import Final, Optional
+from typing import Final, Optional, Union
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, is_nt_abspath, to_str, truncate_str, validate_pathtype
-from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
+from ._const import DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, LengthBehavior, Platform
 from ._types import PathType, PlatformType
 from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ValidationError
 from .handler import ReservedNameHandler, ValidationErrorHandler
@@ -39,7 +40,11 @@ class FileNameSanitizer(AbstractSanitizer):
         additional_reserved_names: Optional[Sequence[str]] = None,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
+        length_behavior: Union[LengthBehavior, str] = LengthBehavior.TRIM,  # noqa: FA100
     ) -> None:
+        # Keep runtime annotations compatible with Python 3.9.
+        self.__length_behavior = LengthBehavior(length_behavior)
+        self.__default_validator: Optional[FileNameValidator] = None  # noqa: FA100
         if validator:
             fname_validator = validator
         else:
@@ -51,6 +56,7 @@ class FileNameSanitizer(AbstractSanitizer):
                 additional_reserved_names=additional_reserved_names,
                 platform=platform,
             )
+            self.__default_validator = fname_validator
 
         super().__init__(
             max_len=max_len,
@@ -77,10 +83,10 @@ class FileNameSanitizer(AbstractSanitizer):
             raise
 
         sanitized_filename = self._sanitize_regexp.sub(replacement_text, str(value))
-        sanitized_filename = truncate_str(sanitized_filename, self._fs_encoding, self.max_len)
+        sanitized_filename = self.__sanitize_length(sanitized_filename)
 
         try:
-            self._validator.validate(sanitized_filename)
+            self.__validate_name(sanitized_filename)
         except ValidationError as e:
             if e.reason == ErrorReason.RESERVED_NAME:
                 replacement_word = self._reserved_name_handler(e)
@@ -115,6 +121,92 @@ class FileNameSanitizer(AbstractSanitizer):
             return Path(sanitized_filename)  # type: ignore
 
         return sanitized_filename  # type: ignore
+
+    def __validate_name(self, value: str) -> None:
+        try:
+            self._validator.validate(value)
+        except ValidationError as e:
+            if (
+                self.__length_behavior == LengthBehavior.KEEP
+                and self.__default_validator is not None
+                and e.reason == ErrorReason.INVALID_LENGTH
+                and e.byte_count is not None
+                and e.byte_count > self.__default_validator.max_len
+            ):
+                # The default validator checks length before name hygiene. KEEP
+                # still needs those checks, without changing injected validators.
+                self.__default_validator._validate_name(value)
+            else:
+                raise
+
+    def __sanitize_length(self, value: str) -> str:
+        if self.__length_behavior == LengthBehavior.TRIM:
+            return truncate_str(value, self._fs_encoding, self.max_len)
+
+        byte_count = len(value.encode(self._fs_encoding))
+        if self.__length_behavior == LengthBehavior.KEEP or byte_count <= self.max_len:
+            return value
+
+        if self.__length_behavior == LengthBehavior.ERROR:
+            raise self.__length_error(value, byte_count)
+
+        stem, extension = posixpath.splitext(value)
+        if not extension:
+            return truncate_str(value, self._fs_encoding, self.max_len)
+
+        encoding = codecs.lookup(self._fs_encoding).name
+        if encoding in (
+            "ascii",
+            "utf-8",
+            "utf-8-sig",
+            "utf-16",
+            "utf-16-le",
+            "utf-16-be",
+            "utf-32",
+            "utf-32-le",
+            "utf-32-be",
+        ):
+            # These encodings grow monotonically with each code point. Bound
+            # the search by the byte budget, even for very long input names.
+            lower, upper = 0, min(len(stem), self.max_len)
+            while lower < upper:
+                middle = (lower + upper + 1) // 2
+                if len((stem[:middle] + extension).encode(self._fs_encoding)) <= self.max_len:
+                    lower = middle
+                else:
+                    upper = middle - 1
+            candidate = stem[:lower] + extension
+            if len(candidate.encode(self._fs_encoding)) <= self.max_len:
+                return candidate
+        else:
+            # Stateful and other codecs need not have monotonic byte lengths.
+            # Measure whole candidates, including any BOM/shift state, and do
+            # not reject the extension alone before trying longer prefixes.
+            for length in range(len(stem) - 1, -1, -1):
+                candidate = stem[:length] + extension
+                if len(candidate.encode(self._fs_encoding)) <= self.max_len:
+                    return candidate
+
+        raise self.__length_error(value, byte_count, preserve_extension=True)
+
+    def __length_error(
+        self, value: str, byte_count: int, preserve_extension: bool = False
+    ) -> ValidationError:
+        description = (
+            "cannot preserve the extension within the byte budget"
+            if preserve_extension
+            else "filename is too long"
+        )
+        return ValidationError(
+            description=(
+                f"{description}: expected<={self.max_len:d} bytes, actual={byte_count:d} bytes"
+            ),
+            reason=ErrorReason.INVALID_LENGTH,
+            platform=self.platform,
+            fs_encoding=self._fs_encoding,
+            byte_count=byte_count,
+            value=value,
+        )
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
         if self._is_windows(include_universal=True):
@@ -204,6 +296,9 @@ class FileNameValidator(BaseValidator):
                 **err_kwargs,
             )
 
+        self._validate_name(unicode_filename)
+
+    def _validate_name(self, unicode_filename: str) -> None:
         self._validate_reserved_keywords(unicode_filename)
         self.__validate_universal_filename(unicode_filename)
 
@@ -389,6 +484,7 @@ def sanitize_filename(
     reserved_name_handler: Optional[ValidationErrorHandler] = None,
     additional_reserved_names: Optional[Sequence[str]] = None,
     validate_after_sanitize: bool = False,
+    length_behavior: Union[LengthBehavior, str] = LengthBehavior.TRIM,  # noqa: FA100
 ) -> PathType:
     """Make a valid filename from a string.
 
@@ -414,7 +510,7 @@ def sanitize_filename(
             .. include:: platform.txt
         max_len:
             Maximum byte length of the ``filename``.
-            Truncate the name length if the ``filename`` length exceeds this value.
+            Applied according to ``length_behavior`` after character replacement.
             Defaults to ``255``.
         fs_encoding:
             Filesystem encoding that is used to calculate the byte length of the filename.
@@ -445,6 +541,20 @@ def sanitize_filename(
             Case insensitive.
         validate_after_sanitize:
             Execute validation after sanitization to the file name.
+        length_behavior:
+            :py:class:`~pathvalidate.LengthBehavior` or its exact lowercase value.
+            ``"trim"`` (default) truncates the whole name; ``"keep"`` keeps its
+            length; ``"error"`` raises if its encoded byte length exceeds ``max_len``.
+            ``"trim_name"`` keeps the final extension from :py:func:`posixpath.splitext`
+            and the longest stem prefix that fits, allowing an empty stem. It raises
+            if no prefix can preserve the extension, and uses ``"trim"`` when there
+            is no extension. Complete candidates are encoded using ``fs_encoding``.
+
+            This stage runs before reserved/null handlers and Windows edge cleanup.
+            Handlers can grow the result; use ``validate_after_sanitize=True`` to
+            check the final value. ``"keep"`` still applies default name cleanup
+            and does not disable final validation or override an injected validator
+            on :py:class:`~pathvalidate.FileNameSanitizer`.
 
     Returns:
         Same type as the ``filename`` (str or PathLike object):
@@ -452,7 +562,15 @@ def sanitize_filename(
 
     Raises:
         ValueError:
-            If the ``filename`` is an invalid filename.
+            If ``length_behavior`` is not a supported enum member or lowercase value,
+            even when the input is empty.
+        ValidationError (ErrorReason.INVALID_LENGTH):
+            If ``"error"`` detects an overlong name after character replacement,
+            or ``"trim_name"`` cannot preserve its extension within the byte budget.
+            The error includes the component value, byte count, encoding and platform.
+        ValidationError (ErrorReason.INVALID_AFTER_SANITIZE):
+            If requested final validation fails, including overlong ``"keep"``
+            results or handler output.
 
     Example:
         :ref:`example-sanitize-filename`
@@ -475,4 +593,5 @@ def sanitize_filename(
         reserved_name_handler=reserved_name_handler,
         additional_reserved_names=additional_reserved_names,
         validate_after_sanitize=validate_after_sanitize,
+        length_behavior=length_behavior,
     ).sanitize(filename, replacement_text)

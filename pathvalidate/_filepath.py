@@ -10,11 +10,17 @@ import warnings
 from collections.abc import Sequence
 from pathlib import Path, PurePath
 from re import Pattern
-from typing import Final, Optional
+from typing import Final, Optional, Union
 
 from ._base import AbstractSanitizer, AbstractValidator, BaseFile, BaseValidator
 from ._common import findall_to_str, is_nt_abspath, to_str, validate_pathtype
-from ._const import _NTFS_RESERVED_FILE_NAMES, DEFAULT_MIN_LEN, INVALID_CHAR_ERR_MSG_TMPL, Platform
+from ._const import (
+    _NTFS_RESERVED_FILE_NAMES,
+    DEFAULT_MIN_LEN,
+    INVALID_CHAR_ERR_MSG_TMPL,
+    LengthBehavior,
+    Platform,
+)
 from ._filename import FileNameSanitizer, FileNameValidator
 from ._types import PathType, PlatformType
 from .error import ErrorAttrKey, ErrorReason, InvalidCharError, ReservedNameError, ValidationError
@@ -39,6 +45,7 @@ class FilePathSanitizer(AbstractSanitizer):
         normalize: bool = True,
         validate_after_sanitize: bool = False,
         validator: Optional[AbstractValidator] = None,
+        length_behavior: Union[LengthBehavior, str] = LengthBehavior.TRIM,  # noqa: FA100
     ) -> None:
         if validator:
             fpath_validator = validator
@@ -71,6 +78,7 @@ class FilePathSanitizer(AbstractSanitizer):
             additional_reserved_names=additional_reserved_names,
             platform=self.platform,
             validate_after_sanitize=validate_after_sanitize,
+            length_behavior=length_behavior,
         )
         self.__normalize = normalize
 
@@ -417,6 +425,7 @@ def sanitize_filepath(
     additional_reserved_names: Optional[Sequence[str]] = None,
     normalize: bool = True,
     validate_after_sanitize: bool = False,
+    length_behavior: Union[LengthBehavior, str] = LengthBehavior.TRIM,  # noqa: FA100
 ) -> PathType:
     """Make a valid file path from a string.
 
@@ -444,7 +453,8 @@ def sanitize_filepath(
             .. include:: platform.txt
         max_len:
             Maximum byte length of the file path.
-            Truncate the path if the value length exceeds the `max_len`.
+            Also passed unchanged to the existing filename sanitizer for each
+            ordinary component; the budget is not divided among components.
             If the value is |None| or minus, ``max_len`` will automatically determined by the ``platform``:
 
                 - ``Linux``: 4096
@@ -482,6 +492,20 @@ def sanitize_filepath(
             If |True|, normalize the the file path.
         validate_after_sanitize:
             Execute validation after sanitization to the file path.
+        length_behavior:
+            :py:class:`~pathvalidate.LengthBehavior` or its exact lowercase value,
+            applied to each ordinary component by :py:func:`~pathvalidate.sanitize_filename`.
+            ``"trim"`` (default) truncates the whole component; ``"keep"`` keeps
+            its length; ``"error"`` rejects an overlong component; ``"trim_name"``
+            preserves the final extension and the longest stem prefix that fits.
+            The same policy applies to directory components. An extension that cannot
+            fit raises; a component without an extension uses ``"trim"``.
+
+            Length is measured after character replacement, before name handlers
+            and Windows edge cleanup. Handlers can grow the result. Drive/UNC and
+            special NTFS handling retain their existing bypasses. No policy guarantees
+            the combined path length: use ``validate_after_sanitize=True`` to check
+            the final components and path against the existing limits.
 
     Returns:
         Same type as the argument (str or PathLike object):
@@ -489,7 +513,16 @@ def sanitize_filepath(
 
     Raises:
         ValueError:
-            If the ``file_path`` is an invalid file path.
+            If ``length_behavior`` is not a supported enum member or lowercase value,
+            even when the input is empty.
+        ValidationError (ErrorReason.INVALID_LENGTH):
+            If ``"error"`` rejects an ordinary component after character replacement,
+            ``"trim_name"`` cannot preserve its extension, or requested final path
+            validation detects an overlong path. A policy error includes the offending
+            component value, byte count, encoding and platform.
+        ValidationError (ErrorReason.INVALID_AFTER_SANITIZE):
+            If requested final component validation fails, including overlong
+            ``"keep"`` results or handler output.
 
     Example:
         :ref:`example-sanitize-file-path`
@@ -513,4 +546,5 @@ def sanitize_filepath(
         reserved_name_handler=reserved_name_handler,
         additional_reserved_names=additional_reserved_names,
         validate_after_sanitize=validate_after_sanitize,
+        length_behavior=length_behavior,
     ).sanitize(file_path, replacement_text)
