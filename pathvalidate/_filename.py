@@ -88,6 +88,11 @@ class FileNameSanitizer(AbstractSanitizer):
                     sanitized_filename = re.sub(
                         re.escape(e.reserved_name), replacement_word, sanitized_filename
                     )
+                    # The handler appends its escape marker after the name has
+                    # already been truncated to max_len, which can push it back
+                    # over the limit. Re-fit the escaped name so the result stays
+                    # within max_len and is not itself a reserved name (#83).
+                    sanitized_filename = self._fit_reserved_name(sanitized_filename)
             elif e.reason == ErrorReason.INVALID_CHARACTER and self._is_windows(
                 include_universal=True
             ):
@@ -115,6 +120,49 @@ class FileNameSanitizer(AbstractSanitizer):
             return Path(sanitized_filename)  # type: ignore
 
         return sanitized_filename  # type: ignore
+
+    def _fit_reserved_name(self, name: str) -> str:
+        """Bound a reserved-name replacement to ``max_len``.
+
+        The reserved-name handler appends an escape marker (e.g. a trailing
+        underscore) *after* the filename was truncated to ``max_len`` in
+        :meth:`sanitize`, so the escaped name can exceed the limit. Truncating
+        the escaped name again can either cut off the marker -- leaving the
+        original reserved name, such as ``"CON_"[:3] == "CON"`` -- or leave a
+        trailing space/period when an extension was cut.
+
+        Shorten the result, trimming trailing spaces/periods on Windows first,
+        until it is a valid filename within ``max_len``. Each iteration removes
+        at least one byte, so the loop always terminates.
+
+        Raises:
+            ValidationError (ErrorReason.INVALID_LENGTH): If no non-empty,
+                non-reserved name can fit within ``max_len`` (for example when
+                every one-byte name is a reserved name).
+        """
+        name = truncate_str(name, self._fs_encoding, self.max_len)
+
+        while name and not self._validator.is_valid(name):
+            if self._is_windows(include_universal=True):
+                trimmed = name.rstrip(" .")
+                if trimmed != name:
+                    name = truncate_str(trimmed, self._fs_encoding, self.max_len)
+                    continue
+
+            byte_count = len(name.encode(self._fs_encoding))
+            name = truncate_str(name, self._fs_encoding, byte_count - 1)
+
+        if not name:
+            raise ValidationError(
+                description=(
+                    f"could not produce a valid filename within max_len={self.max_len}: "
+                    "shortening the reserved-name escape leaves no non-empty name"
+                ),
+                reason=ErrorReason.INVALID_LENGTH,
+                platform=self.platform,
+            )
+
+        return name
 
     def _get_sanitize_regexp(self) -> Pattern[str]:
         if self._is_windows(include_universal=True):

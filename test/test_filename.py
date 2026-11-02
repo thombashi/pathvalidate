@@ -657,6 +657,89 @@ class Test_sanitize_filename:
             )
 
     @pytest.mark.parametrize(
+        ["value", "test_platform", "max_len", "expected"],
+        [
+            # The escape marker ("_") is appended after truncation and would make
+            # the name one byte longer than max_len (#83) -- it must be re-fit.
+            ["CON", "windows", 3, "CO"],
+            ["PRN", "windows", 3, "PR"],
+            ["AUX", "windows", 3, "AU"],
+            ["NUL", "windows", 3, "NU"],
+            ["COM1", "windows", 4, "COM"],
+            ["LPT1", "windows", 4, "LPT"],
+            ["CON", "universal", 3, "CO"],
+            # Cutting an extension together with the marker must not leave a name
+            # that exceeds the limit or ends with a dangling period/space.
+            ["CON.txt", "windows", 5, "CON_"],
+            ["PRN.txt", "universal", 4, "PRN_"],
+            # A limit that still accommodates the marker is left untouched.
+            ["CON", "windows", 5, "CON_"],
+            ["CON", "windows", 255, "CON_"],
+            ["CON.txt", "windows", 255, "CON_.txt"],
+        ],
+    )
+    def test_normal_reserved_name_within_max_len(self, value, test_platform, max_len, expected):
+        filename = sanitize_filename(value, platform=test_platform, max_len=max_len)
+        assert filename == expected
+        assert len(filename.encode("utf-8")) <= max_len
+        assert is_valid_filename(filename, platform=test_platform, max_len=max_len)
+
+    @pytest.mark.parametrize(
+        ["value", "test_platform", "max_len"],
+        [
+            [reserved, platform, max_len]
+            for reserved, platform in product(WIN_RESERVED_FILE_NAMES, ["windows", "universal"])
+            for max_len in sorted(
+                {
+                    1,
+                    2,
+                    len(reserved.encode("utf-8")) - 1,
+                    len(reserved.encode("utf-8")),
+                    255,
+                }
+            )
+            if max_len >= 1
+        ],
+    )
+    def test_normal_reserved_name_within_max_len_sweep(self, value, test_platform, max_len):
+        for handler in (
+            None,
+            ReservedNameHandler.add_trailing_underscore,
+            ReservedNameHandler.add_leading_underscore,
+        ):
+            filename = sanitize_filename(
+                value,
+                platform=test_platform,
+                max_len=max_len,
+                reserved_name_handler=handler,
+            )
+            assert len(filename.encode("utf-8")) <= max_len
+            assert is_valid_filename(filename, platform=test_platform, max_len=max_len)
+            # The result must never be the bare reserved name that triggered escape.
+            assert filename.upper() != value.upper() or max_len < len(value.encode("utf-8"))
+
+    def test_normal_reserved_name_within_max_len_validate_after(self):
+        # validate_after_sanitize used to raise INVALID_AFTER_SANITIZE because the
+        # escaped name exceeded max_len; it must now succeed (#83).
+        filename = sanitize_filename(
+            "CON", platform="windows", max_len=3, validate_after_sanitize=True
+        )
+        assert len(filename.encode("utf-8")) <= 3
+        assert is_valid_filename(filename, platform="windows", max_len=3)
+
+    def test_exception_reserved_name_within_max_len_impossible(self):
+        # If every single-byte name is reserved, no non-empty valid name can fit:
+        # sanitize must report that instead of returning an over-limit name.
+        with pytest.raises(ValidationError) as excinfo:
+            sanitize_filename(
+                "a",
+                platform="windows",
+                max_len=1,
+                additional_reserved_names=["a", "b", "c"],
+            )
+        assert excinfo.value.reason == ErrorReason.INVALID_LENGTH
+
+    @pytest.mark.parametrize(
         ["value", "test_platform", "arn", "expected"],
         [
             [".", "windows", [".", ".."], "._"],
