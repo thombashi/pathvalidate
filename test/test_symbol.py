@@ -85,6 +85,14 @@ class Test_replace_symbol:
             ["!a##b$$$c((((d]]]])", "_", True, False, "_a_b_c_d_"],
             ["!a##b$$$c((((d]]]])", "_", False, True, "a__b___c____d"],
             ["!a##b$$$c((((d]]]])", "_", False, False, "_a__b___c____d_____"],
+            ["A!!B", "ab", True, False, "AabB"],
+            ["A!!B", "[]", True, False, "A[]B"],
+            ["A!!B", "あい", True, False, "AあいB"],
+            ["abbbb", "ab", True, False, "abbbb"],
+            ["abab", "ab", True, False, "ab"],
+            ["ababa", "aba", True, False, "ababa"],
+            ["A!!B", "ab", False, False, "AababB"],
+            ["A!!B", "", True, False, "AB"],
         ],
     )
     def test_normal_consecutive(

@@ -51,8 +51,8 @@ def replace_symbol(
         exclude_symbols:
             Symbols that were excluded from the replacement.
         is_replace_consecutive_chars:
-            If |True|, replace consecutive multiple ``replacement_text`` characters
-            to a single character.
+            If |True|, replace consecutive occurrences of ``replacement_text``
+            with a single occurrence.
         is_strip:
             If |True|, strip ``replacement_text`` from the beginning/end of the replacement text.
 
@@ -85,7 +85,7 @@ def replace_symbol(
         return new_text
 
     if is_replace_consecutive_chars:
-        new_text = re.sub(f"{re.escape(replacement_text)}+", replacement_text, new_text)
+        new_text = re.sub(f"(?:{re.escape(replacement_text)})+", replacement_text, new_text)
 
     if is_strip:
         new_text = new_text.strip(replacement_text)
